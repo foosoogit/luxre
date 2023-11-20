@@ -20,8 +20,8 @@ services:
     environment:
       MYSQL_DATABASE: luxre_db
       MYSQL_USER: luxre_db
-      MYSQL_PASSWORD: twF4o22BLvlH
-      MYSQL_ROOT_PASSWORD: twF4o22BLvlH
+      MYSQL_PASSWORD: 6o6GTFDpAt
+      MYSQL_ROOT_PASSWORD: 6o6GTFDpAt
     ports:
       - "3306:3306"
     volumes:
