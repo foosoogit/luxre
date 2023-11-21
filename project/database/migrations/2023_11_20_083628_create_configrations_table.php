@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('goods', function (Blueprint $table) {
+        Schema::create('configrations', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->softDeletes();
-			$table->string('serial_good',10)->nullable();
-			$table->string('model_nmber',30)->nullable()->comment('型番');
-			$table->string('buying_price',20)->nullable()->comment('買値');
-			$table->string('zaiko',20)->nullable()->comment('在庫数');
+            $table->string('subject', 50)->comment('key');
+            $table->text('value1')->comment('value-1');
+            $table->text('value2')->nullable()->comment('value-2');
+            $table->text('setumei')->comment('説明');
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('goods');
+        Schema::dropIfExists('configrations');
     }
 };

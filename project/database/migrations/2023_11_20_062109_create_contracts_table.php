@@ -14,6 +14,39 @@ return new class extends Migration
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+
+            $table->softDeletes();
+			
+			$table->string('serial_keiyaku', 50)->unique()->comment('契約シリアル-自動');
+			$table->string('serial_user',20)->nullable()->comment('serial_user');
+			$table->string('serial_Teacher,20')->nullable()->comment('ID Teacher');
+			
+			$table->string('course')->nullable()->comment('コース');
+			$table->string('keiyaku_kikan_start',20)->comment('契約開始日');
+			$table->string('keiyaku_kikan_end',20)->nullable()->comment('契約終了日');
+			
+			$table->string('keiyaku_naiyo')->nullable()->comment('契約内容');
+			$table->string('keiyaku_name')->nullable()->comment('契約名');
+			$table->string('keiyaku_bi',20)->comment('契約日');
+			
+			$table->string('keiyaku_kingaku',20)->comment('契約金額');
+			$table->string('keiyaku_num',20)->comment('契約回数');
+			$table->string('keiyaku_kingaku_total',20)->comment('契約金額合計');
+			
+			$table->string('how_to_pay')->nullable()->comment('支払い方法');
+			$table->string('how_many_pay_genkin',10)->nullable()->comment('支払い回数-現金');
+			$table->string('date_first_pay_genkin',20)->nullable()->comment('1回目支払日-現金');
+			
+			$table->string('date_second_pay_genkin',10)->nullable()->comment('2回目支払日-現金');
+			$table->string('amount_first_pay_cash',20)->nullable()->comment('1回目支払金額');
+			$table->string('amount_second_pay_cash',20)->nullable()->comment('2回目支払金額');
+
+			$table->string('card_company',20)->nullable()->comment('クレジットカード会社');
+			$table->string('how_many_pay_card',10)->nullable()->comment('支払い回数-クレジットカード');
+			$table->string('date_pay_card',20)->nullable()->comment('支払い日-クレジットカード');
+			$table->string('tantosya',50)->nullable()->comment('担当者');
+			$table->string('date_latest_visit',20)->nullable()->comment('最終来店日');
+			$table->text('remarks')->nullable()->comment('備考');
         });
     }
 

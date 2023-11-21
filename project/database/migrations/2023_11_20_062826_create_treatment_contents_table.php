@@ -14,6 +14,12 @@ return new class extends Migration
         Schema::create('treatment_contents', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
+			$table->string('serial_treatment_contents',20)->comment('施術シリアル');
+			$table->string('name_treatment_contents',255)->comment('施術名');
+            $table->string('name_treatment_contents_kana',255)->nullable()->comment('施術名カナ');
+			$table->text('treatment_details')->textable()->nullable()->comment('施術説明');
+			$table->text('memo')->nullable()->comment('メモ');
         });
     }
 

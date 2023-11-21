@@ -4,6 +4,10 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Configration;
+use App\Models\Staff;
+use App\Models\TreatmentContent;
+use App\Models\Admin;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +16,216 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+		$admins =[ 
+			[
+				'name' => 'fsuzuki',
+				'serial_admin' => 'A_001',
+				'email' => 'awa@szemi-gp.com',
+				'password' => '0000',
+			]
+		];
+		foreach($admins as $admin){
+            Admin::create($admin);
+        }
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+		$treatmentcontents = [
+			[
+				'serial_treatment_contents'=> "Tr_00003",
+				'name_treatment_contents' => '全顔脱毛',
+				'name_treatment_contents_kana'=> 'カオ',
+				'treatment_details'=> '顔全体し',
+            ],
+			[
+				'serial_treatment_contents'=> "Tr_00005",
+				'name_treatment_contents' => '脇',
+				'name_treatment_contents_kana'=> 'ワキ',
+				'treatment_details'=> '脇',
+            ],
+			[
+				'serial_treatment_contents'=> "Tr_00008",
+				'name_treatment_contents' => 'VIO',
+				'name_treatment_contents_kana'=> 'VIO',
+				'treatment_details'=> 'VIO',
+            ],
+			[
+				'serial_treatment_contents'=> "Tr_00014",
+				'name_treatment_contents' => 'パーツ',
+				'name_treatment_contents_kana'=> 'パーツ',
+				'treatment_details'=> 'パーツ',
+            ],
+			[
+				'serial_treatment_contents'=> "Tr_00017",
+				'name_treatment_contents' => 'ひざ上下・ひじ上下',
+				'name_treatment_contents_kana'=> 'ヒザジョウゲ',
+				'treatment_details'=> 'ひざ上下・ひじ上下',
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00018",
+				'name_treatment_contents' => 'ひざ下',
+				'name_treatment_contents_kana'=> 'ヒザシタ',
+				'treatment_details'=> 'ひざ下',
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00019",
+				'name_treatment_contents' => 'ひじ下',
+				'name_treatment_contents_kana'=> 'ヒジシタ',
+				'treatment_details'=> 'ひじ下',
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00020",
+				'name_treatment_contents' => 'ひじ下ワキ',
+				'name_treatment_contents_kana'=> 'ヒジワキ',
+				'treatment_details'=> 'ひじ下ワキ',
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00021",
+				'name_treatment_contents' => 'フェイシャル',
+				'name_treatment_contents_kana'=> 'フェイシャル',
+				'treatment_details'=> 'フェイシャル',
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00022",
+				'name_treatment_contents' => 'マツエク',
+				'name_treatment_contents_kana'=> 'マツエク',
+				'treatment_details'=> 'マツエク',
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00024",
+				'name_treatment_contents' => 'マッサージ',
+				'name_treatment_contents_kana'=> 'マッサージ',
+				'treatment_details'=> 'マッサージ',
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00025",
+				'name_treatment_contents' => 'メイクアップ',
+				'name_treatment_contents_kana'=> 'メイクアップ',
+				'treatment_details'=> 'メイクアップ',
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00027",
+				'name_treatment_contents' => '全身脱毛　顔VIO除く',
+				'name_treatment_contents_kana'=> 'ゼンシンダツモウ',
+				'treatment_details'=> '全身脱毛　顔VIO除く',
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00028",
+				'name_treatment_contents' => '全身脱毛＋顔＋VIO',
+				'name_treatment_contents_kana'=> 'ゼンシンダツモウ',
+				'treatment_details'=> '全全身脱毛＋顔＋VIO',
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00029",
+				'name_treatment_contents' => '全身脱毛10回コース（顔・VIO込）',
+				'name_treatment_contents_kana'=> NULL,
+				'treatment_details'=> NULL,
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00030",
+				'name_treatment_contents' => 'キャビテーション',
+				'name_treatment_contents_kana'=> 'キャビテーション',
+				'treatment_details'=> NULL,
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00031",
+				'name_treatment_contents' => '脱毛・キャビ・フェイシャル24回',
+				'name_treatment_contents_kana'=> 'ダツモウ',
+				'treatment_details'=> NULL,
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00033",
+				'name_treatment_contents' => 'エリアシ',
+				'name_treatment_contents_kana'=> NULL,
+				'treatment_details'=> NULL,
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00035",
+				'name_treatment_contents' => 'オールメニュー',
+				'name_treatment_contents_kana'=> 'オー',
+				'treatment_details'=> NULL,
+			],
+			[
+				'serial_treatment_contents'=> "Tr_00036",
+				'name_treatment_contents' => 'ステラ痩身',
+				'name_treatment_contents_kana'=> 'ステラソウシン',
+				'treatment_details'=> '電磁パルス痩身',
+			],
+		];
+
+		foreach($treatmentcontents as $treatmentcontent){
+            TreatmentContent::create($treatmentcontent);
+        }
+
+		$staffs = [
+			[
+				'serial_staff'=> "SF_001",
+				'last_name_kanji' => '根岸',
+				'first_name_kanji'=> 'もえ子',
+				'last_name_kana'=> 'ねぎし',
+				'first_name_kana'=> 'もえこ',
+            ],
+			[
+				'serial_staff'=> "SF_002",
+				'last_name_kanji' => '芝崎',
+				'first_name_kanji'=> null,
+				'last_name_kana'=> 'しばさき',
+				'first_name_kana'=> null,
+            ],
+        ];
+
+		foreach($staffs as $staff){
+            Staff::create($staff);
+        }
+
+		$configrations = [
+			[
+				'subject'=> "KeiyakuNumMax",
+				'value1' => "24",
+				'setumei' => '最大契約回数',
+            ],
+			[
+				'subject'=> "Card Company",
+				'value1' => "VISA,Master,AMEX",
+				'setumei' => "クレジット会社",
+            ],
+			[
+				'subject'=> "DdisplayLineNumCustomerList",
+				'value1' => "15",
+				'setumei' => "顧客リストの表示行数",
+            ],
+			[
+				'subject'=> "DdisplayLineNumContractList",
+				'value1' => "15",
+				'setumei' => "契約リストの表示行数",
+			],
+			[
+				'subject'=> "ReasonComing",
+				'value1' => "ホットペッパー,Instagram,美シャインホームページ,知人の紹介,チラシ,その他",
+				'setumei' => "来院のきっかけｹ",
+			],
+			[
+				'subject'=> "MaxTreatmentsTimes",
+				'value1' => "24",
+				'setumei' => "最大施術回",
+			],
+			[
+				'subject'=> "PaymentNumMax",
+				'value1' => "12",
+				'setumei' => "分割支払最大回数",
+			],
+			[
+				'subject'=> "KesanMonth",
+				'value1' => "8",
+				'setumei' => "決算月",
+			],
+			[
+				'subject'=> "TargetContractMoney",
+				'value1' => "2022-05-3000000,2022-06-3000000,2022-08-1500000,2022-07-3500000,2022-02-200000,2022-04-3000000,2022-09-2000000,2022-03-3000000,2022-10-1500000,2022-11-1500000,2022-12-1500000,2023-01-1500000,2023-02-1500000,2023-03-1500000,2023-04-1500000,2023-05-1500000,2023-06-1500000,2023-07-1500000,2023-08-1500000,2023-09-1500000,2023-10-1000000,2023-11-1500000,2023-12-1500000,2024-01-1000000",
+				'setumei' => "契約目標金額",
+			],
+        ];
+
+		foreach($configrations as $configration){
+            Configration::create($configration);
+        }
     }
 }
