@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('first_name_kanji',50)->nullable();
             $table->string('last_name_kana',50)->nullable();
             $table->string('first_name_kana',50)->nullable();
+            $table->rememberToken();
         });
     }
 

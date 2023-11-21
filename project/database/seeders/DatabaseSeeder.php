@@ -8,6 +8,7 @@ use App\Models\Configration;
 use App\Models\Staff;
 use App\Models\TreatmentContent;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,7 +22,7 @@ class DatabaseSeeder extends Seeder
 				'name' => 'fsuzuki',
 				'serial_admin' => 'A_001',
 				'email' => 'awa@szemi-gp.com',
-				'password' => '0000',
+				'password' => Hash::make('0000'),
 			]
 		];
 		foreach($admins as $admin){
