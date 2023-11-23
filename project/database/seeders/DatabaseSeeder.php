@@ -23,7 +23,13 @@ class DatabaseSeeder extends Seeder
 				'serial_admin' => 'A_001',
 				'email' => 'awa@szemi-gp.com',
 				'password' => Hash::make('0000'),
-			]
+			],
+			[
+				'name' => 'ksuzuki',
+				'serial_admin' => 'A_002',
+				'email' => 'moezbeauty.ts@gmail.com',
+				'password' => Hash::make('0101'),
+			],
 		];
 		foreach($admins as $admin){
             Admin::create($admin);
