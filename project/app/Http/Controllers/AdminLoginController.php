@@ -17,7 +17,7 @@ class AdminLoginController extends Controller
      */
      public function create(): View
      {
-         return view('admin.login');
+         return view('admin.login_admin');
      }
      /**
       * ログイン
