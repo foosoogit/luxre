@@ -27,9 +27,15 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
+    //Route::get('/top', [\App\Http\Controllers\TeacherController::class,'ShowMenuCustomerManagement']);
+	//Route::post('/top', [\App\Http\Controllers\TeacherController::class, 'ShowMenuCustomerManagement']);
+    Route::get('/top', [\App\Http\Controllers\AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top');
+    /*
     Route::get('/admin', function () {
-        return view('admin.top');
+        return view('admin.menu_top');
+        //return view('admin.top');
     })->name('admin.top');
+    */
 });
 
 Route::middleware([
