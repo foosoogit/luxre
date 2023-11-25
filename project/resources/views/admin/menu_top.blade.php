@@ -5,7 +5,23 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Dashboard') }}</div>
+                    {{--<div class="card-header">{{ __('Dashboard') }}</div>--}}
+					<div class="card-header">
+						<div class="container">
+							<div class="row">
+								<div class="col-10">
+									{{ config('app.name', 'Laravel') }}メニュー
+								</div>
+								<div class="col-2">
+									<form method="POST" action="{{ route('admin.login.destroy') }}">
+										@method('DELETE')
+										@csrf
+										<button type="submit" class="btn btn-outline-dark btn-sm">ログアウト</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
                     <div class="card-body">
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
@@ -19,7 +35,7 @@
 						@endcanany
                             <li><p>
 				<form method="GET" action="/customers/ShowCustomersList_livewire">@csrf
-					<button class="bg-blue-500 text-white rounded px-3 py-1" type="submit" >顧客一覧</button>&nbsp;修正・新規登録・契約
+					<button class="btn btn-primary btn-sm" type="submit" >顧客一覧</button>&nbsp;修正・新規登録・契約
 				</form>
 					支払い不履行者<br>
 					<span style="color:red;">
@@ -44,19 +60,16 @@
 					@endforeach
 					--}}
 				<br>
-				@if (auth('admin')->user()->serial_teacher==='A_0001')
-				{{--<li><p><button class="bg-blue-500 text-white rounded px-3 py-1" type="submit" formaction="/customers/ShowCustomersList_livewire">顧客一覧 livewire</button>&emsp;修正・新規登録・契約</p></li><br> --}}
-				@endif
-				<li><form method="GET" action="/customers/ShowInputCustomer">@csrf<button class="bg-blue-500 text-white rounded px-3 py-1" type="submit" value="fromMenu" name="insertCustomerFromMenu">顧客新規登録</button>
+				<li><form method="GET" action="/customers/ShowInputCustomer">@csrf<button class="btn btn-primary btn-sm" type="submit" value="fromMenu" name="insertCustomerFromMenu">顧客新規登録</button>
 				</form></li><br>
-                 <li><p><form method="GET" action="/customers/ShowContractList/all">@csrf<button class="bg-blue-500 text-white rounded px-3 py-1" type="submit" >契約一覧</button>&nbsp;修正・新規登録・契約</form></p></li><br>
-				<li><p><form method="GET" action="/workers/ShowCampaigns">@csrf<button class="bg-blue-500 text-white rounded px-3 py-1" type="submit">キャンペーン</button></form></p></li><br>
-				<li><p><form method="GET" action="/workers/ShowDailyReport">@csrf<button class="bg-blue-500 text-white rounded px-3 py-1" type="submit">日報</button></form></p></li><br>
-				<li><form method="POST" action="/workers/ShowMonthlyReport">@csrf<p><button class="bg-blue-500 text-white rounded px-3 py-1" type="submit">月報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select></p></form></li><br>
-				<li><form method="POST" action="/workers/ShowContractsReport">@csrf<p><button class="bg-blue-500 text-white rounded px-3 py-1" type="submit">契約金額集計</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select></p></form></li><br>
-				<li><form method="POST" action="/workers/ShowYearlyReport">@csrf<p><button class="bg-blue-500 text-white rounded px-3 py-1" type="submit">年報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option  value="0" >選択</option>{!!$htm_kesanMonth!!}</select>&emsp;契約達成率、前年度比等</p></form></li><br>
-				<li><p><form method="GET" action="/workers/ShowTreatmentContents">@csrf<button class="bg-blue-500 text-white rounded px-3 py-1" type="submit">施術登録</button></form></p></li><br>
-				<li><p><form method="GET" action="/workers/ShowGoodsList">@csrf<button class="bg-blue-500 text-white rounded px-3 py-1" type="submit">商品登録</button></form></p></li><br>
+                 <li><p><form method="GET" action="/customers/ShowContractList/all">@csrf<button class="btn btn-primary btn-sm" type="submit" >契約一覧</button>&nbsp;修正・新規登録・契約</form></p></li><br>
+				<li><p><form method="GET" action="/workers/ShowCampaigns">@csrf<button class="btn btn-primary btn-sm" type="submit">キャンペーン</button></form></p></li><br>
+				<li><p><form method="GET" action="/workers/ShowDailyReport">@csrf<button class="btn btn-primary btn-sm" type="submit">日報</button></form></p></li><br>
+				<li><form method="POST" action="/workers/ShowMonthlyReport">@csrf<p><button class="btn btn-primary btn-sm" type="submit">月報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select></p></form></li><br>
+				<li><form method="POST" action="/workers/ShowContractsReport">@csrf<p><button class="btn btn-primary btn-sm" type="submit">契約金額集計</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select></p></form></li><br>
+				<li><form method="POST" action="/workers/ShowYearlyReport">@csrf<p><button class="btn btn-primary btn-sm" type="submit">年報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option  value="0" >選択</option>{!!$htm_kesanMonth!!}</select>&emsp;契約達成率、前年度比等</p></form></li><br>
+				<li><p><form method="GET" action="/workers/ShowTreatmentContents">@csrf<button class="btn btn-primary btn-sm" type="submit">施術登録</button></form></p></li><br>
+				<li><p><form method="GET" action="/workers/ShowGoodsList">@csrf<button class="btn btn-primary btn-sm" type="submit">商品登録</button></form></p></li><br>
                         </ul>
                     </div>
                 </div>
