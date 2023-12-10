@@ -20,6 +20,13 @@
 		@livewireStyles
 		<!-- Scripts -->
 		{{--<script src="{{ mix('js/app.js') }}" defer></script>--}}
+
+		<style>
+			li {
+			  line-height: 3.5em;
+			}
+		</style>
+
 	</head>
 	<body class="font-sans antialiased mt-3">
 		<!--<div class="min-h-screen bg-gray-100">-->
