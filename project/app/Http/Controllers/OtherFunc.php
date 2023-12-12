@@ -6,10 +6,54 @@ use Illuminate\Http\Request;
 use App\Models\PaymentHistory;
 use DateTime;
 use App\Models\Contract;
+use Illuminate\Support\Facades\Log;
 
 class OtherFunc extends Controller
 {
-    public static function make_html_staff_slct($targetStaffSerial){
+	public static function make_html_birth_month_slct($targetMonth){
+		$htm_month_slct='<select name="month" class="form-select">';
+		$htm_month_slct.='<option  value="" Selected>--選択してください。--</option>';
+		for($i=1;$i<=12;$i++){
+			$selected="";
+			if($targetMonth==$i){
+				$selected="selected";
+			}
+			$htm_month_slct.='<option value="'.$i.'" '.$selected.' >'.$i.'</option>';
+		}
+		$htm_month_slct.='</select>';
+		return $htm_month_slct;
+	}
+
+	public static function make_html_birth_day_slct($targetDay){
+		$htm_day_slct='<select name="day" class="form-select">';
+		$htm_day_slct.='<option  value="" Selected>--選択してください。--</option>';
+		for($i=1;$i<=31;$i++){
+			$selected="";
+			if($targetDay==$i){
+				$selected="selected";
+			}
+			$htm_day_slct.='<option value="'.$i.'" '.$selected.' >'.$i.'</option>';
+		}
+		$htm_day_slct.='</select>';
+		return $htm_day_slct;
+	}
+
+	public static function make_html_birth_year_slct($targetYear){
+		//Log::alert("targetYear=".$targetYear);
+		$htm_year_slct='<select name="year" class="form-select">';
+		$htm_year_slct.='<option  value="" Selected>--選択してください。--</option>';
+		$year_now=date('Y');
+		$start_year=$year_now-50;
+		for($i = $start_year; $i<= $year_now; $i++){
+			$sct='';
+			if($i==$targetYear){$sct='Selected';}
+			$htm_year_slct.='<option  value="'.$i.'" '.$sct.'>'.$i.'</option>';
+		}
+		$htm_year_slct.='</select>';
+		return $htm_year_slct;
+	}
+
+	public static function make_html_staff_slct($targetStaffSerial){
 		$htm_staff_slct="";
 		$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm">';
 		$htm_staff_slct.='<option value=0>-- 選択してください --</option>';
@@ -659,10 +703,8 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_html_year_slct($targetYear){
-		//$htm_year_slct='<select name="year">';
+		Log::alert("targetYear=".$targetYear);
 		$htm_year_slct='';
-
-		//$cmp="";
 		for($i = 2015; $i<= $targetYear; $i++){
 			$sct='';
 			if($i==$targetYear){$sct='Selected';}

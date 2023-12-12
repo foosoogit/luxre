@@ -5,6 +5,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\OtherFunc;
 use App\Models\PaymentHistory;
 use App\Consts\initConsts;
+use App\Models\Staff;
+use App\Models\Recorder;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -14,6 +18,62 @@ class AdminController extends Controller
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
 	}
+
+	public function SaveStaff(Request $request){
+		$targetData=[
+			'serial_staff' => session('targetStaffSerial'),
+			'email' => $request->mail,
+			'phone' => $request->phone,
+			'last_name_kanji' => $request->name_sei,
+			'first_name_kanji' => $request->name_mei,
+			'last_name_kana' =>$request->name_sei_kana,
+			'first_name_kana' =>$request->name_mei_kana,
+		];
+		Staff::upsert($targetData,['serial_staff']);
+		//session()->flash('success', '登録しました。');
+		$this::save_recorder("SavCampaign");
+		//return redirect('/workers/saveStaff');
+		return view("admin.ListStaffs");
+	}
+
+	public function ShowInpStaff($TargetStaffSerial){
+		//$header="";$slot="";$saveFlg="";
+		$GoBackPlace="/workers/ShowStaffList";
+		$html_birth_select=array();
+		if($TargetStaffSerial=="new"){
+			$StaffInf=array();
+			//$maxStaffSerial =Staff::max('serial_staff');
+			$maxStaffSerial =DB::table('Staff')->max('serial_staff');
+			//Log::alert('maxStaffSerial='.$maxStaffSerial);
+			$TargetStaffSerial=++$maxStaffSerial;
+			$html_year_slct=OtherFunc::make_html_birth_year_slct('');
+			$html_day_slct=OtherFunc::make_html_birth_day_slct('');
+			$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
+			$btnDisp="登録";
+		}else{
+			$StaffInf=Staff::where('serial_staff','=',$TargetStaffSerial)->first();
+			//Log::alert('StaffInf='.$StaffInf);
+			$btnDisp="修正";
+			if(empty($StaffInf->birth_date)){
+				$html_year_slct=OtherFunc::make_html_birth_year_slct('');
+				$html_day_slct=OtherFunc::make_html_birth_day_slct('');
+				$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
+			}else{
+				$html_year_slct=OtherFunc::make_html_birth_year_slct(date('Y', strtotime($StaffInf->birth_date)));
+				$html_day_slct=OtherFunc::make_html_birth_day_slct(date('D', strtotime($StaffInf->birth_date)));
+				$html_Month_slct=OtherFunc::make_html_birth_month_slct(date('M', strtotime($StaffInf->birth_date)));
+			}
+			//Log::alert("year=".date('Y', strtotime($StaffInf->birth_date)));
+			//return view('teacher.inp_Staff',compact("header","slot",'TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","saveFlg"));
+		}
+		//Log::alert("html_year_slct=".$html_year_slct);
+		$html_birth_select['year']=$html_year_slct;
+		$html_birth_select['day']=$html_day_slct;
+		$html_birth_select['month']=$html_Month_slct;
+		session(['targetStaffSerial' => $TargetStaffSerial]);
+		return view('admin.inp_Staff',compact('TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","html_birth_select"));
+	}
+
 
 	public function ShowSyuseiContract($ContractSerial,$UserSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
@@ -1971,12 +2031,12 @@ class AdminController extends Controller
     }
     
 	private function save_recorder($location){
-		DB::table('recorders')->insert([
-			'id_recorder' => Auth::user()->serial_teacher,
+		Recorder::insert([
+			'id_recorder' => Auth::id(),
 			'name_recorder' => Auth::user()->last_name_kanji.' '.Auth::user()->first_name_kanji,
 			'location_url' => $_SERVER['REQUEST_URI'],
 			'location' =>$location,
-			'created_at' => date('Y-m-d H:i:s'),
+			//'created_at' => date('Y-m-d H:i:s'),
 		]);
 		return;
 	}

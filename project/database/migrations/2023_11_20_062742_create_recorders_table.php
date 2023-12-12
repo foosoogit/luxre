@@ -14,6 +14,12 @@ return new class extends Migration
         Schema::create('recorders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
+            $table->string('id_recorder',10)->unique();
+            $table->string('name_recorder',20)->nullable();
+            $table->string('location',100);
+            $table->string('location_url');
+            $table->text('memo')->nullable();
         });
     }
 

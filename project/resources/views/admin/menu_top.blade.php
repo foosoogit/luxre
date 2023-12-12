@@ -83,13 +83,13 @@
 								</form>
 							</li>
 							<li>
-								<form method="GET" action="/workers/ShowStaffList">@csrf
+								<form method="GET" action="{{ route('StaffsList.show') }}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">スタッフ登録</button>
 								</form>
 							</li>
 							<li>
 								<form method="GET" action="/workers/ShowGoodsList">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">商品登録</button>
+									<button class="btn btn-primary btn-sm" type="submit" disabled>商品登録</button>
 								</form>
 							</li>
                         </ul>
