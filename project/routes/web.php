@@ -28,12 +28,13 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
+    Route::get('/deleteStaff/{TargetStaffSerial}',[AdminController::class,'deleteStaff'],function($TargetStaffSerial){});
     Route::post('/saveStaff', [AdminController::class,'SaveStaff',function(Request $request){}])->name("saveStaff.post");
     Route::get('ShowInputStaff/{TargetStaffSerial}', [AdminController::class,'ShowInpStaff',function($TargetStaffSerial){}])->name('ShowInpStaff');
     Route::get('ShowStaffList', function () {
         return view('admin.ListStaffs');
     })->name('StaffsList.show');
-    Route::get('/top', [\App\Http\Controllers\AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top');
+    Route::get('/top', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top');
     /*
     Route::get('/admin', function () {
         return view('admin.menu_top');

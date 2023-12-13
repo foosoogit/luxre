@@ -10,7 +10,7 @@
 							<a class="btn btn-primary" href="{{route('admin.top')}}">メニューに戻る</a>
 						</div>
 						<div class="col-auto" style="line-height:3em">
-							<form method="GET" action="/workers/ShowInputStaff/new">@csrf
+							<form method="GET" action="ShowInputStaff/new">@csrf
 								<button class="btn btn-primary" type="submit" name="ShowInputStaffCreateBtn" value="ShowInputStaff">スタッフ新規登録</button>
 							</form>
 						</div>
@@ -32,8 +32,8 @@
 							<thead>
 								<tr>
 									<th class="border px-4 py-2">スタッフデータ修正<br>
-										<button type="button" wire:click="sort('serial_user-ASC')" disabled="disabled"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px"/></button>
-										<button type="button" wire:click="sort('serial_user-Desc')" disabled="disabled"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button></th>
+										<button type="button" wire:click="sort('serial_user-ASC')" disabled="disabled"><img src="{{ asset('/storage/images/sort_A_Z.png') }}" width="15px"/></button>
+										<button type="button" wire:click="sort('serial_user-Desc')" disabled="disabled"><img src="{{ asset('/storage/images/sort_Z_A.png') }}" width="15px" /></button></th>
 									<th class="border px-4 py-2">氏名
 										<button type="button" wire:click="sort('name_sei-ASC')" disabled="disabled"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
 										<button type="button" wire:click="sort('name_sei-Desc')" disabled="disabled"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button></th>
@@ -58,12 +58,12 @@
 										<td class="border px-4 py-2"><form action="ShowInputStaff/{{$staff->serial_staff}}" method="GET">@csrf<input name="syusei_Btn" type="submit" value="{{ $staff->serial_staff}}"></form></td>
 										<td class="border px-4 py-2">{{ $staff->last_name_kanji}}&nbsp;{{ $staff->first_name_kanji}}</td>
 										<td class="border px-4 py-2">{{ $staff->last_name_kana}}&nbsp;{{ $staff->first_name_kana}}</td>
-										<td class="border px-4 py-2"></td>
+										<td class="border px-4 py-2">{{ $staff->birth_date}}</td>
 										<td class="border px-4 py-2">{{ $staff->phone}}</td>
 										<td class="border px-4 py-2">{{ $staff->email}}</td>
 										<td class="border px-4 py-2">
-											<form action="/workers/deleteStaff/{{$staff->serial_staff}}" method="GET">@csrf
-												<input name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $staff->serial_staff}} {{ $staff->last_name_kanji}} {{ $staff->first_name_kanji}}');" >
+											<form action="deleteStaff/{{$staff->serial_staff}}" method="GET">@csrf
+												<input name="delete_btn" type="submit" value="削除" onclick="return window.confirm('{{ $staff->serial_staff}} {{ $staff->last_name_kanji}} {{ $staff->first_name_kanji}}'+'削除します。よろしいですか？');" >
 											</form>
 										</td>
 									</tr>

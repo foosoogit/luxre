@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->string('id_recorder',10)->unique();
+            $table->string('id_recorder',10);
             $table->string('name_recorder',20)->nullable();
             $table->string('location',100);
             $table->string('location_url');

@@ -19,6 +19,11 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function deleteStaff($serial_staff){
+		$deleStaff=Staff::where('serial_staff','=',$serial_staff)->delete();
+		return view("admin.ListStaffs");
+	}
+
 	public function SaveStaff(Request $request){
 		$targetData=[
 			'serial_staff' => session('targetStaffSerial'),
@@ -28,17 +33,18 @@ class AdminController extends Controller
 			'first_name_kanji' => $request->name_mei,
 			'last_name_kana' =>$request->name_sei_kana,
 			'first_name_kana' =>$request->name_mei_kana,
+			'birth_date'=>$request->year.'-'.$request->month.'-'.$request->day,
 		];
 		Staff::upsert($targetData,['serial_staff']);
 		//session()->flash('success', '登録しました。');
-		$this::save_recorder("SavCampaign");
+		$this::save_recorder("SaveStaff");
 		//return redirect('/workers/saveStaff');
 		return view("admin.ListStaffs");
 	}
 
 	public function ShowInpStaff($TargetStaffSerial){
 		//$header="";$slot="";$saveFlg="";
-		$GoBackPlace="/workers/ShowStaffList";
+		$GoBackPlace="/ShowStaffList";
 		$html_birth_select=array();
 		if($TargetStaffSerial=="new"){
 			$StaffInf=array();
@@ -60,8 +66,8 @@ class AdminController extends Controller
 				$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
 			}else{
 				$html_year_slct=OtherFunc::make_html_birth_year_slct(date('Y', strtotime($StaffInf->birth_date)));
-				$html_day_slct=OtherFunc::make_html_birth_day_slct(date('D', strtotime($StaffInf->birth_date)));
-				$html_Month_slct=OtherFunc::make_html_birth_month_slct(date('M', strtotime($StaffInf->birth_date)));
+				$html_day_slct=OtherFunc::make_html_birth_day_slct(date('d', strtotime($StaffInf->birth_date)));
+				$html_Month_slct=OtherFunc::make_html_birth_month_slct(date('m', strtotime($StaffInf->birth_date)));
 			}
 			//Log::alert("year=".date('Y', strtotime($StaffInf->birth_date)));
 			//return view('teacher.inp_Staff',compact("header","slot",'TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","saveFlg"));

@@ -11,14 +11,15 @@ use Illuminate\Support\Facades\Log;
 class OtherFunc extends Controller
 {
 	public static function make_html_birth_month_slct($targetMonth){
+		Log::alert("targetMonth=".$targetMonth);
 		$htm_month_slct='<select name="month" class="form-select">';
 		$htm_month_slct.='<option  value="" Selected>--選択してください。--</option>';
 		for($i=1;$i<=12;$i++){
 			$selected="";
-			if($targetMonth==$i){
+			if($targetMonth==sprintf('%02d', $i)){
 				$selected="selected";
 			}
-			$htm_month_slct.='<option value="'.$i.'" '.$selected.' >'.$i.'</option>';
+			$htm_month_slct.='<option value="'.sprintf('%02d', $i).'" '.$selected.' >'.sprintf('%02d', $i).'</option>';
 		}
 		$htm_month_slct.='</select>';
 		return $htm_month_slct;
@@ -32,21 +33,23 @@ class OtherFunc extends Controller
 			if($targetDay==$i){
 				$selected="selected";
 			}
-			$htm_day_slct.='<option value="'.$i.'" '.$selected.' >'.$i.'</option>';
+			$htm_day_slct.='<option value="'.sprintf('%02d', $i).'" '.$selected.' >'.sprintf('%02d', $i).'</option>';
 		}
 		$htm_day_slct.='</select>';
 		return $htm_day_slct;
 	}
 
 	public static function make_html_birth_year_slct($targetYear){
-		//Log::alert("targetYear=".$targetYear);
 		$htm_year_slct='<select name="year" class="form-select">';
 		$htm_year_slct.='<option  value="" Selected>--選択してください。--</option>';
 		$year_now=date('Y');
 		$start_year=$year_now-50;
 		for($i = $start_year; $i<= $year_now; $i++){
 			$sct='';
-			if($i==$targetYear){$sct='Selected';}
+			if($i==$targetYear){
+				//Log::alert("i=".$i);
+				$sct='Selected';
+			}
 			$htm_year_slct.='<option  value="'.$i.'" '.$sct.'>'.$i.'</option>';
 		}
 		$htm_year_slct.='</select>';
