@@ -9,6 +9,7 @@ use App\Models\Staff;
 use App\Models\Recorder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
