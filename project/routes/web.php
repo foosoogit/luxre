@@ -28,6 +28,12 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
+    Route::controller(AdminController::class)->name('customers.')->group(function() {
+        Route::post('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
+        //Route::get('/customers/ShowInputCustomer', [AdminController::class,'ShowInputCustomer'])->name('ShowInpCustomer');
+        Route::post('/customers/ShowInputCustomer', [AdminController::class,'ShowInputCustomer',function(Request $request){}])->name('ShowInpCustomer');
+    });
+
     Route::get('/deleteStaff/{TargetStaffSerial}',[AdminController::class,'deleteStaff'],function($TargetStaffSerial){});
     Route::post('/saveStaff', [AdminController::class,'SaveStaff',function(Request $request){}])->name("saveStaff.post");
     Route::get('ShowInputStaff/{TargetStaffSerial}', [AdminController::class,'ShowInpStaff',function($TargetStaffSerial){}])->name('ShowInpStaff');

@@ -7,6 +7,7 @@ use App\Models\PaymentHistory;
 use DateTime;
 use App\Models\Contract;
 use Illuminate\Support\Facades\Log;
+use App\Consts\initConsts;
 
 class OtherFunc extends Controller
 {

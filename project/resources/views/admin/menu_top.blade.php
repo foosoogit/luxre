@@ -45,8 +45,8 @@
 								</form></p>
 							</li>
 							<li>
-								<form method="GET" action="/customers/ShowInputCustomer">@csrf
-									<p><button class="btn btn-primary btn-sm" type="submit" value="fromMenu" name="insertCustomerFromMenu">顧客新規登録</button></p>
+								<form method="post" action="{{ route('customers.ShowInpCustomer') }}">@csrf
+									<p><button class="btn btn-primary btn-sm" type="submit" value="new" name="CreateCustomer">顧客新規登録</button></p>
 								</form>
 							</li>
                 			<li>

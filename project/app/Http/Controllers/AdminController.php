@@ -10,6 +10,7 @@ use App\Models\Recorder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use App\models\User;
 
 class AdminController extends Controller
 {
@@ -18,6 +19,87 @@ class AdminController extends Controller
 	
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
+	}
+
+	/*
+	public function ShowInputCustomer(Request $request){
+		session(['fromPage' => 'InputCustomer']);
+		session(['CustomerManage' => 'new']);
+		//$header="";$slot="";
+		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
+		$html_birth_year_slct=trim($html_birth_year_slct);
+		$GoBackPlace="../ShowMenuCustomerManagement";
+		if(isset($request->CustomerListCreateBtn)){
+			$GoBackPlace="/customers/ShowCustomersList_livewire";
+		}
+		setcookie('TorokuMessageFlg','false',time()+60);
+		$GenderRdo=array();
+		$target_user="";$selectedManth=null;$selectedDay=null;$selectedRegion=null;
+		$saveFlg="false,".session('CustomerManage');$btnDisp="　登　録　";
+		$html_reason_coming="";
+		$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
+		return view('customers.CreateCustomer',compact('header',"slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
+	}
+	*/
+	public function ShowInputCustomer(Request $request){
+		if(isset($request->CreateCustomer)){
+			session(['fromPage' => 'InputCustomer']);
+			session(['CustomerManage' => 'new']);
+			//$header="";$slot="";
+			$target_user=array();
+			$maxUserSerial =DB::table('users')->max('serial_user');
+			if($maxUserSerial==1){
+				$target_user['serial_user']=sprintf('%06d', $maxUserSerial);
+			}else{
+				$TargetUserSerial=++$maxUserSerial;
+				$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
+			}
+			//Log::alert('maxUserSerial='.$maxUserSerial);
+			$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
+			$html_birth_year_slct=trim($html_birth_year_slct);
+			$GoBackPlace="../ShowMenuCustomerManagement";
+			if(isset($request->CustomerListCreateBtn)){
+				$GoBackPlace="/customers/ShowCustomersList_livewire";
+			}
+			setcookie('TorokuMessageFlg','false',time()+60);
+			$GenderRdo=array();
+			$selectedManth=null;$selectedDay=null;$selectedRegion=null;
+			$saveFlg="false,".session('CustomerManage');$btnDisp="　登　録　";
+			$html_reason_coming="";
+			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
+			Log::alert('serial_user='.$target_user['serial_user']);
+		}else{
+			session(['fromPage' => 'SyuseiCustomer']);
+			session(['CustomerManage' => 'syusei']);
+			$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
+			$btnDisp="　修　正　";
+		
+			//$header="";$slot="";
+			$selectedManth=array();$selectedManth=array();
+			$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list($target_user->birth_year);
+			//$mnt="m".sprintf('%02d', $target_user->birth_month);
+			$selectedManth[(int)$target_user->birth_month]="Selected";
+			$selectedDay[(int)$target_user->birth_day]="Selected";
+			$selectedRegion[$target_user->address_region]="Selected";
+			$GenderRdo=array();
+			$GenderRdo[$target_user->gender]="checked";
+			setcookie('TorokuMessageFlg','false',time()+60);
+			$saveFlg="false,".session('CustomerManage');
+			$html_reason_coming="";
+			if(isset($request->syusei_Btn)){
+				//$GoBackPlace="/customers/ShowCustomersList";
+				$GoBackPlace="/customers/ShowCustomersList_livewire";
+				$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
+			}else if(isset($request->fromMenu)){
+				//$GoBackPlace="/customers/ShowCustomersList_livewire";
+				$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
+				$GoBackPlace="../ShowMenuCustomerManagement";
+			}
+			Log::alert('serial_user='.$target_user->serial_user);
+		}
+		
+		//return view('customers.CreateCustomer',compact("header","slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
+		return view('customers.CreateCustomer',compact('html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
 
 	public function deleteStaff($serial_staff){
@@ -1394,60 +1476,6 @@ class AdminController extends Controller
 		return view('customers.ListCustomers',compact("users","header","slot"));
 	}
 	*/
-	
-	public function ShowInputCustomer(Request $request){
-		//print 'fromMenu='.session('fromMenu');
-		session(['fromPage' => 'InputCustomer']);
-		session(['CustomerManage' => 'new']);
-		$header="";$slot="";
-		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
-		$html_birth_year_slct=trim($html_birth_year_slct);
-		//CustomerListCreateBtn
-		//insertCustomerFromMenu
-		$GoBackPlace="../ShowMenuCustomerManagement";
-		if(isset($request->CustomerListCreateBtn)){
-			//$GoBackPlace="/customers/ShowCustomersList";
-			$GoBackPlace="/customers/ShowCustomersList_livewire";
-		}
-		setcookie('TorokuMessageFlg','false',time()+60);
-
-		$GenderRdo=array();
-		$target_user="";$selectedManth=null;$selectedDay=null;$selectedRegion=null;
-		$saveFlg="false,".session('CustomerManage');$btnDisp="　登　録　";
-		$html_reason_coming="";
-		$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
-		return view('customers.CreateCustomer',compact('header',"slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
-	}
-    
-	public function ShowSyuseiCustomer(Request $request){
-		session(['fromPage' => 'SyuseiCustomer']);
-		//$userInfo=User::where('serial_user','=',$request->input('syusei_Btn'))->first();
-		session(['CustomerManage' => 'syusei']);
-		$header="";$slot="";$selectedManth=array();$selectedManth=array();
-		$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
-		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list($target_user->birth_year);
-		//$mnt="m".sprintf('%02d', $target_user->birth_month);
-		$selectedManth[(int)$target_user->birth_month]="Selected";
-		$selectedDay[(int)$target_user->birth_day]="Selected";
-		$selectedRegion[$target_user->address_region]="Selected";
-		$GenderRdo=array();
-		$GenderRdo[$target_user->gender]="checked";
-		setcookie('TorokuMessageFlg','false',time()+60);
-		$saveFlg="false,".session('CustomerManage');$btnDisp="　修　正　";
-		$html_reason_coming="";
-		if(isset($request->syusei_Btn)){
-			//$GoBackPlace="/customers/ShowCustomersList";
-			$GoBackPlace="/customers/ShowCustomersList_livewire";
-			$GoBackPlace="/customers/ShowCustomersList_livewire";
-			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
-
-		}else if(isset($request->fromMenu)){
-			//$GoBackPlace="/customers/ShowCustomersList_livewire";
-			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
-			$GoBackPlace="../ShowMenuCustomerManagement";
-		}
-		return view('customers.CreateCustomer',compact("header","slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
-	}
 	
 	public function ShowMenuCustomerManagement(){
 		session(['fromPage' => 'MenuCustomerManagement']);

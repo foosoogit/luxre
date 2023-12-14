@@ -36,7 +36,7 @@ input,textarea{
                      <div class="row"> 
                             <div class="col-4">
                                 <label for="name_sei" class="form-label">姓</label>
-                                		<input id="name_sei" name="name_sei" type="text" class="form-control" value="{{old('name_sei',optional($StaffInf)->last_name_kanji)}}" required autofocus />
+                                <input id="name_sei" name="name_sei" type="text" class="form-control" value="{{old('name_sei',optional($StaffInf)->last_name_kanji)}}" required autofocus />
                             </div>
                             <div class="col-4">
                                 <label for="name_mei" class="form-label">名</label>
