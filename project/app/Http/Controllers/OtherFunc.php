@@ -387,14 +387,19 @@ class OtherFunc extends Controller
 	public static function make_html_reason_coming_cbox($targetSbj,$referee){
 		$reason_coming_array=explode(",", initConsts::ReasonsComing());
 		$targetSbjArray=explode(",", $targetSbj);
-		$htm_reason_coming_cbox='';$sonotaReason="";
+		$htm_reason_coming_cbox='';$sonotaReason="";$reason_id="ri_1";
 		foreach($reason_coming_array as $reason){
 			$cked="";
+			$htm_reason_coming_cbox.='<div class="form-check">';
 			if(strstr($targetSbj, $reason)<>false){	$cked='checked';}
 			if($reason<>"その他"){
-				$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" type="checkbox" value="'.$reason.'" '.$cked.' />'.$reason.'</label>';
+				$htm_reason_coming_cbox.='<input class="form-check-input" type="checkbox" name="reason_coming_cbx[]" id="'.$reason_id.'" value="'.$reason.'" '.$cked.' />';
+				$htm_reason_coming_cbox.='<label class="form-check-label" for="'.$reason_id.'">'.$reason.'</label></div>';
+				//$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" type="checkbox" value="'.$reason.'" '.$cked.' />'.$reason.'</label>';
 			}else{
-				$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" type="checkbox" value="その他" onchange="reason_coming_sonota_manage();" '.$cked.' />その他</label>';
+				$htm_reason_coming_cbox.='<input class="form-check-input" type="checkbox" name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" value="その他" onchange="reason_coming_sonota_manage();"'.$cked.' />';
+				$htm_reason_coming_cbox.='<label class="form-check-label" for="reason_coming_cbx_sonota">その他</label></div>';
+				//$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" type="checkbox" value="その他" onchange="reason_coming_sonota_manage();" '.$cked.' />その他</label>';
 				if($cked=='checked'){
 					$sonotaArray=array();
 					$sonotaArray=explode("(", $targetSbj);
@@ -403,8 +408,9 @@ class OtherFunc extends Controller
 					}
 				}
 			}
+			$reason_id++;
 		}
-		$htm_reason_coming_cbox.='<br>その他<input name="reason_coming_txt" id="reason_coming_txt" type="text" value="'.$sonotaReason.'" />';
+		$htm_reason_coming_cbox.='<div>その他<input name="reason_coming_txt" id="reason_coming_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$sonotaReason.'" /></div>';
 		$htm_reason_coming_cbox.='<br>紹介者(顧客番号を入力してください。)<input name="syokaisya_txt" id="syokaisya_txt" type="text" value="'.$referee.'" placeholder="1001"/>';
 		return $htm_reason_coming_cbox;
 	}

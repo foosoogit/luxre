@@ -181,11 +181,11 @@ input,textarea{
 					</p>
                     <p style="py-2.5">●メール</p>
 					<p>
-					<input type="text" name="email" value="{{optional($target_user)->email}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="12"></p>
+					<input type="email" name="email" id="email" value="{{optional($target_user)->email}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="12"><span id="email_for_error" class="text-danger fw-bold"></span></p>
                     <p style="py-2.5">●電話番号</p>
 					<p style="py-2.5"><span class="text-danger">*</span>
 					<input type="text" name="phone" id="phone" value="{{ optional($target_user)->phone }}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="13"><span id="phone_for_error" class="text-danger fw-bold"></span></p>
-                    ●何を見て当サロンに来られましたか？<br>
+                    <p style="py-2.5">●何を見て当サロンに来られましたか？</p>
 					{!!$html_reason_coming!!}
                     <p style="text-align: center"><button class="btn btn-primary btn-sm" type="submit" id="SubmitBtn" value="{{$btnDisp}}" onclick="return validate();">{{$btnDisp}}</button></p>
 				</form>

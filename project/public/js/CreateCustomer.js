@@ -12,6 +12,7 @@
 }
 
 function reason_coming_sonota_manage(){
+	console.log('reason_coming_sonota_manage');
 	if(document.getElementById("reason_coming_cbx_sonota").checked==true){
 		document.getElementById("reason_coming_txt").disabled=false;
 	}else{
@@ -21,7 +22,6 @@ function reason_coming_sonota_manage(){
 }
 
 jQuery(document).ready(function($){
-	//console.log('test')
 	$("#input_customer_fm").validate({
 		rules : {
 			AdmissionDate: {
@@ -41,6 +41,9 @@ jQuery(document).ready(function($){
 			},
 			GenderRdo: {
 				required: true
+			},
+			email: {
+				email: true
 			},
 			phone: {
 				required: true,
@@ -66,6 +69,9 @@ jQuery(document).ready(function($){
 			GenderRdo:{
 				required: "&nbsp;「性別」を選択してください。"
 			},
+			email: {
+				email: "&nbsp;正しいemailを入力してください。"
+			},
 			phone: {
 		        required: "&nbsp;「電話番号」を入力してください。"
 			}
@@ -89,6 +95,8 @@ jQuery(document).ready(function($){
 				error.appendTo($('#name_sei_kana_for_error'));
 			}else if(element.attr("name")=="name_mei_kana"){
 				error.appendTo($('#name_mei_kana_for_error'));
+			}else if(element.attr("name")=="email"){
+				error.appendTo($('#email_kana_for_error'));
 			}else{
 				error.insertAfter(element);
 			}
