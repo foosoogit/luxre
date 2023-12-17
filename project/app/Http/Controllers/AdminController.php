@@ -22,7 +22,6 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
-	//function insertCustomer(InpCustomerRequest $request){
 	function insertCustomer(Request $request){
 		$targetSerial=$request->serial_user;
 		if(session('CustomerManage')=="new"){
@@ -142,7 +141,7 @@ class AdminController extends Controller
 
 	public function ShowInputNewCustomer(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		Log::alert('access_history='.info($_SESSION['access_history']));
+		//Log::alert('access_history='.info($_SESSION['access_history']));
 		session(['fromPage' => 'InputCustomer']);
 		session(['CustomerManage' => 'new']);
 		//$header="";$slot="";

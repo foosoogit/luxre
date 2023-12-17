@@ -189,7 +189,7 @@ input,textarea{
 					{!!$html_reason_coming!!}
                     <p style="text-align: center"><button class="btn btn-primary btn-sm" type="submit" id="SubmitBtn" value="{{$btnDisp}}" onclick="return validate();">{{$btnDisp}}</button></p>
 				</form>
-				<input name="TorokuMessageFlg" id="TorokuMessageFlg" type="hidden" value="{{$saveFlg}}"/>		
+				<div style="py-3.5"><input name="TorokuMessageFlg" id="TorokuMessageFlg" type="hidden" value="{{$saveFlg}}"/></div>
         </div>
     </div>
 	<script>

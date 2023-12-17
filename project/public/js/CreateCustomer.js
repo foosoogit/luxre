@@ -11,6 +11,39 @@
 	}
 }
 
+function SerchRefereeInf(){
+	TargetSerial=document.getElementById("syokaisya_txt").value;;
+	//console.log("obj="+obj);
+	console.log("TargetSerial="+TargetSerial);
+	$.ajax({
+		url: 'getCustomerInf',
+		type: 'post', // getかpostを指定(デフォルトは前者)
+		dataType: 'json', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
+		scriptCharset: 'utf-8',
+		frequency: 10,
+		cache: false,
+		async : false,
+		data: {'TargetSerial': TargetSerial},
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	}).done(function (data) {
+		var json = JSON.stringify(data);
+		var dt = JSON.parse(json);
+		if(dt['count'] == 0){
+			alert("登録されていません。");
+		}else{
+			alert("紹介者は "+dt["name_sei"]+" "+dt["name_mei"]+"さんです。");
+		}
+		//document.getElementById("selling_price").value=dt['SellingPrice'];
+	}) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+		alert(XMLHttpRequest.status);
+		alert(textStatus);
+		alert(errorThrown);	
+		alert('エラー');
+	});
+}
+
 function reason_coming_sonota_manage(){
 	console.log('reason_coming_sonota_manage');
 	if(document.getElementById("reason_coming_cbx_sonota").checked==true){

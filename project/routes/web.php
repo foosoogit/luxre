@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminController;
 use App\Http\Requests\InpCustomerRequest;
+use App\Http\Controllers\OtherFunc;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,7 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 Route::middleware('auth:admin')->group(function () {
     Route::controller(AdminController::class)->name('customers.')->group(function() {
         //Route::get('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
+        Route::post('/customers/getCustomerInf', [OtherFunc::class,'get_customer_inf'],function(Request $request){})->name('getCustomerInf');
         Route::post('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
         Route::get('/customers/ShowInputNewCustomer', [AdminController::class,'ShowInputNewCustomer'])->name('ShowInpNewCustomer');
         Route::post('/customers/ShowInputCustomer', [AdminController::class,'ShowInputCustomer',function(Request $request){}])->name('ShowInpCustomer');

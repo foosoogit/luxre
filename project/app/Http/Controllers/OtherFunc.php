@@ -8,11 +8,26 @@ use DateTime;
 use App\Models\Contract;
 use Illuminate\Support\Facades\Log;
 use App\Consts\initConsts;
+use App\Models\User;
 
 class OtherFunc extends Controller
 {
+	public static function get_customer_inf(Request $request){
+		$TargetSerial=sprintf('%06d', $request->TargetSerial);
+		//Log::alert("TargetSerial=".$TargetSerial);
+		$UserInf=User::where('serial_user','=',$TargetSerial)->first();
+		if(empty($UserInf)){
+			$UserInf=array();
+			$UserInf=array('count'=>'0');
+			$UserInf=json_encode($UserInf);
+		}
+		//Log::alert("empty=".empty($UserInf));
+		//Log::info("UserInf=".$UserInf);
+		return $UserInf;
+	}
+
 	public static function make_html_birth_month_slct($targetMonth){
-		Log::alert("targetMonth=".$targetMonth);
+		//Log::alert("targetMonth=".$targetMonth);
 		$htm_month_slct='<select name="month" class="form-select">';
 		$htm_month_slct.='<option  value="" Selected>--選択してください。--</option>';
 		for($i=1;$i<=12;$i++){
@@ -48,7 +63,6 @@ class OtherFunc extends Controller
 		for($i = $start_year; $i<= $year_now; $i++){
 			$sct='';
 			if($i==$targetYear){
-				//Log::alert("i=".$i);
 				$sct='Selected';
 			}
 			$htm_year_slct.='<option  value="'.$i.'" '.$sct.'>'.$i.'</option>';
@@ -398,7 +412,7 @@ class OtherFunc extends Controller
 				//$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" type="checkbox" value="'.$reason.'" '.$cked.' />'.$reason.'</label>';
 			}else{
 				$htm_reason_coming_cbox.='<input class="form-check-input" type="checkbox" name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" value="その他" onchange="reason_coming_sonota_manage();"'.$cked.' />';
-				$htm_reason_coming_cbox.='<label class="form-check-label" for="reason_coming_cbx_sonota">その他</label></div>';
+				$htm_reason_coming_cbox.='<label class="form-check-label" for="reason_coming_cbx_sonota">その他</label>';
 				//$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" type="checkbox" value="その他" onchange="reason_coming_sonota_manage();" '.$cked.' />その他</label>';
 				if($cked=='checked'){
 					$sonotaArray=array();
@@ -410,8 +424,10 @@ class OtherFunc extends Controller
 			}
 			$reason_id++;
 		}
-		$htm_reason_coming_cbox.='<div>その他<input name="reason_coming_txt" id="reason_coming_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$sonotaReason.'" /></div>';
-		$htm_reason_coming_cbox.='<br>紹介者(顧客番号を入力してください。)<input name="syokaisya_txt" id="syokaisya_txt" type="text" value="'.$referee.'" placeholder="1001"/>';
+		$htm_reason_coming_cbox.='<input name="reason_coming_txt" id="reason_coming_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$sonotaReason.'" /></div>';
+		$htm_reason_coming_cbox.='<div class="row" style="py-3.5"><div class="col-auto">';
+		$htm_reason_coming_cbox.='●紹介者(顧客番号を入力してください。)</div><div class="col-auto"><input name="syokaisya_txt" id="syokaisya_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$referee.'" placeholder="1001" /></div>';
+		$htm_reason_coming_cbox.='<div class="col-auto"><button class="btn btn-success btn-sm" type="button" onclick="SerchRefereeInf();">紹介者検索</button></div></div>';
 		return $htm_reason_coming_cbox;
 	}
 
