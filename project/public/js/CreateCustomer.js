@@ -24,6 +24,9 @@ jQuery(document).ready(function($){
 	//console.log('test')
 	$("#input_customer_fm").validate({
 		rules : {
+			AdmissionDate: {
+				required: true
+			},
 			name_sei: {
 				required: true
 			},
@@ -45,23 +48,26 @@ jQuery(document).ready(function($){
 			}
 		},
 		messages: {
+			AdmissionDate: {
+				required: "「入会日」を入力してください。"
+			},
 			name_sei:{
-				required: "姓を入力してください。"
+				required: "「姓」を入力してください。"
 			},
 			name_mei:{
-				required: "名を入力してください。"
+				required: "「名」を入力してください。"
 			},
 			name_sei_kana:{
-				required: "せいを入力してください。"
+				required: "「せい」を入力してください。"
 			},
 			name_mei_kana:{
-				required: "めいを入力してください。"
+				required: "「めい」を入力してください。"
 			},
 			GenderRdo:{
-				required: "&nbsp;性別を選択してください。"
+				required: "&nbsp;「性別」を選択してください。"
 			},
 			phone: {
-		        required: "&nbsp;電話番号を入力してください。"
+		        required: "&nbsp;「電話番号」を入力してください。"
 			}
 	  	},
 		errorPlacement: function(error, element) {
@@ -71,6 +77,8 @@ jQuery(document).ready(function($){
 					error.appendTo($('#GenderRdo_for_error'));
 					//error.appendTo(element.parent());
 				}
+			}else if(element.attr("name")=="AdmissionDate"){
+				error.appendTo($('#AdmissionDate_for_error'));
 			}else if(element.attr("name")=="phone"){
 				error.appendTo($('#phone_for_error'));
 			}else if(element.attr("name")=="name_sei"){

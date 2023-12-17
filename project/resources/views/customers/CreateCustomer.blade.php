@@ -25,7 +25,7 @@ input,textarea{
 						<p>顧客番号<input type="text" name="serial_user" value="{{$target_user['serial_user']}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" readonly></p>	
 					@endif
 					<p><span class="text-danger">*</span><span class="font-semibold text-1xl text-slate-600">: 必須項目</span></p>
-					<p style="py-2.5">●<span class="text-danger">*</span>入会日<input name="AdmissionDate" id="AdmissionDate" type="date" value="{{optional($target_user)->admission_date}}" required autofocus/></p>
+					<p style="py-2.5">●<span class="text-danger">*</span>入会日<input name="AdmissionDate" id="AdmissionDate" type="date" value="{{optional($target_user)->admission_date}}" required autofocus/><span id="AdmissionDate_for_error" class="text-danger fw-bold"></span></p>
 					<p class="py-2.5">●氏名</p>
 					<div class="row" style="text-indent: 1em">
 						<div class="col-auto">
