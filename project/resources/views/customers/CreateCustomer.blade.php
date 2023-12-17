@@ -1,9 +1,10 @@
 @extends('layouts.appCustomer')
 @section('content')
-<link rel="stylesheet" type="text/css" href="../bootstrap-datepicker-1.6.4-dist/css/bootstrap-datepicker.min.css">
 <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
 <script type="text/javascript" src="{{ asset('/js/CreateCustomer.js') }}"></script>
-<script  type="text/javascript" src="{{ asset('/js/jquery-3.6.0.min.js') }}"></script>
+{{--<script  type="text/javascript" src="{{ asset('/js/jquery-3.6.0.min.js') }}"></script>--}}
 <style type="text/css">
 input,textarea{
 	border: 1px solid #aaa;
@@ -13,9 +14,8 @@ input,textarea{
     <div class="row justify-content-center">
         <div class="col-md-12 py-1.5">
                 <button class="btn btn-primary btn-sm" type="button" onclick="location.href='{{$GoBackPlace}}'">戻る</button>
-				{{-- <form action="/customers/insertCustomer" method="POST" class="h-adr">@csrf --}}
-				<form action="{{ route('customers.insertCustomer') }}" method="POST" class="h-adr">@csrf
-					
+				<form name='input_customer_fm' id="input_customer_fm" action="/customers/insertCustomer" method="POST" class="h-adr">@csrf
+				{{--<form action="{{ route('customers.insertCustomer') }}" method="POST" class="h-adr">@csrf--}}
                     <span class="p-country-name" style="display:none;">Japan</span>
 					@if (optional($target_user)->serial_user<>null)
 						<p><div class="mb-2 bg-secondary text-white">顧客データ修正</div></p>
@@ -24,27 +24,26 @@ input,textarea{
 						<p><div class="mb-2 bg-secondary text-white">新規顧客登録</div> </p>
 						<p>顧客番号<input type="text" name="serial_user" value="{{$target_user['serial_user']}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" readonly></p>	
 					@endif
-					
 					<p><span class="text-danger">*</span><span class="font-semibold text-1xl text-slate-600">: 必須項目</span></p>
 					<p style="py-2.5">●<span class="text-danger">*</span>入会日<input name="AdmissionDate" id="AdmissionDate" type="date" value="{{optional($target_user)->admission_date}}" required autofocus/></p>
 					<p class="py-2.5">●氏名</p>
 					<div class="row" style="text-indent: 1em">
 						<div class="col-auto">
-							<span class="text-danger">*</span>姓<input type="text" name="name_sei" id="name_sei" value="{{optional($target_user)->name_sei}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="1" required autofocus>
+							<span class="text-danger">*</span>姓<input type="text" name="name_sei" id="name_sei" value="{{old('name_sei',optional($target_user)->name_sei)}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="1"><span id="name_sei_for_error" class="text-danger fw-bold"></span>
 						</div>
 						<div class="col-auto">
 							<p style="text-indent:20px">
-							<span class="text-danger">*</span>名<input type="text" name="name_mei" id="name_mei" value="{{optional($target_user)->name_mei}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="2" required autofocus ></p>
+							<span class="text-danger">*</span>名<input type="text" name="name_mei" id="name_mei" value="{{old('name_mei',optional($target_user)->name_mei)}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="2" ><span id="name_mei_for_error" class="text-danger fw-bold"></span></p>
 						</div>
 					</div>
 					<div class="row" style="text-indent: 1em">
 						<div class="col-auto">
 							{{-- <p style="text-indent:20px"> --}}
-							<span class="text-danger">*</span>せい<input type="text" name="name_sei_kana"  id="name_sei_kana" value="{{ optional($target_user)->name_sei_kana  }}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="3" required autofocus >
+							<span class="text-danger">*</span>せい<input type="text" name="name_sei_kana" id="name_sei_kana" value="{{old('name_sei_kana', optional($target_user)->name_sei_kana)}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="3"><span id="name_sei_kana_for_error" class="text-danger fw-bold"></span>
 						</div>
 						<div class="col-auto">
 							{{-- <p style="text-indent:20px"> --}}
-							<span class="text-danger">*</span>めい<input type="text" name="name_mei_kana"id="name_mei_kana" value="{{ optional($target_user)->name_mei_kana }}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="4" required autofocus >
+							<span class="text-danger">*</span>めい<input type="text" name="name_mei_kana" id="name_mei_kana" value="{{old('name_mei_kana',optional($target_user)->name_mei_kana)}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="4"><span id="name_mei_kana_for_error" class="text-danger fw-bold"></span>
 						</div>
 					</div>
 					<p style="py-2.5">
@@ -62,7 +61,7 @@ input,textarea{
 							</div>
 							<div class="col-auto form-check">
 								<input name="GenderRdo" type="radio" id="GenderRdo_free" value="free" {{optional($GenderRdo)['free']}}/>
-								<label class="form-check-label" for="GenderRdo_free">フリー</label>
+								<label class="form-check-label" for="GenderRdo_free">フリー</label><span id="GenderRdo_for_error" class="text-danger fw-bold"></span>
 							</div>
 						</div>
 					</p>
@@ -119,7 +118,7 @@ input,textarea{
 					<p style=" py-2.5">●住所</p>
 					<div class="row" style="text-indent: 1em">
 						<div class="col-auto">
-							〒<input type="text" name="postal" class="p-postal-code bg-white-500 text-black rounded px-3 py-1" size="8" maxlength="8" value="{{optional($target_user)->postal}}" tabindex="8"></p>
+							〒<input type="text" name="postal" class="p-postal-code bg-white-500 text-black rounded px-3 py-1" size="8" maxlength="8" value="{{optional($target_user)->postal}}" placeholder="123-4567" tabindex="8" ></p>
 						</div>
 						<div class="col-auto">
 							<select class="p-region-id bg-white-500 text-black rounded px-3 py-1" name="region" tabindex="9">
@@ -182,10 +181,10 @@ input,textarea{
 					</p>
                     <p style="py-2.5">●メール</p>
 					<p>
-					<input type="text" name="email" value="{{optional($target_user)->email}}" class="bg-white-500 text-black rounded px-3 py-2 bg-white-500 text-black rounded px-3 py-1" tabindex="12" email></p>
-                    <p  style="py-2.5">●電話番号</p>
-					<p  style="py-2.5"><span class="text-danger">*</span>
-					<input type="text" name="phone" id="phone" value="{{ optional($target_user)->phone }}" class="bg-white-500 text-black rounded px-3 py-2 bg-white-500 text-black rounded px-3 py-1" tabindex="13"></p>
+					<input type="text" name="email" value="{{optional($target_user)->email}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="12"></p>
+                    <p style="py-2.5">●電話番号</p>
+					<p style="py-2.5"><span class="text-danger">*</span>
+					<input type="text" name="phone" id="phone" value="{{ optional($target_user)->phone }}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="13"><span id="phone_for_error" class="text-danger fw-bold"></span></p>
                     ●何を見て当サロンに来られましたか？<br>
 					{!!$html_reason_coming!!}
                     <p style="text-align: center"><button class="btn btn-primary btn-sm" type="submit" id="SubmitBtn" value="{{$btnDisp}}" onclick="return validate();">{{$btnDisp}}</button></p>

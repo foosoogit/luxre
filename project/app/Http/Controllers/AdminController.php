@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Http\Requests\InpCustomerRequest;
 
 class AdminController extends Controller
 {
@@ -21,8 +22,124 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
-	/*
-	public function ShowInputCustomer(Request $request){
+	//function insertCustomer(InpCustomerRequest $request){
+	function insertCustomer(Request $request){
+		Log::alert('insertCustomer');
+		if(isset($request->serial_user)){
+			session(['CustomerManage' => 'syusei']);
+			$targetSerial=$request->serial_user;
+			$redirectPlace='/customers/ShowCustomersList';
+			$btnDisp="　修　正　";
+		}else{
+			$max = DB::table('users')->max('serial_user');
+			$targetSerial=++$max;
+			$targetSerial=sprintf('%06d', $targetSerial);
+			if($targetSerial==1){$targetSerial="001001";}
+			$redirectPlace='/customers/ShowInputCustomer';
+			session(['CustomerManage' => 'new']);
+			$btnDisp="　登　録　";
+		}
+		$reason_coming="";
+		$user_inf=User::where('serial_user','=',$targetSerial)->first();
+		$referee_old="";
+		if(isset($user_inf->referee)){
+			$referee_old=trim($user_inf->referee);
+		}
+		
+		if($request->reason_coming_cbx<>""){
+			$reason_coming=implode(",",$request->reason_coming_cbx);
+			if($request->reason_coming_txt<>""){
+				$reason_coming.="(".$request->reason_coming_txt.")";
+			}
+		}
+ 		$targetData=[
+			'serial_user' => $targetSerial,
+			'admission_date' => $request->AdmissionDate,
+			'name_sei' => $request->name_sei,
+
+			'name_mei' => $request->name_mei,
+			'name_sei_kana' => $request->name_sei_kana,
+			'name_mei_kana' => $request->name_mei_kana,
+
+			'gender'=> $request->GenderRdo,
+			'birth_year' => $request->birt_year_slct,
+			'birth_month' => $request->birth_month_slct,
+
+			'birth_day' => $request->birth_day_slct,
+			'postal' => $request->postal,
+			'address_region' => $request->region,
+
+			'address_locality' => $request->locality,
+			'address_banti' => $request->address_banti_txt,
+			//'address_banti' => $request->address_banti_txt,
+
+			'email' => $request->email,
+			'phone' => $request->phone,
+			'reason_coming'=>$reason_coming,
+			
+			'referee'=>trim($request->syokaisya_txt)
+		];
+		User::upsert($targetData,['serial_user']);
+		$target_referee_array=array();$target_referee_array1=array();$target_referee_array2=array();$referee_old_array=array();$referee_new_array=array();
+		$referee_old_array=explode(",",$referee_old);
+		$referee_new_array=explode(",",$request->syokaisya_txt);
+		foreach($referee_old_array as $old_serial){
+			if(array_search($old_serial, $referee_new_array)==false and !empty($old_serial)){
+				$target_referee_array[]=$old_serial;
+			}
+		}
+		
+		foreach($referee_new_array as $new_serial){
+			if(array_search($new_serial, $referee_old_array)==false and !empty($new_serial)){
+				$target_referee_array[]=$new_serial;
+			}
+		}
+		
+		foreach($target_referee_array as $target_referee_serial){
+			$target_referee=sprintf('%06d', $target_referee_serial);
+			$total_cnt=DB::table('users')->where('referee','like','%'.$target_referee_serial.'%')->count();
+			DB::table('users')->where('serial_user','=', $target_referee)->update(['referee_num' => $total_cnt]);
+		}
+		$referee_target_serial_array=array();
+		//dd(User::select('referee_target_serial')->where('serial_user','=', sprintf('%06d', trim($request->syokaisya_txt)))->toSql(), User::select('referee_target_serial')->where('serial_user','=', sprintf('%06d', trim($request->syokaisya_txt)))->getBindings());
+		//$sql=User::select('referee_target_serial')->where('serial_user','=', sprintf('%06d', trim($request->syokaisya_txt)))->first();
+		//$user_inf
+		$sql_referee_inf=User::where('serial_user','=', sprintf('%06d', trim($request->syokaisya_txt)))->first();
+		
+		//$referee_serial=$sql_referee_inf->referee_target_serial;
+		
+		$referee_target_serial_old="";
+		if(isset($sql_referee_inf->referee_target_serial)){
+			$referee_target_serial_old=$sql_referee_inf->referee_target_serial;
+		}
+		
+		$referee_target_serial_array[]=$referee_target_serial_old;
+		$referee_target_serial_array[]=$targetSerial;
+		$referee_target_serial=implode( ',', $referee_target_serial_array);
+		$userBuilder=User::where('serial_user','=', sprintf('%06d',trim($request->syokaisya_txt)))->update(['referee_target_serial' => $referee_target_serial]);
+		setcookie('TorokuMessageFlg','true',time()+60);
+		$header="";$slot="";
+		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
+		$html_birth_year_slct=trim($html_birth_year_slct);
+		$GoBackPlace=session('GoBackPlace');
+		$saveFlg="true,".session('CustomerManage');
+		$target_user="";$selectedManth=null;$selectedDay=null;$selectedRegion=null;
+		if(session('fromMenu')=='MenuCustomerManagement'){
+			$GoToBackPlace="../ShowMenuCustomerManagement";
+		}else if(session('fromMenu')=='CustomersList'){
+			$GoToBackPlace="/customers/ShowCustomersList_livewire";
+		}
+		
+		if(session('CustomerManage')=='syusei'){
+			return redirect("/customers/ShowCustomersList_livewire");
+		}else{
+			$userInf=User::where('serial_user','=',$targetSerial)->first();
+			$msg="氏名: ".$userInf->name_sei." ".$userInf->name_mei."さんのデータを新規登録しました。";
+    		return view("layouts.DialogMsg", compact('userInf','msg','targetSerial','header',"slot","GoToBackPlace"));
+   		}
+	}
+
+	public function ShowInputNewCustomer(Request $request){
 		session(['fromPage' => 'InputCustomer']);
 		session(['CustomerManage' => 'new']);
 		//$header="";$slot="";
@@ -38,23 +155,35 @@ class AdminController extends Controller
 		$saveFlg="false,".session('CustomerManage');$btnDisp="　登　録　";
 		$html_reason_coming="";
 		$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
-		return view('customers.CreateCustomer',compact('header',"slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
+		$target_user=array();
+		$maxUserSerial =DB::table('users')->max('serial_user');
+		$TargetUserSerial=++$maxUserSerial;
+		$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
+		return view('customers.CreateCustomer',compact('html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
-	*/
+
 	public function ShowInputCustomer(Request $request){
+		/*
 		if(isset($request->CreateCustomer)){
 			session(['fromPage' => 'InputCustomer']);
 			session(['CustomerManage' => 'new']);
+		}else{
+			session(['fromPage' => 'SyuseiCustomer']);
+			session(['CustomerManage' => 'syusei']);
+		}
+		Log::alert('CustomerManage='.session('CustomerManage'));
+		//public function ShowInputCustomer(InpCustomerRequest $request){
+		if(session('CustomerManage')=='new'){
+			//session(['fromPage' => 'InputCustomer']);
+			//session(['CustomerManage' => 'new']);
 			//$header="";$slot="";
 			$target_user=array();
 			$maxUserSerial =DB::table('users')->max('serial_user');
-			if($maxUserSerial==1){
-				$target_user['serial_user']=sprintf('%06d', $maxUserSerial);
-			}else{
-				$TargetUserSerial=++$maxUserSerial;
-				$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
-			}
-			//Log::alert('maxUserSerial='.$maxUserSerial);
+			Log::alert('empty($maxUserSerial)='.empty($maxUserSerial));
+			//if($maxUserSerial==1){
+
+			$TargetUserSerial=++$maxUserSerial;
+			$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
 			$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
 			$html_birth_year_slct=trim($html_birth_year_slct);
 			$GoBackPlace="../ShowMenuCustomerManagement";
@@ -67,8 +196,9 @@ class AdminController extends Controller
 			$saveFlg="false,".session('CustomerManage');$btnDisp="　登　録　";
 			$html_reason_coming="";
 			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
-			Log::alert('serial_user='.$target_user['serial_user']);
+			
 		}else{
+			*/
 			session(['fromPage' => 'SyuseiCustomer']);
 			session(['CustomerManage' => 'syusei']);
 			$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
@@ -95,8 +225,8 @@ class AdminController extends Controller
 				$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
 				$GoBackPlace="../ShowMenuCustomerManagement";
 			}
-			Log::alert('serial_user='.$target_user->serial_user);
-		}
+			//Log::alert('serial_user='.$target_user->serial_user);
+		//}
 		//return view('customers.CreateCustomer',compact("header","slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 		return view('customers.CreateCustomer',compact('html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
@@ -105,8 +235,9 @@ class AdminController extends Controller
 		$deleStaff=Staff::where('serial_staff','=',$serial_staff)->delete();
 		return view("admin.ListStaffs");
 	}
-
+	
 	public function SaveStaff(Request $request){
+	//public function SaveStaff(InpCustomerRequest $request){
 		$targetData=[
 			'serial_staff' => session('targetStaffSerial'),
 			'email' => $request->mail,
@@ -161,7 +292,6 @@ class AdminController extends Controller
 		session(['targetStaffSerial' => $TargetStaffSerial]);
 		return view('admin.inp_Staff',compact('TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","html_birth_select"));
 	}
-
 
 	public function ShowSyuseiContract($ContractSerial,$UserSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
@@ -636,121 +766,8 @@ class AdminController extends Controller
 			return view('customers.CreateCampaign',compact("header","slot",'TargetCampaignSerial','CampaignInf',"GoBackPlace","btnDisp","saveFlg","checked_completed","checked_contract","checked_person","checked_total","referrals_num_slct_array"));
 		}
 	}
-
-	function insertCustomer(Request $request){
-		if(isset($request->serial_user)){
-			session(['CustomerManage' => 'syusei']);
-			$targetSerial=$request->serial_user;
-			$redirectPlace='/customers/ShowCustomersList';
-			$btnDisp="　修　正　";
-		}else{
-			$max = DB::table('users')->max('serial_user');
-			$targetSerial=++$max;
-			$targetSerial=sprintf('%06d', $targetSerial);
-			if($targetSerial==1){$targetSerial="001001";}
-			$redirectPlace='/customers/ShowInputCustomer';
-			session(['CustomerManage' => 'new']);
-			$btnDisp="　登　録　";
-		}
-		$reason_coming="";
-		$user_inf=User::where('serial_user','=',$targetSerial)->first();
-		$referee_old="";
-		if(isset($user_inf->referee)){
-			$referee_old=trim($user_inf->referee);
-		}
-		
-		if($request->reason_coming_cbx<>""){
-			$reason_coming=implode(",",$request->reason_coming_cbx);
-			if($request->reason_coming_txt<>""){
-				$reason_coming.="(".$request->reason_coming_txt.")";
-			}
-		}
- 		$targetData=[
-			'serial_user' => $targetSerial,
-			'admission_date' => $request->AdmissionDate,
-			'name_sei' => $request->name_sei,
-
-			'name_mei' => $request->name_mei,
-			'name_sei_kana' => $request->name_sei_kana,
-			'name_mei_kana' => $request->name_mei_kana,
-
-			'gender'=> $request->GenderRdo,
-			'birth_year' => $request->birt_year_slct,
-			'birth_month' => $request->birth_month_slct,
-
-			'birth_day' => $request->birth_day_slct,
-			'postal' => $request->postal,
-			'address_region' => $request->region,
-
-			'address_locality' => $request->locality,
-			'address_banti' => $request->address_banti_txt,
-			//'address_banti' => $request->address_banti_txt,
-
-			'email' => $request->email,
-			'phone' => $request->phone,
-			'reason_coming'=>$reason_coming,
-			
-			'referee'=>trim($request->syokaisya_txt)
-		];
-		User::upsert($targetData,['serial_user']);
-		$target_referee_array=array();$target_referee_array1=array();$target_referee_array2=array();$referee_old_array=array();$referee_new_array=array();
-		$referee_old_array=explode(",",$referee_old);
-		$referee_new_array=explode(",",$request->syokaisya_txt);
-		foreach($referee_old_array as $old_serial){
-			if(array_search($old_serial, $referee_new_array)==false and !empty($old_serial)){
-				$target_referee_array[]=$old_serial;
-			}
-		}
-		
-		foreach($referee_new_array as $new_serial){
-			if(array_search($new_serial, $referee_old_array)==false and !empty($new_serial)){
-				$target_referee_array[]=$new_serial;
-			}
-		}
-		
-		foreach($target_referee_array as $target_referee_serial){
-			$target_referee=sprintf('%06d', $target_referee_serial);
-			$total_cnt=DB::table('users')->where('referee','like','%'.$target_referee_serial.'%')->count();
-			DB::table('users')->where('serial_user','=', $target_referee)->update(['referee_num' => $total_cnt]);
-		}
-		$referee_target_serial_array=array();
-		//dd(User::select('referee_target_serial')->where('serial_user','=', sprintf('%06d', trim($request->syokaisya_txt)))->toSql(), User::select('referee_target_serial')->where('serial_user','=', sprintf('%06d', trim($request->syokaisya_txt)))->getBindings());
-		//$sql=User::select('referee_target_serial')->where('serial_user','=', sprintf('%06d', trim($request->syokaisya_txt)))->first();
-		//$user_inf
-		$sql_referee_inf=User::where('serial_user','=', sprintf('%06d', trim($request->syokaisya_txt)))->first();
-		
-		//$referee_serial=$sql_referee_inf->referee_target_serial;
-		
-		$referee_target_serial_old="";
-		if(isset($sql_referee_inf->referee_target_serial)){
-			$referee_target_serial_old=$sql_referee_inf->referee_target_serial;
-		}
-		
-		$referee_target_serial_array[]=$referee_target_serial_old;
-		$referee_target_serial_array[]=$targetSerial;
-		$referee_target_serial=implode( ',', $referee_target_serial_array);
-		$userBuilder=User::where('serial_user','=', sprintf('%06d',trim($request->syokaisya_txt)))->update(['referee_target_serial' => $referee_target_serial]);
-		setcookie('TorokuMessageFlg','true',time()+60);
-		$header="";$slot="";
-		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
-		$html_birth_year_slct=trim($html_birth_year_slct);
-		$GoBackPlace=session('GoBackPlace');
-		$saveFlg="true,".session('CustomerManage');
-		$target_user="";$selectedManth=null;$selectedDay=null;$selectedRegion=null;
-		if(session('fromMenu')=='MenuCustomerManagement'){
-			$GoToBackPlace="../ShowMenuCustomerManagement";
-		}else if(session('fromMenu')=='CustomersList'){
-			$GoToBackPlace="/customers/ShowCustomersList_livewire";
-		}
-		
-		if(session('CustomerManage')=='syusei'){
-			return redirect("/customers/ShowCustomersList_livewire");
-		}else{
-			$userInf=User::where('serial_user','=',$targetSerial)->first();
-			$msg="氏名: ".$userInf->name_sei." ".$userInf->name_mei."さんのデータを新規登録しました。";
-    		return view("layouts.DialogMsg", compact('userInf','msg','targetSerial','header',"slot","GoToBackPlace"));
-   		}
-	}
+	
+	//function insertCustomer(Request $request){
 	
 	function menu_teacher(Request $request) {
 		$teacher_inf=Auth::guard('admin')->user();

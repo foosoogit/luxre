@@ -707,7 +707,7 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_html_year_slct($targetYear){
-		Log::alert("targetYear=".$targetYear);
+		//Log::alert("targetYear=".$targetYear);
 		$htm_year_slct='';
 		for($i = 2015; $i<= $targetYear; $i++){
 			$sct='';

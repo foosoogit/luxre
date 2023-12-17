@@ -45,7 +45,7 @@
 								</form></p>
 							</li>
 							<li>
-								<form method="post" action="{{ route('customers.ShowInpCustomer') }}">@csrf
+								<form method="GET" action="{{ route('customers.ShowInpNewCustomer') }}">@csrf
 									<p><button class="btn btn-primary btn-sm" type="submit" value="new" name="CreateCustomer">顧客新規登録</button></p>
 								</form>
 							</li>
