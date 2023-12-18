@@ -1444,67 +1444,6 @@ class AdminController extends Controller
 		return view('customers.CreateContracts',compact("users","header","slot"));
 	}
 
-	public function ShowInpKeiyaku($serial_user){
-		session(['fromPage' => 'InpKeiyaku']);
-		$header="";$slot="";$HowToPay=array();
-		//$KeiyakuNumSlct=OtherFunc::make_html_keiyaku_num_slct("");
-		$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();
-		for($i=0;$i<=4;$i++){
-			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
-			$KeiyakuTankaArray[]="";
-			$KeiyakuPriceArray[]="";
-		}
-
-		$targetUser=User::where('serial_user','=',$serial_user)->first();
-		$serial_max=Keiyaku::where('serial_user','=',$serial_user)->max('serial_keiyaku');
-		$newKeiyakuSerial=++$serial_max;
-
-		if($newKeiyakuSerial==1){
-			$newKeiyakuSerial='K_'.str_replace('U_', '',$serial_user).'-0001';
-		};
-		$thisYear=date('Y');
-		$thisMonth=date('m');
-		$thisDay=date('d');
-		$tday=date('Y-m-d');
-		$endDay=date("Y-m-d",strtotime("-1 day,+1 year"));
-		$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct("",20,2);
-		$HowToPay['cash']="";
-		if(isset($request->serial_user)){
-			$targetSerial=$request->serial_user;
-			//$redirectPlace='/customers/ShowCustomersList';
-			$redirectPlace='/customers/ShowCustomersList_livewire';
-		}else{
-			$max = User::max('serial_user');
-			$targetSerial=++$max;
-			if($targetSerial==1){$targetSerial="001001";}
-			$redirectPlace='/customers/ShowInputCustomer';
-		}
-		$KeiyakuNaiyouSelectArray=array();
-		for($i=0;$i<=5;$i++){
-			$KeiyakuNaiyouSelectArray[]=OtherFunc::make_htm_get_treatment_slct('');
-		}
-		$TreatmentsTimes_slct=OtherFunc::make_html_TreatmentsTimes_slct("");
-		//$targetContract="";
-		$targetContract=array();
-		$KeiyakuNaiyouArray=array();
-		$CardCompanySelect=OtherFunc::make_html_card_company_slct("");
-		$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct("",20,1);
-		$html_staff_slct=OtherFunc::make_html_staff_slct("");
-		return view('customers.CreateContracts',compact("html_staff_slct","targetUser","header","slot","tday","endDay","newKeiyakuSerial","targetContract","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","CardCompanySelect","HowManyPay",'TreatmentsTimes_slct','KeiyakuNaiyouSelectArray'));
-	}
-	
-	public function deleteCustomer($serial_user){
-		$header="";$slot="";
-		$deleUser=User::where('serial_user','=',$serial_user)->delete();
-		$deleKeiyaku=Keiyaku::where('serial_user','=',$serial_user)->delete();
-		$deleContractDetail=ContractDetail::where('serial_user','=',$serial_user)->delete();
-		$deleContractDetail=PaymentHistory::where('serial_user','=',$serial_user)->delete();
-		$deleVisitHistory=VisitHistory::where('serial_user','=',$serial_user)->delete();
-		//return redirect('/customers/ShowCustomersList');
-		return redirect('/customers/ShowCustomersList_livewire');
-		//return view('customers.InfoCustomer',compact("user","header","slot"));
-	}
-
 	public function ShowCustomerInfo($serial_user){
 		session(['fromPage' => 'CustomerInfo']);
 		$header="";$slot="";
