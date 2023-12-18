@@ -9,6 +9,7 @@ use App\Models\Contract;
 use Illuminate\Support\Facades\Log;
 use App\Consts\initConsts;
 use App\Models\User;
+session_start();
 
 class OtherFunc extends Controller
 {
@@ -22,8 +23,21 @@ class OtherFunc extends Controller
 			$UserInf=json_encode($UserInf);
 		}
 		//Log::alert("empty=".empty($UserInf));
-		//Log::info("UserInf=".$UserInf);
+
 		return $UserInf;
+	}
+
+	public static function serch_http_referer($target_page_array){
+		//Log::info($_SESSION['access_history']);
+		foreach ($_SESSION['access_history'] as $url) {
+			foreach($target_page_array as $tgt){
+				if(str_contains($url,$tgt)){
+					$referer=$url;
+					break;
+				}
+			}
+		}
+		return $url;
 	}
 
 	public static function make_html_birth_month_slct($targetMonth){

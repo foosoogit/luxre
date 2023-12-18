@@ -129,7 +129,7 @@ jQuery(document).ready(function($){
 			}else if(element.attr("name")=="name_mei_kana"){
 				error.appendTo($('#name_mei_kana_for_error'));
 			}else if(element.attr("name")=="email"){
-				error.appendTo($('#email_kana_for_error'));
+				error.appendTo($('#email_for_error'));
 			}else{
 				error.insertAfter(element);
 			}

@@ -22,6 +22,56 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function ShowInpKeiyaku($serial_user){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		session(['fromPage' => 'InpKeiyaku']);
+		$header="";$slot="";$HowToPay=array();
+		//$KeiyakuNumSlct=OtherFunc::make_html_keiyaku_num_slct("");
+		$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();
+		for($i=0;$i<=4;$i++){
+			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
+			$KeiyakuTankaArray[]="";
+			$KeiyakuPriceArray[]="";
+		}
+
+		$targetUser=User::where('serial_user','=',$serial_user)->first();
+		$serial_max=Keiyaku::where('serial_user','=',$serial_user)->max('serial_keiyaku');
+		$newKeiyakuSerial=++$serial_max;
+
+		if($newKeiyakuSerial==1){
+			$newKeiyakuSerial='K_'.str_replace('U_', '',$serial_user).'-0001';
+		};
+		$thisYear=date('Y');
+		$thisMonth=date('m');
+		$thisDay=date('d');
+		$tday=date('Y-m-d');
+		$endDay=date("Y-m-d",strtotime("-1 day,+1 year"));
+		$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct("",20,2);
+		$HowToPay['cash']="";
+		if(isset($request->serial_user)){
+			$targetSerial=$request->serial_user;
+			//$redirectPlace='/customers/ShowCustomersList';
+			$redirectPlace='/customers/ShowCustomersList_livewire';
+		}else{
+			$max = User::max('serial_user');
+			$targetSerial=++$max;
+			if($targetSerial==1){$targetSerial="001001";}
+			$redirectPlace='/customers/ShowInputCustomer';
+		}
+		$KeiyakuNaiyouSelectArray=array();
+		for($i=0;$i<=5;$i++){
+			$KeiyakuNaiyouSelectArray[]=OtherFunc::make_htm_get_treatment_slct('');
+		}
+		$TreatmentsTimes_slct=OtherFunc::make_html_TreatmentsTimes_slct("");
+		//$targetContract="";
+		$targetContract=array();
+		$KeiyakuNaiyouArray=array();
+		$CardCompanySelect=OtherFunc::make_html_card_company_slct("");
+		$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct("",20,1);
+		$html_staff_slct=OtherFunc::make_html_staff_slct("");
+		return view('customers.CreateContracts',compact("html_staff_slct","targetUser","header","slot","tday","endDay","newKeiyakuSerial","targetContract","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","CardCompanySelect","HowManyPay",'TreatmentsTimes_slct','KeiyakuNaiyouSelectArray'));
+	}
+
 	function insertCustomer(Request $request){
 		$targetSerial=$request->serial_user;
 		if(session('CustomerManage')=="new"){
@@ -33,18 +83,7 @@ class AdminController extends Controller
 			$redirectPlace='/customers/ShowCustomersList';
 			$btnDisp="　修　正　";
 		}
-		
-		/*
-		if(isset($request->serial_user)){
 
-		}else{
-			$max = DB::table('users')->max('serial_user');
-			$targetSerial=++$max;
-			$targetSerial=sprintf('%06d', $targetSerial);
-			if($targetSerial==1){$targetSerial="001001";}
-			
-		}
-		*/
 		$reason_coming="";
 		$user_inf=User::where('serial_user','=',$targetSerial)->first();
 		$referee_old="";
@@ -77,12 +116,10 @@ class AdminController extends Controller
 
 			'address_locality' => $request->locality,
 			'address_banti' => $request->address_banti_txt,
-			//'address_banti' => $request->address_banti_txt,
-
 			'email' => $request->email,
+
 			'phone' => $request->phone,
 			'reason_coming'=>$reason_coming,
-			
 			'referee'=>trim($request->syokaisya_txt)
 		];
 		User::upsert($targetData,['serial_user']);
@@ -124,12 +161,15 @@ class AdminController extends Controller
 		$GoBackPlace=session('GoBackPlace');
 		$saveFlg="true,".session('CustomerManage');
 		$target_user="";$selectedManth=null;$selectedDay=null;$selectedRegion=null;
+		$target_page_array=array("top","Customer");
+		$GoToBackPlace=OtherFunc::serch_http_referer($target_page_array);
+		/*
 		if(session('fromMenu')=='MenuCustomerManagement'){
 			$GoToBackPlace="../ShowMenuCustomerManagement";
 		}else if(session('fromMenu')=='CustomersList'){
 			$GoToBackPlace="/customers/ShowCustomersList_livewire";
 		}
-		
+		*/
 		if(session('CustomerManage')=='syusei'){
 			return redirect("/customers/ShowCustomersList_livewire");
 		}else{
@@ -772,8 +812,6 @@ class AdminController extends Controller
 			return view('customers.CreateCampaign',compact("header","slot",'TargetCampaignSerial','CampaignInf',"GoBackPlace","btnDisp","saveFlg","checked_completed","checked_contract","checked_person","checked_total","referrals_num_slct_array"));
 		}
 	}
-	
-	//function insertCustomer(Request $request){
 	
 	function menu_teacher(Request $request) {
 		$teacher_inf=Auth::guard('admin')->user();
