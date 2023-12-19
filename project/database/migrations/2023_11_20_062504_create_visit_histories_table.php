@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('serial_user',20)->comment('serial_user');
             $table->string('serial_Teacher',20)->nullable()->comment('ID Teacher');
             $table->string('date_visit',20)->nullable()->comment('来店日');
+            $table->text('treatment_dtails')->nullable()->comment('施術内容');
             $table->text('remarks')->nullable()->comment('備考');
         });
     }

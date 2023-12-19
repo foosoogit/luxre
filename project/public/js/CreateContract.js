@@ -39,43 +39,61 @@ function reason_coming_sonota_manage(){
 		document.getElementById("reason_coming_txt").value="";
 	}
 }
-/*
+
 jQuery(document).ready(function($){
-	$("#input_customer_fm").validate({
+	console.log("test");
+	$("#ContractFm").validate({
 		rules : {
-			AdmissionDate: {
+			ContractsDate: {
 				required: true
 			},
-			name_sei: {
+			ContractName: {
 				required: true
 			},
-			name_mei: {
+			staff_slct: {
 				required: true
 			},
-			name_sei_kana: {
+			ContractsDateStart: {
 				required: true
 			},
-			name_mei_kana: {
+			/*,
+			contract_type: {
 				required: true
 			},
-			GenderRdo: {
-				required: true
+			inpMonthlyAmount: {
+				required: "#contract_type_subscription:checked"
 			},
-			email: {
-				email: true
+			inpTotalAmount: {
+				required: "#contract_type_cyclic:checked"
 			},
-			phone: {
-				required: true,
-				phone_vdt: true
+
+			TreatmentsTimes_slct: {
+				required: "#contract_type_cyclic:checked"
+			},
+			"ContractNaiyoSlct[0]":{
+				required: "#contract_type_cyclic:checked"
+			},
+			"KeiyakuNumSlct[0]":{
+				required: "#contract_type_cyclic:checked"
+			},
+			HowPayRdio:{
+				required: "#contract_type_cyclic:checked"
 			}
+			*/
 		},
 		messages: {
-			AdmissionDate: {
-				required: "「入会日」を入力してください。"
+			ContractsDate: {
+				required: "「契約締結日」を入力してください。"
 			},
-			name_sei:{
-				required: "「姓」を入力してください。"
+			ContractName: {
+				required: "「契約名」を入力してください。"
 			},
+			staff_slct: {
+				required: "「担当者」を選択してください。"
+			},
+			ContractsDateStart:{
+				required: "「役務契約開始期間」を入力してください。"
+			}/*,
 			name_mei:{
 				required: "「名」を入力してください。"
 			},
@@ -94,6 +112,7 @@ jQuery(document).ready(function($){
 			phone: {
 		        required: "&nbsp;「電話番号」を入力してください。"
 			}
+			*/
 	  	},
 		errorPlacement: function(error, element) {
 			if (element.is(':radio, :checkbox')) {
@@ -102,14 +121,14 @@ jQuery(document).ready(function($){
 					error.appendTo($('#GenderRdo_for_error'));
 					//error.appendTo(element.parent());
 				}
-			}else if(element.attr("name")=="AdmissionDate"){
-				error.appendTo($('#AdmissionDate_for_error'));
-			}else if(element.attr("name")=="phone"){
-				error.appendTo($('#phone_for_error'));
-			}else if(element.attr("name")=="name_sei"){
-				error.appendTo($('#name_sei_for_error'));
-			}else if(element.attr("name")=="name_mei"){
-				error.appendTo($('#name_mei_for_error'));
+			}else if(element.attr("name")=="ContractsDate"){
+				error.appendTo($('#ContractsDate_for_error'));
+			}else if(element.attr("name")=="ContractName"){
+				error.appendTo($('#ContractName_for_error'));
+			}else if(element.attr("name")=="staff_slct"){
+				error.appendTo($('#staff_slct_for_error'));
+			}else if(element.attr("name")=="ContractsDateStart"){
+				error.appendTo($('#ContractsDateStart_for_error'));
 			}else if(element.attr("name")=="name_sei_kana"){
 				error.appendTo($('#name_sei_kana_for_error'));
 			}else if(element.attr("name")=="name_mei_kana"){
@@ -127,7 +146,6 @@ jQuery(document).ready(function($){
  	},  $.validator.format("正しい電話番号を入力してください。<br>"));
 
 });
-*/
 
 function getTodayForTypeDate() {
     var today = new Date();

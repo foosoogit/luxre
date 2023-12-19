@@ -25,7 +25,7 @@ return new class extends Migration
 			$table->string('keiyaku_kikan_start',20)->comment('契約開始日');
 			
 			$table->string('keiyaku_kikan_end',20)->nullable()->comment('契約終了日');
-			$table->string('keiyaku_naiyo')->nullable()->comment('契約内容');
+			$table->string('keiyaku_type',20)->comment('契約形態(サブスク/期間・内容設定)');
 			$table->string('keiyaku_name')->nullable()->comment('契約名');
 
 			$table->string('keiyaku_bi',20)->comment('契約日');

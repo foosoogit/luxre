@@ -90,7 +90,7 @@ class OtherFunc extends Controller
 	public static function make_html_staff_slct($targetStaffSerial){
 		$htm_staff_slct="";
 		$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm">';
-		$htm_staff_slct.='<option value=0>-- 選択してください --</option>';
+		$htm_staff_slct.='<option value="">-- 選択してください --</option>';
 		//$staff_array=Staff::all();
 		$staff_array=DB::table('staff')->get();
 		foreach($staff_array as $staff) {

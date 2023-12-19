@@ -1,6 +1,7 @@
 @extends('layouts.appCustomer')
 @section('content')
-<script type="text/javascript" src="{{ asset('/js/CreateContract.js?20230106') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+<script type="text/javascript" src="{{ asset('/js/CreateContract.js?202301125') }}"></script>
 <style type="text/css">
 .auto-style1 {margin-left: 40px;}
 table td {border: 1px solid #aaa;}
@@ -35,7 +36,7 @@ input,textarea{border: 1px solid #aaa;}
 						</div>
 						<a href="/workers/MakeContractPDF/{{optional($targetContract)->serial_keiyaku}}" class="btn bg-blue-500 text-white rounded px-3 py-2">契約書ダウンロード・印刷</a>
 					</div>
-					<form id="ContractFm" action="{{route('customers.insertContract')}}" method="POST" >@csrf
+					<form id="ContractFm" name="ContractFm" action="{{route('customers.insertContract')}}" method="POST" >@csrf
 						<p><div class="mark">契約の登録</div></p>
 						<div class="container-fluid">
 							<div class="row border-bottom border-primary" style="padding-bottom:10px;">
@@ -52,9 +53,9 @@ input,textarea{border: 1px solid #aaa;}
 								@if(!(optional($targetContract)->cancel===null))解約済み@endif
 							</div>
 							<div class="py-2"><span class="auto-style2">*</span><span class="font-semibold text-1xl text-slate-600">:必須項目</span></div>
-							<div class="py-2">●<span class="auto-style2">*</span>契約締結日：<input name="ContractsDate" id="ContractsDate" type="date" value="{{optional($targetContract)->keiyaku_bi}}"/></div>
-							<div class="py-2">●<span class="auto-style2">*</span>契約名：<input name="ContractName" id="ContractName" type="text" class="form-control col-5" value="{{ optional($targetContract)->keiyaku_name }}"/></div>
-							<div class="py-3">●<span class="auto-style2">*</span>担当者：{!!$html_staff_slct!!}</div>
+							<div class="py-2">●<span class="auto-style2">*</span>契約締結日：<input name="ContractsDate" id="ContractsDate" type="date" value="{{optional($targetContract)->keiyaku_bi}}"/><span id="ContractsDate_for_error" class="text-danger fw-bold"></span></div>
+							<div class="py-2">●<span class="auto-style2">*</span>契約名：<input name="ContractName" id="ContractName" type="text" class="form-control col-5" value="{{ optional($targetContract)->keiyaku_name }}"/><span id="ContractName_for_error" class="text-danger fw-bold"></span></div>
+							<div class="py-3">●<span class="auto-style2">*</span>担当者：{!!$html_staff_slct!!}<span id="staff_slct_for_error" class="text-danger fw-bold"></span></div>
 							<div>●<span class="auto-style2">*</span>契約形態</div>
 							<div class="form-check" style="text-indent: 1em">
 								<input class="form-check-input" type="radio" name="contract_type" id="contract_type_subscription" value="subscription" onclick="contract_type_manage();">
@@ -73,7 +74,7 @@ input,textarea{border: 1px solid #aaa;}
 								</div>
 							</div>
 							<div class="py-2">
-								●役務契約期間：<span class="auto-style2">*</span><input name="ContractsDateStart" id="ContractsDateStart" type="date"  value="{{optional($targetContract)->keiyaku_kikan_start}}"/> ～ <input name="ContractsDateEnd" id="ContractsDateEnd" type="date" class="cyclic" value="{{optional($targetContract)->keiyaku_kikan_end}}"/>
+								●役務契約期間：<span class="auto-style2">*</span><input name="ContractsDateStart" id="ContractsDateStart" type="date"  value="{{optional($targetContract)->keiyaku_kikan_start}}"/><span id="ContractsDateStart_for_error" class="text-danger fw-bold"> ～ <input name="ContractsDateEnd" id="ContractsDateEnd" type="date" class="cyclic" value="{{optional($targetContract)->keiyaku_kikan_end}}"/>
 							</div>
 							<p class="cyclic">●<span class="auto-style2">*</span>施術回数 {!!$TreatmentsTimes_slct!!}</p>
 						</div>

@@ -31,6 +31,12 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
     Route::controller(AdminController::class)->name('customers.')->group(function() {
+        Route::get('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
+	    Route::post('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
+
+        Route::post('/customers/recordVisitPaymentHistory/', [AdminController::class,'recordVisitPaymentHistory',function(Request $request){}])->name("recordVisitPaymentHistory");
+        Route::get('/customers/ShowInpRecordVisitPayment/{SerialKeiyaku}/{SerialUser}', [AdminController::class,'ShowInpRecordVisitPayment',function($SerialKeiyaku,$SerialUser){}]);
+	    Route::post('/customers/ShowInpRecordVisitPayment', [AdminController::class,'ShowInpRecordVisitPayment']);
         Route::get('/customers/insertContract', [AdminController::class,'insertContract'])->name('insertContract');
         Route::post('/customers/insertContract', [AdminController::class,'insertContract'])->name('insertContract');
         Route::get('/customers/ShowInpContract/{serial_user}', [AdminController::class,'ShowInpKeiyaku'],function($serial_user){})->name('ShowInpKeiyaku');
