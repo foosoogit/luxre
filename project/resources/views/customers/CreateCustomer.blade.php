@@ -3,7 +3,7 @@
 <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-<script type="text/javascript" src="{{ asset('/js/CreateCustomer.js') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/CreateCustomer.js?20231220') }}"></script>
 {{--<script  type="text/javascript" src="{{ asset('/js/jquery-3.6.0.min.js') }}"></script>--}}
 <style type="text/css">
 input,textarea{
