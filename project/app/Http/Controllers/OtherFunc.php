@@ -9,6 +9,8 @@ use App\Models\Contract;
 use Illuminate\Support\Facades\Log;
 use App\Consts\initConsts;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use App\Models\TreatmentContent;
 session_start();
 
 class OtherFunc extends Controller
@@ -90,7 +92,7 @@ class OtherFunc extends Controller
 		$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm">';
 		$htm_staff_slct.='<option value=0>-- 選択してください --</option>';
 		//$staff_array=Staff::all();
-		$staff_array=DB::table('Staff')->get();
+		$staff_array=DB::table('staff')->get();
 		foreach($staff_array as $staff) {
 			$sct='';
 			if($staff->serial_staff==$targetStaffSerial){$sct='Selected';}
@@ -310,7 +312,7 @@ class OtherFunc extends Controller
 			"ワ行" => "[ワ-ンわ-ん]",
 			"その他" => ".*"
 		);
-		$treatmentInfArray=TreatmentContents::orderBy('name_treatment_contents_kana')->get();
+		$treatmentInfArray=TreatmentContent::orderBy('name_treatment_contents_kana')->get();
 		$htm_TreatmentsName_slct='<option value=0>-- 選択してください --</option>';
 		$tgtGrp="";
 		//$html_customer_list_slct.='<optgroup label="'.$tgtGrp.'>';
@@ -400,7 +402,7 @@ class OtherFunc extends Controller
 
 	public static function make_html_TreatmentsTimes_slct($targetTimes){
 		$htm_TreatmentsTimes_slct='';
-		$htm_TreatmentsTimes_slct='<select name="TreatmentsTimes_slct" id="TreatmentsTimes_slct">';
+		$htm_TreatmentsTimes_slct='<select name="TreatmentsTimes_slct" id="TreatmentsTimes_slct" class="cyclic">';
 		$htm_TreatmentsTimes_slct.='<option value=0>-- 選択してください --</option>';
 
 		for($i = 1; $i<= initConsts::MaxTreatmentsTimes(); $i++){

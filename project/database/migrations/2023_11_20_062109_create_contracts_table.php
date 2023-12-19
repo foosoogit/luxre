@@ -30,9 +30,9 @@ return new class extends Migration
 
 			$table->string('keiyaku_bi',20)->comment('契約日');
 			$table->string('keiyaku_kingaku',20)->comment('契約金額');
-			$table->string('keiyaku_num',20)->comment('契約回数');
+			$table->string('keiyaku_num',20)->nullable()->comment('契約回数');
 
-			$table->string('keiyaku_kingaku_total',20)->comment('契約金額合計');
+			$table->string('keiyaku_kingaku_total',20)->nullable()->comment('契約金額合計');
 			$table->string('how_to_pay')->nullable()->comment('支払い方法');
 			$table->string('how_many_pay_genkin',10)->nullable()->comment('支払い回数-現金');
 
@@ -46,6 +46,7 @@ return new class extends Migration
 
 			$table->string('date_pay_card',20)->nullable()->comment('支払い日-クレジットカード');
 			$table->string('tantosya',50)->nullable()->comment('担当者');
+			$table->string('serial_tantosya',10)->nullable()->comment('担当者シリアル');
 			$table->string('date_latest_visit',20)->nullable()->comment('最終来店日');
 
 			$table->string('cancel',20)->nullable()->comment('キャンセル日');

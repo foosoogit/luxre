@@ -31,6 +31,8 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
     Route::controller(AdminController::class)->name('customers.')->group(function() {
+        Route::get('/customers/insertContract', [AdminController::class,'insertContract'])->name('insertContract');
+        Route::post('/customers/insertContract', [AdminController::class,'insertContract'])->name('insertContract');
         Route::get('/customers/ShowInpContract/{serial_user}', [AdminController::class,'ShowInpKeiyaku'],function($serial_user){})->name('ShowInpKeiyaku');
         //Route::get('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
         Route::post('/customers/getCustomerInf', [OtherFunc::class,'get_customer_inf'],function(Request $request){})->name('getCustomerInf');
