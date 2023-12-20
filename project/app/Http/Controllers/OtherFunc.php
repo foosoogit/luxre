@@ -11,7 +11,7 @@ use App\Consts\initConsts;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Models\TreatmentContent;
-session_start();
+if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {

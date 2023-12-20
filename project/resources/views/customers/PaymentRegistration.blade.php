@@ -12,7 +12,7 @@ table td {border: 1px solid #aaa;}
 			<!--<div class="card">-->
 				<div class="container gap-3">
 					<div class="row justify-content-left">
-						<a href="../../../ShowMenuCustomerManagement" class="btn btn-primary btn-sm">メニュー</a>
+						<a href="{{ route('admin.top') }}" class="btn btn-primary btn-sm">メニュー</a>
 						<a href="{{$GoBackToPlace}}" class="btn btn-primary btn-sm ml-xl-2">戻る</a>
 						<a href="/customers/ShowSyuseiContract/{{$targetContract->serial_keiyaku}}/{{$targetContract->serial_user}}" class="btn btn-primary btn-sm ml-xl-2">契約書</a>
 					</div>

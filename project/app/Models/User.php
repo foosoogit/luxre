@@ -58,4 +58,40 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function getUserAgeAttribute($value){
+		$birthday = $this->birth_year.$this->birth_month.$this->birth_day;
+		$today = date('Ymd');
+		$age=floor(($today - $birthday) / 10000);
+		return $age.'才';
+    }
+    
+	public function getUserZankinAttribute($value){
+		$TotalAmount=Keiyaku::where('serial_user','=', $this->serial_user)
+			->where('cancel','=',null)
+			->selectRaw('SUM(keiyaku_kingaku) as total')
+			->first(['total']);
+		$PaidAmount=PaymentHistory::leftJoin('keiyakus', 'payment_histories.serial_keiyaku', '=', 'keiyakus.serial_keiyaku')
+				->where('payment_histories.serial_user','=',$this->serial_user)
+				->where('payment_histories.date_payment','<>',"")
+				->where('keiyakus.cancel','=',null)
+				->selectRaw('SUM(amount_payment) as paid')->first(['paid']);
+
+		$zankin = $TotalAmount->total-$PaidAmount->paid;
+		return $zankin;
+	}
+
+	public function getDefaultColorAttribute($value){
+		$DefaultCount=PaymentHistory::where('serial_user','=', $this->serial_user)->where('how_to_pay','=', 'default')->count();
+		$DefaultColorCss="";
+		if($DefaultCount>0){
+			$DefaultColorCss='style="color: red"';
+		}
+		return $DefaultColorCss;
+	}
+
+	public function getNoHyphenPhoneAttribute($value){
+		$NoHyphenPhone=$this->phone;
+		return $NoHyphenPhone;
+	}
 }

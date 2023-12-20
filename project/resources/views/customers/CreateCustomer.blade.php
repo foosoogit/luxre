@@ -187,7 +187,7 @@ input,textarea{
 					<input type="text" name="phone" id="phone" value="{{ optional($target_user)->phone }}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="13"><span id="phone_for_error" class="text-danger fw-bold"></span></p>
                     <p style="py-2.5">●何を見て当サロンに来られましたか？</p>
 					{!!$html_reason_coming!!}
-                    <p style="text-align: center"><button class="btn btn-primary btn-sm" type="submit" id="SubmitBtn" value="{{$btnDisp}}" onclick="return validate();">{{$btnDisp}}</button></p>
+                    <p style="text-align: center"><button class="btn btn-primary" type="submit" id="SubmitBtn" value="{{$btnDisp}}" onclick="return validate();">{{$btnDisp}}</button></p>
 				</form>
 				<div style="py-3.5"><input name="TorokuMessageFlg" id="TorokuMessageFlg" type="hidden" value="{{$saveFlg}}"/></div>
         </div>

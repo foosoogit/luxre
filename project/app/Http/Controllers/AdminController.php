@@ -26,6 +26,220 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function ShowSyuseiContract($ContractSerial,$UserSerial){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		session(['ContractManage' => 'syusei']);
+		session(['fromPage' => 'SyuseiContract']);
+		$header="";$slot="";$selectedManth=array();$selectedManth=array();
+		$newKeiyakuSerial=$ContractSerial;
+		$targetContract=Contract::where('serial_keiyaku','=', $ContractSerial)->first();
+		$targetContractdetails=ContractDetail::where('serial_keiyaku','=', $ContractSerial)->get();
+		$targetUser=User::where('serial_user','=', $UserSerial)->first();
+		$HowToPay=array();$HowToPay['card']="";$HowToPay['cash']="";
+		$CardCompany="";$HowManyPay=array();
+	
+		$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_genkin,20,1);	
+		$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct("",20,2);
+		if($targetContract->how_to_pay=="Credit Card"){
+			$HowToPay['card']='checked';
+			$CardCompany=$targetContract->card_company;
+			$HowManyPay['one']="";$HowManyPay['bunkatu']="";
+			if($targetContract->how_many_pay_card==1){
+				$HowManyPay['one']="Checked";
+			}else{
+				$HowManyPay['bunkatu']="Checked";
+				$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_card,20,2);		
+			}
+		}else{
+			$HowToPay['cash']='checked';
+			$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_genkin,20,1);			
+		}
+		$CardCompanySelect=OtherFunc::make_html_card_company_slct($CardCompany);
+
+		$KeiyakuNaiyouArray=array();$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();$KeiyakuNaiyouSelectArray=array();
+		$num=0;
+		foreach($targetContractdetails as $targetContractdetail){
+			$KeiyakuNaiyouArray[]=$targetContractdetail->keiyaku_naiyo;
+			$KeiyakuNaiyouSelectArray[]=OtherFunc::make_htm_get_treatment_slct($targetContractdetail->keiyaku_naiyo);
+			$keiyakuCnt=$targetContractdetail->keiyaku_num;
+			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct($targetContractdetail->keiyaku_num);
+			$KeiyakuTankaArray[]=$targetContractdetail->unit_price;
+			$KeiyakuPriceArray[]=$targetContractdetail->price;
+			$num++;
+		}
+		for($i=$num;$i<=5;$i++){
+			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
+			$KeiyakuTankaArray[]="";
+			$KeiyakuPriceArray[]="";
+		}
+		if(isset($request->syusei_Btn)){
+			$GoBackPlace="/customers/ShowCustomersList_livewire";
+			if(Auth::user()->serial_teacher=="A_0001"){
+				$GoBackPlace="/customers/ShowCustomersList_livewire";
+			}else{
+				$GoBackPlace="/customers/ShowCustomersList_livewire";
+			}
+		}else if(isset($request->fromMenu)){
+			$GoBackPlace="../ShowMenuCustomerManagement";
+		}
+		$GoBackPlace="/customers/ShowContractList";
+		$TreatmentsTimes_slct=OtherFunc::make_html_TreatmentsTimes_slct($targetContract->treatments_num);
+		//$html_staff_slct=OtherFunc::make_html_staff_slct($targetContract->serial_tantosya);
+		//$stf=DB::table('Staff')->first();
+		$html_staff_slct=OtherFunc::make_html_staff_slct($targetContract->serial_tantosya);
+		//return view('customers.CreateContracts',compact("html_staff_slct","header",'slot','newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
+		return view('customers.CreateContract',compact("html_staff_slct",'newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
+	}
+
+	function recordVisitPaymentHistory(Request $request){
+		$PaymentHistorySerial=session('ContractSerial')."-01";
+		$PaymentHistorySerial=str_replace('K','P',$PaymentHistorySerial);
+		DB::table('payment_histories')->where('serial_keiyaku','=', session('ContractSerial'))->delete();
+			for($i=0;$i<=11;$i++){
+				if(!isset($request->PaymentDate[$i]) and !isset($request->PaymentAmount[$i]) and !isset($request->HowToPay[$i])){break;}
+				$PaymentDateArra[$i]="";
+				if(isset($request->PaymentDate[$i])){
+					$PaymentDateArra[$i]=$request->PaymentDate[$i];
+				}
+				$PaymentAmountArra[$i]="";
+				if(isset($request->PaymentAmount[$i])){
+					$PaymentAmountArra[$i]=$request->PaymentAmount[$i];
+				}
+				$PaymentHowToPayArray[$i]="";
+				//$htp="";
+				if(isset($request->HowToPay[$i])){
+					$PaymentHowToPayArray[$i]=$request->HowToPay[$i];
+				}
+				
+				$targetlData=[
+					'serial_keiyaku'=>session('ContractSerial'),
+					'serial_user'=>session('UserSerial'),
+					'payment_history_serial'=>$PaymentHistorySerial,
+					'serial_Teacher'=>Auth::user()->serial_teacher,
+					'date_payment'=>$PaymentDateArra[$i],
+					'amount_payment'=>str_replace(',','',$PaymentAmountArra[$i]),
+					'how_to_pay'=>$PaymentHowToPayArray[$i],
+					'deleted_at'=>null
+				];
+				$targetDataArray[]=$targetlData;
+				$PaymentHistorySerial++;
+				PaymentHistory::upsert($targetDataArray,['payment_history_serial']);
+			}
+		
+		VisitHistory::where('serial_keiyaku','=', session('ContractSerial'))->delete();
+		
+		$targetDataArray=array();
+		$VisitHistorySerial=session('ContractSerial')."-01";
+		$VisitHistorySerial=str_replace('K','V',$VisitHistorySerial);
+		$date_latest_visit="";
+		if(isset($request->visitDate)){
+			$i=0;
+			foreach($request->visitDate as $visitDateValue){
+				if($visitDateValue<>""){$date_latest_visit=$visitDateValue;}
+				if($visitDateValue==""){break;}
+				$targetlData=array();
+				$targetlData=[
+					'serial_keiyaku'=>session('ContractSerial'),
+					'serial_user'=>session('UserSerial'),
+					'visit_history_serial'=>$VisitHistorySerial,
+					'serial_Teacher'=>Auth::user()->serial_teacher,
+					'date_visit'=>$visitDateValue,
+					//'treatment_dtails'=>$request->TreatmentDetails[$i]
+					'treatment_dtails'=>$request->TreatmentDetailsSelect[$i],
+					'deleted_at'=>null
+				];
+				VisitHistory::where('visit_history_serial','=', $VisitHistorySerial)->restore();
+				VisitHistory::upsert($targetlData,['visit_history_serial']);
+				$targetDataArray[]=$targetlData;
+				$VisitHistorySerial++;
+				$i++;
+			}
+		}
+		Contract::where('serial_keiyaku','=',session('ContractSerial'))->update(['date_latest_visit' =>$date_latest_visit]);
+		session()->flash('success', '登録しました。');
+		session(['InpRecordVisitPaymentFlg' => true]);
+		$this::save_recorder("recordVisitPaymentHistory");
+		return redirect('/customers/ShowInpRecordVisitPayment/'.session("ContractSerial").'/'.session("UserSerial"));
+	}
+
+	public function ShowContractList($UserSerial,Request $request){
+		session(['fromPage' => 'ContractList']);
+		session(['targetUserSerial' => $UserSerial]);
+		if(isset($request->page_num)){
+			session(['target_page_for_pager'=>$request->page_num]);
+		}
+		$header="";$slot="";
+		
+		$key="";
+		$Contracts="";
+		if(Auth::user()->serial_teacher=="A_0001"){
+			if($UserSerial=="all"){
+				$userinf="";
+				$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
+				$GoBackPlace="/top";
+				session(['targetUserSerial' => 'all']);
+			}else{
+				session(['targetUserSerial' => $UserSerial]);
+				session(['target_page_for_pager'=>'']);
+				$GoBackPlace="/customers/CustomersList";				
+				$userinf=User::where('serial_user','=',$UserSerial)->first();
+				$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
+					->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
+					->select('contracts.*', 'users.*')
+					->paginate(initConsts::DdisplayLineNumContractList());
+			}
+			return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace","header","slot"));
+
+		}else{
+			if($UserSerial=="all"){
+				$userinf="";
+				$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
+				session(['targetUserSerial' => 'all']);
+				$GoBackPlace="/top";
+			}else{
+				session(['targetUserSerial' => $UserSerial]);
+				session(['target_page_for_pager'=>'']);
+				$GoBackPlace="/customers/ShowCustomersList_livewire";				
+				$userinf=User::where('serial_user','=',$UserSerial)->first();
+				$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
+					->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
+					->select('contracts.*', 'users.*')
+					->paginate(initConsts::DdisplayLineNumContractList());
+			}
+			return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace","header","slot"));
+		}
+	}
+
+	public function ShowSyuseiCustomer(Request $request){
+		session(['fromPage' => 'SyuseiCustomer']);
+		//$userInfo=User::where('serial_user','=',$request->input('syusei_Btn'))->first();
+		session(['CustomerManage' => 'syusei']);
+		$header="";$slot="";$selectedManth=array();$selectedManth=array();
+		$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
+		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list($target_user->birth_year);
+		//$mnt="m".sprintf('%02d', $target_user->birth_month);
+		$selectedManth[(int)$target_user->birth_month]="Selected";
+		$selectedDay[(int)$target_user->birth_day]="Selected";
+		$selectedRegion[$target_user->address_region]="Selected";
+		$GenderRdo=array();
+		$GenderRdo[$target_user->gender]="checked";
+		setcookie('TorokuMessageFlg','false',time()+60);
+		$saveFlg="false,".session('CustomerManage');$btnDisp="修　正";
+		$html_reason_coming="";
+		if(isset($request->syusei_Btn)){
+			//$GoBackPlace="/customers/ShowCustomersList";
+			$GoBackPlace="/customers/CustomersList";
+			//$GoBackPlace="/customers/ShowCustomersList";
+			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
+
+		}else if(isset($request->fromMenu)){
+			//$GoBackPlace="/customers/ShowCustomersList_livewire";
+			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
+			$GoBackPlace="../top";
+		}
+		return view('customers.CreateCustomer',compact("header","slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
+	}
+
 	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
 		$fromURLArray=parse_url($_SERVER['HTTP_REFERER']);
 		if(!session('InpRecordVisitPaymentFlg')){
@@ -453,7 +667,7 @@ class AdminController extends Controller
 		}
 		*/
 		if(session('CustomerManage')=='syusei'){
-			return redirect("/customers/ShowCustomersList_livewire");
+			return redirect("/customers/CustomersList");
 		}else{
 			$userInf=User::where('serial_user','=',$targetSerial)->first();
 			$msg="氏名: ".$userInf->name_sei." ".$userInf->name_mei."さんのデータを新規登録しました。";
@@ -486,6 +700,7 @@ class AdminController extends Controller
 		$TargetUserSerial=++$maxUserSerial;
 		$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
 		$GoBackPlace=$_SESSION['access_history'][0];
+		Log::alert("GoBackPlace=".$GoBackPlace);
 		return view('customers.CreateCustomer',compact('html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
 
@@ -621,69 +836,7 @@ class AdminController extends Controller
 		return view('admin.inp_Staff',compact('TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","html_birth_select"));
 	}
 
-	public function ShowSyuseiContract($ContractSerial,$UserSerial){
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		session(['ContractManage' => 'syusei']);
-		session(['fromPage' => 'SyuseiContract']);
-		$header="";$slot="";$selectedManth=array();$selectedManth=array();
-		$newKeiyakuSerial=$ContractSerial;
-		$targetContract=Contract::where('serial_keiyaku','=', $ContractSerial)->first();
-		$targetContractdetails=ContractDetail::where('serial_keiyaku','=', $ContractSerial)->get();
-		$targetUser=User::where('serial_user','=', $UserSerial)->first();
-		$HowToPay=array();$HowToPay['card']="";$HowToPay['cash']="";
-		$CardCompany="";$HowManyPay=array();
-	
-		$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_genkin,20,1);	
-		$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct("",20,2);
-		if($targetContract->how_to_pay=="Credit Card"){
-			$HowToPay['card']='checked';
-			$CardCompany=$targetContract->card_company;
-			$HowManyPay['one']="";$HowManyPay['bunkatu']="";
-			if($targetContract->how_many_pay_card==1){
-				$HowManyPay['one']="Checked";
-			}else{
-				$HowManyPay['bunkatu']="Checked";
-				$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_card,20,2);		
-			}
-		}else{
-			$HowToPay['cash']='checked';
-			$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_genkin,20,1);			
-		}
-		$CardCompanySelect=OtherFunc::make_html_card_company_slct($CardCompany);
 
-		$KeiyakuNaiyouArray=array();$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();$KeiyakuNaiyouSelectArray=array();
-		$num=0;
-		foreach($targetContractdetails as $targetContractdetail){
-			$KeiyakuNaiyouArray[]=$targetContractdetail->keiyaku_naiyo;
-			$KeiyakuNaiyouSelectArray[]=OtherFunc::make_htm_get_treatment_slct($targetContractdetail->keiyaku_naiyo);
-			$keiyakuCnt=$targetContractdetail->keiyaku_num;
-			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct($targetContractdetail->keiyaku_num);
-			$KeiyakuTankaArray[]=$targetContractdetail->unit_price;
-			$KeiyakuPriceArray[]=$targetContractdetail->price;
-			$num++;
-		}
-		for($i=$num;$i<=5;$i++){
-			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
-			$KeiyakuTankaArray[]="";
-			$KeiyakuPriceArray[]="";
-		}
-		if(isset($request->syusei_Btn)){
-			$GoBackPlace="/customers/ShowCustomersList_livewire";
-			if(Auth::user()->serial_teacher=="A_0001"){
-				$GoBackPlace="/customers/ShowCustomersList_livewire";
-			}else{
-				$GoBackPlace="/customers/ShowCustomersList_livewire";
-			}
-		}else if(isset($request->fromMenu)){
-			$GoBackPlace="../ShowMenuCustomerManagement";
-		}
-		$GoBackPlace="/customers/ShowContractList";
-		$TreatmentsTimes_slct=OtherFunc::make_html_TreatmentsTimes_slct($targetContract->treatments_num);
-		//$html_staff_slct=OtherFunc::make_html_staff_slct($targetContract->serial_tantosya);
-		$stf=DB::table('Staff')->first();
-		$html_staff_slct=OtherFunc::make_html_staff_slct($targetContract->serial_tantosya);
-		return view('customers.CreateContracts',compact("html_staff_slct","header",'slot','newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
-	}
 	
 	public function ShowMedicalRecord(Request $request){
 		$visit_history_num=$request->count_btn;
@@ -1331,125 +1484,6 @@ class AdminController extends Controller
 	 }
 	public function show_dashboard(){
 		return view('teacher.dashboard');
-	}
-
-	function recordVisitPaymentHistory(Request $request){
-		$PaymentHistorySerial=session('ContractSerial')."-01";
-		$PaymentHistorySerial=str_replace('K','P',$PaymentHistorySerial);
-		DB::table('payment_histories')->where('serial_keiyaku','=', session('ContractSerial'))->delete();
-			for($i=0;$i<=11;$i++){
-				if(!isset($request->PaymentDate[$i]) and !isset($request->PaymentAmount[$i]) and !isset($request->HowToPay[$i])){break;}
-				$PaymentDateArra[$i]="";
-				if(isset($request->PaymentDate[$i])){
-					$PaymentDateArra[$i]=$request->PaymentDate[$i];
-				}
-				$PaymentAmountArra[$i]="";
-				if(isset($request->PaymentAmount[$i])){
-					$PaymentAmountArra[$i]=$request->PaymentAmount[$i];
-				}
-				$PaymentHowToPayArray[$i]="";
-				//$htp="";
-				if(isset($request->HowToPay[$i])){
-					$PaymentHowToPayArray[$i]=$request->HowToPay[$i];
-				}
-				
-				$targetlData=[
-					'serial_keiyaku'=>session('ContractSerial'),
-					'serial_user'=>session('UserSerial'),
-					'payment_history_serial'=>$PaymentHistorySerial,
-					'serial_Teacher'=>Auth::user()->serial_teacher,
-					'date_payment'=>$PaymentDateArra[$i],
-					'amount_payment'=>str_replace(',','',$PaymentAmountArra[$i]),
-					'how_to_pay'=>$PaymentHowToPayArray[$i],
-					'deleted_at'=>null
-				];
-				$targetDataArray[]=$targetlData;
-				$PaymentHistorySerial++;
-				PaymentHistory::upsert($targetDataArray,['payment_history_serial']);
-			}
-		
-		VisitHistory::where('serial_keiyaku','=', session('ContractSerial'))->delete();
-		
-		$targetDataArray=array();
-		$VisitHistorySerial=session('ContractSerial')."-01";
-		$VisitHistorySerial=str_replace('K','V',$VisitHistorySerial);
-		$date_latest_visit="";
-		if(isset($request->visitDate)){
-			$i=0;
-			foreach($request->visitDate as $visitDateValue){
-				if($visitDateValue<>""){$date_latest_visit=$visitDateValue;}
-				if($visitDateValue==""){break;}
-				$targetlData=array();
-				$targetlData=[
-					'serial_keiyaku'=>session('ContractSerial'),
-					'serial_user'=>session('UserSerial'),
-					'visit_history_serial'=>$VisitHistorySerial,
-					'serial_Teacher'=>Auth::user()->serial_teacher,
-					'date_visit'=>$visitDateValue,
-					//'treatment_dtails'=>$request->TreatmentDetails[$i]
-					'treatment_dtails'=>$request->TreatmentDetailsSelect[$i],
-					'deleted_at'=>null
-				];
-				VisitHistory::where('visit_history_serial','=', $VisitHistorySerial)->restore();
-				VisitHistory::upsert($targetlData,['visit_history_serial']);
-				$targetDataArray[]=$targetlData;
-				$VisitHistorySerial++;
-				$i++;
-			}
-		}
-		Contract::where('serial_keiyaku','=',session('ContractSerial'))->update(['date_latest_visit' =>$date_latest_visit]);
-		session()->flash('success', '登録しました。');
-		session(['InpRecordVisitPaymentFlg' => true]);
-		$this::save_recorder("recordVisitPaymentHistory");
-		return redirect('/customers/ShowInpRecordVisitPayment/'.session("ContractSerial").'/'.session("UserSerial"));
-	}
-
-	public function ShowContractList($UserSerial,Request $request){
-		session(['fromPage' => 'ContractList']);
-		session(['targetUserSerial' => $UserSerial]);
-		if(isset($request->page_num)){
-			session(['target_page_for_pager'=>$request->page_num]);
-		}
-		$header="";$slot="";
-		
-		$key="";
-		$Contracts="";
-		if(Auth::user()->serial_teacher=="A_0001"){
-			if($UserSerial=="all"){
-				$userinf="";
-				$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
-				$GoBackPlace="/ShowMenuCustomerManagement/";
-				session(['targetUserSerial' => 'all']);
-			}else{
-				session(['targetUserSerial' => $UserSerial]);
-				session(['target_page_for_pager'=>'']);
-				$GoBackPlace="/customers/ShowCustomersList_livewire";				
-				$userinf=User::where('serial_user','=',$UserSerial)->first();
-				$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
-					->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
-					->select('contracts.*', 'users.*')
-					->paginate(initConsts::DdisplayLineNumContractList());
-			}
-			return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace","header","slot"));
-
-		}else{
-			if($UserSerial=="all"){
-				$userinf="";
-				$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
-				session(['targetUserSerial' => 'all']);
-				$GoBackPlace="/ShowMenuCustomerManagement/";
-			}else{
-				session(['targetUserSerial' => $UserSerial]);
-				session(['target_page_for_pager'=>'']);
-				$GoBackPlace="/customers/ShowCustomersList_livewire";				
-				$userinf=User::where('serial_user','=',$UserSerial)->first();
-				$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
-					->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
-					->select('contracts.*', 'users.*')
-					->paginate(initConsts::DdisplayLineNumContractList());
-			}
-			return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace","header","slot"));
-		}
 	}
 
 	public function ShowContractHistory($serial_user){
