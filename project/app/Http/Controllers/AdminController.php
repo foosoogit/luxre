@@ -87,8 +87,15 @@ class AdminController extends Controller
 		//$html_staff_slct=OtherFunc::make_html_staff_slct($targetContract->serial_tantosya);
 		//$stf=DB::table('Staff')->first();
 		$html_staff_slct=OtherFunc::make_html_staff_slct($targetContract->serial_tantosya);
+		if($targetContract->keiyaku_type=='subscription'){
+			$contract_type_checked['subsc']='checked';
+			$contract_type_checked['cyclic']='';
+		}else{
+			$contract_type_checked['subsc']='';
+			$contract_type_checked['cyclic']='checked';
+		}
 		//return view('customers.CreateContracts',compact("html_staff_slct","header",'slot','newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
-		return view('customers.CreateContract',compact("html_staff_slct",'newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
+		return view('customers.CreateContract',compact("contract_type_checked","html_staff_slct",'newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
 	}
 
 	function recordVisitPaymentHistory(Request $request){
@@ -500,7 +507,7 @@ class AdminController extends Controller
 		    		}
 			}else{
 				if(session('ContractManage')=='syusei'){
-					return redirect("/customers/ShowContractList/".$SerialUser);
+					return redirect("/customers/ContractList/".$SerialUser);
 				}else{
 					$userInf=User::where('serial_user','=',$request->serial_user)->first();
 					$keiyakuInf=Contract::where('serial_keiyaku','=',$request->ContractSerial)->first();
@@ -508,9 +515,9 @@ class AdminController extends Controller
 					$msg="氏名: ".$userInf->name_sei." ".$userInf->name_mei."さんの契約を新規登録しました。";
 	
 					if(session('fromMenu')=='MenuCustomerManagement'){
-						$GoBackToPlace="../ShowMenuCustomerManagement";
+						$GoBackToPlace="../top";
 					}else if(session('fromMenu')=='CustomersList'){
-						$GoBackToPlace="/customers/ShowCustomersList_livewire";
+						$GoBackToPlace="/customers/CustomersList";
 					}
 			    		return view("layouts.DialogMsgKeiyaku", compact('msg','SerialUser','SerialKeiyaku','GoBackToPlace','header',"slot"));
 		    		}

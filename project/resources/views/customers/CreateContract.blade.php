@@ -15,10 +15,10 @@ input,textarea{border: 1px solid #aaa;}
             	<div class="container-fluid">
 					<div class="row mb-2">
 						<div class="col-auto">
-							<a href="../../../ShowMenuCustomerManagement" class="btn bg-blue-500 text-white rounded px-3 py-2">メニュー</a>
+							<a href="../../../top" class="btn bg-blue-500 text-white rounded px-3 py-2">メニュー</a>
 						</div>
 	            		<div class="col-auto">
-							<a href="/customers/ShowContractList/{{$targetUser->serial_user}}" class="btn bg-blue-500 text-white rounded px-3 py-2">戻る</a>
+							<a href="/customers/ContractList/{{$targetUser->serial_user}}" class="btn bg-blue-500 text-white rounded px-3 py-2">戻る</a>
 						</div>
 	            		<div class="col-auto">
 							<a href="/customers/ShowInpRecordVisitPayment/{{optional($targetContract)->serial_keiyaku}}/{{optional($targetContract)->serial_user}}" class="btn bg-blue-500 text-white rounded px-3 py-2">来店・支払い記録</a>
@@ -57,12 +57,12 @@ input,textarea{border: 1px solid #aaa;}
 							<div class="py-3">●<span class="auto-style2">*</span>担当者：{!!$html_staff_slct!!}<span id="staff_slct_for_error" class="text-danger fw-bold"></span></div>
 							<div>●<span class="auto-style2">*</span>契約形態</div>
 							<div class="form-check" style="text-indent: 1em">
-								<input class="form-check-input" type="radio" name="contract_type" id="contract_type_subscription" value="subscription" onclick="contract_type_manage();">
+								<input class="form-check-input" type="radio" name="contract_type" id="contract_type_subscription" value="subscription" onclick="contract_type_manage();" {!! $contract_type_checked['subsc'] !!}>
 								<label class="form-check-label" for="contract_type_subscription">サブスクリプション</label>
 								<div class="py-2"><span class="auto-style2">*</span>支払金額/月：<input type="text" name="inpMonthlyAmount" id="inpMonthlyAmount" value="" class="form-control col-5 subsc"></div>
 							</div>
 							<div class="form-check" style="text-indent: 1em">
-								<input class="form-check-input" type="radio" name="contract_type" id="contract_type_cyclic" value="cyclic" onclick="contract_type_manage();">
+								<input class="form-check-input" type="radio" name="contract_type" id="contract_type_cyclic" value="cyclic" onclick="contract_type_manage();" {!! $contract_type_checked['cyclic'] !!}>
 								<label class="form-check-label" for="contract_type_cyclic">回数、期間指定</label>
 								<div class="py-2"><span class="auto-style2">*</span>契約金（チェック用入力）：
 									@if(isset($targetContract->keiyaku_kingaku)) 
