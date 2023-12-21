@@ -20,13 +20,13 @@ class DatabaseSeeder extends Seeder
 		$admins =[ 
 			[
 				'name' => 'fsuzuki',
-				'serial_admin' => 'A_001',
+				'serial_admin' => 'A_000',
 				'email' => 'awa@szemi-gp.com',
 				'password' => Hash::make('0000'),
 			],
 			[
 				'name' => 'ksuzuki',
-				'serial_admin' => 'A_002',
+				'serial_admin' => 'A_001',
 				'email' => 'moezbeauty.ts@gmail.com',
 				'password' => Hash::make('0101'),
 			],
@@ -172,10 +172,10 @@ class DatabaseSeeder extends Seeder
             ],
 			[
 				'serial_staff'=> "SF_002",
-				'last_name_kanji' => '芝崎',
-				'first_name_kanji'=> null,
-				'last_name_kana'=> 'しばさき',
-				'first_name_kana'=> null,
+				'last_name_kanji' => '川島',
+				'first_name_kanji'=> '花乃',
+				'last_name_kana'=> 'かわしま',
+				'first_name_kana'=> 'かの',
             ],
         ];
 

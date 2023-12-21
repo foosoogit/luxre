@@ -52,7 +52,7 @@ return new class extends Migration
 			$table->string('cancel',20)->nullable()->comment('キャンセル日');
 			$table->text('remarks')->nullable()->comment('備考');
         });
-    }
+	}
 
     /**
      * Reverse the migrations.
