@@ -19,7 +19,7 @@
                             </div>
                         @endif
                         <div class="col-auto">
-                            <form method="GET" action="/workers/ShowInputCustomer">@csrf
+                            <form method="GET" action="{{route('customers.ShowInpNewCustomer')}}">@csrf
                                 <button class="btn btn-primary" type="submit" name="CustomerListCreateBtn" value="CustomerList">新規顧客登録</button>
                             </form>
                         </div>
@@ -31,36 +31,50 @@
                     <table id="table_responsive">
                         <thead>
                             <tr>
-                                <th class="border px-4 py-2"><p>顧客データ修正</p>
-                                    <button type="button" wire:click="sort('serial_user-ASC')"><img src="/images/sort_A_Z.png" width="15px" /></button>
-                                    <button type="button" wire:click="sort('serial_user-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <th class="border px-4 py-2">顧客データ修正
+                                    <div class="text-nowrap">
+                                        <button type="button" wire:click="sort('serial_user-ASC')"><img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
+                                        <button type="button" wire:click="sort('serial_user-Desc')"><img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
+                                    </div>
                                 </th>
                                 <th class="border px-4 py-2">
                                     契約
                                 </th>
-                                <th class="border px-4 py-2"><p>氏名</p>
-                                    <button type="button" wire:click="sort('name_sei-ASC')"> <img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                    <button type="button" wire:click="sort('name_sei-Desc')"> <img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <th class="border px-4 py-2">氏名
+                                    <div class="text-nowrap">
+                                        <button type="button" wire:click="sort('name_sei-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
+                                        <button type="button" wire:click="sort('name_sei-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
+                                    </div>
                                 </th>
-                                <th class="border px-4 py-2"><p>しめい</p>
-                                    <button type="button" wire:click="sort('name_sei_kana-ASC')"> <img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                    <button type="button" wire:click="sort('name_sei_kana-Desc')"> <img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <th class="border px-4 py-2">しめい
+                                    <div class="text-nowrap">
+                                        <button type="button" wire:click="sort('name_sei_kana-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
+                                        <button type="button" wire:click="sort('name_sei_kana-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
+                                    </div>
                                 </th>
-                                <th class="border px-4 py-2"><p>残金</p>
-                                    <button type="button" wire:click="sort('zankin-ASC')"> <img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                    <button type="button" wire:click="sort('zankin-Desc')"> <img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
-                                    <p>(合計:<button type="button" name="zankinBtn" id="zankinBtn" wire:click="zankin_search()">{{number_format($totalZankin)}}</button>円)</p>
+                                <th class="border px-4 py-2">残金
+                                    <div class="text-nowrap">
+                                        <button type="button" wire:click="sort('zankin-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
+                                        <button type="button" wire:click="sort('zankin-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
+                                    </div>
+                                    <div class="text-nowrap">
+                                        <p>(合計:<button type="button" name="zankinBtn" id="zankinBtn" wire:click="zankin_search()">{{number_format($totalZankin)}}</button>円)</p>
+                                    </div>
                                 </th>
-                                <th class="border px-4 py-2"><p>生年月日</p>
-                                    <button type="button" wire:click="sort('birth_year-ASC')"> <img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                    <button type="button" wire:click="sort('birth_year-Desc')"> <img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <th class="border px-4 py-2">生年月日
+                                    <div class="text-nowrap">
+                                        <button type="button" wire:click="sort('birth_year-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
+                                        <button type="button" wire:click="sort('birth_year-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
+                                    </div>
                                 </th>
-                                <th class="border px-4 py-2"><p>電話番号</p>
-                                    <button type="button" wire:click="sort('phone-ASC')"> <img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                    <button type="button" wire:click="sort('phone-Desc')"> <img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <th class="border px-4 py-2">電話番号
+                                    <div class="text-nowrap">
+                                        <button type="button" wire:click="sort('phone-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
+                                        <button type="button" wire:click="sort('phone-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
+                                    </div>
                                 </th>
-                                <th class="border px-4 py-2"><p>紹介人数</p>
-                                    <button type="button" wire:click="sort('refereecnt-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <th class="border px-4 py-2">紹介人数
+                                    <button type="button" wire:click="sort('refereecnt-Desc')"><img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
                                 </th>
                                 <th class="border px-4 py-2">削除</th>
                             </tr>
@@ -78,10 +92,10 @@
                                             <input name="page_num" type="hidden" value="{{$users->currentPage()}}"/>
                                         </form>
                                     </td>
-                                    <td class="border px-4 py-2" {!! $user->default_color!!}>{{ $user->name_sei}}&nbsp;{{ $user->name_mei}}</td>
-                                    <td class="border px-4 py-2">{{ $user->name_sei_kana}}&nbsp;{{ $user->name_mei_kana}}</td>
+                                    <td class="border px-4 py-2" {!! $user->default_color!!}><div class="text-nowrap">{{ $user->name_sei}}&nbsp;{{ $user->name_mei}}</div></td>
+                                    <td class="border px-4 py-2"><div class="text-nowrap">{{ $user->name_sei_kana}}&nbsp;{{ $user->name_mei_kana}}</div></td>
                                     <td class="border px-4 py-2" style="text-align: right;">{{ number_format($user->zankin)}}</td>
-                                    <td class="border px-4 py-2">{{ $user->birth_year}}-{{ $user->birth_month}}-{{ $user->birth_day}}&nbsp;({{ $user->User_Age}})</td>
+                                    <td class="border px-4 py-2"><div class="text-nowrap">{{ $user->birth_year}}-{{ $user->birth_month}}-{{ $user->birth_day}}&nbsp;({{ $user->User_Age}})</div></td>
                                     <td class="border px-4 py-2">{{ $user->phone}}</td>
                                     <td class="border px-4 py-2">{{ $user->referee_num}}</td>
                                     <td class="border px-4 py-2">

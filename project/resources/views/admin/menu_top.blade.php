@@ -46,7 +46,7 @@
 								</form></p>
 							</li>
 							<li>
-								<form method="GET" action="{{ route('customers.ShowInpNewCustomer') }}">@csrf
+								<form method="GET" action="{{route('customers.ShowInpNewCustomer')}}">@csrf
 									<p><button class="btn btn-primary btn-sm" type="submit" value="new" name="CreateCustomer">顧客新規登録</button></p>
 								</form>
 							</li>
@@ -55,32 +55,32 @@
 							</li>
 							<li>
 								<form method="GET" action="/workers/ShowCampaigns">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">キャンペーン</button>
+									<button class="btn btn-primary btn-sm" type="submit" disabled>キャンペーン</button>
 								</form>
 							</li>
 							<li>
 								<form method="GET" action="/workers/ShowDailyReport">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">日報</button>
+									<button class="btn btn-primary btn-sm" type="submit" disabled>日報</button>
 								</form>
 							</li>
 							<li>
 								<form method="POST" action="/workers/ShowMonthlyReport">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">月報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
+									<button class="btn btn-primary btn-sm" type="submit" disabled>月報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
 								</form>
 							</li>
 							<li>
 								<form method="POST" action="/workers/ShowContractsReport">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">契約金額集計</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
+									<button class="btn btn-primary btn-sm" type="submit" disabled>契約金額集計</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
 								</form>
 							</li>
 							<li>
 								<form method="POST" action="/workers/ShowYearlyReport">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">年報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option  value="0" >選択</option>{!!$htm_kesanMonth!!}</select>&emsp;契約達成率、前年度比等
+									<button class="btn btn-primary btn-sm" type="submit" disabled>年報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option  value="0" >選択</option>{!!$htm_kesanMonth!!}</select>&emsp;契約達成率、前年度比等
 								</form>
 							</li>
 							<li>
 								<form method="GET" action="/workers/ShowTreatmentContents">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">施術登録</button>
+									<button class="btn btn-primary btn-sm" type="submit" disabled>施術登録</button>
 								</form>
 							</li>
 							<li>
