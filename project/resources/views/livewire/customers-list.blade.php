@@ -5,10 +5,12 @@
             <div class="pb-4 justify-content-center align-middle">
                 {{-- <div class="col-md-12"> --}}
                     {{-- <div class="card" align="center"> --}}
-                    {{-- <button class="bg-blue-500 text-white rounded px-3 py-1" type="button" onclick="location.href='../ShowMenuCustomerManagement'">メニューに戻る</button> --}}
                     <div class="row">
                         <div class="col-auto">
                             <button class="btn btn-primary" type="button" onclick="location.href='../top'">メニューに戻る</button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary" type="button" onclick="history.back()">前画面に戻る</button>
                         </div>
                         @if($from_place=="dayly_rep")
                             <div class="col-auto">

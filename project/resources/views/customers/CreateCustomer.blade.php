@@ -13,7 +13,14 @@ input,textarea{
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12 py-1.5">
-                <button class="btn btn-primary btn-sm" type="button" onclick="location.href='{{$GoBackPlace}}'">戻る</button>
+				<div class="row">
+					<div class="col-auto">
+						<a href="{{route('admin.top')}}" class="btn btn-primary btn-sm">メニューに戻る</a>
+					</div>
+					<div class="col-auto">
+                		<button class="btn btn-primary btn-sm" type="button" onclick="location.href='{{$GoBackPlace}}'">前画面に戻る</button>
+					</div>
+				</div>
 				<form name='input_customer_fm' id="input_customer_fm" action="/customers/insertCustomer" method="POST" class="h-adr">@csrf
 				{{--<form action="{{ route('customers.insertCustomer') }}" method="POST" class="h-adr">@csrf--}}
                     <span class="p-country-name" style="display:none;">Japan</span>
@@ -186,8 +193,9 @@ input,textarea{
 					<p style="py-2.5"><span class="text-danger">*</span>
 					<input type="text" name="phone" id="phone" value="{{ optional($target_user)->phone }}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="13"><span id="phone_for_error" class="text-danger fw-bold"></span></p>
                     <p style="py-2.5">●何を見て当サロンに来られましたか？</p>
-					{!!$html_reason_coming!!}
-                    <p style="text-align: center"><button class="btn btn-primary" type="submit" id="SubmitBtn" value="{{$btnDisp}}" onclick="return validate();">{{$btnDisp}}</button></p>
+					{!!$html_reason_coming!!}  
+					<button class="btn btn-primary w-100 my-3" type="submit" id="SubmitBtn" value="{{$btnDisp}}" onclick="return validate();">{{$btnDisp}}</button>
+                    {{--<p style="text-align: center"><button class="btn btn-primary" type="submit" id="SubmitBtn" value="{{$btnDisp}}" onclick="return validate();">{{$btnDisp}}</button></p>--}}
 				</form>
 				<div style="py-3.5"><input name="TorokuMessageFlg" id="TorokuMessageFlg" type="hidden" value="{{$saveFlg}}"/></div>
         </div>

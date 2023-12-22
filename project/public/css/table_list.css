@@ -21,12 +21,12 @@
     border-right: none;
 }
 
-.#table_responsive td {
+#table_responsive td {
     padding: 10px;
     border-right: solid 1px #778ca3; 
 }
 
-.#table_responsive td:last-child {
+#table_responsive td:last-child {
     border-right: none;
 }
 

@@ -20,7 +20,7 @@ use App\Http\Livewire\ContractList;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('admin/login_admin');
 });
 
 // 管理ログイン画面
@@ -54,6 +54,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/customers/ShowInpContract/{serial_user}', [AdminController::class,'ShowInpKeiyaku'],function($serial_user){})->name('ShowInpKeiyaku');
         //Route::get('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
         Route::post('/customers/getCustomerInf', [OtherFunc::class,'get_customer_inf'],function(Request $request){})->name('getCustomerInf');
+        Route::get('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
         Route::post('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
         Route::get('/customers/ShowInputNewCustomer', [AdminController::class,'ShowInputNewCustomer'])->name('ShowInpNewCustomer');
         Route::post('/customers/ShowInputCustomer', [AdminController::class,'ShowInputCustomer',function(Request $request){}])->name('ShowInpCustomer');
@@ -66,6 +67,7 @@ Route::middleware('auth:admin')->group(function () {
         return view('admin.ListStaffs');
     })->name('StaffsList.show');
     Route::get('/top', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top');
+    //Route::get('/', [AdminController::class,'ShowMenuCustomerManagement']);
     /*
     Route::get('/admin', function () {
         return view('admin.menu_top');

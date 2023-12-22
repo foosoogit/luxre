@@ -1,5 +1,9 @@
 {
     "require": {
         "laravel/jetstream": "^4.1"
+    },
+    "require-dev": {
+        "laravel-lang/publisher": "^16.2",
+        "laravel-lang/lang": "^14.0"
     }
 }

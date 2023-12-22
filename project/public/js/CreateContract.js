@@ -8,10 +8,34 @@ function contract_type_manage(){
 	var obj_subsc_array = document.getElementsByClassName("subsc");
 	var obj_cyclic_array = document.getElementsByClassName("cyclic");
 	var CyclicDipNon='';
-	if(subscription_obj.checked==true){CyclicDipNon='none'}
+	if(subscription_obj.checked==true){
+		CyclicDipNon='none';
+		for(var i=0;i<obj_cyclic_array.length;i++){
+			obj_cyclic_array[i].disabled = subscription_obj.checked;
+			if(obj_cyclic_array[i].type=="text"){
+				//obj_cyclic_array[i].value="";
+			}else if(obj_cyclic_array[i].nodeName=="SELECT"){
+				obj_cyclic_array[i].options[0].selected=true;
+			}else if(obj_cyclic_array[i].nodeName=="TABLE" || obj_cyclic_array[i].nodeName=="P" || obj_cyclic_array[i].nodeName=="DIV" || obj_cyclic_array[i].nodeName=="DATE" || obj_cyclic_array[i].nodeName=="LABEL"){
+				obj_cyclic_array[i].style.display=CyclicDipNon;
+			}
+		}
+	}else{
+		for(var i=0;i<obj_subsc_array.length;i++){
+			obj_subsc_array[i].disabled = cyclic_obj.checked;
+			if(obj_subsc_array[i].type=="text"){
+				//obj_subsc_array[i].value="";
+			}else if(obj_subsc_array[i].nodeName=="SELECT"){
+				obj_subsc_array[i].options[0].selected=true;
+			}else if(obj_subsc_array[i].nodeName=="TABLE" || obj_subsc_array[i].nodeName=="P" || obj_subsc_array[i].nodeName=="DIV" || obj_subsc_array[i].nodeName=="DATE" || obj_subsc_array[i].nodeName=="LABEL"){
+				obj_subsc_array[i].style.display=CyclicDipNon;
+			}
+		} 
+	}
 	for(var i=0;i<obj_subsc_array.length;i++){
 		obj_subsc_array[i].disabled = !subscription_obj.checked;
 	}
+	/*
 	for(var i=0;i<obj_cyclic_array.length;i++){
 		obj_cyclic_array[i].disabled = subscription_obj.checked;
 		if(obj_cyclic_array[i].type=="text"){
@@ -22,6 +46,7 @@ function contract_type_manage(){
 			obj_cyclic_array[i].style.display=CyclicDipNon;
 		}
 	}
+	*/
 }
 
 function ContractNaiyoSlctManage(obj){
@@ -56,13 +81,14 @@ jQuery(document).ready(function($){
 			ContractsDateStart: {
 				required: true
 			},
-			/*,
 			contract_type: {
 				required: true
 			},
+			
 			inpMonthlyAmount: {
 				required: "#contract_type_subscription:checked"
 			},
+			/*,
 			inpTotalAmount: {
 				required: "#contract_type_cyclic:checked"
 			},
@@ -93,10 +119,14 @@ jQuery(document).ready(function($){
 			},
 			ContractsDateStart:{
 				required: "「役務契約開始期間」を入力してください。"
-			}/*,
-			name_mei:{
-				required: "「名」を入力してください。"
 			},
+			contract_type:{
+				required: "「契約形態」を選択してください。"
+			},
+			inpMonthlyAmount:{
+				required: "「支払金額/月」を入力してください。"
+			},
+			/*,
 			name_sei_kana:{
 				required: "「せい」を入力してください。"
 			},
@@ -117,8 +147,8 @@ jQuery(document).ready(function($){
 		errorPlacement: function(error, element) {
 			if (element.is(':radio, :checkbox')) {
 				//alert("TEST");
-				if(element.attr("name")=='GenderRdo'){
-					error.appendTo($('#GenderRdo_for_error'));
+				if(element.attr("name")=='contract_type'){
+					error.appendTo($('#contract_type_for_error'));
 					//error.appendTo(element.parent());
 				}
 			}else if(element.attr("name")=="ContractsDate"){
@@ -129,8 +159,8 @@ jQuery(document).ready(function($){
 				error.appendTo($('#staff_slct_for_error'));
 			}else if(element.attr("name")=="ContractsDateStart"){
 				error.appendTo($('#ContractsDateStart_for_error'));
-			}else if(element.attr("name")=="name_sei_kana"){
-				error.appendTo($('#name_sei_kana_for_error'));
+			}else if(element.attr("name")=="inpMonthlyAmount"){
+				error.appendTo($('#inpMonthlyAmount_for_error'));
 			}else if(element.attr("name")=="name_mei_kana"){
 				error.appendTo($('#name_mei_kana_for_error'));
 			}else if(element.attr("name")=="email"){

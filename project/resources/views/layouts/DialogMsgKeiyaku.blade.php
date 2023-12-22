@@ -9,17 +9,26 @@
 				<div class="card-body">
 					{!!$msg!!}
 					<ul>
-					<li><form method="GET" action="/customers/ShowInpRecordVisitPayment/{{$SerialKeiyaku}}/{{$SerialUser}}">@csrf
-						<button class="btn btn-primary btn-sm" type="submit">続けて来店記録を作成</button>
-					</form></li><br>
-					{{--
-					<li><form method="GET" action="/customers/ShowSyuseiContract/{{$SerialKeiyaku}}/{{$UserSerial}}">@csrf
-						<button class="bg-blue-500 text-white rounded px-3 py-1" type="submit">契約を修正</button>
-					</form></li><br>
-					--}}
-					<li><form method="GET" action="{{$GoBackToPlace}}">@csrf
-						<button class="btn btn-primary btn-sm" type="submit">戻る</button>
-					</form></li>
+						<li class="my-3">
+							<form method="GET" action="/customers/ShowInpRecordVisitPayment/{{$SerialKeiyaku}}/{{$SerialUser}}">@csrf
+								<button class="btn btn-primary" type="submit">続けて来店記録を作成</button>
+							</form>
+						</li>
+						<li class="my-3">
+							<form method="GET" action="{{route('customers.ShowInpNewCustomer')}}">@csrf
+								<button class="btn btn-primary" type="submit">新規顧客追加</button>
+							</form>
+						</li>
+						<li class="my-3">
+							<form method="GET" action="{{ route('customers.CustomersList.show') }}">@csrf
+								<button class="btn btn-primary" type="submit">顧客一覧</button>
+							</form>
+						</li>
+						<li class="my-3">
+							<form method="GET" action="{{$GoBackToPlace}}">@csrf
+								<button class="btn btn-primary" type="submit">戻る</button>
+							</form>
+						</li>
 					</ul>
 				</div>
 			</div>

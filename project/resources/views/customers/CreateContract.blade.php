@@ -1,7 +1,7 @@
 @extends('layouts.appCustomer')
 @section('content')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-<script type="text/javascript" src="{{ asset('/js/CreateContract.js?202301125') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/CreateContract.js?20230103') }}"></script>
 <style type="text/css">
 .auto-style1 {margin-left: 40px;}
 table td {border: 1px solid #aaa;}
@@ -53,13 +53,15 @@ input,textarea{border: 1px solid #aaa;}
 							</div>
 							<div class="py-2"><span class="auto-style2">*</span><span class="font-semibold text-1xl text-slate-600">:必須項目</span></div>
 							<div class="py-2">●<span class="auto-style2">*</span>契約締結日：<input name="ContractsDate" id="ContractsDate" type="date" value="{{optional($targetContract)->keiyaku_bi}}"/><span id="ContractsDate_for_error" class="text-danger fw-bold"></span></div>
-							<div class="py-2">●<span class="auto-style2">*</span>契約名：<input name="ContractName" id="ContractName" type="text" class="form-control col-5" value="{{ optional($targetContract)->keiyaku_name }}"/><span id="ContractName_for_error" class="text-danger fw-bold"></span></div>
+							<div class="py-2">●<span class="auto-style2">*</span>契約名：<input name="ContractName" id="ContractName" type="text" class="form-control col-5" value="{{optional($targetContract)->keiyaku_name}}"/><span id="ContractName_for_error" class="text-danger fw-bold"></span></div>
 							<div class="py-3">●<span class="auto-style2">*</span>担当者：{!!$html_staff_slct!!}<span id="staff_slct_for_error" class="text-danger fw-bold"></span></div>
-							<div>●<span class="auto-style2">*</span>契約形態</div>
+							<div>●<span class="auto-style2">*</span>契約形態<span id="contract_type_for_error" class="text-danger fw-bold"></span></div>
 							<div class="form-check" style="text-indent: 1em">
 								<input class="form-check-input" type="radio" name="contract_type" id="contract_type_subscription" value="subscription" onclick="contract_type_manage();" {!! $contract_type_checked['subsc'] !!}>
 								<label class="form-check-label" for="contract_type_subscription">サブスクリプション</label>
-								<div class="py-2"><span class="auto-style2">*</span>支払金額/月：<input type="text" name="inpMonthlyAmount" id="inpMonthlyAmount" value="" class="form-control col-5 subsc"></div>
+								<div class="py-2">
+									<span class="auto-style2">*</span>支払金額/月：<input type="text" name="inpMonthlyAmount" id="inpMonthlyAmount" value="{{optional($targetContract)->keiyaku_kingaku}}" class="form-control col-5 subsc"><span id="inpMonthlyAmount_for_error" class="text-danger fw-bold"></span>
+								</div>
 							</div>
 							<div class="form-check" style="text-indent: 1em">
 								<input class="form-check-input" type="radio" name="contract_type" id="contract_type_cyclic" value="cyclic" onclick="contract_type_manage();" {!! $contract_type_checked['cyclic'] !!}>
@@ -68,8 +70,9 @@ input,textarea{border: 1px solid #aaa;}
 									@if(isset($targetContract->keiyaku_kingaku)) 
 										{{-- <input type="text" name="inpTotalAmount" id="inpTotalAmount" value="{{number_format($targetContract->keiyaku_kingaku)}}" class="form-control col-5 cyclic">--}}
 										<input type="text" name="inpTotalAmount" id="inpTotalAmount" value="{{$targetContract->keiyaku_kingaku}}" class="form-control col-5 cyclic">
+										{{--<input type="text" name="inpTotalAmount2" id="inpTotalAmount2" value="{{$targetContract->keiyaku_kingaku}}" class="form-control col-5">--}}
 									@else
-										<input type="text" name="inpTotalAmount" id="inpTotalAmount" value="" class="form-control col-5 cyclic">
+										{{-- <input type="text" name="inpTotalAmount" id="inpTotalAmount" value="" class="form-control col-5 cyclic"> --}}
 									@endif
 								</div>
 							</div>
@@ -245,9 +248,9 @@ input,textarea{border: 1px solid #aaa;}
 						<p>メモ：<textarea cols="20" name="memo" id="memo" rows="2" class="bg-white-500 text-black rounded px-3 py-1">{{optional($targetContract)->remarks}}</textarea></p>
 						<p style="text-align: center">
 							@if(optional($targetContract)->cancel===null)
-								<button  class="btn btn-primary" type="submit" type="submit" onclick="return validate();">登　録</button>
+								<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" onclick="return validate();">登　録</button>
 							@else
-								<button  class="btn btn-primary" type="submit" type="submit" onclick="return canceled_message();" style="background-color:gray">登　録</button>
+								<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" onclick="return canceled_message();" style="background-color:gray">登　録</button>
 							@endif
 						</p>
 					</form>
