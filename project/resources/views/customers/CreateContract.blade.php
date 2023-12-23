@@ -1,7 +1,8 @@
 @extends('layouts.appCustomer')
 @section('content')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-<script type="text/javascript" src="{{ asset('/js/CreateContract.js?20230103') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/CreateContract.js?20230124') }}"></script>
+
 <style type="text/css">
 .auto-style1 {margin-left: 40px;}
 table td {border: 1px solid #aaa;}
@@ -15,25 +16,18 @@ input,textarea{border: 1px solid #aaa;}
             	<div class="container-fluid">
 					<div class="row mb-2">
 						<div class="col-auto">
-							<a href="../../../top" class="btn bg-blue-500 text-white rounded px-3 py-2">メニュー</a>
+							<a href="../../../top" class="btn btn-primary my-2">メニュー</a>
 						</div>
 	            		<div class="col-auto">
-							<a href="/customers/ContractList/{{$targetUser->serial_user}}" class="btn bg-blue-500 text-white rounded px-3 py-2">戻る</a>
+							<a href="/customers/ContractList/{{$targetUser->serial_user}}" class="btn btn-primary my-2">戻る</a>
 						</div>
 	            		<div class="col-auto">
-							<a href="/customers/ShowInpRecordVisitPayment/{{optional($targetContract)->serial_keiyaku}}/{{optional($targetContract)->serial_user}}" class="btn bg-blue-500 text-white rounded px-3 py-2">来店・支払い記録</a>
+							<a href="/customers/ShowInpRecordVisitPayment/{{optional($targetContract)->serial_keiyaku}}/{{optional($targetContract)->serial_user}}" class="btn btn-primary my-2">来店・支払い記録</a>
 						</div>
 						<div class="col-auto">
-							<form action="/workers/ContractCancellation/{{optional($targetContract)->serial_keiyaku}}/{{$targetUser->serial_user}}" method="POST" name="KaiyakuFm"  id="KaiyakuFm">@csrf
-								@if(optional($targetContract)->cancel===null)
-									<input name="KaiyakuBtn" type="submit" value="解約" class="btn bg-blue-500 text-white rounded px-3 py-1.5" onclick="return cancel_validate();"/>
-									解約日<input name="KaiyakuDate" id="KaiyakuDate" type="date" value="{{optional($targetContract)->cancel}}"/>
-								@else
-									<input name="KaiyakuModosuBtn" type="submit" value="契約を復活"  class="btn bg-blue-500 text-white rounded px-3 py-1.5" onclick="return modosu_cancel();"/>解約日：{{optional($targetContract)->cancel}}
-								@endif
-							</form>
+							<a href="/workers/MakeContractPDF/{{optional($targetContract)->serial_keiyaku}}" class="btn btn-primary my-2">契約書ダウンロード・印刷</a>
 						</div>
-						<a href="/workers/MakeContractPDF/{{optional($targetContract)->serial_keiyaku}}" class="btn bg-blue-500 text-white rounded px-3 py-2">契約書ダウンロード・印刷</a>
+						
 					</div>
 					<form id="ContractFm" name="ContractFm" action="{{route('customers.insertContract')}}" method="POST" >@csrf
 						<p><div class="mark">契約の登録</div></p>
@@ -48,10 +42,21 @@ input,textarea{border: 1px solid #aaa;}
 								<div class="col-auto">
 									契約番号：<input type="text" name="ContractSerial" value="{{$newKeiyakuSerial}}" class="form-control form-control-sm" readonly>
 								</div>
-								<div class="col-auto"></div>
-								@if(!(optional($targetContract)->cancel===null))解約済み@endif
+								<div class="col-auto">
+									{{--<form action="/workers/ContractCancellation/{{optional($targetContract)->serial_keiyaku}}/{{$targetUser->serial_user}}" method="POST" name="KaiyakuFm"  id="KaiyakuFm">@csrf--}}
+										@if(optional($targetContract)->cancel===null)
+											解約日<input name="KaiyakuDate" id="KaiyakuDate" type="date" value="{{optional($targetContract)->cancel}}"/><input name="KaiyakuBtn" type="submit" value="解約" class="btn btn-warning ml-2 btn-sm" onclick="return cancel_validate();" formaction="/workers/ContractCancellation/{{optional($targetContract)->serial_keiyaku}}/{{$targetUser->serial_user}}"/>
+										@else
+											解約日：{{optional($targetContract)->cancel}}<input name="KaiyakuModosuBtn" type="submit" value="契約を復活"  class="btn btn-warning ml-2 btn-sm" onclick="return modosu_cancel();" formaction="/workers/ContractCancellation/{{optional($targetContract)->serial_keiyaku}}/{{$targetUser->serial_user}}"/>
+										@endif
+									{{--</form>--}}
+								</div>
+								<div class="col-auto">
+									@if(!(optional($targetContract)->cancel===null))解約済み@endif
+								</div>
 							</div>
 							<div class="py-2"><span class="auto-style2">*</span><span class="font-semibold text-1xl text-slate-600">:必須項目</span></div>
+							
 							<div class="py-2">●<span class="auto-style2">*</span>契約締結日：<input name="ContractsDate" id="ContractsDate" type="date" value="{{optional($targetContract)->keiyaku_bi}}"/><span id="ContractsDate_for_error" class="text-danger fw-bold"></span></div>
 							<div class="py-2">●<span class="auto-style2">*</span>契約名：<input name="ContractName" id="ContractName" type="text" class="form-control col-5" value="{{optional($targetContract)->keiyaku_name}}"/><span id="ContractName_for_error" class="text-danger fw-bold"></span></div>
 							<div class="py-3">●<span class="auto-style2">*</span>担当者：{!!$html_staff_slct!!}<span id="staff_slct_for_error" class="text-danger fw-bold"></span></div>
@@ -69,11 +74,12 @@ input,textarea{border: 1px solid #aaa;}
 								<div class="py-2"><span class="auto-style2">*</span>契約金（チェック用入力）：
 									@if(isset($targetContract->keiyaku_kingaku)) 
 										{{-- <input type="text" name="inpTotalAmount" id="inpTotalAmount" value="{{number_format($targetContract->keiyaku_kingaku)}}" class="form-control col-5 cyclic">--}}
-										<input type="text" name="inpTotalAmount" id="inpTotalAmount" value="{{$targetContract->keiyaku_kingaku}}" class="form-control col-5 cyclic">
+										<input type="text" name="inpTotalAmount" id="inpTotalAmount" value="{{$targetContract->keiyaku_kingaku}}" class="form-control col-5 cyclic" onclick="contract_type_manage();">
 										{{--<input type="text" name="inpTotalAmount2" id="inpTotalAmount2" value="{{$targetContract->keiyaku_kingaku}}" class="form-control col-5">--}}
 									@else
-										{{-- <input type="text" name="inpTotalAmount" id="inpTotalAmount" value="" class="form-control col-5 cyclic"> --}}
+										<input type="text" name="inpTotalAmount" id="inpTotalAmount" value="" class="form-control col-5 cyclic" onclick="contract_type_manage();">
 									@endif
+									<span id="inpTotalAmount_for_error" class="text-danger fw-bold"></span>
 								</div>
 							</div>
 							<div class="py-2">
@@ -248,9 +254,10 @@ input,textarea{border: 1px solid #aaa;}
 						<p>メモ：<textarea cols="20" name="memo" id="memo" rows="2" class="bg-white-500 text-black rounded px-3 py-1">{{optional($targetContract)->remarks}}</textarea></p>
 						<p style="text-align: center">
 							@if(optional($targetContract)->cancel===null)
-								<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" onclick="return validate();">登　録</button>
+								{{--<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" onclick="return validate();">登　録</button>--}}
+								<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" form="ContractFm">登　録</button>
 							@else
-								<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" onclick="return canceled_message();" style="background-color:gray">登　録</button>
+								<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" onclick="return canceled_message();" form="ContractFm" style="background-color:gray">登　録</button>
 							@endif
 						</p>
 					</form>

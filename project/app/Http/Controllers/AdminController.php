@@ -33,7 +33,7 @@ class AdminController extends Controller
 		$header="";$slot="";$selectedManth=array();$selectedManth=array();
 		$newKeiyakuSerial=$ContractSerial;
 		$targetContract=Contract::where('serial_keiyaku','=', $ContractSerial)->first();
-		Log::info($targetContract);
+		//Log::info($targetContract);
 		$targetContractdetails=ContractDetail::where('serial_keiyaku','=', $ContractSerial)->get();
 		$targetUser=User::where('serial_user','=', $UserSerial)->first();
 		$HowToPay=array();$HowToPay['card']="";$HowToPay['cash']="";
@@ -58,6 +58,29 @@ class AdminController extends Controller
 		$CardCompanySelect=OtherFunc::make_html_card_company_slct($CardCompany);
 
 		$KeiyakuNaiyouArray=array();$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();$KeiyakuNaiyouSelectArray=array();
+		for($i=0;$i<5;$i++){
+			$KeiyakuNaiyouArray[]="";
+			$KeiyakuNaiyouSelectArray[]=OtherFunc::make_htm_get_treatment_slct("");
+			$keiyakuCnt="";
+			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
+			$KeiyakuTankaArray[]="";
+		}
+		//Log::info($targetContractdetails);
+		if(!empty($targetContractdetails)){
+			$KeiyakuNaiyouArray=array();$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();$KeiyakuNaiyouSelectArray=array();
+			$num=0;
+			foreach($targetContractdetails as $targetContractdetail){
+				$KeiyakuNaiyouArray[$num]=$targetContractdetail->keiyaku_naiyo;
+				$KeiyakuNaiyouSelectArray[$num]=OtherFunc::make_htm_get_treatment_slct($targetContractdetail->keiyaku_naiyo);
+				$keiyakuCnt=$targetContractdetail->keiyaku_num;
+				//Log::alert("keiyakuCnt=".$targetContractdetail->keiyaku_num);
+				$KeiyakuNumSlctArray[$num]=OtherFunc::make_html_keiyaku_num_slct($targetContractdetail->keiyaku_num);
+				$KeiyakuTankaArray[$num]=$targetContractdetail->unit_price;
+				$KeiyakuPriceArray[$num]=$targetContractdetail->price;
+				$num++;
+			}
+		}
+		/*
 		if(empty($targetContractdetails)){
 			for($i=0;$i<5;$i++){
 				$KeiyakuNaiyouArray[]="";
@@ -78,6 +101,7 @@ class AdminController extends Controller
 				$num++;
 			}
 		}
+		*/
 		for($i=$num;$i<=5;$i++){
 			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
 			$KeiyakuTankaArray[]="";
@@ -423,11 +447,12 @@ class AdminController extends Controller
 		}else{
 			$how_many_pay_genkin=null;
 		}
-		//Log::alert('staff_slct='.$request->staff_slct);
 		$keiyakukinngaku=str_replace(',','',mb_convert_kana($request->inpTotalAmount, "n"));
 		if($request->contract_type=='subscription'){
 			$keiyakukinngaku=str_replace(',','',mb_convert_kana($request->inpMonthlyAmount, "n"));
 		}
+		//Log::alert("POST=".$_POST["CardCompanyNameSlct"]);
+		//Log::alert("CardCompanyNameSlct=".$request->CardCompanyNameSlct);
 		$targetData=[
 			'serial_keiyaku' => $request->ContractSerial,
 			'serial_user' => $request->serial_user,
