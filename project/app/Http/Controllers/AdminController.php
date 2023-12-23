@@ -39,7 +39,8 @@ class AdminController extends Controller
 		$HowToPay=array();$HowToPay['card']="";$HowToPay['cash']="";
 		$CardCompany="";$HowManyPay=array();
 	
-		$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_genkin,20,1);	
+		Log::info("how_many_pay_genkin=".$targetContract->how_many_pay_genkin);
+		//$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_genkin,20,1);	
 		$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct("",20,2);
 		if($targetContract->how_to_pay=="Credit Card"){
 			$HowToPay['card']='checked';
@@ -51,9 +52,13 @@ class AdminController extends Controller
 				$HowManyPay['bunkatu']="Checked";
 				$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_card,20,2);		
 			}
+			$HowToPay['cash']='';
+			$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct("",20,1);			
 		}else{
 			$HowToPay['cash']='checked';
-			$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_genkin,20,1);			
+			$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_genkin,20,1);
+			$HowManyPay['bunkatu']="";
+			$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct("",20,2);
 		}
 		$CardCompanySelect=OtherFunc::make_html_card_company_slct($CardCompany);
 
@@ -65,7 +70,7 @@ class AdminController extends Controller
 			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
 			$KeiyakuTankaArray[]="";
 		}
-		//Log::info($targetContractdetails);
+
 		if(!empty($targetContractdetails)){
 			$KeiyakuNaiyouArray=array();$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();$KeiyakuNaiyouSelectArray=array();
 			$num=0;
@@ -430,7 +435,6 @@ class AdminController extends Controller
 	}
 
 	function insertContract(Request $request){
-		//Log::alert('staff_slct='.$request->staff_slct);
 		$motourl = $_SERVER['HTTP_REFERER'];
 		$kyo=date("Y/m/d H:i:s");
 		Storage::append('errorCK.txt', $kyo." / ".$motourl);
@@ -451,8 +455,10 @@ class AdminController extends Controller
 		if($request->contract_type=='subscription'){
 			$keiyakukinngaku=str_replace(',','',mb_convert_kana($request->inpMonthlyAmount, "n"));
 		}
-		//Log::alert("POST=".$_POST["CardCompanyNameSlct"]);
-		//Log::alert("CardCompanyNameSlct=".$request->CardCompanyNameSlct);
+		$how_to_pay=$request->HowPayRdio;
+		if($request->contract_type=='subscription'){
+			$how_to_pay="Credit Card";
+		}
 		$targetData=[
 			'serial_keiyaku' => $request->ContractSerial,
 			'serial_user' => $request->serial_user,
@@ -467,7 +473,7 @@ class AdminController extends Controller
 			'keiyaku_num' => $request->ContractSerial,
 
 			'keiyaku_kingaku_total' => str_replace(',','',$request->TotalAmount),
-			'how_to_pay' => $request->HowPayRdio,
+			'how_to_pay' => $how_to_pay,
 
 			'how_many_pay_genkin' => $how_many_pay_genkin,
 
@@ -501,9 +507,7 @@ class AdminController extends Controller
 					'serial_keiyaku'=>$request->ContractSerial,
 					'serial_user'=>$request->serial_user,
 					'keiyaku_naiyo'=>'サブスクリプション',
-					//'keiyaku_num'=>$request->KeiyakuNumSlct[$i],
 					'unit_price'=>str_replace(',','',$request->inpMonthlyAmount),
-					//'price'=>$request->subTotalAmount[$i],
 				];
 				$targetDataArray[]=$targetDetailData;
 			}else{
