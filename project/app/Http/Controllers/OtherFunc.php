@@ -299,6 +299,7 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_htm_get_treatment_slct($TargetTreatmentName){
+		Log::alert("TargetTreatmentName=".$TargetTreatmentName);
 		$kana = array(
 			"ア行" => "[ア-オあ-お]",
 			"カ行" => "[カ-コガ-ゴか-こが-ご]",
@@ -317,6 +318,7 @@ class OtherFunc extends Controller
 		$tgtGrp="";
 		//$html_customer_list_slct.='<optgroup label="'.$tgtGrp.'>';
 		foreach($treatmentInfArray as $value){
+			$sct="";
 			$match = false;$flg=false;$cnt=0;$k=0;
 			foreach ($kana as $index => $pattern) {
 				//if($tgtGrp<>$index){$html_customer_list_slct.='<optgroup label="'.$index.'">';}
@@ -328,11 +330,14 @@ class OtherFunc extends Controller
 
 						if($cnt>1){$htm_TreatmentsName_slct.='</optgroup>';}
 					};
-					$sct='';
-					if($TargetTreatmentName==$value->name_treatment_contents){
-						//print "TargetTreatmentName=".$TargetTreatmentName."<br>";
-						$sct='Selected';
-						//print "sct=".$sct."<br>";
+					if(empty($TargetTreatmentName)){
+						$sct='';
+					}else{
+						if($TargetTreatmentName==$value->name_treatment_contents){
+							//print "TargetTreatmentName=".$TargetTreatmentName."<br>";
+							$sct='Selected';
+							//print "sct=".$sct."<br>";
+						}
 					}
 					//$htm_TreatmentsName_slct.='<option value="'.$value->name_treatment_contents.'" '.$sct.'>'.$value->name_treatment_contents.'('.$value->treatment_details.')</option>';
 					$htm_TreatmentsName_slct.='<option value="'.$value->name_treatment_contents.'" '.$sct.'>'.$value->name_treatment_contents.'</option>';
