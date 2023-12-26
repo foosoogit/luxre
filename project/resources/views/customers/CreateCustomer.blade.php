@@ -3,7 +3,7 @@
 <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-<script type="text/javascript" src="{{ asset('/js/CreateCustomer.js?20231220') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/CreateCustomer.js?20231221') }}"></script>
 {{--<script  type="text/javascript" src="{{ asset('/js/jquery-3.6.0.min.js') }}"></script>--}}
 <style type="text/css">
 input,textarea{
@@ -128,7 +128,7 @@ input,textarea{
 							〒<input type="text" name="postal" class="p-postal-code bg-white-500 text-black rounded px-3 py-1" size="8" maxlength="8" value="{{optional($target_user)->postal}}" placeholder="123-4567" tabindex="8" ></p>
 						</div>
 						<div class="col-auto">
-							<select class="p-region-id bg-white-500 text-black rounded px-3 py-1" name="region" tabindex="9">
+							<select class="p-region-id bg-white-500 text-black rounded px-3 py-1" name="region" id="region"tabindex="9">
 								<option value="">--都道府県--</option>
 								<option value="1" {{optional($selectedRegion)[1]}}>北海道</option>
 								<option value="2" {{optional($selectedRegion)[2]}}>青森県</option>
@@ -177,11 +177,12 @@ input,textarea{
 								<option value="45" {{optional($selectedRegion)[45]}}>宮崎県</option>
 								<option value="46" {{optional($selectedRegion)[46]}}>鹿児島県</option>
 								<option value="47" {{optional($selectedRegion)[47]}}>沖縄県</option>
-							</select>
+							</select><span id="region_for_error" class="text-danger fw-bold"></span>
 						</div>
 					</div>
 					<p style="text-indent: 1em">
-						<input type="text" name="locality" class="p-locality p-street-address p-extended-address bg-white-500 text-black rounded px-3 py-1" value="{{ optional($target_user)->address_locality }}" tabindex="10"/>
+						<input type="text" name="locality" id="locality" class="p-locality p-street-address p-extended-address bg-white-500 text-black rounded px-3 py-1" value="{{ optional($target_user)->address_locality }}" tabindex="10"/>
+						<span id="locality_for_error" class="text-danger fw-bold"></span>
 					</p>
 					<p style="text-indent: 1em">
 						番地<input type="text" name="address_banti_txt" value="{{optional($target_user)->address_banti}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="11">

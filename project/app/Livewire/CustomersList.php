@@ -25,7 +25,7 @@ class CustomersList extends Component
 	}
     */
     public function searchClear(){
-		Log::alert("searchClear");
+		//Log::alert("searchClear");
 		$this->serch_key_p="";
 		$this->kensakukey="";
 		session(['serchKey' => '']);
@@ -54,9 +54,13 @@ class CustomersList extends Component
 	}
     public function render()
     {
-        if(isset($_SERVER['HTTP_REFERER'])){
+        OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		Log::info($_SESSION['access_history']);
+		/*
+		if(isset($_SERVER['HTTP_REFERER'])){
 			OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		}
+		*/
 		
 		if(!isset($sort_key_p) and session('sort_key')==null){
 			session(['sort_key' =>'']);
@@ -190,7 +194,7 @@ class CustomersList extends Component
 
 		$header="";
 		$slot="";
-
-        return view('livewire.customers-list',compact('users','header','slot','totalZankin','from_place','target_day','from_place'));
+		$from_place2=$_SESSION['access_history'][0];
+        return view('livewire.customers-list',compact('users','header','slot','totalZankin','from_place','target_day','from_place','from_place2'));
     }
 }

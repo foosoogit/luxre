@@ -1,7 +1,7 @@
 @extends('layouts.appCustomer')
 @section('content')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-<script type="text/javascript" src="{{ asset('/js/CreateContract.js?20230124') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/CreateContract.js?20230128') }}"></script>
 
 <style type="text/css">
 .auto-style1 {margin-left: 40px;}
@@ -25,7 +25,7 @@ input,textarea{border: 1px solid #aaa;}
 							<a href="/customers/ShowInpRecordVisitPayment/{{optional($targetContract)->serial_keiyaku}}/{{optional($targetContract)->serial_user}}" class="btn btn-primary my-2">来店・支払い記録</a>
 						</div>
 						<div class="col-auto">
-							<a href="/workers/MakeContractPDF/{{optional($targetContract)->serial_keiyaku}}" class="btn btn-primary my-2">契約書ダウンロード・印刷</a>
+							<a href="/customers/MakeContractPDF/{{optional($targetContract)->serial_keiyaku}}" class="btn btn-primary my-2">契約書ダウンロード・印刷</a>
 						</div>
 						
 					</div>

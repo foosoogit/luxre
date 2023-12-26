@@ -81,7 +81,14 @@ jQuery(document).ready(function($){
 			phone: {
 				required: true,
 				phone_vdt: true
+			},
+			region: {
+				required: true
+			},
+			locality: {
+				required: true
 			}
+
 		},
 		messages: {
 			AdmissionDate: {
@@ -107,6 +114,12 @@ jQuery(document).ready(function($){
 			},
 			phone: {
 		        required: "&nbsp;「電話番号」を入力してください。"
+			},
+			region: {
+		        required: "&nbsp;「都道府県」を選択してください。"
+			},
+			locality: {
+		        required: "&nbsp;「住所」を入力してください。"
 			}
 	  	},
 		errorPlacement: function(error, element) {
@@ -130,6 +143,10 @@ jQuery(document).ready(function($){
 				error.appendTo($('#name_mei_kana_for_error'));
 			}else if(element.attr("name")=="email"){
 				error.appendTo($('#email_for_error'));
+			}else if(element.attr("name")=="region"){
+				error.appendTo($('#region_for_error'));
+			}else if(element.attr("name")=="locality"){
+				error.appendTo($('#locality_for_error'));
 			}else{
 				error.insertAfter(element);
 			}
