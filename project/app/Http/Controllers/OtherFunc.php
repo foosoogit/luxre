@@ -15,6 +15,35 @@ if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function get_goback_url($now_pageURL){
+		
+		$now_array=explode("?", $now_pageURL);
+		Log::alert("now=".$now_array[0]);
+		Log::alert("access_history=".$_SESSION['access_history'][1]);
+		$flg=preg_match('[.*'.$now_array[0].'.*]', $_SESSION['access_history'][1]);
+		Log::alert("flg=".$flg);
+		Log::info($_SESSION['access_history']);
+		Log::info("count=
+		".count($_SESSION['access_history']));
+		if($flg==true){
+			/*
+			for($i=0;$i<count($_SESSION['access_history']);$i++){
+				$flg=preg_match('[.*'.$now_array[0].'.*]', $_SESSION['access_history'][$i]);
+				if($i==0||$i==1){
+					unset($_SESSION['access_history'][$i]);
+				}else if($flg){
+					unset($_SESSION['access_history'][$i]);	
+				}else{
+					break;
+				}
+			}
+			*/
+		}
+		$_SESSION['access_history'] = array_values($_SESSION['access_history']);
+		Log::info($_SESSION['access_history']);
+		return $_SESSION['access_history'][0];
+	}
+
 	public static function get_customer_inf(Request $request){
 		$TargetSerial=sprintf('%06d', $request->TargetSerial);
 		//Log::alert("TargetSerial=".$TargetSerial);

@@ -10,8 +10,8 @@
                             <button class="btn btn-primary" type="button" onclick="location.href='../top'">メニューに戻る</button>
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-primary" type="button" onclick="history.back()">前画面に戻る</button>
-                            {{--<a href="{{$from_place2}}" class="btn btn-primary">前画面に戻る</a>--}}
+                            {{--<button class="btn btn-primary" type="button" onclick="history.back()">前画面に戻る</button>--}}
+                            <a href="{{$from_place2}}" class="btn btn-primary">前画面に戻る</a>
                         </div>
                         @if($from_place=="dayly_rep")
                             <div class="col-auto">

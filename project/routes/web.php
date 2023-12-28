@@ -18,11 +18,11 @@ use App\Http\Livewire\ContractList;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+/*
 Route::get('/', function () {
-    return view('admin/login_admin');
+    redirect ('/top');
 });
-
+*/
 // 管理ログイン画面
 Route::get('/admin-login', [AdminLoginController::class, 'create'])->name('admin.login');
 // 管理ログイン

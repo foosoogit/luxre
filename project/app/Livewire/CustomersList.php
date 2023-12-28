@@ -11,6 +11,7 @@ use App\Consts\initConsts;
 use Illuminate\Http\Request;
 use App\Http\Controllers\OtherFunc;
 use Illuminate\Support\Facades\Log;
+
 if(!isset($_SESSION)){session_start();}
 
 class CustomersList extends Component
@@ -55,7 +56,9 @@ class CustomersList extends Component
     public function render()
     {
         OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		Log::info($_SESSION['access_history']);
+		//Log::alert("REQUEST_URI=".$_SERVER['REQUEST_URI']);
+		//Log::info($_SESSION['access_history']);
+		
 		/*
 		if(isset($_SERVER['HTTP_REFERER'])){
 			OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
@@ -194,6 +197,8 @@ class CustomersList extends Component
 
 		$header="";
 		$slot="";
+		//$from_place2=OtherFunc::get_goback_url($_SERVER['REQUEST_URI']);
+		//$from_place2="";
 		$from_place2=$_SESSION['access_history'][0];
         return view('livewire.customers-list',compact('users','header','slot','totalZankin','from_place','target_day','from_place','from_place2'));
     }
