@@ -444,6 +444,7 @@ class AdminController extends Controller
 
 	function insertContract(Request $request){
 		$motourl = $_SERVER['HTTP_REFERER'];
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$kyo=date("Y/m/d H:i:s");
 		Storage::append('errorCK.txt', $kyo." / ".$motourl);
 		$targetData=array();
@@ -540,26 +541,31 @@ class AdminController extends Controller
 			}
 			ContractDetail::upsert($targetDataArray,['contract_detail_serial']);
 			Storage::append('errorCK.txt', $kyo." / ".$motourl." / ok");
-			$header="";$slot="";
+			//$header="";$slot="";
 			$SerialUser=$request->serial_user;$SerialKeiyaku=$request->ContractSerial;
 			session(['targetUserSerial' => $SerialUser]);
-			if(Auth::user()->serial_teacher=="A_0001"){
+			//if(Auth::user()->serial_teacher=="A_0001"){
 				if(session('ContractManage')=='syusei'){
-					return redirect("/customers/ShowContractList/".$SerialUser);
+					return redirect("/customers/ContractList/".$SerialUser);
 				}else{
+					
 					$userInf=User::where('serial_user','=',$request->serial_user)->first();
 					$keiyakuInf=Contract::where('serial_keiyaku','=',$request->ContractSerial)->first();
 					
 					$msg="氏名: ".$userInf->name_sei." ".$userInf->name_mei."さんの契約を新規登録しました。";
-	
-					if(session('fromMenu')=='MenuCustomerManagement'){
-						$GoBackToPlace="../ShowMenuCustomerManagement";
+					$gobackURL=OtherFunc::get_goback_url($_SERVER['REQUEST_URI']);
+					Log::alert("gobackURL=".$gobackURL);
+					if(preg_match('[.*Inp*]', $gobackURL)){
+						$GoBackToPlace="history.back()";
+					}else if(session('fromMenu')=='MenuCustomerManagement'){
+						$GoBackToPlace="../top";
 					}else if(session('fromMenu')=='CustomersList'){
-						$GoBackToPlace="/customers/ShowCustomersList_livewire";
+						$GoBackToPlace="/customers/CustomersList";
 					}
-			    		return view("layouts.DialogMsgKeiyaku", compact('msg','SerialUser','SerialKeiyaku','GoBackToPlace','header',"slot"));
-		    		}
-			}else{
+			    	return view("layouts.DialogMsgKeiyaku", compact('msg','SerialUser','SerialKeiyaku','GoBackToPlace'));
+		    	}
+			/*
+				}else{
 				if(session('ContractManage')=='syusei'){
 					return redirect("/customers/ContractList/".$SerialUser);
 				}else{
@@ -576,6 +582,7 @@ class AdminController extends Controller
 			    		return view("layouts.DialogMsgKeiyaku", compact('msg','SerialUser','SerialKeiyaku','GoBackToPlace','header',"slot"));
 		    		}
 			}
+			*/
 		}
 	}
 
@@ -1519,7 +1526,7 @@ class AdminController extends Controller
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		session(['fromPage' => 'CustomersList']);
 		session(['fromMenu' => 'CustomersList']);
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		//OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		//Log::info($_SESSION['access_history']);
 		$header="";$slot="";
 		$key="";
@@ -1618,7 +1625,7 @@ class AdminController extends Controller
 	*/
 	
 	public function ShowMenuCustomerManagement(){
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		//OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		//Log::info($_SESSION['access_history']);
 		session(['fromPage' => 'MenuCustomerManagement']);
 		session(['fromMenu' => 'MenuCustomerManagement']);

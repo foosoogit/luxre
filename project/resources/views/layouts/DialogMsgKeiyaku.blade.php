@@ -25,8 +25,17 @@
 							</form>
 						</li>
 						<li class="my-3">
-							<form method="GET" action="{{$GoBackToPlace}}">@csrf
-								<button class="btn btn-primary" type="submit">戻る</button>
+							@if($GoBackToPlace=="history.back()")
+								<button type="button" class="btn btn-primary" onclick="history.back()">前画面に戻る</button>
+							@else
+								<form method="GET" action="{{$GoBackToPlace}}">@csrf
+									<button class="btn btn-primary" type="submit">前画面に戻る</button>
+								</form>
+							@endif
+						</li>
+						<li class="my-3">
+							<form method="GET" action="{{ route('admin.top') }}">@csrf
+								<button class="btn btn-primary" type="submit">メニューに戻る</button>
 							</form>
 						</li>
 					</ul>
