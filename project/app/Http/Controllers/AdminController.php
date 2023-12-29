@@ -124,6 +124,7 @@ class AdminController extends Controller
 		//Log::alert("count=".count($targetContractdetails));
 		if(!empty($targetContractdetails)){
 			//$KeiyakuNaiyouArray=array();$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();$KeiyakuNaiyouSelectArray=array();
+			Log::info($targetContractdetails);
 			$num=0;
 			foreach($targetContractdetails as $targetContractdetail){
 				$KeiyakuNaiyouArray[$num]=$targetContractdetail->keiyaku_naiyo;
@@ -531,7 +532,7 @@ class AdminController extends Controller
 							'keiyaku_naiyo'=>$request->ContractNaiyo[$i],
 							'keiyaku_num'=>$request->KeiyakuNumSlct[$i],
 							'unit_price'=>str_replace(',','',$request->AmountPerNum[$i]),
-							'price'=>$request->subTotalAmount[$i],
+							'price'=>str_replace(',','',$request->subTotalAmount[$i]),
 						];
 						$targetDataArray[]=$targetDetailData;
 					}else{
@@ -545,16 +546,18 @@ class AdminController extends Controller
 			$SerialUser=$request->serial_user;$SerialKeiyaku=$request->ContractSerial;
 			session(['targetUserSerial' => $SerialUser]);
 			//if(Auth::user()->serial_teacher=="A_0001"){
+			//Log::alert("contract_sheet=".isset($request->contract_sheet));
+			if(isset($request->contract_sheet)){
+				return redirect('/customers/MakeContractPDF/'.$request->ContractSerial);
+			}else{
 				if(session('ContractManage')=='syusei'){
 					return redirect("/customers/ContractList/".$SerialUser);
 				}else{
-					
 					$userInf=User::where('serial_user','=',$request->serial_user)->first();
 					$keiyakuInf=Contract::where('serial_keiyaku','=',$request->ContractSerial)->first();
-					
 					$msg="氏名: ".$userInf->name_sei." ".$userInf->name_mei."さんの契約を新規登録しました。";
 					$gobackURL=OtherFunc::get_goback_url($_SERVER['REQUEST_URI']);
-					Log::alert("gobackURL=".$gobackURL);
+					
 					if(preg_match('[.*Inp*]', $gobackURL)){
 						$GoBackToPlace="history.back()";
 					}else if(session('fromMenu')=='MenuCustomerManagement'){
@@ -562,8 +565,9 @@ class AdminController extends Controller
 					}else if(session('fromMenu')=='CustomersList'){
 						$GoBackToPlace="/customers/CustomersList";
 					}
-			    	return view("layouts.DialogMsgKeiyaku", compact('msg','SerialUser','SerialKeiyaku','GoBackToPlace'));
-		    	}
+					return view("layouts.DialogMsgKeiyaku", compact('msg','SerialUser','SerialKeiyaku','GoBackToPlace'));
+				}
+			}
 			/*
 				}else{
 				if(session('ContractManage')=='syusei'){
@@ -1321,8 +1325,9 @@ class AdminController extends Controller
 			}
 		}
 		$pdf = \PDF::loadView('printing.contracts.contracts',compact('keiyaku_inf','User_inf','ContractDetail_inf','SentenceHowToPay','prefecture_name'));
-		//$pdf->setPaper('A4');       
-		return $pdf->stream('title.pdf');	
+		//$pdf->setPaper('A4');
+		return $pdf->download('test.pdf');    
+		//return $pdf->stream('title.pdf');	
 	}
 
 	public function DeleteSalseGood($serial_sales){

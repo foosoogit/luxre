@@ -14,6 +14,7 @@ input,textarea{border: 1px solid #aaa;}
     <div class="container">
             <div class="col-md-12 py-4">
             	<div class="container-fluid">
+					<form id="ContractFm" name="ContractFm" action="{{route('customers.insertContract')}}" method="POST" >@csrf
 					<div class="row mb-2">
 						<div class="col-auto">
 							<a href="../../../top" class="btn btn-primary my-2">メニュー</a>
@@ -25,11 +26,10 @@ input,textarea{border: 1px solid #aaa;}
 							<a href="/customers/ShowInpRecordVisitPayment/{{optional($targetContract)->serial_keiyaku}}/{{optional($targetContract)->serial_user}}" class="btn btn-primary my-2">来店・支払い記録</a>
 						</div>
 						<div class="col-auto">
-							<a href="/customers/MakeContractPDF/{{optional($targetContract)->serial_keiyaku}}" class="btn btn-primary my-2">契約書ダウンロード・印刷</a>
+							<button  class="btn btn-primary my-2" type="submit" form="ContractFm" name="contract_sheet" value="contract_sheet" onclick="return window.confirm('保存してから契約書を作成します。よろしいですか？')">契約書ダウンロード・印刷</button>
+							{{-- <a href="/customers/MakeContractPDF/{{optional($targetContract)->serial_keiyaku}}" class="btn btn-primary my-2">契約書ダウンロード・印刷</a> --}}
 						</div>
-						
 					</div>
-					<form id="ContractFm" name="ContractFm" action="{{route('customers.insertContract')}}" method="POST" >@csrf
 						<p><div class="mark">契約の登録</div></p>
 						<div class="container-fluid">
 							<div class="row border-bottom border-primary" style="padding-bottom:10px;">
@@ -255,9 +255,9 @@ input,textarea{border: 1px solid #aaa;}
 						<p style="text-align: center">
 							@if(optional($targetContract)->cancel===null)
 								{{--<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" onclick="return validate();">登　録</button>--}}
-								<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" form="ContractFm">登　録</button>
+								<button  class="btn btn-primary w-100 my-3" type="submit" form="ContractFm">登　録</button>
 							@else
-								<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" onclick="return canceled_message();" form="ContractFm" style="background-color:gray">登　録</button>
+								<button  class="btn btn-primary w-100 my-3" type="submit" onclick="return canceled_message();" form="ContractFm" style="background-color:gray">登　録</button>
 							@endif
 						</p>
 					</form>

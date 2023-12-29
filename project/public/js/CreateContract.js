@@ -2,6 +2,8 @@
 	contract_type_manage();
 }
 
+window.confirm("これが確認ダイアログです。");
+
 function contract_type_manage(){
 	console.log('ontract_type_manage');
     subscription_obj=document.getElementById("contract_type_subscription");
@@ -26,14 +28,6 @@ function contract_type_manage(){
 				obj_subsc_array[i].style.display="";
 			}
 		}
-		/*
-		for(var i=0;i<cyclic_obj.length;i++){
-			cyclic_obj[i].disabled = true;
-		}
-		for(var i=0;i<obj_subsc_array.length;i++){
-			obj_subsc_array[i].disabled = false;
-		}
-		*/
 	}else if(cyclic_obj.checked==true){
 		//console.log("checked="+subscription_obj.checked);
 		for(var i=0;i<obj_subsc_array.length;i++){
@@ -52,28 +46,7 @@ function contract_type_manage(){
 				obj_cyclic_array[i].style.display="";
 			}
 		}
-		/*
-		for(var i=0;i<cyclic_obj.length;i++){
-			cyclic_obj[i].disabled = false;
-		}
-		for(var i=0;i<obj_subsc_array.length;i++){
-			obj_subsc_array[i].disabled = true;
-		}
-		*/
 	}
-
-	/*
-	for(var i=0;i<obj_cyclic_array.length;i++){
-		obj_cyclic_array[i].disabled = subscription_obj.checked;
-		if(obj_cyclic_array[i].type=="text"){
-			obj_cyclic_array[i].value="";
-		}else if(obj_cyclic_array[i].nodeName=="SELECT"){
-			obj_cyclic_array[i].options[0].selected=true;
-		}else if(obj_cyclic_array[i].nodeName=="TABLE" || obj_cyclic_array[i].nodeName=="P" || obj_cyclic_array[i].nodeName=="DIV" || obj_cyclic_array[i].nodeName=="DATE" || obj_cyclic_array[i].nodeName=="LABEL"){
-			obj_cyclic_array[i].style.display=CyclicDipNon;
-		}
-	}
-	*/
 }
 
 function ContractNaiyoSlctManage(obj){
@@ -83,7 +56,6 @@ function ContractNaiyoSlctManage(obj){
 }
 
 function reason_coming_sonota_manage(){
-	//console.log('reason_coming_sonota_manage');
 	if(document.getElementById("reason_coming_cbx_sonota").checked==true){
 		document.getElementById("reason_coming_txt").disabled=false;
 	}else{
@@ -93,7 +65,6 @@ function reason_coming_sonota_manage(){
 }
 
 jQuery(document).ready(function($){
-	//console.log("test");
 	$("#ContractFm").validate({
 		rules : {
 			ContractsDate: {
