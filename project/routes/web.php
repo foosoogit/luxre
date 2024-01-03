@@ -7,6 +7,7 @@ use App\Http\Requests\InpCustomerRequest;
 use App\Http\Controllers\OtherFunc;
 use App\Http\Livewire\CustomersList;
 use App\Http\Livewire\ContractList;
+use App\Http\Livewire\DailyReport;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,18 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
+   
+    
+    Route::get('/admin/ShowDailyReport', [DailyReport::class])->name("ShowDailyReport");
+    /*
+    Route::post('/admin/ShowDailyReport', DailyReport::class);
+    Route::post('/admin/ShowDailyReport_from_monthly_report', DailyReport::class,function(Request $request){});
+    Route::get('/admin/ShowDailyReport_from_customers_List', DailyReport::class);
+    Route::post('/admin/ShowDailyReport_from_customers_List', DailyReport::class,function(Request $request){});
+    */
+    
     Route::controller(AdminController::class)->name('customers.')->group(function() {
+        Route::post('/ajax_SaveMedicalRecord', [AdminController::class,'ajax_SaveMedicalRecord'])->name("SaveMedicalRecord");
         Route::get('/customers/MakeContractPDF/{ContractSerial}', [AdminController::class,'MakeContractPDF',function($TargetMonth){}])->name("MakeContractPDF");
         Route::get('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminController::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){session(['ContractSerial' => $ContractSerial,'UserSerial'=>$UserSerial]);}]);
 	    Route::post('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminControllerr::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){}]);
