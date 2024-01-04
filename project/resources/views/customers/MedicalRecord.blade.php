@@ -69,7 +69,7 @@
 			<input name="target_file" id="target_file" type="hidden" value="{{$target_file}}"/>
 			<a id="download_link" alt="ダウンロード用保存図リンク"></a>
 		</div>
-	</div>127.0.0.1:8000 
+	</div>
 	<input type="hidden" value="{{asset('/storage/images/Image_body_w796_h496.png')}}" name="imge_url" id="imge_url"/>
 	<input type="hidden" value="{{$host_url}}" name="HTTP_HOST" id="HTTP_HOST"/>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
