@@ -1,7 +1,10 @@
 ﻿//console.log('Media');
 //canvasの読み込み設定
+let undoImg_array = new Array();
 var canvas = document.getElementById("canvas");
-	//canvas.crossOrigin = "anonymous"; 
+let ctx = canvas.getContext("2d");
+let image_url=document.getElementById("imge_url").value;
+//canvas.crossOrigin = "anonymous"; 
 	/*
 	// PC対応
 	canvas.addEventListener('mousedown', startPoint, false);
@@ -14,29 +17,38 @@ var canvas = document.getElementById("canvas");
 	*/
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
-console.log("height 1="+canvas.height);
 var VisitHistorySerial = document.getElementById("visit_history_serial").value;
 var ContractSerial = document.getElementById("contract_serial").value;
-var ctx = canvas.getContext("2d");
+
 	//console.log("ctx="+ctx);
 const chara = new Image();
+//chara.setAttribute('crossorigin', 'anonymous');
+let host_url=document.getElementById("HTTP_HOST").value
+console.log("host_url="+host_url);
 if(document.getElementById("target_file").value!=""){
-	chara.src ='https://foosoo.xsrv.jp/'+document.getElementById("target_file").value;
-	console.log("src="+chara.src);
+	//chara.src ='https://foosoo.xsrv.jp/images/Image_body_w796_h496.png/'+document.getElementById("target_file").value;
+	//chara.src =host_url+'/images/Image_body_w796_h496.png/'+document.getElementById("target_file").value;
+	chara.src ='http://'+host_url+"/images/Image_body_w796_h496.png/"+document.getElementById("target_file").value;
 	chara.onload = () => {
 		var bairitu=2;
-			//ctx.drawImage(chara,100,0,172*bairitu,219*bairitu);
 		ctx.drawImage(chara,0,0,canvas.width,canvas.height);
 	};
 }else{
-	chara.src = 'https://foosoo.xsrv.jp/images/Image_body_w796_h496.png';
+	//chara.src = 'https://foosoo.xsrv.jp/images/Image_body_w796_h496.png';
+	//chara.src = 'file:///H:Keys/BeautySalon/Image_body_w796_h496.png';
+	//chara.src ="http://127.0.0.1:8000/images/Image_body_w796_h496.png";
+	chara.src ='http://'+host_url+"/images/Image_body_w796_h496.png";
+	console.log("src="+chara.src);
+	//chara.src ="../storage/images/Image_body_w796_h496.png";
+	//chara.src =image_url;
+	//console.log("image_url="+image_url);
 	chara.onload = () => {
 		var bairitu=2;
-		//ctx.drawImage(chara,100,0,172*bairitu,219*bairitu);
 		ctx.drawImage(chara,-50,0,canvas.width,canvas.height);
 	};
 }
-let undoImg_array = new Array();
+//chara.crossOrigin="anonymous";
+//let undoImg_array = new Array();
 var undoImageBui;
 var target_bui_array_num=Array();
 //マウスを操作する
@@ -63,14 +75,20 @@ canvas.addEventListener("mousemove",function(e) {
 });
 //クリックしたら描画をOKの状態にする
 canvas.addEventListener("mousedown",function(e) {
-    draw = true;
+	//console.log("mousedown");
+	draw = true;
     mouseX1 = mouseX;
     mouseY1 = mouseY;
+	//console.log("mouseX="+mouseX);
+	//console.log(undoImg_array);
+	//console.log("ctxDAT="+ctx.getImageData(0, 0,canvas.width,canvas.height));
     undoImg_array.push(ctx.getImageData(0, 0,canvas.width,canvas.height));
 });
 //クリックを離したら、描画を終了する
 canvas.addEventListener("mouseup", function(e){
 	draw = false;
+	//console.log(undoImg_array);
+	//console.log("ctxDAT2="+ctx.getImageData(0, 0,canvas.width,canvas.height));
 });
 //初期化ボタンを起動する
 $('#initialize').click(function(e) {
@@ -149,13 +167,12 @@ function GetCampasSize(){
 }
 	
 function SaveMedicalRecord(obj){
-	
 	var TargetCanvas = document.getElementById("canvas");
 	//TargetCanvas.crossOrigin = "anonymous";
-	console.log("TargetCanvasheight="+TargetCanvas.height);
+	//console.log("TargetCanvasheight="+TargetCanvas.height);
 	var img_url = TargetCanvas.toDataURL("image/png").replace(new RegExp("data:image/png;base64,"),"");
 	//var img_url = TargetCanvas.toDataURL("image/png");
-	console.log("img_url ="+img_url);
+	//console.log("test");
 	$.ajax({
 		url: "/ajax_SaveMedicalRecord",
 		//data: {"upload_data":img_url,"VisitHistorySerial":document.getElementById('visit_history_serial').value,"ImageDataArray":ImageDataArray},

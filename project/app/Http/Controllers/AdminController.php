@@ -27,6 +27,40 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function ajax_SaveMedicalRecord(Request $request){
+		$target_file_name=session('ContractSerial')."-".$request->VisitHistorySerial;
+		$result=array();
+		Log::alert('target_file_name='.$target_file_name);
+		//http://127.0.0.1:8000/images
+		/*
+		if(Storage::exists('MedicalRecord/'.$target_file_name.'*.png')){
+			Log::alert('発見');
+		}
+		*/
+		foreach(glob("http://127.0.0.1:8000/MedicalRecord/".$target_file_name."*.png") as $file) {
+			$result[] = $file;
+		}
+		if(count($result)>0){
+			unlink($result[0]);
+			$filename_array=explode('-',$result[0]);
+			$sv_cnt=$filename_array[3];
+			$sv_cnt=str_replace('.png', '', $sv_cnt);
+			$sv_cnt++;
+			$num=sprintf('%02d', $sv_cnt);
+			$new_file_name=session('ContractSerial')."-".$request->VisitHistorySerial."-".$num.".png";
+		}else{
+			$new_file_name=session('ContractSerial')."-".$request->VisitHistorySerial."-01.png";
+		}
+		$fp = fopen('storage/MedicalRecord/'.$new_file_name,'w');
+		$upload_data=$_POST['upload_data'];
+		fwrite($fp,base64_decode($upload_data));
+		fclose($fp);
+		$ts=str_replace('K', 'V', session('ContractSerial')."-".$request->VisitHistorySerial);
+		VisitHistory::where('visit_history_serial', '=', $ts)->update([
+			'serial_staff' => $request->StaffSerial
+		]);
+	}
+
 	public function ShowContractList($UserSerial,Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		//Log::info($_SESSION['access_history']);
@@ -924,7 +958,9 @@ class AdminController extends Controller
 		$visit_history_num_int=(int)$visit_history_num;
 		$visit_history_serial=str_replace( "K","V" , session('ContractSerial')."-".$visit_history_num);
 		$VisitHistoryArray=VisitHistory::where('visit_history_serial','=',$visit_history_serial)->first();
-		//Log::alert('VisitDate='.$request->visitDate[1]);
+		//Log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
+		
+		
 		//"visitDate.0"
 		$tg='"visitDate.'.$visit_history_num_int.'"';
 		if($visit_history_num_int==1){
@@ -1071,8 +1107,9 @@ class AdminController extends Controller
 		}
 		$html_staff_slct=OtherFunc::make_html_staff_slct($VisitHistoryArray->serial_staff);
 		//$html_staff_slct=OtherFunc::make_html_staff_slct($SerialStaff);
+		$host_url=$_SERVER['HTTP_HOST'];
 		$ContractSerial=session('ContractSerial');
-		return view('customers.MedicalRecord',compact('html_staff_slct','target_file','ContractSerial','visit_history_num','UserInf','keiyaku_name'));
+		return view('customers.MedicalRecord',compact('host_url','html_staff_slct','target_file','ContractSerial','visit_history_num','UserInf','keiyaku_name'));
 	}
 	/*
 	public function ShowMedicalRecord(Request $request){
@@ -1089,51 +1126,6 @@ class AdminController extends Controller
 		$keiyaku_name=$keiyaku_array->keiyaku_name;
 		$ContractSerial=session('ContractSerial');
 		return view('customers.MedicalRecord',compact('target_file','ContractSerial','visit_history_serial','UserInf','keiyaku_name'));
-	}
-	*/
-	
-	public function ajax_SaveMedicalRecord(Request $request){
-		$target_file_name=session('ContractSerial')."-".$request->VisitHistorySerial;
-		$result=array();
-		//Log::alert('count='.count($result));
-		foreach(glob("storage/MedicalRecord/".$target_file_name."*.png") as $file) {
-			$result[] = $file;
-		}
-		//Log::alert('count='.count($result));
-		if(count($result)>0){
-			unlink($result[0]);
-			$filename_array=explode('-',$result[0]);
-			$sv_cnt=$filename_array[3];
-			$sv_cnt=str_replace('.png', '', $sv_cnt);
-			$sv_cnt++;
-			$num=sprintf('%02d', $sv_cnt);
-			$new_file_name=session('ContractSerial')."-".$request->VisitHistorySerial."-".$num.".png";
-		}else{
-			$new_file_name=session('ContractSerial')."-".$request->VisitHistorySerial."-01.png";
-		}
-		
-		//Log::alert('filename_array='.$filename_array[3]);
-		
-		$fp = fopen('storage/MedicalRecord/'.$new_file_name,'w');
-		$upload_data=$_POST['upload_data'];
-		fwrite($fp,base64_decode($upload_data));
-		fclose($fp);
-		
-		$ts=str_replace('K', 'V', session('ContractSerial')."-".$request->VisitHistorySerial);
-		//Log::alert('ts='.$ts);
-		//Log::alert('StaffSerial='.$request->StaffSerial);
-		VisitHistory::where('visit_history_serial', '=', $ts)->update([
-			'serial_staff' => $request->StaffSerial
-		]);
-	}
-	/*BK
-	public function ajax_SaveMedicalRecord(Request $request){
-		$upload_data=$_POST['upload_data'];
-		$new_file_name=session('ContractSerial')."-".$request->VisitHistorySerial.".png";
-		$fp = fopen('storage/MedicalRecord/'.$new_file_name,'w');
-		fwrite($fp,base64_decode($upload_data));
-		fclose($fp);
-
 	}
 	*/
 	
