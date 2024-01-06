@@ -20,15 +20,19 @@ canvas.height = canvas.clientHeight;
 var VisitHistorySerial = document.getElementById("visit_history_serial").value;
 var ContractSerial = document.getElementById("contract_serial").value;
 
-	//console.log("ctx="+ctx);
 const chara = new Image();
-//chara.setAttribute('crossorigin', 'anonymous');
 let host_url=document.getElementById("HTTP_HOST").value
 console.log("host_url="+host_url);
+console.log("target_file="+document.getElementById("target_file").value);
+let tf='http://'+host_url+'/'+document.getElementById("target_file").value;
+console.log("tf="+tf);
 if(document.getElementById("target_file").value!=""){
 	//chara.src ='https://foosoo.xsrv.jp/images/Image_body_w796_h496.png/'+document.getElementById("target_file").value;
 	//chara.src =host_url+'/images/Image_body_w796_h496.png/'+document.getElementById("target_file").value;
-	chara.src ='http://'+host_url+"/images/Image_body_w796_h496.png/"+document.getElementById("target_file").value;
+	//chara.src ='http://'+host_url+"/MedicalRecord/"+document.getElementById("target_file").value;
+	//chara.src ="http://"+$hst+"MedicalRecord/"+document.getElementById("target_file").value;
+	//chara.src ='http://'+host_url+"/images/Image_body_w796_h496.png/"+document.getElementById("target_file").value;
+	chara.src =tf;
 	chara.onload = () => {
 		var bairitu=2;
 		ctx.drawImage(chara,0,0,canvas.width,canvas.height);

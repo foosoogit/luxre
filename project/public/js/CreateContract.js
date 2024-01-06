@@ -2,7 +2,7 @@
 	contract_type_manage();
 }
 
-window.confirm("これが確認ダイアログです。");
+//window.confirm("これが確認ダイアログです。");
 
 function contract_type_manage(){
 	console.log('ontract_type_manage');
