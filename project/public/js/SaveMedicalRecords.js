@@ -1,8 +1,4 @@
 ﻿function save_target_contract_money(png){
-	//var result = prompt(obj.name+" の目標金額を入力してください。");
-	//console.log(obj.name);
-	//console.log(result);
-	
 	if(result!==null){
 		$.ajax({
 			url: "/ajax_save_madical_record",
@@ -24,14 +20,14 @@
 			alert(errorThrown);	
 			alert('エラー');
 		});
-		//alert(result);
+
 		document.getElementsByName(obj.name).value=result;
 		const formatter = new Intl.NumberFormat('ja-JP');
 		document.getElementById(obj.name+"-display").innerText = formatter.format(result);
 		tasseiritu=parseInt(document.getElementById(obj.name+"-gokei").innerText, 10)/parseInt(result, 10)*100;
-		//console.log("tasseiritu="+tasseiritu);
 		tasseiritu=Math.round(tasseiritu*10)/10;
 		//console.log("tasseiritu2="+tasseiritu);
 		document.getElementById(obj.name+"-tassei").innerText = tasseiritu;
+
 	}
 }

@@ -27,32 +27,19 @@ console.log("target_file="+document.getElementById("target_file").value);
 let tf='https://'+host_url+'/'+document.getElementById("target_file").value;
 console.log("tf="+tf);
 if(document.getElementById("target_file").value!=""){
-	//chara.src ='https://foosoo.xsrv.jp/images/Image_body_w796_h496.png/'+document.getElementById("target_file").value;
-	//chara.src =host_url+'/images/Image_body_w796_h496.png/'+document.getElementById("target_file").value;
-	//chara.src ='http://'+host_url+"/MedicalRecord/"+document.getElementById("target_file").value;
-	//chara.src ="http://"+$hst+"MedicalRecord/"+document.getElementById("target_file").value;
-	//chara.src ='http://'+host_url+"/images/Image_body_w796_h496.png/"+document.getElementById("target_file").value;
 	chara.src =tf;
 	chara.onload = () => {
 		var bairitu=2;
 		ctx.drawImage(chara,0,0,canvas.width,canvas.height);
 	};
 }else{
-	//chara.src = 'https://foosoo.xsrv.jp/images/Image_body_w796_h496.png';
-	//chara.src = 'file:///H:Keys/BeautySalon/Image_body_w796_h496.png';
-	//chara.src ="http://127.0.0.1:8000/images/Image_body_w796_h496.png";
 	chara.src ='https://'+host_url+"/images/Image_body_w796_h496.png";
 	console.log("src="+chara.src);
-	//chara.src ="../storage/images/Image_body_w796_h496.png";
-	//chara.src =image_url;
-	//console.log("image_url="+image_url);
 	chara.onload = () => {
 		var bairitu=2;
 		ctx.drawImage(chara,-50,0,canvas.width,canvas.height);
 	};
 }
-//chara.crossOrigin="anonymous";
-//let undoImg_array = new Array();
 var undoImageBui;
 var target_bui_array_num=Array();
 //マウスを操作する
@@ -62,7 +49,6 @@ var draw = false;
 canvas.addEventListener("mousemove",function(e) {
 	var rect = e.target.getBoundingClientRect();  
 	ctx.lineWidth = document.getElementById("lineWidth").value;
-	//ctx.globalAlpha = document.getElementById("alpha").value/100;
 	ctx.globalAlpha = 1;
 	mouseX = e.clientX - rect.left;
 	mouseY = e.clientY - rect.top;
@@ -79,37 +65,22 @@ canvas.addEventListener("mousemove",function(e) {
 });
 //クリックしたら描画をOKの状態にする
 canvas.addEventListener("mousedown",function(e) {
-	//console.log("mousedown");
 	draw = true;
     mouseX1 = mouseX;
     mouseY1 = mouseY;
-	//console.log("mouseX="+mouseX);
-	//console.log(undoImg_array);
-	//console.log("ctxDAT="+ctx.getImageData(0, 0,canvas.width,canvas.height));
     undoImg_array.push(ctx.getImageData(0, 0,canvas.width,canvas.height));
 });
 //クリックを離したら、描画を終了する
 canvas.addEventListener("mouseup", function(e){
 	draw = false;
-	//console.log(undoImg_array);
-	//console.log("ctxDAT2="+ctx.getImageData(0, 0,canvas.width,canvas.height));
 });
 //初期化ボタンを起動する
 $('#initialize').click(function(e) {
 	if(!confirm('本当に初期化しますか？')) return;
 	ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
-	//ctx.clearRect(0, 0, canvas.width, canvas.height);
-        /*
-        var undo_cnt=undoImg_array.length-1;
-        for(let i=undo_cnt;i>-2;i--){
-        		ctx.putImageData(undoImg_array[i],0,0);
-        		undoImg_array.pop();
-        }
-	*/
 	chara.src = 'https://foosoo.xsrv.jp/images/Image_body_w796_h496.png';
 	chara.onload = () => {
 		var bairitu=2;
-		//ctx.drawImage(chara,100,0,172*bairitu,219*bairitu);
 		ctx.drawImage(chara,-50,0,canvas.width,canvas.height);
 	}
 	
@@ -173,10 +144,10 @@ function GetCampasSize(){
 function SaveMedicalRecord(obj){
 	var TargetCanvas = document.getElementById("canvas");
 	//TargetCanvas.crossOrigin = "anonymous";
-	//console.log("TargetCanvasheight="+TargetCanvas.height);
+	console.log("TargetCanvasheight="+TargetCanvas.height);
 	var img_url = TargetCanvas.toDataURL("image/png").replace(new RegExp("data:image/png;base64,"),"");
 	//var img_url = TargetCanvas.toDataURL("image/png");
-	//console.log("test");
+	console.log("test");
 	$.ajax({
 		url: "/ajax_SaveMedicalRecord",
 		//data: {"upload_data":img_url,"VisitHistorySerial":document.getElementById('visit_history_serial').value,"ImageDataArray":ImageDataArray},
@@ -185,7 +156,7 @@ function SaveMedicalRecord(obj){
 		//data: {"ImgArray_json":ImgArray_json},
 		//data: {"ImgArray_json":undoImg},
 	        	//dataType: 'json',
-	        	type: 'POST',
+	    type: 'POST',
 		//data: fData ,
 		//contentType: false,
 		//processData: false,

@@ -159,7 +159,7 @@ class AdminController extends Controller
 		$host_url=$_SERVER['HTTP_HOST'];
 		//$target_file="http://".$host_url."/MedicalRecord/".session('ContractSerial')."-".$request->count_btn."*.png";
 		$serch_file="MedicalRecord/".session('ContractSerial')."-".$request->count_btn."*.png";
-		Log::alert('serch_file='.$serch_file);
+		//Log::alert('serch_file='.$serch_file);
 		//$target_file='storage/MedicalRecord/'.session('ContractSerial')."-".$request->count_btn."*.png";
 		$result=array();
 		//foreach(glob($target_file) as $file) {
@@ -169,16 +169,16 @@ class AdminController extends Controller
 		//foreach(glob("MedicalRecord/K_000001-0001-01*.png") as $file) {
 		foreach(glob($serch_file) as $file) {
 			$result[] = $file;
-			Log::alert('file='.$file);
+			//Log::alert('file='.$file);
 		}
-		Log::alert('count='.count($result));
+		//Log::alert('count='.count($result));
 		if(count($result)>0){
 			$target_file=$result[0];
 			
 		}else{
 			$target_file="";
 		}
-		Log::alert('target_file='.$target_file);
+		//Log::alert('target_file='.$target_file);
 		$array=explode('-', $request->VisitHistorySerial);
 		$UserSerial=str_replace('V_', '', $array[0]);
 		$UserInf=User::where('serial_user','=',$UserSerial)->first();
@@ -208,14 +208,15 @@ class AdminController extends Controller
 		}
 		*/
 		$hst=$_SERVER['HTTP_HOST'];
-		//Log::alert("http://".$hst."/MedicalRecord/".$target_file_name."*.png");
-		Log::alert("http://".$hst."/MedicalRecord/".$target_file_name."*.png");
+		
+		Log::alert("target_file_name=".$target_file_name);
 		//foreach(glob("http://127.0.0.1:8000/MedicalRecord/".$target_file_name."*.png") as $file) {
 		//foreach(glob("http://".$hst."/MedicalRecord/".$target_file_name."*.png") as $file) {
 			
 		foreach(glob("MedicalRecord/".$target_file_name."*.png") as $file) {
 			$result[] = $file;
 		}
+		//Log::alert("http://".$hst."/MedicalRecord/".$target_file_name."*.png");
 		if(count($result)>0){
 			unlink($result[0]);
 			$filename_array=explode('-',$result[0]);

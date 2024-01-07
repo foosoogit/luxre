@@ -392,9 +392,9 @@ table td {border: 1px solid #aaa;}
 					@endif
 				</script>
 				@if(optional($targetContract)->cancel===null)
-					<p style="text-align: center"><button class="btn btn-primary" type="submit" name="KeiyakuSerialBtn" id="KeiyakuSerialBtn" onclick="return payment_manage();">　　登　録　　</button></p>
+					<p style="text-align: center"><button class="btn btn-primary w-100 my-3" type="submit" name="KeiyakuSerialBtn" id="KeiyakuSerialBtn" onclick="return payment_manage();">　　登　録　　</button></p>
 				@else
-					<p style="text-align: center"><button class="btn btn-primary" type="submit" name="KeiyakuSerialBtn" id="KeiyakuSerialBtn" onclick="return canceled_message();" style="background-color:gray">　　登　録　　</button></p>
+					<p style="text-align: center"><button class="btn btn-primary w-100 my-3" type="submit" name="KeiyakuSerialBtn" id="KeiyakuSerialBtn" onclick="return canceled_message();" style="background-color:gray">　　登　録　　</button></p>
 				@endif
 				</form>
                         <p>郵便番号：{{ $targetUser->postal }}</p>
