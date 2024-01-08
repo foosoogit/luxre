@@ -34,8 +34,14 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
    
-    
-    Route::get('/admin/ShowDailyReport', [DailyReport::class])->name("ShowDailyReport");
+    //Route::get('admin/ShowDailyReport', DailyReport::class);
+    Route::name('admin.')->group(function() {
+        Route::get('/admin/ShowDailyReport', function () {
+            return view('admin.DailyReport');
+        })->name('admin.DailyReport');
+    });
+
+    //Route::get('/admin/ShowDailyReport', [DailyReport::class])->name("ShowDailyReport");
     /*
     Route::post('/admin/ShowDailyReport', DailyReport::class);
     Route::post('/admin/ShowDailyReport_from_monthly_report', DailyReport::class,function(Request $request){});

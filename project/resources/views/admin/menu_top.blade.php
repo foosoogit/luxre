@@ -59,8 +59,8 @@
 								</form>
 							</li>
 							<li>
-								{{--<form method="GET" action="/admin/ShowDailyReport">@csrf --}}
-								<form method="GET" action="{{route('ShowDailyReport')}}">@csrf
+								<form method="GET" action="admin/ShowDailyReport">@csrf
+								{{--<form method="GET" action="{{route('ShowDailyReport')}}">@csrf--}}
 									<button class="btn btn-primary btn-sm" type="submit">日報</button>
 								</form>
 							</li>

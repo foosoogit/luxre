@@ -8,7 +8,7 @@ use App\Models\PaymentHistory;
 use App\Models\SalesRecord;
 use App\Models\Good;
 use App\Consts\initConsts;
-use App\Library\OtherFunc;
+use App\Http\Controllers\OtherFunc;
 if(!isset($_SESSION)){session_start();}
 
 class DailyReport extends Component
@@ -71,11 +71,11 @@ class DailyReport extends Component
         $total=$subtotal_treatment+$subtotal_good;
         $Sum=array();
         $Sum['cash']=PaymentHistory::where('date_payment','=',$today)
-                ->leftJoin('keiyakus', 'payment_histories.serial_keiyaku', '=', 'keiyakus.serial_keiyaku')
+                ->leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
                 ->where('payment_histories.how_to_pay','=','cash')
-                //->where('keiyakus.how_many_pay_genkin','=','1')
+                //->where('contracts.how_many_pay_genkin','=','1')
                  ->where(function($query) {
-                    $query->where('keiyakus.how_many_pay_genkin','=','1')->orWhere('keiyakus.how_many_pay_card','=','1');
+                    $query->where('contracts.how_many_pay_genkin','=','1')->orWhere('contracts.how_many_pay_card','=','1');
                 })
             ->sum('amount_payment');
     
@@ -91,14 +91,14 @@ class DailyReport extends Component
     
     
         $Sum['CashSplit']=PaymentHistory::where('date_payment','=',$today)
-                ->leftJoin('keiyakus', 'payment_histories.serial_keiyaku', '=', 'keiyakus.serial_keiyaku')
+                ->leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
                 ->where('payment_histories.how_to_pay','=','cash')
-                //->where('keiyakus.how_many_pay_genkin','>','1')
+                //->where('contracts.how_many_pay_genkin','>','1')
                  ->where(function($query) {
-                    $query->where('keiyakus.how_many_pay_genkin','>','1')->orWhere('keiyakus.how_many_pay_card','>','1');
+                    $query->where('contracts.how_many_pay_genkin','>','1')->orWhere('contracts.how_many_pay_card','>','1');
                 })
     
-                //->where('keiyakus.how_many_pay_genkin','>','1')
+                //->where('contracts.how_many_pay_genkin','>','1')
                 ->sum('amount_payment');
         
         $Sum['total_cash']=$Sum['cash']+$Sum['CashSplit'];

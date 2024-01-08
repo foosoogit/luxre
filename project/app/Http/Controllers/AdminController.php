@@ -430,7 +430,7 @@ class AdminController extends Controller
 					'serial_keiyaku'=>session('ContractSerial'),
 					'serial_user'=>session('UserSerial'),
 					'payment_history_serial'=>$PaymentHistorySerial,
-					'serial_Admin'=>Auth::user()->serial_admin,
+					'serial_staff'=>Auth::user()->serial_admin,
 					'date_payment'=>$PaymentDateArra[$i],
 					'amount_payment'=>str_replace(',','',$PaymentAmountArra[$i]),
 					'how_to_pay'=>$PaymentHowToPayArray[$i],
