@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('payment_history_serial',20)->unique()->comment('テーブルシリアル');
             $table->string('serial_keiyaku',20)->comment('契約番号');
             $table->string('serial_user',20)->comment('顧客番号');
-            $table->string('serial_staff',20)->nullable()->comment('ID Teacher');
+            $table->string('serial_staff',20)->nullable()->comment('ID Staff');
             $table->string('date_payment',20)->nullable()->comment('支払日');
             $table->string('amount_payment',20)->nullable()->comment('支払金額');
             $table->string('how_to_pay',20)->nullable()->comment('支払方法');

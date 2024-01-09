@@ -22,8 +22,8 @@ var ContractSerial = document.getElementById("contract_serial").value;
 
 const chara = new Image();
 let host_url=document.getElementById("HTTP_HOST").value
-console.log("host_url="+host_url);
-console.log("target_file="+document.getElementById("target_file").value);
+//console.log("host_url="+host_url);
+//console.log("target_file="+document.getElementById("target_file").value);
 let tf='https://'+host_url+'/'+document.getElementById("target_file").value;
 console.log("tf="+tf);
 if(document.getElementById("target_file").value!=""){
@@ -78,7 +78,8 @@ canvas.addEventListener("mouseup", function(e){
 $('#initialize').click(function(e) {
 	if(!confirm('本当に初期化しますか？')) return;
 	ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
-	chara.src = 'https://foosoo.xsrv.jp/images/Image_body_w796_h496.png';
+	chara.src ='https://'+host_url+"/images/Image_body_w796_h496.png";
+	//chara.src = 'https://foosoo.xsrv.jp/images/Image_body_w796_h496.png';
 	chara.onload = () => {
 		var bairitu=2;
 		ctx.drawImage(chara,-50,0,canvas.width,canvas.height);
