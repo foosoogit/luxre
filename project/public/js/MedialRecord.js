@@ -1,5 +1,4 @@
-﻿//console.log('Media');
-//canvasの読み込み設定
+﻿//canvasの読み込み設定
 let undoImg_array = new Array();
 var canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
@@ -22,8 +21,6 @@ var ContractSerial = document.getElementById("contract_serial").value;
 
 const chara = new Image();
 let host_url=document.getElementById("HTTP_HOST").value
-//console.log("host_url="+host_url);
-
 //let tf=ht_type+host_url+'/'+document.getElementById("target_file").value;
 //let tf='/'+document.getElementById("target_file").value;
 //console.log("ht_type="+ht_type);
@@ -38,13 +35,11 @@ if(document.getElementById("target_file").value!=""){
 }else{
 	chara.src =host_url+"/images/Image_body_w796_h496.png";
 	//chara.src ='https://'+host_url+"/images/Image_body_w796_h496.png";
-	console.log("src="+chara.src);
 	chara.onload = () => {
 		var bairitu=2;
 		ctx.drawImage(chara,-50,0,canvas.width,canvas.height);
 	};
 }
-console.log("chara.src="+chara.src);
 var undoImageBui;
 var target_bui_array_num=Array();
 //マウスを操作する
@@ -83,7 +78,9 @@ canvas.addEventListener("mouseup", function(e){
 $('#initialize').click(function(e) {
 	if(!confirm('本当に初期化しますか？')) return;
 	ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
-	chara.src ='https://'+host_url+"/images/Image_body_w796_h496.png";
+	//chara.src ='https://'+host_url+"/images/Image_body_w796_h496.png";
+	chara.src =host_url+"/images/Image_body_w796_h496.png";
+	console.log("chara.src-2"+chara.src);
 	//chara.src = 'https://foosoo.xsrv.jp/images/Image_body_w796_h496.png';
 	chara.onload = () => {
 		var bairitu=2;
@@ -143,41 +140,17 @@ $('#undo').click(function(e) {
 
 function GetCampasSize(){
 	var TargetCanvas = document.getElementById("canvas");
-	//console.log("height="+canvas.height);
-	//console.log("width="+canvas.width);
 }
 	
 function SaveMedicalRecord(obj){
 	var TargetCanvas = document.getElementById("canvas");
-	//TargetCanvas.crossOrigin = "anonymous";
-	console.log("TargetCanvasheight="+TargetCanvas.height);
 	var img_url = TargetCanvas.toDataURL("image/png").replace(new RegExp("data:image/png;base64,"),"");
-	//var img_url = TargetCanvas.toDataURL("image/png");
-	console.log("test");
 	$.ajax({
 		url: "/ajax_SaveMedicalRecord",
-		//data: {"upload_data":img_url,"VisitHistorySerial":document.getElementById('visit_history_serial').value,"ImageDataArray":ImageDataArray},
 		data: {"upload_data":img_url,"VisitHistorySerial":document.getElementById('visit_history_serial').value,"StaffSerial":document.getElementById('staff_slct').value},
-		//data: JSON.stringify(undoImg_array),
-		//data: {"ImgArray_json":ImgArray_json},
-		//data: {"ImgArray_json":undoImg},
-	        	//dataType: 'json',
 	    type: 'POST',
-		//data: fData ,
-		//contentType: false,
-		//processData: false,
-		//scriptCharset: 'utf-8',
-		//frequency: 10,
-		//cache: false,
-		//async : false,
-		//data: {"target_data_json": target_data_json},
-		//data:fData,
-		//contentType: false,
-		//processData: false,
-	        //dataType: "json",
-	        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')	}
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')	}
 	}).done(function (data) {
-		//console.log("ok");
 		alert('保存しました。');
 	}) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
 		alert(XMLHttpRequest.status);
@@ -191,8 +164,6 @@ function SaveMedicalRecord(obj){
 function mark_bui(obj){
 	undoImg_array.push(ctx.getImageData(0, 0,canvas.width,canvas.height));
 	target_bui_array_num[undoImg_array.length] = obj.id;
-	//alert({{session('userneme')}});
-	//console.log( target_bui_array_num);
 	ctx.lineWidth = 3;
 	ctx.beginPath();
 	ctx.strokeStyle = "blue";

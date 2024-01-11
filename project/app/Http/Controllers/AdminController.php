@@ -29,11 +29,11 @@ class AdminController extends Controller
 
 	public function ShowMedicalRecord(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		$visit_history_num=$request->count_btn;
 		$visit_history_num_int=(int)$visit_history_num;
 		$visit_history_serial=str_replace( "K","V" , session('ContractSerial')."-".$visit_history_num);
 		$VisitHistoryArray=VisitHistory::where('visit_history_serial','=',$visit_history_serial)->first();
+		//Log::info("visit_history_serial=".$visit_history_serial);
 		$tg='"visitDate.'.$visit_history_num_int.'"';
 		if($visit_history_num_int==1){
 			$request->validate(
@@ -180,7 +180,7 @@ class AdminController extends Controller
 		
 		$keiyaku_array=Contract::where('serial_keiyaku','=',session('ContractSerial'))->first();
 		$keiyaku_name=$keiyaku_array->keiyaku_name;
-		log::info($VisitHistoryArray);
+		//log::info($VisitHistoryArray->serial_staff);
 		if(empty($VisitHistoryArray->serial_staff)){
 			$SerialStaff="";
 		}else{
@@ -188,9 +188,6 @@ class AdminController extends Controller
 		}
 		$html_staff_slct=OtherFunc::make_html_staff_slct($SerialStaff);
 		$ContractSerial=session('ContractSerial');
-		log::info($_SERVER);
-		log::info($_SERVER['HTTP_ORIGIN']);
-		
 		if (empty($_SERVER['HTTPS'])) {
 			$ht_type='http://';
 		} else {
@@ -205,7 +202,7 @@ class AdminController extends Controller
 		$result=array();
 		$hst=$_SERVER['HTTP_HOST'];
 		
-		Log::alert("target_file_name=".$target_file_name);
+		//Log::alert("target_file_name=".$target_file_name);
 		foreach(glob("MedicalRecord/".$target_file_name."*.png") as $file) {
 			$result[] = $file;
 		}
