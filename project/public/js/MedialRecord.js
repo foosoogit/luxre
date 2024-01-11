@@ -23,23 +23,28 @@ var ContractSerial = document.getElementById("contract_serial").value;
 const chara = new Image();
 let host_url=document.getElementById("HTTP_HOST").value
 //console.log("host_url="+host_url);
-//console.log("target_file="+document.getElementById("target_file").value);
-let tf='https://'+host_url+'/'+document.getElementById("target_file").value;
-console.log("tf="+tf);
+
+//let tf=ht_type+host_url+'/'+document.getElementById("target_file").value;
+//let tf='/'+document.getElementById("target_file").value;
+//console.log("ht_type="+ht_type);
+//let tf='https://'+host_url+'/'+document.getElementById("target_file").value;
+
 if(document.getElementById("target_file").value!=""){
-	chara.src =tf;
+	chara.src =host_url+'/'+document.getElementById("target_file").value;
 	chara.onload = () => {
 		var bairitu=2;
 		ctx.drawImage(chara,0,0,canvas.width,canvas.height);
 	};
 }else{
-	chara.src ='https://'+host_url+"/images/Image_body_w796_h496.png";
+	chara.src =host_url+"/images/Image_body_w796_h496.png";
+	//chara.src ='https://'+host_url+"/images/Image_body_w796_h496.png";
 	console.log("src="+chara.src);
 	chara.onload = () => {
 		var bairitu=2;
 		ctx.drawImage(chara,-50,0,canvas.width,canvas.height);
 	};
 }
+console.log("chara.src="+chara.src);
 var undoImageBui;
 var target_bui_array_num=Array();
 //マウスを操作する

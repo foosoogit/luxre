@@ -156,7 +156,6 @@ class AdminController extends Controller
 				['visitDate.23.required' => '施術日24回目を先に保存してください。']
 			);
 		}
-		$host_url=$_SERVER['HTTP_HOST'];
 		//$target_file="http://".$host_url."/MedicalRecord/".session('ContractSerial')."-".$request->count_btn."*.png";
 		$serch_file="MedicalRecord/".session('ContractSerial')."-".$request->count_btn."*.png";
 		//Log::alert('serch_file='.$serch_file);
@@ -169,54 +168,47 @@ class AdminController extends Controller
 		//foreach(glob("MedicalRecord/K_000001-0001-01*.png") as $file) {
 		foreach(glob($serch_file) as $file) {
 			$result[] = $file;
-			//Log::alert('file='.$file);
 		}
-		//Log::alert('count='.count($result));
 		if(count($result)>0){
 			$target_file=$result[0];
-			
 		}else{
 			$target_file="";
 		}
-		//Log::alert('target_file='.$target_file);
 		$array=explode('-', $request->VisitHistorySerial);
 		$UserSerial=str_replace('V_', '', $array[0]);
 		$UserInf=User::where('serial_user','=',$UserSerial)->first();
 		
 		$keiyaku_array=Contract::where('serial_keiyaku','=',session('ContractSerial'))->first();
 		$keiyaku_name=$keiyaku_array->keiyaku_name;
+		log::info($VisitHistoryArray);
 		if(empty($VisitHistoryArray->serial_staff)){
 			$SerialStaff="";
 		}else{
 			$SerialStaff=$VisitHistoryArray->serial_staff;
 		}
 		$html_staff_slct=OtherFunc::make_html_staff_slct($SerialStaff);
-		//$html_staff_slct=OtherFunc::make_html_staff_slct($SerialStaff);
-		
 		$ContractSerial=session('ContractSerial');
+		log::info($_SERVER);
+		log::info($_SERVER['HTTP_ORIGIN']);
+		
+		if (empty($_SERVER['HTTPS'])) {
+			$ht_type='http://';
+		} else {
+			$ht_type='https://';			
+		}
+		$host_url=$_SERVER['HTTP_ORIGIN'];
 		return view('customers.MedicalRecord',compact('host_url','html_staff_slct','target_file','ContractSerial','visit_history_num','UserInf','keiyaku_name'));
 	}
 
 	public function ajax_SaveMedicalRecord(Request $request){
 		$target_file_name=session('ContractSerial')."-".$request->VisitHistorySerial;
 		$result=array();
-		//Log::alert('target_file_name='.$target_file_name);
-		//http://127.0.0.1:8000/images
-		/*
-		if(Storage::exists('MedicalRecord/'.$target_file_name.'*.png')){
-			Log::alert('発見');
-		}
-		*/
 		$hst=$_SERVER['HTTP_HOST'];
 		
 		Log::alert("target_file_name=".$target_file_name);
-		//foreach(glob("http://127.0.0.1:8000/MedicalRecord/".$target_file_name."*.png") as $file) {
-		//foreach(glob("http://".$hst."/MedicalRecord/".$target_file_name."*.png") as $file) {
-			
 		foreach(glob("MedicalRecord/".$target_file_name."*.png") as $file) {
 			$result[] = $file;
 		}
-		//Log::alert("http://".$hst."/MedicalRecord/".$target_file_name."*.png");
 		if(count($result)>0){
 			unlink($result[0]);
 			$filename_array=explode('-',$result[0]);
@@ -228,7 +220,6 @@ class AdminController extends Controller
 		}else{
 			$new_file_name=session('ContractSerial')."-".$request->VisitHistorySerial."-01.png";
 		}
-		//$fp = fopen('storage/MedicalRecord/'.$new_file_name,'w');
 		$fp = fopen("MedicalRecord/".$new_file_name,'w');
 		$upload_data=$_POST['upload_data'];
 		fwrite($fp,base64_decode($upload_data));
@@ -241,7 +232,6 @@ class AdminController extends Controller
 
 	public function ShowContractList($UserSerial,Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		session(['fromPage' => 'ContractList']);
 		session(['targetUserSerial' => $UserSerial]);
 		if(isset($request->page_num)){
@@ -291,7 +281,6 @@ class AdminController extends Controller
 
 	public function ShowSyuseiContract($ContractSerial,$UserSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		session(['ContractManage' => 'syusei']);
 		session(['fromPage' => 'SyuseiContract']);
 		$header="";$slot="";$selectedManth=array();$selectedManth=array();
@@ -333,10 +322,8 @@ class AdminController extends Controller
 			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
 			$KeiyakuTankaArray[]="";
 		}
-		//Log::alert("count=".count($targetContractdetails));
 		if(!empty($targetContractdetails)){
 			//$KeiyakuNaiyouArray=array();$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();$KeiyakuNaiyouSelectArray=array();
-			Log::info($targetContractdetails);
 			$num=0;
 			foreach($targetContractdetails as $targetContractdetail){
 				$KeiyakuNaiyouArray[$num]=$targetContractdetail->keiyaku_naiyo;
@@ -391,7 +378,6 @@ class AdminController extends Controller
 		//$html_staff_slct=OtherFunc::make_html_staff_slct($targetContract->serial_tantosya);
 		//$stf=DB::table('Staff')->first();
 		$html_staff_slct=OtherFunc::make_html_staff_slct($targetContract->serial_tantosya);
-		//Log::alert("keiyaku_type=".$targetContract->keiyaku_type);
 		$contract_type_checked=array();
 		if($targetContract->keiyaku_type=='subscription'){
 			$contract_type_checked['subsc']='checked';
@@ -401,8 +387,6 @@ class AdminController extends Controller
 			$contract_type_checked['cyclic']='checked';
 		}
 		$GoBackPlace=$_SESSION['access_history'][0];
-		//Log::alert("unit_price=".$targetContract->unit_price);
-		//return view('customers.CreateContracts',compact("html_staff_slct","header",'slot','newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
 		return view('customers.CreateContract',compact("contract_type_checked","html_staff_slct",'newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
 	}
 
