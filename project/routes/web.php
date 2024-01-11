@@ -38,7 +38,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::name('admin.')->group(function() {
         Route::get('/admin/ShowDailyReport', function () {
             return view('admin.DailyReport');
-        })->name('admin.DailyReport');
+        })->name('DailyReport');
     });
 
     //Route::get('/admin/ShowDailyReport', [DailyReport::class])->name("ShowDailyReport");
