@@ -9,6 +9,7 @@ use App\Models\SalesRecord;
 use App\Models\Good;
 use App\Consts\initConsts;
 use App\Http\Controllers\OtherFunc;
+use Illuminate\Support\Facades\Log;
 if(!isset($_SESSION)){session_start();}
 
 class DailyReport extends Component
@@ -28,7 +29,6 @@ class DailyReport extends Component
         $today = date("Y-m-d");
         $from_place="";
         OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-        //print_r($_SESSION['access_history']);
         $backmonthly="";
         foreach($_SESSION['access_history'] as $targeturl){
             if(strpos($targeturl, 'ShowMonthlyReport') !== false){
