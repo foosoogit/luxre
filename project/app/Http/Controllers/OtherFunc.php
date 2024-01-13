@@ -398,11 +398,13 @@ class OtherFunc extends Controller
 				$query->select('contracts.serial_user')->from('contracts')->where('contracts.cancel','=', null);
 			})
 			->distinct()->select('name_sei','name_mei','payment_histories.serial_user')->get();
-		$targetNameHtm="";
+		$targetNameHtm="";$targetNameHtm_array=array();
 		foreach($DefaultUsersInf as $value){
 			//print $value->serial_user;
-			$targetNameHtm.='<button type="submit" name="btn_serial" value="'.$value->serial_user.'">・'.$value->name_sei.' '.$value->name_mei.'&nbsp;</button>';
+			$targetNameHtm_array[]='<button type="submit" name="btn_serial" class="btn btn-outline-danger mx-sm-2" value="'.$value->serial_user.'">'.$value->name_sei.' '.$value->name_mei.'&nbsp;</button>';
+			//$targetNameHtm.='・<button type="submit" name="btn_serial" class="btn btn-outline-danger mx-sm-2" value="'.$value->serial_user.'">'.$value->name_sei.' '.$value->name_mei.'&nbsp;</button>';
 		}
+		$targetNameHtm=implode( "・", $targetNameHtm_array);
 		return $targetNameHtm;
 	}
 
@@ -413,7 +415,7 @@ class OtherFunc extends Controller
 			->where('how_to_pay','=','現金')
 			->get();
 		$targetName=array();$targetNameHtmFront=array();$targetNameHtmBack=array();
-		$targetNameHtm="";
+		$targetNameHtm="";$targetNameHtm_array=array();
 		foreach($keyakukaisu as $value){
 			$num_payed=DB::table('payment_histories')->where('serial_keiyaku','=',$value->serial_keiyaku)->count();
 			if($num_payed<$value->how_many_pay_genkin){
@@ -422,13 +424,15 @@ class OtherFunc extends Controller
 				$diff = $today->diff($payment_date_latest_dt);
 				$interval_day=$diff->format('%a');
 				if($interval_day>30){
-					//$terget_user=DB::table('users')->where('serial_user','=',$value->serial_user)->first();
+					//log::alert("serial_user=".$value->serial_user);
 					$terget_user=DB::table('users')->where('serial_user','=', $value->serial_user)->first();
-					$targetNameHtm.='・<input type="submit" formaction="/customers/ShowInpRecordVisitPayment/'.$value->serial_keiyaku.'/'.$value->serial_user.'" name="btn_serial" value="'.$terget_user->name_sei.' '.$terget_user->name_mei.'">&nbsp';
+					$targetNameHtm_array[]='<input type="submit" class="btn btn btn-outline-dark mx-sm-2" formaction="/customers/ShowInpRecordVisitPayment/'.$value->serial_keiyaku.'/'.$value->serial_user.'" name="btn_serial" value="'.$terget_user->name_sei.' '.$terget_user->name_mei.'">';
+					//$targetNameHtm.='・<input type="submit" class="btn btn btn-outline-dark" formaction="/customers/ShowInpRecordVisitPayment/'.$value->serial_keiyaku.'/'.$value->serial_user.'" name="btn_serial" value="'.$terget_user->name_sei.' '.$terget_user->name_mei.'">&nbsp';
 				}
 			}
 			
 		}
+		$targetNameHtm=implode( "・", $targetNameHtm_array);
 		return $targetNameHtm;
 	}
 

@@ -36,7 +36,6 @@ class AdminController extends Controller
 		$deleVisitHistory=VisitHistory::where('serial_user','=',$serial_user)->delete();
 		//return redirect('/customers/ShowCustomersList');
 		return redirect('/customers/CustomersList');
-		//return view('customers.InfoCustomer',compact("user","header","slot"));
 	}
 
 	public function ShowMedicalRecord(Request $request){
