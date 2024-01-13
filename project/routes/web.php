@@ -50,6 +50,7 @@ Route::middleware('auth:admin')->group(function () {
     */
     
     Route::controller(AdminController::class)->name('customers.')->group(function() {
+        Route::get('/customers/deleteCustomer/{serial_user}',[AdminController::class,'deleteCustomer'],function($serial_user){});
         Route::post('/ajax_SaveMedicalRecord', [AdminController::class,'ajax_SaveMedicalRecord'])->name("SaveMedicalRecord");
         Route::get('/customers/MakeContractPDF/{ContractSerial}', [AdminController::class,'MakeContractPDF',function($TargetMonth){}])->name("MakeContractPDF");
         Route::get('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminController::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){session(['ContractSerial' => $ContractSerial,'UserSerial'=>$UserSerial]);}]);

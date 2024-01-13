@@ -27,6 +27,18 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function deleteCustomer($serial_user){
+		//$header="";$slot="";
+		$deleUser=User::where('serial_user','=',$serial_user)->delete();
+		$deleKeiyaku=Contract::where('serial_user','=',$serial_user)->delete();
+		$deleContractDetail=ContractDetail::where('serial_user','=',$serial_user)->delete();
+		$deleContractDetail=PaymentHistory::where('serial_user','=',$serial_user)->delete();
+		$deleVisitHistory=VisitHistory::where('serial_user','=',$serial_user)->delete();
+		//return redirect('/customers/ShowCustomersList');
+		return redirect('/customers/CustomersList');
+		//return view('customers.InfoCustomer',compact("user","header","slot"));
+	}
+
 	public function ShowMedicalRecord(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$visit_history_num=$request->count_btn;
