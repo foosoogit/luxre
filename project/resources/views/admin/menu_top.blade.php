@@ -31,12 +31,13 @@
                         <ul>
                         	<li>
 								{{-- <form method="GET" action="{{ route('CustomersList') }}/customers/ShowCustomersList_livewire">@csrf --}}
-									<form method="GET" action="{{ route('customers.CustomersList.show') }}">@csrf
+								<form method="GET" action="{{ route('customers.CustomersList.show') }}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit" >顧客一覧</button>&nbsp;修正・新規登録・契約
 								</form>
 								支払い不履行者
 								<p><span style="color:red;">
-									<form method="POST" action="/customers/ShowCustomersList_livewire_from_top_menu">@csrf
+									{{--<form method="POST" action="/customers/ShowCustomersList_livewire_from_top_menu">@csrf--}}
+									<form method="POST" action="{{route('customers.CustomersList.show')}}">@csrf
 										{!!$default_customers!!}
 									</form>
 								</span></p>
