@@ -67,8 +67,8 @@
 								</form>
 							</li>
 							<li>
-								<form method="POST" action="/workers/ShowMonthlyReport">@csrf
-									<button class="btn btn-primary btn-sm" type="submit" disabled>月報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
+								<form method="POST" action="{{route('admin.MonthlyReport')}}">@csrf
+									<button class="btn btn-primary btn-sm" type="submit">月報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
 								</form>
 							</li>
 							<li>

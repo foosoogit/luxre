@@ -116,7 +116,7 @@
                         @endforeach
                     </tbody>
                 </table>
-	            {{$contractQuery->appends(request()->query())->links()}}
+	            {{$contractQuery->appends(request()->query())->links('pagination::bootstrap-4')}}
             </div>
         </div>
     </div>

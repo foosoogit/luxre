@@ -8,6 +8,7 @@ use App\Http\Controllers\OtherFunc;
 use App\Http\Livewire\CustomersList;
 use App\Http\Livewire\ContractList;
 use App\Http\Livewire\DailyReport;
+use App\Http\Livewire\MonthlyReport;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +37,17 @@ Route::middleware('auth:admin')->group(function () {
    
     //Route::get('admin/ShowDailyReport', DailyReport::class);
     Route::name('admin.')->group(function() {
-        Route::get('/admin/ShowDailyReport', function () {
+        //Route::post('/admin/ShowMonthlyReport', MonthlyReport::class);
+        Route::get('/admin/MonthlyReport', function () {
+            return view('admin.MonthlyReport');
+        })->name('MonthlyReport');
+        Route::post('/admin/MonthlyReport', function () {
+            return view('admin.MonthlyReport');
+        })->name('MonthlyReport');
+        Route::get('/admin/DailyReport', function () {
+            return view('admin.DailyReport');
+        })->name('DailyReport');
+        Route::post('/admin/DailyReport', function () {
             return view('admin.DailyReport');
         })->name('DailyReport');
     });
@@ -50,6 +61,7 @@ Route::middleware('auth:admin')->group(function () {
     */
     
     Route::controller(AdminController::class)->name('customers.')->group(function() {
+        Route::get('/customers/deleteContract/{serial_contract}/{serial_user}',[AdminController::class,'deleteContract'],function($serial_contract,$serial_user){});
         Route::get('/customers/deleteCustomer/{serial_user}',[AdminController::class,'deleteCustomer'],function($serial_user){});
         Route::post('/ajax_SaveMedicalRecord', [AdminController::class,'ajax_SaveMedicalRecord'])->name("SaveMedicalRecord");
         Route::get('/customers/MakeContractPDF/{ContractSerial}', [AdminController::class,'MakeContractPDF',function($TargetMonth){}])->name("MakeContractPDF");

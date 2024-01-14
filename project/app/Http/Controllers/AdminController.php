@@ -27,6 +27,15 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function deleteContract($serial_contract,$serial_user){
+		$header="";$slot="";
+		$delContract=Contract::where('serial_keiyaku','=',$serial_contract)->delete();
+		$delContractDetails=ContractDetail::where('serial_keiyaku','=',$serial_contract)->delete();
+		$delPaymentHistory=PaymentHistory::where('serial_keiyaku','=',$serial_contract)->delete();
+		$delVisitHistory=VisitHistory::where('serial_keiyaku','=',$serial_contract)->delete();
+		return redirect('/customers/ContractList/all');
+	}
+
 	public function deleteCustomer($serial_user){
 		//$header="";$slot="";
 		$deleUser=User::where('serial_user','=',$serial_user)->delete();
@@ -1478,18 +1487,6 @@ class AdminController extends Controller
 			session(['targetGoodSerial' => $GoodSerial]);
 			return view('teacher.CreateGood',compact("header","slot",'targetGoodSerial','GoodInf',"GoBackPlace","btnDisp","saveFlg"));
 		}
-	}
-
-	public function deleteContract($serial_contract,$serial_user){
-		$header="";$slot="";
-		$delContract=Contract::where('serial_keiyaku','=',$serial_contract)->delete();
-		$delContractDetails=ContractDetail::where('serial_keiyaku','=',$serial_contract)->delete();
-		$delPaymentHistory=PaymentHistory::where('serial_keiyaku','=',$serial_contract)->delete();
-		$delVisitHistory=VisitHistory::where('serial_keiyaku','=',$serial_contract)->delete();
-
-		//return redirect('/customers/ShowCustomersList');
-		return redirect('/customers/ShowContractList/'.$serial_user);
-		//return view('customers.InfoCustomer',compact("user","header","slot"));
 	}
 
 	public function check_name_duplication(Request $request){
