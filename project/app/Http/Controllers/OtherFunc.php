@@ -20,12 +20,7 @@ class OtherFunc extends Controller
 	public static function get_goback_url($now_pageURL){
 		
 		$now_array=explode("?", $now_pageURL);
-		//Log::alert("now=".$now_array[0]);
-		//Log::alert("access_history=".$_SESSION['access_history'][1]);
 		$flg=preg_match('[.*'.$now_array[0].'.*]', $_SESSION['access_history'][1]);
-		//Log::alert("flg=".$flg);
-		//Log::info($_SESSION['access_history']);
-		//Log::info("count=".count($_SESSION['access_history']));
 		if($flg==true){
 			for($i=0;$i<count($_SESSION['access_history']);$i++){
 				$flg=preg_match('[.*'.$now_array[0].'.*]', $_SESSION['access_history'][$i]);
@@ -39,26 +34,21 @@ class OtherFunc extends Controller
 			}
 		}
 		$_SESSION['access_history'] = array_values($_SESSION['access_history']);
-		//Log::info($_SESSION['access_history']);
 		return $_SESSION['access_history'][0];
 	}
 
 	public static function get_customer_inf(Request $request){
 		$TargetSerial=sprintf('%06d', $request->TargetSerial);
-		//Log::alert("TargetSerial=".$TargetSerial);
 		$UserInf=User::where('serial_user','=',$TargetSerial)->first();
 		if(empty($UserInf)){
 			$UserInf=array();
 			$UserInf=array('count'=>'0');
 			$UserInf=json_encode($UserInf);
 		}
-		//Log::alert("empty=".empty($UserInf));
-
 		return $UserInf;
 	}
 
 	public static function serch_http_referer($target_page_array){
-		//Log::info($_SESSION['access_history']);
 		foreach ($_SESSION['access_history'] as $url) {
 			foreach($target_page_array as $tgt){
 				if(str_contains($url,$tgt)){
@@ -71,7 +61,6 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_html_birth_month_slct($targetMonth){
-		//Log::alert("targetMonth=".$targetMonth);
 		$htm_month_slct='<select name="month" class="form-select">';
 		$htm_month_slct.='<option  value="" Selected>--選択してください。--</option>';
 		for($i=1;$i<=12;$i++){
@@ -327,7 +316,6 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_htm_get_treatment_slct($TargetTreatmentName){
-		//Log::alert("TargetTreatmentName=".$TargetTreatmentName);
 		$kana = array(
 			"ア行" => "[ア-オあ-お]",
 			"カ行" => "[カ-コガ-ゴか-こが-ご]",
@@ -426,7 +414,6 @@ class OtherFunc extends Controller
 				$diff = $today->diff($payment_date_latest_dt);
 				$interval_day=$diff->format('%a');
 				if($interval_day>30){
-					//log::alert("serial_user=".$value->serial_user);
 					$terget_user=DB::table('users')->where('serial_user','=', $value->serial_user)->first();
 					$targetNameHtm_array[]='<input type="submit" class="btn btn btn-outline-dark mx-sm-2" formaction="/customers/ShowInpRecordVisitPayment/'.$value->serial_keiyaku.'/'.$value->serial_user.'" name="btn_serial" value="'.$terget_user->name_sei.' '.$terget_user->name_mei.'">';
 					//$targetNameHtm.='・<input type="submit" class="btn btn btn-outline-dark" formaction="/customers/ShowInpRecordVisitPayment/'.$value->serial_keiyaku.'/'.$value->serial_user.'" name="btn_serial" value="'.$terget_user->name_sei.' '.$terget_user->name_mei.'">&nbsp';
@@ -486,7 +473,6 @@ class OtherFunc extends Controller
 	}
 
 	public static function get_prefecture_name_by_region($targetRegion){
-		//Log::alert("targetRegion=".$targetRegion);
 		$pref_codes = array("1" => "北海道", "2" => "青森県", "3" => "岩手県", "4" => "宮城県", "5" => "秋田県", "6" => "山形県", "7" => "福島県", "8" => "茨城県", "9" => "栃木県", "10" => "群馬県", "11" => "埼玉県", "12" => "千葉県", "13" => "東京都", "14" => "神奈川県", "15" => "新潟県", "16" => "富山県", "17" => "石川県", "18" => "福井県", "19" => "山梨県", "20" => "長野県", "21" => "岐阜県", "22" => "静岡県", "23" => "愛知県", "24" => "三重県", "25" => "滋賀県", "26" => "京都府", "27" => "大阪府", "28" => "兵庫県", "29" => "奈良県", "30" => "和歌山県", "31" => "鳥取県", "32" => "島根県", "33" => "岡山県", "34" => "広島県", "35" => "山口県", "36" => "徳島県", "37" => "香川県", "38" => "愛媛県", "39" => "高知県", "40" => "福岡県", "41" => "佐賀県", "42" => "長崎県", "43" => "熊本県", "44" => "大分県", "45" => "宮崎県", "46" => "鹿児島県", "47" => "沖縄県");
 		return $pref_codes[$targetRegion];
 	}
@@ -784,7 +770,6 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_html_year_slct($targetYear){
-		//Log::alert("targetYear=".$targetYear);
 		$htm_year_slct='';
 		for($i = 2015; $i<= $targetYear; $i++){
 			$sct='';

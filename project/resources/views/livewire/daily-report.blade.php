@@ -6,19 +6,45 @@
                 <div class="row">
                     <div class="col-auto">
                         <a class="btn mb-2 btn-primary" href="{{route('admin.top')}}">メニューに戻る</a>
-                        @if($from_place=="monthly_rep")
-                            <form method="POST" action="/admin/ShowMonthlyReport">@csrf
-                            <input name="year_month_day" type="hidden" value="{{$today}}"/>
-                            <button type="submit" name="target_date" class="bg-blue-500 text-white rounded px-3 py-1">月報に戻る</button>
-                            </form>
-                        @endif
                     </div>
+                    
+                    <div class="col-auto">
+                        <form method="POST" action="{{route($target_historyBack_inf_array[1].'.post')}}">@csrf
+                            @if(isset( $target_day ))
+                                <input name="target_day" type="hidden" value="{{$target_day}}"/>
+                                <button type="submit" name="target_date" class="btn btn-primary" value="{{$target_day}}">{{$target_historyBack_inf_array[0]}}に戻る</button>
+                            @endif
+                            @if(isset( $today ))
+                                <input name="year_month_day" type="hidden" value="{{$today}}"/>
+                                <button type="submit" name="target_date" class="btn btn-primary" value="{{$today}}">{{$target_historyBack_inf_array[0]}}に戻る</button>
+                            @endif
+                            <input name="back_flg" type="hidden" value="true"/>
+                        </form>
+                    </div>
+                    {{--
+                    @if($from_place=="monthly_rep")
+                        <div class="col-auto">
+                            <form method="POST" action="{{route('admin.MonthlyReport')}}">@csrf
+                            <input name="year_month_day" type="hidden" value="{{$today}}"/>
+                            <button type="submit" name="target_date" class="btn mb-2 btn-primary">月報に戻る</button>
+                        </form>
+                    </div>
+                    @endif
+                    --}}
                 </div>
                 <div class="mb-2 bg-success text-white">日報</div>
                 <div class="card-header">
-                    <h3><form action="/admin/ShowDailyReport" method="POST" name="getTargetDate_fm" id="getTargetDate_fm">@csrf<input name="target_date" id="target_date" type="date" onchange="getTargetdata(this);" value="{{$today}}"/></form></h3>
+                    <div class="row h3">
+                        {{--<h3><form action="/admin/ShowDailyReport" method="POST" name="getTargetDate_fm" id="getTargetDate_fm">@csrf<input name="target_date" id="target_date" type="date" onchange="getTargetdata(this);" value="{{$today}}"/></form></h3>--}}
+                        <div class="col-auto">
+                            <form action="{{route('admin.DailyReport.post')}}" method="POST" name="getTargetDate_fm" id="getTargetDate_fm">@csrf<input name="target_date" id="target_date" type="date" onchange="getTargetdata(this);" value="{{$today}}"/></form></h3>
+                        </div>
+                        <div class="col-auto">
+                            合計：{{number_format((int)$total)}}円
+                        </div>
+                    </div>
                 </div>
-                合計：{{number_format((int)$total)}}円
+                
                 <div class="row justify-content-center">
                     <div class="col-md-12">
                         {{--  
@@ -89,7 +115,8 @@
                                     <tr>
                                         <td class="border px-4 py-2">{{ $PaymentHistory->serial_user}}<br></td>
                                         <td class="border px-4 py-2">
-                                            <form method="POST" action="/customers/ShowCustomersList_livewire_from_top_menu">@csrf
+                                            {{--<form method="POST" action="/customers/ShowCustomersList_livewire_from_top_menu">@csrf--}}
+                                            <form method="POST" action="{{ route('customers.CustomersList.show')}}">@csrf
                                                 <button type="submit" name="btn_serial" value="{{$PaymentHistory->serial_user}}">{{ $PaymentHistory->name_sei}}&nbsp;{{ $PaymentHistory->name_mei}}</button>
                                                 <input name="target_day" type="hidden" value="{{$today}}"/>
                                             </form>
@@ -102,7 +129,7 @@
                                         </td>
                                         <td class="border px-4 py-2" style="text-align: right;">
                                             @if($PaymentHistory->PayPay_Amount!=="")
-                                                {{ $PaymentHistory->PayPay_Amount}}
+                                                {{ number_format($PaymentHistory->PayPay_Amount)}}
                                             @endif
                                         </td>
                                         <td class="border px-4 py-2" style="text-align: right;">
@@ -111,11 +138,9 @@
                                             @endif
                                         </td>
                                         <td class="border px-4 py-2" style="text-align: right;">
-                                            {{$PaymentHistory->Cash_Amount}}
-                                                        {{--@if($PaymentHistory->Cash_Amount!=="")
-                                                                {{ number_format($PaymentHistory->Cash_Amount)}}
-                                                        @endif
-                                                        --}}
+                                            @if($PaymentHistory->Cash_Amount!=="")
+                                                {{number_format($PaymentHistory->Cash_Amount)}}
+                                            @endif
                                         </td>
                                         <td class="border px-4 py-2" style="text-align: right;">
                                             @if($PaymentHistory->Cash_Total!=="" )
@@ -124,7 +149,7 @@
                                         </td>
                                         <td class="border px-4 py-2" style="text-align: right;">
                                             @if($PaymentHistory->amount_payment!=="")
-                                                {{$PaymentHistory->amount_payment}}
+                                                {{number_format($PaymentHistory->amount_payment)}}
                                             @endif
                                         </td>
                                     </tr>
@@ -163,7 +188,7 @@
                         </table>
                     {{--{!!$users->appends(request()->query())->links('pagination::bootstrap-4')!!}--}}
                     {{ $PaymentHistories->links() }}
-                    施術小計：{{$subtotal_treatment}}
+                    {{--施術小計：{{number_format($subtotal_treatment)}}--}}
                     {{--  
                     <br>
                     ・物品販売

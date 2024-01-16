@@ -36,6 +36,11 @@ class AdminLoginController extends Controller
          Auth::guard('admin')->logout();
          $request->session()->invalidate();
          $request->session()->regenerateToken();
-         return to_route('admin.login');
+         $_SESSION = array();
+        if (isset($_COOKIE["PHPSESSID"])) {
+            setcookie("PHPSESSID", '', time() - 1800, '/');
+        }
+        //session_destroy();
+        return to_route('admin.login');
      }
 }

@@ -17,14 +17,14 @@
                         --}}
 				<div class="card-header">
                             {{--<form method="POST" action="/admin/ShowMonthlyReport" name="ChangeTargetMonth_fm" id="ChangeTargetMonth_fm">@csrf--}}
-                    <form method="POST" action="{{route('admin.MonthlyReport')}}" name="ChangeTargetMonth_fm" id="ChangeTargetMonth_fm">@csrf
+                    <form method="POST" action="{{route('admin.MonthlyReport.post')}}" name="ChangeTargetMonth_fm" id="ChangeTargetMonth_fm">@csrf
                         <h3>売上単価・現金比率<select name="year" onchange="ChangeTargetMonth();">{!!$html_year_slct!!}</select> <select name="month" onchange="ChangeTargetMonth();"><option  value="0" >選択</option>{!!$html_month_slct!!}</select></h3>
                     </form>
 				</div>
 				<div class="card-body">
 					{!! $RaitenReason !!}
 					{{--<form method="POST" action="/admin/ShowDailyReport_from_monthly_report">@csrf--}}
-                    <form method="POST" action="{{route('admin.DailyReport')}}">@csrf
+                    <form method="POST" action="{{route('admin.DailyReport.post')}}">@csrf
 					    {!! $monthly_report_table !!}
 					</form>
 				</div>

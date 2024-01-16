@@ -53,7 +53,6 @@ class AdminController extends Controller
 		$visit_history_num_int=(int)$visit_history_num;
 		$visit_history_serial=str_replace( "K","V" , session('ContractSerial')."-".$visit_history_num);
 		$VisitHistoryArray=VisitHistory::where('visit_history_serial','=',$visit_history_serial)->first();
-		//Log::info("visit_history_serial=".$visit_history_serial);
 		$tg='"visitDate.'.$visit_history_num_int.'"';
 		if($visit_history_num_int==1){
 			$request->validate(
@@ -178,7 +177,6 @@ class AdminController extends Controller
 		}
 		//$target_file="http://".$host_url."/MedicalRecord/".session('ContractSerial')."-".$request->count_btn."*.png";
 		$serch_file="MedicalRecord/".session('ContractSerial')."-".$request->count_btn."*.png";
-		//Log::alert('serch_file='.$serch_file);
 		//$target_file='storage/MedicalRecord/'.session('ContractSerial')."-".$request->count_btn."*.png";
 		$result=array();
 		//foreach(glob($target_file) as $file) {
@@ -200,7 +198,6 @@ class AdminController extends Controller
 		
 		$keiyaku_array=Contract::where('serial_keiyaku','=',session('ContractSerial'))->first();
 		$keiyaku_name=$keiyaku_array->keiyaku_name;
-		//log::info($VisitHistoryArray->serial_staff);
 		if(empty($VisitHistoryArray->serial_staff)){
 			$SerialStaff="";
 		}else{
@@ -222,7 +219,6 @@ class AdminController extends Controller
 		$result=array();
 		$hst=$_SERVER['HTTP_HOST'];
 		
-		//Log::alert("target_file_name=".$target_file_name);
 		foreach(glob("MedicalRecord/".$target_file_name."*.png") as $file) {
 			$result[] = $file;
 		}
@@ -346,7 +342,6 @@ class AdminController extends Controller
 				$KeiyakuNaiyouArray[$num]=$targetContractdetail->keiyaku_naiyo;
 				//$KeiyakuNaiyouSelectArray[$num]=OtherFunc::make_htm_get_treatment_slct($targetContractdetail->keiyaku_naiyo);
 				$keiyakuCnt=$targetContractdetail->keiyaku_num;
-				//Log::alert("keiyakuCnt=".$targetContractdetail->keiyaku_num);
 				$KeiyakuNumSlctArray[$num]=OtherFunc::make_html_keiyaku_num_slct($targetContractdetail->keiyaku_num);
 				$KeiyakuTankaArray[$num]=$targetContractdetail->unit_price;
 				$KeiyakuPriceArray[$num]=$targetContractdetail->price;
@@ -480,7 +475,6 @@ class AdminController extends Controller
 
 	public function ShowSyuseiCustomer(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		session(['fromPage' => 'SyuseiCustomer']);
 		//$userInfo=User::where('serial_user','=',$request->input('syusei_Btn'))->first();
 		session(['CustomerManage' => 'syusei']);
@@ -512,7 +506,6 @@ class AdminController extends Controller
 
 	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		$fromURLArray=parse_url($_SERVER['HTTP_REFERER']);
 		if(!session('InpRecordVisitPaymentFlg')){
 			session(['ShowInpRecordVisitPaymentfromPage' => $fromURLArray['path']]);
@@ -759,7 +752,6 @@ class AdminController extends Controller
 			$SerialUser=$request->serial_user;$SerialKeiyaku=$request->ContractSerial;
 			session(['targetUserSerial' => $SerialUser]);
 			//if(Auth::user()->serial_admin=="A_0001"){
-			//Log::alert("contract_sheet=".isset($request->contract_sheet));
 			if(isset($request->contract_sheet)){
 				return redirect('/customers/MakeContractPDF/'.$request->ContractSerial);
 			}else{
@@ -805,7 +797,6 @@ class AdminController extends Controller
 
 	public function ShowInpKeiyaku($serial_user){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		session(['fromPage' => 'InpKeiyaku']);
 		$header="";$slot="";$HowToPay=array();
 		//$KeiyakuNumSlct=OtherFunc::make_html_keiyaku_num_slct("");
@@ -965,8 +956,6 @@ class AdminController extends Controller
 
 	public function ShowInputNewCustomer(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
-		//Log::alert('access_history='.info($_SESSION['access_history']));
 		session(['fromPage' => 'InputCustomer']);
 		session(['CustomerManage' => 'new']);
 		//$header="";$slot="";
@@ -989,13 +978,11 @@ class AdminController extends Controller
 		$TargetUserSerial=++$maxUserSerial;
 		$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
 		$GoBackPlace=$_SESSION['access_history'][0];
-		//Log::alert("GoBackPlace=".$GoBackPlace);
 		return view('customers.CreateCustomer',compact('html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
 
 	public function ShowInputCustomer(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		/*
 		if(isset($request->CreateCustomer)){
 			session(['fromPage' => 'InputCustomer']);
@@ -1004,7 +991,6 @@ class AdminController extends Controller
 			session(['fromPage' => 'SyuseiCustomer']);
 			session(['CustomerManage' => 'syusei']);
 		}
-		Log::alert('CustomerManage='.session('CustomerManage'));
 		//public function ShowInputCustomer(InpCustomerRequest $request){
 		if(session('CustomerManage')=='new'){
 			//session(['fromPage' => 'InputCustomer']);
@@ -1012,7 +998,6 @@ class AdminController extends Controller
 			//$header="";$slot="";
 			$target_user=array();
 			$maxUserSerial =DB::table('users')->max('serial_user');
-			Log::alert('empty($maxUserSerial)='.empty($maxUserSerial));
 			//if($maxUserSerial==1){
 
 			$TargetUserSerial=++$maxUserSerial;
@@ -1058,7 +1043,6 @@ class AdminController extends Controller
 				$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
 				$GoBackPlace="../ShowMenuCustomerManagement";
 			}
-			//Log::alert('serial_user='.$target_user->serial_user);
 		//}
 		//return view('customers.CreateCustomer',compact("header","slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 		return view('customers.CreateCustomer',compact('html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
@@ -1091,14 +1075,12 @@ class AdminController extends Controller
 	public function ShowInpStaff($TargetStaffSerial){
 		//$header="";$slot="";$saveFlg="";
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		$GoBackPlace="/ShowStaffList";
 		$html_birth_select=array();
 		if($TargetStaffSerial=="new"){
 			$StaffInf=array();
 			//$maxStaffSerial =Staff::max('serial_staff');
 			$maxStaffSerial =DB::table('Staff')->max('serial_staff');
-			//Log::alert('maxStaffSerial='.$maxStaffSerial);
 			$TargetStaffSerial=++$maxStaffSerial;
 			$html_year_slct=OtherFunc::make_html_birth_year_slct('');
 			$html_day_slct=OtherFunc::make_html_birth_day_slct('');
@@ -1106,7 +1088,6 @@ class AdminController extends Controller
 			$btnDisp="登録";
 		}else{
 			$StaffInf=Staff::where('serial_staff','=',$TargetStaffSerial)->first();
-			//Log::alert('StaffInf='.$StaffInf);
 			$btnDisp="修正";
 			if(empty($StaffInf->birth_date)){
 				$html_year_slct=OtherFunc::make_html_birth_year_slct('');
@@ -1117,10 +1098,8 @@ class AdminController extends Controller
 				$html_day_slct=OtherFunc::make_html_birth_day_slct(date('d', strtotime($StaffInf->birth_date)));
 				$html_Month_slct=OtherFunc::make_html_birth_month_slct(date('m', strtotime($StaffInf->birth_date)));
 			}
-			//Log::alert("year=".date('Y', strtotime($StaffInf->birth_date)));
 			//return view('teacher.inp_Staff',compact("header","slot",'TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","saveFlg"));
 		}
-		//Log::alert("html_year_slct=".$html_year_slct);
 		$html_birth_select['year']=$html_year_slct;
 		$html_birth_select['day']=$html_day_slct;
 		$html_birth_select['month']=$html_Month_slct;
@@ -1167,10 +1146,8 @@ class AdminController extends Controller
 
 	public function ShowInpCampaign($TargetCampaignSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		$header="";$slot="";$checked_completed="";$checked_contract="";$checked_person="";$checked_total="";
 		$GoBackPlace="/workers/ShowCampaigns";$saveFlg="";
-		//print "TargetCampaignSerial=".$TargetCampaignSerial."<br>";
 		$referrals_num_slct_array=array();
 		if($TargetCampaignSerial=="new"){
 			for($i=1;$i<=10;$i++){$referrals_num_slct_array[$i]="";}
@@ -1272,7 +1249,6 @@ class AdminController extends Controller
 
 	public function ShowSyuseiTreatmentContent($TreatmentContentSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		$header="";$slot="";
 		$GoBackPlace="/workers/ShowTreatmentContents";$saveFlg="";
 		if($TreatmentContentSerial=="new"){
@@ -1429,7 +1405,6 @@ class AdminController extends Controller
 
 	public function ShowInputSalesGoods($SalesSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		session(['fromPage' => 'SalesGoods']);
 		session(['targetSalesSerial' => $SalesSerial]);
 		$header="";$slot="";
@@ -1463,7 +1438,6 @@ class AdminController extends Controller
 
 	public function ShowSyuseiGood($GoodSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		session(['fromPage' => 'SyuseiGood']);
 		session(['goodmanage' => $GoodSerial]);
 
@@ -1506,7 +1480,6 @@ class AdminController extends Controller
 
 	public function ShowGoodsList(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		session(['fromPage' => 'GoodsList']);
 		session(['fromMenu' => 'GoodsList']);
 
@@ -1529,7 +1502,6 @@ class AdminController extends Controller
 		session(['fromPage' => 'CustomersList']);
 		session(['fromMenu' => 'CustomersList']);
 		//OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		$header="";$slot="";
 		$key="";
 		$key=$request->kensakuKey;
@@ -1572,7 +1544,6 @@ class AdminController extends Controller
 	
 	public function showDialogMsg(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		return view("article.show", ['id'=> $id,'title' => 'タイトル','data'  => 'こんにちは']);
 	}
 	protected function guard(){
@@ -1580,13 +1551,11 @@ class AdminController extends Controller
 	 }
 	public function show_dashboard(){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		return view('teacher.dashboard');
 	}
 
 	public function ShowContractHistory($serial_user){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		session(['fromPage' => 'ContractHistory']);
 		$header="";$slot="";
 		return view('customers.ContractHistory');
@@ -1594,7 +1563,6 @@ class AdminController extends Controller
 
 	public function ShowCustomerInfo($serial_user){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		session(['fromPage' => 'CustomerInfo']);
 		$header="";$slot="";
 		$user=User::where('serial_user','=',$serial_user)->first();
@@ -1627,8 +1595,6 @@ class AdminController extends Controller
 	*/
 	
 	public function ShowMenuCustomerManagement(){
-		//OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::info($_SESSION['access_history']);
 		session(['fromPage' => 'MenuCustomerManagement']);
 		session(['fromMenu' => 'MenuCustomerManagement']);
 		$header="";$slot="";
@@ -2017,7 +1983,6 @@ class AdminController extends Controller
 	}
 	
 	function ShowUserPagination(Request $request) {
-		//Log::info($_SESSION['access_history']);
 		$teacher_inf = Auth::guard('admin')->user();
 		$userDB = DB::table('users')->paginate(initConsts::DdisplayLineNumCustomerList());
 		return view('layouts.userList',compact('userDB'));

@@ -61,4 +61,17 @@ class initConsts{
 		return $inits_array->value2;
 	}
 
+	public static function TargetPageInf($target){
+		$inits_array=DB::table('configrations')->where('subject','=','PageInf')->first();
+		//$page_inf_array=array();
+		$page_inf_array=explode(";",$inits_array->value1);
+		foreach($page_inf_array as $page_inf){
+			$tgt_page_inf_array=explode(",",$page_inf);
+			if(str_contains($target, $tgt_page_inf_array[0])){
+				//$res_array['title']=$tgt_$page_inf_array[1];
+				//$res_array['url']=$tgt_$page_inf_array[2];
+				return array($tgt_page_inf_array[1], $tgt_page_inf_array[2]);
+			}
+		}
+	}
 }

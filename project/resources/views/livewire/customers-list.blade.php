@@ -10,17 +10,22 @@
                             <button class="btn btn-primary" type="button" onclick="location.href='../top'">メニューに戻る</button>
                         </div>
                         <div class="col-auto">
-                            {{--<button class="btn btn-primary" type="button" onclick="history.back()">前画面に戻る</button>--}}
-                            <a href="{{$from_place2}}" class="btn btn-primary">前画面に戻る</a>
+                            <form method="POST" action="{{route($target_historyBack_inf_array[1].'.post')}}">@csrf
+                                <input name="target_day" type="hidden" value="{{$target_day}}"/>
+                                <input name="back_flg" type="hidden" value="true"/>
+                                <button type="submit" name="target_date" class="btn btn-primary" value="{{$target_day}}">{{$target_historyBack_inf_array[0]}}に戻る</button>
+                            </form>
                         </div>
+                        {{--
                         @if($from_place=="dayly_rep")
                             <div class="col-auto">
-                                <form method="POST" action="/workers/ShowDailyReport_from_customers_List">@csrf
+                                <form method="POST" action="{{route('admin.DailyReport')}}">@csrf
                                     <input name="target_day" type="hidden" value="{{$target_day}}"/>
                                     <button type="submit" name="target_date" class="btn btn-primary" value="{{$target_day}}">日報に戻る</button>
                                 </form>
                             </div>
                         @endif
+                        --}}
                         <div class="col-auto">
                             <form method="GET" action="{{route('customers.ShowInpNewCustomer')}}">@csrf
                                 <button class="btn btn-primary" type="submit" name="CustomerListCreateBtn" value="CustomerList">新規顧客登録</button>

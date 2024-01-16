@@ -229,6 +229,11 @@ class DatabaseSeeder extends Seeder
 				'value1' => "2022-05-3000000,2022-06-3000000,2022-08-1500000,2022-07-3500000,2022-02-200000,2022-04-3000000,2022-09-2000000,2022-03-3000000,2022-10-1500000,2022-11-1500000,2022-12-1500000,2023-01-1500000,2023-02-1500000,2023-03-1500000,2023-04-1500000,2023-05-1500000,2023-06-1500000,2023-07-1500000,2023-08-1500000,2023-09-1500000,2023-10-1000000,2023-11-1500000,2023-12-1500000,2024-01-1000000",
 				'setumei' => "契約目標金額",
 			],
+			[
+				'subject'=> "PageInf",
+				'value1' => "top,メニュー,admin.top;ContractList,契約リスト,customers.ContractList;CustomersList,顧客リスト,customers.CustomersList.show;DailyReport,日報,admin.DailyReport;MonthlyReport,月報,admin.MonthlyReport",
+				'setumei' => "契約目標金額",
+			],
         ];
 
 		foreach($configrations as $configration){

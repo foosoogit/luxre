@@ -29,6 +29,16 @@ class DailyReport extends Component
         $today = date("Y-m-d");
         $from_place="";
         OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+        
+        if(isset($_POST['back_flg'])){
+            //log::info('back_fm='.$_POST['back_flg']);
+            array_shift($_SESSION['access_history']);
+            array_shift($_SESSION['access_history']);
+        }
+        //log::info($_SESSION['access_history']);
+        //log::alert('access_history='.$_SESSION['access_history'][0]);
+        $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+        //log::info($target_historyBack_inf_array);
         $backmonthly="";
         foreach($_SESSION['access_history'] as $targeturl){
             if(strpos($targeturl, 'ShowMonthlyReport') !== false){
@@ -48,9 +58,7 @@ class DailyReport extends Component
             $from_place="monthly_rep";
         }else if(isset($_POST['target_date'])){
             $today=$_POST['target_date'];
-            //print "test1<br>";
         }else if(isset($_POST['target_date_from_monthly_rep'])){
-            //print "test<br>";
             $today=$_POST['target_date_from_monthly_rep'];
             $from_place="monthly_rep";
         }
@@ -73,7 +81,6 @@ class DailyReport extends Component
         $Sum['cash']=PaymentHistory::where('date_payment','=',$today)
                 ->leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
                 ->where('payment_histories.how_to_pay','=','cash')
-                //->where('contracts.how_many_pay_genkin','=','1')
                  ->where(function($query) {
                     $query->where('contracts.how_many_pay_genkin','=','1')->orWhere('contracts.how_many_pay_card','=','1');
                 })
@@ -89,25 +96,18 @@ class DailyReport extends Component
                 ->where('how_to_pay','=','paypay')
             ->sum('amount_payment');
     
-    
         $Sum['CashSplit']=PaymentHistory::where('date_payment','=',$today)
                 ->leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
                 ->where('payment_histories.how_to_pay','=','cash')
-                //->where('contracts.how_many_pay_genkin','>','1')
                  ->where(function($query) {
                     $query->where('contracts.how_many_pay_genkin','>','1')->orWhere('contracts.how_many_pay_card','>','1');
                 })
-    
-                //->where('contracts.how_many_pay_genkin','>','1')
                 ->sum('amount_payment');
         
         $Sum['total_cash']=$Sum['cash']+$Sum['CashSplit'];
         $Sum['total']=$Sum['cash']+$Sum['card']+$Sum['CashSplit']+$Sum['paypay'];
-        //if($Sum['CashSplit']<>""){$Sum['CashSplit']=number_format($Sum['CashSplit']);}
-        //if($Sum['card']<>""){$Sum['card']=number_format($Sum['card']);}
-        //if($Sum['cash']<>""){$Sum['cash']=number_format($Sum['cash']);}
         session(['targetDay' => $today]);
         $_SESSION['backmonthday']=$today;
-        return view('livewire.daily-report',compact('PaymentHistories','SalesRecords','header','slot','today','subtotal_treatment','subtotal_good','total','Sum','from_place'));
+        return view('livewire.daily-report',compact('target_historyBack_inf_array','PaymentHistories','SalesRecords','today','subtotal_treatment','subtotal_good','total','Sum','from_place'));
     }
 }

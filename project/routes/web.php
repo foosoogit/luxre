@@ -35,21 +35,22 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
    
-    //Route::get('admin/ShowDailyReport', DailyReport::class);
     Route::name('admin.')->group(function() {
-        //Route::post('/admin/ShowMonthlyReport', MonthlyReport::class);
+
+        //Route::post('/admin/DailyReport', DailyReport::class,function(Request $request){})->name('DailyReport');
+
         Route::get('/admin/MonthlyReport', function () {
             return view('admin.MonthlyReport');
-        })->name('MonthlyReport');
+        })->name('MonthlyReport.get');
         Route::post('/admin/MonthlyReport', function () {
             return view('admin.MonthlyReport');
-        })->name('MonthlyReport');
+        })->name('MonthlyReport.post');
         Route::get('/admin/DailyReport', function () {
-            return view('admin.DailyReport');
-        })->name('DailyReport');
+            return view('admin.DailyReport.get');
+        })->name('DailyReport.get');
         Route::post('/admin/DailyReport', function () {
             return view('admin.DailyReport');
-        })->name('DailyReport');
+        })->name('DailyReport.post');
     });
 
     //Route::get('/admin/ShowDailyReport', [DailyReport::class])->name("ShowDailyReport");
@@ -61,6 +62,12 @@ Route::middleware('auth:admin')->group(function () {
     */
     
     Route::controller(AdminController::class)->name('customers.')->group(function() {
+
+
+        //Route::get('/customers/CustomerInfFromDayly/{target_user_serial}', [CustomersList::class,'search_from_top_menu'],function($target_user_serial){})->name("CustomerInfFromDayly");
+    	//Route::post('/customers/ShowCustomersList_livewire_from_top_menu', CustomerSearch::class,function(Request $request){});
+	    Route::post('/customers/CustomerInfFromDaylyRep', [CustomersList::class,function(Request $request){}])->name("CustomerInfFromDayly.post");
+        
         Route::get('/customers/deleteContract/{serial_contract}/{serial_user}',[AdminController::class,'deleteContract'],function($serial_contract,$serial_user){});
         Route::get('/customers/deleteCustomer/{serial_user}',[AdminController::class,'deleteCustomer'],function($serial_user){});
         Route::post('/ajax_SaveMedicalRecord', [AdminController::class,'ajax_SaveMedicalRecord'])->name("SaveMedicalRecord");
@@ -68,8 +75,8 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminController::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){session(['ContractSerial' => $ContractSerial,'UserSerial'=>$UserSerial]);}]);
 	    Route::post('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminControllerr::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){}]);
 
-        Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}]);
-	    Route::post('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}]);
+        Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
+	    Route::post('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.post");
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
 	    Route::get('/customers/CustomersList', function () {

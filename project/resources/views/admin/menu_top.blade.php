@@ -62,12 +62,12 @@
 							<li>
 								{{--<form method="GET" action="admin/ShowDailyReport">@csrf--}}
 								{{--<form method="GET" action="{{route('ShowDailyReport')}}">@csrf--}}
-								<form method="GET" action="{{route('admin.DailyReport')}}">@csrf
+								<form method="GET" action="{{route('admin.DailyReport.get')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">日報</button>
 								</form>
 							</li>
 							<li>
-								<form method="POST" action="{{route('admin.MonthlyReport')}}">@csrf
+								<form method="POST" action="{{route('admin.MonthlyReport.post')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">月報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
 								</form>
 							</li>
