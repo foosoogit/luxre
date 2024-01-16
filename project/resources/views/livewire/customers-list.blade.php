@@ -10,7 +10,7 @@
                             <button class="btn btn-primary" type="button" onclick="location.href='../top'">メニューに戻る</button>
                         </div>
                         <div class="col-auto">
-                            <form method="POST" action="{{route($target_historyBack_inf_array[1].'.post')}}">@csrf
+                            <form method="POST" action="{{route($target_historyBack_inf_array[1])}}">@csrf
                                 <input name="target_day" type="hidden" value="{{$target_day}}"/>
                                 <input name="back_flg" type="hidden" value="true"/>
                                 <button type="submit" name="target_date" class="btn btn-primary" value="{{$target_day}}">{{$target_historyBack_inf_array[0]}}に戻る</button>

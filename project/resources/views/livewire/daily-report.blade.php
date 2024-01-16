@@ -9,7 +9,7 @@
                     </div>
                     
                     <div class="col-auto">
-                        <form method="POST" action="{{route($target_historyBack_inf_array[1].'.post')}}">@csrf
+                        <form method="POST" action="{{route($target_historyBack_inf_array[1])}}">@csrf
                             @if(isset( $target_day ))
                                 <input name="target_day" type="hidden" value="{{$target_day}}"/>
                                 <button type="submit" name="target_date" class="btn btn-primary" value="{{$target_day}}">{{$target_historyBack_inf_array[0]}}に戻る</button>

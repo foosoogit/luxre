@@ -85,7 +85,7 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::post('/customers/CustomersList', function () {
             return view('customers.ListCustomers');
-        })->name('CustomersList.show');
+        })->name('CustomersList.show.post');
 
         Route::get('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
 	    Route::post('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
