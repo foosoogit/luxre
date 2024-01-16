@@ -46,7 +46,7 @@ Route::middleware('auth:admin')->group(function () {
             return view('admin.MonthlyReport');
         })->name('MonthlyReport.post');
         Route::get('/admin/DailyReport', function () {
-            return view('admin.DailyReport.get');
+            return view('admin.DailyReport');
         })->name('DailyReport.get');
         Route::post('/admin/DailyReport', function () {
             return view('admin.DailyReport');

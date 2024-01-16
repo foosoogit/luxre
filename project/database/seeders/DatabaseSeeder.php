@@ -232,7 +232,7 @@ class DatabaseSeeder extends Seeder
 			[
 				'subject'=> "PageInf",
 				'value1' => "top,メニュー,admin.top;ContractList,契約リスト,customers.ContractList.post;CustomersList,顧客リスト,customers.CustomersList.show.post;DailyReport,日報,admin.DailyReport.post;MonthlyReport,月報,admin.MonthlyReport.post",
-				'setumei' => "契約目標金額",
+				'setumei' => "URLから対応ページ設定",
 			],
         ];
 
