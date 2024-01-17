@@ -77,8 +77,8 @@
 								</form>
 							</li>
 							<li>
-								<form method="POST" action="/workers/ShowYearlyReport">@csrf
-									<button class="btn btn-primary btn-sm" type="submit" disabled>年報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option  value="0" >選択</option>{!!$htm_kesanMonth!!}</select>&emsp;契約達成率、前年度比等
+								<form method="POST" action="{{route('admin.YearlyReport.post')}}">@csrf
+									<button class="btn btn-primary btn-sm" type="submit">年報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option  value="0" >選択</option>{!!$htm_kesanMonth!!}</select>&emsp;契約達成率、前年度比等
 								</form>
 							</li>
 							<li>

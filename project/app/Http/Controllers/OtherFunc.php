@@ -17,6 +17,165 @@ if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function make_html_yearly_Report_table($targetYear,$startMonth){
+		log::alert("targetYear=".$targetYear);
+		$target_contract_money_array=explode( ',',initConsts::TargetContractMoney());
+		$sbj_array=array();
+		$sbj_array=['月','契約金額合計(円)','累計契約金額(円)','解約損金合計(円)','累計解約損金(円)','合計(円)','累計合計(円)','目標値/入力・修正(円)','達成率(%)','前年度比(%)','契約金額合計(契約金-損金)(円)','目標値(円)','達成率(%)','契約金額合計(円)','目標値(円)','達成率(%)'];
+		$htm_year_table="";
+		foreach($sbj_array as $value){
+			$htm_year_table.='<th class="border px-4 py-2">'.$value.'</th>';
+		}
+
+		$htm_year_table.='<tr>';
+		$targetMonth=$startMonth;$ruikei_contract_amount=0;$ruikei_sonkin_amount=0;$ruikei_gokei=0;
+		$ruikei_tm=0;$ruikei_contract_amount_last_year=0;$ruikei_tm_last_year=0;$ruikei_tm_last_year=0;$ruikei_gokei_last_year=0;
+		$ruikei_contract_amount_last_last_year=0;$ruikei_sonkin_amount_last_last_year=0;$ruikei_contract_amount_last_last_year=0;
+		$ruikei_tm_last_last_year=0;
+		for($i=0;$i<12;$i++){
+			$targetMonth++;
+			if($targetMonth==13 and $startMonth<>2){
+				$targetMonth=1;
+				$targetYear=$targetYear+1;
+			}
+			$tm="No Data";$tm_last_year="No Data";$tm_last_last_year="No Data";
+			log::info($target_contract_money_array);
+			foreach($target_contract_money_array as $target_contract_money){
+				log::alert("target_contract_money=".$target_contract_money);
+				$target_contract_money_data_array=explode( '-',$target_contract_money);
+				$cd=$targetYear."-".sprintf('%02d', $targetMonth);
+				$target_last_Year=$targetYear-1;
+				$cd_last_year=$target_last_Year."-".sprintf('%02d', $targetMonth);
+				$target_last_last_Year=$targetYear-2;
+				$tv=$target_contract_money_data_array[0]."-".sprintf('%02d', $target_contract_money_data_array[1]);
+
+				if($cd==$tv){
+					$tm=$target_contract_money_data_array[2];
+					$flg=true;
+					//break;
+				}
+				if($cd_last_year==$tv){
+					$tm_last_year=$target_contract_money_data_array[2];
+					$flg_last_year=true;
+					//break;
+				}
+				if($target_last_last_Year==$tv){
+					$tm_last_last_year=$target_contract_money_data_array[2];
+					$flg_last_last_year=true;
+					//break;
+				}
+
+			}
+			$contract_amount=self::get_keiyaku_monthly_amount($targetYear,$targetMonth);
+			$contract_amount_last_year=self::get_keiyaku_monthly_amount($targetYear-1,$targetMonth);
+			$contract_amount_last_last_year=self::get_keiyaku_monthly_amount($targetYear-2,$targetMonth);
+			$ruikei_contract_amount_last_last_year=$ruikei_contract_amount_last_last_year+$contract_amount_last_last_year;
+			$sonkin_amount=self::get_kaiyaku_monthly_sonkin_amount($targetYear,$targetMonth);
+			$sonkin_amount_last_year=self::get_kaiyaku_monthly_sonkin_amount($targetYear-1,$targetMonth);
+			$sonkin_amount_last_last_year=self::get_kaiyaku_monthly_sonkin_amount($targetYear-2,$targetMonth);
+
+			$ruikei_contract_amount_last_last_year=$ruikei_contract_amount_last_last_year+$contract_amount_last_last_year;
+			$ruikei_contract_amount=$ruikei_contract_amount+$contract_amount;
+			
+			$ruikei_contract_amount_last_year=$ruikei_contract_amount_last_year+$contract_amount_last_year;
+			$ruikei_sonkin_amount_last_last_year=$ruikei_sonkin_amount_last_last_year+$sonkin_amount_last_last_year;
+			$ruikei_sonkin_amount=$ruikei_sonkin_amount+$sonkin_amount;
+			$gokei=$contract_amount-$sonkin_amount;
+			$gokei_last_year=$contract_amount_last_year-$sonkin_amount_last_year;
+			$gokei_last_last_year=$contract_amount_last_last_year-$sonkin_amount_last_last_year;
+
+			$zennendo_hi="--";
+			if($gokei_last_year<>0){
+				$zennendo_hi=round($gokei/$gokei_last_year*100,1);
+			}
+			$ruikei_gokei=$ruikei_gokei+$gokei;
+			$ruikei_gokei_last_year=$ruikei_gokei_last_year+$gokei_last_year;
+			
+			if($tm<>'No Data' and $gokei<>0){
+				$tasseiritu=round($gokei/$tm*100,1);
+			}else{
+				$tasseiritu="--";
+			}
+			if($tm<>'No Data'){$ruikei_tm=$ruikei_tm+$tm;}
+			if($tm_last_year<>'No Data' and $gokei_last_year<>0){
+				$tasseiritu_last_year=round($gokei_last_year/$tm_last_year*100,1);
+			}else{
+				$tasseiritu_last_year="--";
+			}
+			if($tm_last_year<>'No Data'){$ruikei_tm_last_year=$ruikei_tm_last_year+$tm_last_year;}
+						
+			if($tm_last_last_year<>'No Data' and $gokei_last_last_year<>0){
+				$tasseiritu_last_last_year=round($gokei_last_last_year/$tm_last_last_year*100,1);
+			}else{
+				$tasseiritu_last_last_year="--";
+			}
+
+			if($tm_last_last_year<>'No Data'){$ruikei_tm_last_last_year=$ruikei_tm_last_last_year+$tm_last_last_year;}
+
+			$htm_year_table.='
+				<tr>
+					<td class="border px-4 py-2">'.$targetMonth.'月</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$contract_amount).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_contract_amount).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$sonkin_amount).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_sonkin_amount).'</td>
+					<td class="border px-4 py-2" style="text-align: right;"><div id="'.$targetYear.'-'.sprintf('%02d', $targetMonth).'-gokei">'.$gokei.'</div></td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_gokei).'</td>
+					<td class="border px-4 py-2">
+						<button class="btn btn-link" name="'.$targetYear.'-'.sprintf('%02d', $targetMonth).'" value="'.$tm.'" onClick="save_target_contract_money(this)"><div id="'.$targetYear.'-'.sprintf('%02d', $targetMonth).'-display" style="text-align: right;">'.number_format((float)$tm).'</div></button>
+					</td>
+					<td class="border px-4 py-2"><div id="'.$targetYear.'-'.sprintf('%02d', $targetMonth).'-tassei" style="text-align: right;">'.$tasseiritu.'</div></td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$zennendo_hi).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$gokei_last_year).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tm_last_year).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tasseiritu_last_year).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$gokei_last_last_year).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tm_last_last_year).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tasseiritu_last_last_year).'</td>
+				</tr>';
+		}
+		if($ruikei_tm>0){
+			$tasseiritu_gokei=round($ruikei_gokei/$ruikei_tm*100,1);
+		}else{
+			$tasseiritu_gokei="--";
+		}
+		$zennendo_hi_gokei="--";
+		if($gokei_last_year<>0){
+			$zennendo_hi_gokei=round($ruikei_gokei/$gokei_last_year*100,1);
+		}
+		$tasseiritu_gokei_last_year="--";
+		if($ruikei_tm_last_year<>0){
+			$tasseiritu_gokei_last_year=round($ruikei_contract_amount_last_year/$ruikei_tm_last_year*100,1);
+		}
+		$gokeiamount_last_last_year=$ruikei_contract_amount_last_last_year-$ruikei_sonkin_amount_last_last_year;
+		if($ruikei_tm_last_last_year<>0){
+			$tasseiritu_last_last_year=round($ruikei_contract_amount_last_last_year/$ruikei_tm_last_last_year*100,1);
+		}else{
+			$tasseiritu_last_last_year="--";
+		}
+
+		$htm_year_table.='
+			<tr>
+				<td class="border px-4 py-2">合計</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$contract_amount).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_contract_amount).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$sonkin_amount).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_sonkin_amount).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$gokei).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_gokei).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_tm).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tasseiritu_gokei).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$zennendo_hi_gokei).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_contract_amount_last_year).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_tm_last_year).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tasseiritu_gokei_last_year).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_contract_amount_last_last_year).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_tm_last_last_year).'</td>
+				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tasseiritu_last_last_year).'</td>
+			</tr>';
+		return $htm_year_table; 
+	}
+
 	public static function get_goback_url($now_pageURL){
 		
 		$now_array=explode("?", $now_pageURL);
@@ -119,179 +278,9 @@ class OtherFunc extends Controller
 		return $htm_staff_slct;
 	}
 
-	public static function make_html_yearly_Report_table($targetYear,$startMonth){
-		$target_contract_money_array=explode( ',',initConsts::TargetContractMoney());
-		//print_r($target_contract_money_array);
-		$sbj_array=array();
-		$sbj_array=['月','契約金額合計(円)','累計契約金額(円)','解約損金合計(円)','累計解約損金(円)','合計(円)','累計合計(円)','目標値(円)','達成率(%)','前年度比(%)','契約金額合計(契約金-損金)(円)','目標値(円)','達成率(%)','契約金額合計(円)','目標値(円)','達成率(%)'];
-		$htm_year_table="";
-		foreach($sbj_array as $value){
-			$htm_year_table.='<th class="border px-4 py-2">'.$value.'</th>';
-		}
-
-		$htm_year_table.='<tr>';
-		$targetMonth=$startMonth;$ruikei_contract_amount=0;$ruikei_sonkin_amount=0;$ruikei_gokei=0;
-		$ruikei_tm=0;$ruikei_contract_amount_last_year=0;$ruikei_tm_last_year=0;$ruikei_tm_last_year=0;$ruikei_gokei_last_year=0;
-		$ruikei_contract_amount_last_last_year=0;$ruikei_sonkin_amount_last_last_year=0;$ruikei_contract_amount_last_last_year=0;
-		$ruikei_tm_last_last_year=0;
-		//print "startMonth=".$startMonth."<br>";
-		for($i=0;$i<12;$i++){
-			$targetMonth++;
-			//print "targetMonth=".$targetMonth."<br>";
-			if($targetMonth==13 and $startMonth<>2){
-				$targetMonth=1;
-				$targetYear=$targetYear+1;
-			}
-			$tm="No Data";$tm_last_year="No Data";$tm_last_last_year="No Data";
-			foreach($target_contract_money_array as $target_contract_money){
-				$target_contract_money_data_array=explode( '-',$target_contract_money);
-				$cd=$targetYear."-".sprintf('%02d', $targetMonth);
-				$target_last_Year=$targetYear-1;
-				$cd_last_year=$target_last_Year."-".sprintf('%02d', $targetMonth);
-				$target_last_last_Year=$targetYear-2;
-
-
-				//print "cd=".$cd."<br>";
-				$tv=$target_contract_money_data_array[0]."-".sprintf('%02d', $target_contract_money_data_array[1]);
-				//$tv_last_year=$target_contract_money_data_array[0]."-".sprintf('%02d', $target_contract_money_data_array[1]);
-
-				if($cd==$tv){
-					$tm=$target_contract_money_data_array[2];
-					$flg=true;
-					//break;
-				}
-				if($cd_last_year==$tv){
-					$tm_last_year=$target_contract_money_data_array[2];
-					$flg_last_year=true;
-					//break;
-				}
-				if($target_last_last_Year==$tv){
-					$tm_last_last_year=$target_contract_money_data_array[2];
-					$flg_last_last_year=true;
-					//break;
-				}
-
-			}
-			$contract_amount=self::get_keiyaku_monthly_amount($targetYear,$targetMonth);
-			$contract_amount_last_year=self::get_keiyaku_monthly_amount($targetYear-1,$targetMonth);
-			$contract_amount_last_last_year=self::get_keiyaku_monthly_amount($targetYear-2,$targetMonth);
-			$ruikei_contract_amount_last_last_year=$ruikei_contract_amount_last_last_year+$contract_amount_last_last_year;
-			$sonkin_amount=self::get_kaiyaku_monthly_sonkin_amount($targetYear,$targetMonth);
-			$sonkin_amount_last_year=self::get_kaiyaku_monthly_sonkin_amount($targetYear-1,$targetMonth);
-			$sonkin_amount_last_last_year=self::get_kaiyaku_monthly_sonkin_amount($targetYear-2,$targetMonth);
-
-			$ruikei_contract_amount_last_last_year=$ruikei_contract_amount_last_last_year+$contract_amount_last_last_year;
-			$ruikei_contract_amount=$ruikei_contract_amount+$contract_amount;
-			
-			$ruikei_contract_amount_last_year=$ruikei_contract_amount_last_year+$contract_amount_last_year;
-			$ruikei_sonkin_amount_last_last_year=$ruikei_sonkin_amount_last_last_year+$sonkin_amount_last_last_year;
-			$ruikei_sonkin_amount=$ruikei_sonkin_amount+$sonkin_amount;
-			$gokei=$contract_amount-$sonkin_amount;
-			$gokei_last_year=$contract_amount_last_year-$sonkin_amount_last_year;
-			$gokei_last_last_year=$contract_amount_last_last_year-$sonkin_amount_last_last_year;
-
-			$zennendo_hi="--";
-			if($gokei_last_year<>0){
-				$zennendo_hi=round($gokei/$gokei_last_year*100,1);
-			}
-			$ruikei_gokei=$ruikei_gokei+$gokei;
-			$ruikei_gokei_last_year=$ruikei_gokei_last_year+$gokei_last_year;
-			
-			if($tm<>'No Data' and $gokei<>0){
-				$tasseiritu=round($gokei/$tm*100,1);
-			}else{
-				$tasseiritu="--";
-			}
-			if($tm<>'No Data'){$ruikei_tm=$ruikei_tm+$tm;}
-			//print "ruikei_tm=".$ruikei_tm;
-			if($tm_last_year<>'No Data' and $gokei_last_year<>0){
-				$tasseiritu_last_year=round($gokei_last_year/$tm_last_year*100,1);
-			}else{
-				$tasseiritu_last_year="--";
-			}
-			if($tm_last_year<>'No Data'){$ruikei_tm_last_year=$ruikei_tm_last_year+$tm_last_year;}
-						
-			if($tm_last_last_year<>'No Data' and $gokei_last_last_year<>0){
-				$tasseiritu_last_last_year=round($gokei_last_last_year/$tm_last_last_year*100,1);
-			}else{
-				$tasseiritu_last_last_year="--";
-			}
-
-			if($tm_last_last_year<>'No Data'){$ruikei_tm_last_last_year=$ruikei_tm_last_last_year+$tm_last_last_year;}
-
-			$htm_year_table.='
-				<tr>
-					<td class="border px-4 py-2">'.$targetMonth.'月</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$contract_amount).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_contract_amount).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$sonkin_amount).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_sonkin_amount).'</td>
-					<td class="border px-4 py-2" style="text-align: right;"><div id="'.$targetYear.'-'.sprintf('%02d', $targetMonth).'-gokei">'.$gokei.'</div></td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_gokei).'</td>
-					<td class="border px-4 py-2">
-						<button class="bg-blue-500 text-white rounded px-3 py-1" name="'.$targetYear.'-'.sprintf('%02d', $targetMonth).'" value="'.$tm.'" onClick="save_target_contract_money(this)"><div id="'.$targetYear.'-'.sprintf('%02d', $targetMonth).'-display" style="text-align: right;">'.number_format((float)$tm).'</div></button>
-					</td>
-					<td class="border px-4 py-2"><div id="'.$targetYear.'-'.sprintf('%02d', $targetMonth).'-tassei" style="text-align: right;">'.$tasseiritu.'</div></td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$zennendo_hi).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$gokei_last_year).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tm_last_year).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tasseiritu_last_year).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$gokei_last_last_year).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tm_last_last_year).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tasseiritu_last_last_year).'</td>
-				</tr>';
-			//$htm_year_table.='</tbody>';
-			//$htm_year_table.='</tr></thead></table>';
-		}
-		//$data['前年同月の売上高'] ? $data['当月売上高'] / $data['前年同月の売上高'] : 0;
-		//$tasseiritu_gokei ? round($ruikei_gokei/$ruikei_tm*100,1): 0;
-		if($ruikei_tm>0){
-			$tasseiritu_gokei=round($ruikei_gokei/$ruikei_tm*100,1);
-		}else{
-			$tasseiritu_gokei="--";
-		}
-		$zennendo_hi_gokei="--";
-		if($gokei_last_year<>0){
-			$zennendo_hi_gokei=round($ruikei_gokei/$gokei_last_year*100,1);
-		}
-		//$ruikei_contract_amount_last_year-
-		$tasseiritu_gokei_last_year="--";
-		if($ruikei_tm_last_year<>0){
-			$tasseiritu_gokei_last_year=round($ruikei_contract_amount_last_year/$ruikei_tm_last_year*100,1);
-		}
-		$gokeiamount_last_last_year=$ruikei_contract_amount_last_last_year-$ruikei_sonkin_amount_last_last_year;
-		if($ruikei_tm_last_last_year<>0){
-			$tasseiritu_last_last_year=round($ruikei_contract_amount_last_last_year/$ruikei_tm_last_last_year*100,1);
-		}else{
-			$tasseiritu_last_last_year="--";
-		}
-
-		$htm_year_table.='
-			<tr>
-				<td class="border px-4 py-2">合計</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$contract_amount).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_contract_amount).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$sonkin_amount).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_sonkin_amount).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$gokei).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_gokei).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_tm).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tasseiritu_gokei).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$zennendo_hi_gokei).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_contract_amount_last_year).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_tm_last_year).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tasseiritu_gokei_last_year).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_contract_amount_last_last_year).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$ruikei_tm_last_last_year).'</td>
-				<td class="border px-4 py-2" style="text-align: right;">'.number_format((float)$tasseiritu_last_last_year).'</td>
-			</tr>';
-		return $htm_year_table; 
-	}
-	
 	static function get_kaiyaku_monthly_sonkin_amount($targetyear,$targetmonth){
 		$target=$targetyear."-".sprintf('%02d', $targetmonth)."%";
-		//print "target=".$target."<br>";
-		$sonkin=Keiyaku::where('cancel','LIKE',$target)
+		$sonkin=Contract::where('cancel','LIKE',$target)
 				->where('how_to_pay','=','現金')
 				->selectRaw('SUM(keiyaku_kingaku) as total')
 				->first(['total']);
@@ -299,19 +288,10 @@ class OtherFunc extends Controller
 	}
 
 	static function get_keiyaku_monthly_amount($targetyear,$targetmonth){
-		//$TargetQuery=Keiyaku;
 		$target=$targetyear."-".sprintf('%02d', $targetmonth)."%";
-		//$TotalAmount=Keiyaku::where('keiyaku_bi','LIKE',"'".$target."%'")
-		$TotalAmount=Keiyaku::where('keiyaku_bi','LIKE',$target)
+		$TotalAmount=Contract::where('keiyaku_bi','LIKE',$target)
 				->selectRaw('SUM(keiyaku_kingaku) as total')
 				->first(['total']);
-		//print "target="."'".$target."%'";
-		//dd($TotalAmount->toSql(), $TotalAmount->getBindings());
-		//$TargetQuery=$TargetQuery->selectRaw('SUM(keiyaku_kingaku) as total');
-		//$TotalAmount=$TargetQuery->first(['total']);
-		//$total=$TotalAmount->total+session('TotalSales');
-		//session(['Keiyakukin' =>$total]);
-		//session(['KeiyakukinRuikei' =>session('KeiyakukinRuikei')+$TotalAmount->total]);
 		return $TotalAmount->total;
 	}
 
@@ -332,12 +312,10 @@ class OtherFunc extends Controller
 		$treatmentInfArray=TreatmentContent::orderBy('name_treatment_contents_kana')->get();
 		$htm_TreatmentsName_slct='<option value=0>-- 選択してください --</option>';
 		$tgtGrp="";
-		//$html_customer_list_slct.='<optgroup label="'.$tgtGrp.'>';
 		foreach($treatmentInfArray as $value){
 			$sct="";
 			$match = false;$flg=false;$cnt=0;$k=0;
 			foreach ($kana as $index => $pattern) {
-				//if($tgtGrp<>$index){$html_customer_list_slct.='<optgroup label="'.$index.'">';}
 				if (preg_match("/^" . $pattern . "/u", $value->name_treatment_contents_kana)) {
 					++$cnt;
 					if($tgtGrp<>$index){

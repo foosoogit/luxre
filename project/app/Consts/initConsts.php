@@ -58,7 +58,7 @@ class initConsts{
 
 	public static function TargetContractMoney(){
 		$inits_array=DB::table('configrations')->where('subject','=','TargetContractMoney')->first();
-		return $inits_array->value2;
+		return $inits_array->value1;
 	}
 
 	public static function TargetPageInf($target){

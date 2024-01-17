@@ -10,7 +10,7 @@ use App\Http\Livewire\ContractList;
 use App\Http\Livewire\DailyReport;
 use App\Http\Livewire\MonthlyReport;
 use App\Http\Livewire\ContractsReport;
-
+use App\Http\Livewire\YearlyReport;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,8 +37,9 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 Route::middleware('auth:admin')->group(function () {
    
     Route::name('admin.')->group(function() {
-
-        //Route::post('/admin/DailyReport', DailyReport::class,function(Request $request){})->name('DailyReport');
+        Route::post('/admin/YearlyReport', function () {
+            return view('admin.YearlyReport');
+        })->name('YearlyReport.post');
         
         Route::post('/admin/ContractsReport', function () {
             return view('admin.ContractReport');

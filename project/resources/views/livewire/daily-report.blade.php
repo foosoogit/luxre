@@ -22,16 +22,6 @@
                             </form>
                         </div>
                     @endif
-                    {{--
-                    @if($from_place=="monthly_rep")
-                        <div class="col-auto">
-                            <form method="POST" action="{{route('admin.MonthlyReport')}}">@csrf
-                            <input name="year_month_day" type="hidden" value="{{$today}}"/>
-                            <button type="submit" name="target_date" class="btn mb-2 btn-primary">月報に戻る</button>
-                        </form>
-                    </div>
-                    @endif
-                    --}}
                 </div>
                 <div class="mb-2 bg-success text-white">日報</div>
                 <div class="card-header">
