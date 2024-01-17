@@ -72,8 +72,8 @@
 								</form>
 							</li>
 							<li>
-								<form method="POST" action="/workers/ShowContractsReport">@csrf
-									<button class="btn btn-primary btn-sm" type="submit" disabled>契約金額集計</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
+								<form method="POST" action="{{route('admin.ContractReport.post')}}">@csrf
+									<button class="btn btn-primary btn-sm" type="submit">契約金額集計</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
 								</form>
 							</li>
 							<li>

@@ -9,6 +9,7 @@ use App\Http\Livewire\CustomersList;
 use App\Http\Livewire\ContractList;
 use App\Http\Livewire\DailyReport;
 use App\Http\Livewire\MonthlyReport;
+use App\Http\Livewire\ContractsReport;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,10 @@ Route::middleware('auth:admin')->group(function () {
     Route::name('admin.')->group(function() {
 
         //Route::post('/admin/DailyReport', DailyReport::class,function(Request $request){})->name('DailyReport');
+        
+        Route::post('/admin/ContractsReport', function () {
+            return view('admin.ContractReport');
+        })->name('ContractReport.post');
 
         Route::get('/admin/MonthlyReport', function () {
             return view('admin.MonthlyReport');
