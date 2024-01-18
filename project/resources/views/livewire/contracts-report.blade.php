@@ -7,6 +7,7 @@
                     <div class="col-auto">
                         <a class="btn mb-2 btn-primary" href="{{route('admin.top')}}">メニューに戻る</a>
                     </div>
+                    @if(isset($target_historyBack_inf_array[1]))
                     @if($target_historyBack_inf_array[1]!=='admin.top')
                         <div class="col-auto">
                             <form method="POST" action="{{route($target_historyBack_inf_array[1])}}">@csrf
@@ -21,6 +22,7 @@
                                 <input name="back_flg" type="hidden" value="true"/>
                             </form>
                         </div>
+                    @endif
                     @endif
 				</div>
                 <div class="mb-2 bg-success text-white">契約金額集計</div>

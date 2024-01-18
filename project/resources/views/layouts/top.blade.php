@@ -40,13 +40,13 @@
 							{{ session('flash_message') }}
 						</div>
 					@endif
-					{{ $header }} 
+					{{--{{ $header }}--}}
 					@yield('content')
 				<!--</div>-->
 			<!--</header>-->
 			<!-- Page Content -->
 			<main>
-				{{ $slot }}
+				{{--{{ $slot }}--}}
 			</main>
 		<!--</div> -->
 	        @stack('modals')

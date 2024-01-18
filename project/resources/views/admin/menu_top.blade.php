@@ -82,8 +82,8 @@
 								</form>
 							</li>
 							<li>
-								<form method="GET" action="/workers/ShowTreatmentContents">@csrf
-									<button class="btn btn-primary btn-sm" type="submit" disabled>施術登録</button>
+								<form method="POST" action="{{route('admin.TreatmentList.post')}}">@csrf
+									<button class="btn btn-primary btn-sm" type="submit">施術登録</button>
 								</form>
 							</li>
 							<li>

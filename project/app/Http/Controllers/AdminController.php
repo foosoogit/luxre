@@ -16,6 +16,7 @@ use App\Models\Contract;
 use Illuminate\Support\Facades\Storage;
 use App\Models\ContractDetail;
 use App\Models\VisitHistory;
+use App\Models\TreatmentContent;
 if(!isset($_SESSION)){session_start();}
 
 class AdminController extends Controller
@@ -25,6 +26,40 @@ class AdminController extends Controller
 	
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
+	}
+
+	public function InpTreatment($TreatmentSerial){
+		//log::alert("TreatmentSerial=".$TreatmentSerial);
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+        if(isset($_POST['back_flg'])){
+            array_shift($_SESSION['access_history']);
+            array_shift($_SESSION['access_history']);
+        }
+        $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		log::alert('access_history='.$_SESSION['access_history'][0]);
+		log::info($target_historyBack_inf_array);
+		//log::info($_SESSION['access_history']);
+		$GoBackPlace="/workers/ShowTreatmentContents";
+		
+		if($TreatmentSerial=="new"){
+			//$manageFlg="new";
+			session(['TreatmentContentmanage' => 'new']);
+			$maxSerial=DB::table('treatment_contents')->max('serial_treatment_contents');
+			if($maxSerial==""){
+				$TreatmentSerial="Tr_000001";
+			}else{
+				$TreatmentSerial=++$maxSerial;
+			}
+			$TreatmentContentInf=array();$btnDisp="新規登録";
+			session(['TreatmentContentSerial' => $TreatmentSerial]);
+			return view('admin.InpTreatment',compact('target_historyBack_inf_array','TreatmentSerial','TreatmentContentInf',"GoBackPlace","btnDisp"));
+		}else{
+			$TreatmentContentInf=TreatmentContent::where('serial_treatment_contents','=',$TreatmentSerial)->first();
+			$btnDisp="修正";
+			$targetTreatmentContentSerial=$TreatmentContentSerial;
+			session(['targetGoodSerial' => $TreatmentContentSerial]);
+			return view('admin.InpTreatment',compact('target_historyBack_inf_array','TreatmentSerial','TreatmentContentInf',"GoBackPlace","btnDisp"));
+		}
 	}
 
 	public function deleteContract($serial_contract,$serial_user){
@@ -1231,7 +1266,7 @@ class AdminController extends Controller
 		return redirect('/workers/ShowTreatmentContents');
 	}
 
-	public function SaveTreatmentContent(Request $request){
+	public function SaveTreatment(Request $request){
 		$targetData=[
 			'created_at' => date('Y-m-d H:i:s'),
 			'serial_treatment_contents' => $request->serial_TreatmentContent,
@@ -1241,36 +1276,12 @@ class AdminController extends Controller
 			'treatment_details' => $request->TreatmentContent_details,
 			'memo' => $request->memo,
 		];
-		TreatmentContents::upsert($targetData,['serial_treatment_contents']);
+		TreatmentContent::upsert($targetData,['serial_treatment_contents']);
 		session()->flash('success', '登録しました。');
 		$this::save_recorder("SaveTreatmentContent");
-		return redirect('/workers/ShowTreatmentContents');
+		return redirect('/admin/TreatmentList');
 	}
 
-	public function ShowSyuseiTreatmentContent($TreatmentContentSerial){
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		$header="";$slot="";
-		$GoBackPlace="/workers/ShowTreatmentContents";$saveFlg="";
-		if($TreatmentContentSerial=="new"){
-			$maxSerial=DB::table('treatment_contents')->max('serial_treatment_contents');
-			if($maxSerial==""){
-				$targetTreatmentContentSerial="Tr_000001";
-			}else{
-				$targetTreatmentContentSerial=++$maxSerial;
-			}
-			$TreatmentContentInf=array();$btnDisp="新規登録";
-			session(['TreatmentContentSerial' => $targetTreatmentContentSerial]);
-			return view('teacher.CreateTreatmentContents',compact("header","slot",'targetTreatmentContentSerial','TreatmentContentInf',"GoBackPlace","btnDisp","saveFlg"));
-		}else{
-			session(['TreatmentContentmanage' => 'new']);
-			$TreatmentContentInf=TreatmentContents::where('serial_treatment_contents','=',$TreatmentContentSerial)->first();
-			$btnDisp="修正";
-			$targetTreatmentContentSerial=$TreatmentContentSerial;
-			session(['targetGoodSerial' => $TreatmentContentSerial]);
-			return view('teacher.CreateTreatmentContents',compact("header","slot",'targetTreatmentContentSerial','TreatmentContentInf',"GoBackPlace","btnDisp","saveFlg"));
-		}
-	}
-	
 	public function ContractCancellation($serial_Contract,$UserSerial,Request $request){
 		$kaiyakuFlg=Contract::where('serial_keiyaku','=', $serial_Contract)->first('cancel');
 		if($kaiyakuFlg->cancel==null){
@@ -1597,7 +1608,7 @@ class AdminController extends Controller
 	public function ShowMenuCustomerManagement(){
 		session(['fromPage' => 'MenuCustomerManagement']);
 		session(['fromMenu' => 'MenuCustomerManagement']);
-		$header="";$slot="";
+		//$header="";$slot="";
 		session(['fromMenu' => 'MenuCustomerManagement']);
 		session(['targetYear' => date('Y')]);
 		$targetYear=session('targetYear');
@@ -1620,7 +1631,7 @@ class AdminController extends Controller
 		//list($targetNameHtmFront, $targetNameHtmBack) =OtherFunc::make_htm_get_not_coming_customer();
 		$csrf="csrf";
 		session(['GoBackPlace' => '../ShowMenuCustomerManagement']);
-		return view('admin.menu_top',compact("header","slot","html_year_slct","html_month_slct","DefaultUsersInf","not_coming_customers","default_customers",'htm_kesanMonth'));
+		return view('admin.menu_top',compact("html_year_slct","html_month_slct","DefaultUsersInf","not_coming_customers","default_customers",'htm_kesanMonth'));
 	}
 	
 	public function ckScheduleDeletePossible(Request $request){

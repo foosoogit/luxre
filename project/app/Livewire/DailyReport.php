@@ -29,16 +29,12 @@ class DailyReport extends Component
         $today = date("Y-m-d");
         $from_place="";
         OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-        
         if(isset($_POST['back_flg'])){
             //log::info('back_fm='.$_POST['back_flg']);
             array_shift($_SESSION['access_history']);
             array_shift($_SESSION['access_history']);
         }
-        //log::info($_SESSION['access_history']);
-        //log::alert('access_history='.$_SESSION['access_history'][0]);
         $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-        //log::info($target_historyBack_inf_array);
         $backmonthly="";
         foreach($_SESSION['access_history'] as $targeturl){
             if(strpos($targeturl, 'ShowMonthlyReport') !== false){

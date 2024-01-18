@@ -37,10 +37,34 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 Route::middleware('auth:admin')->group(function () {
    
     Route::name('admin.')->group(function() {
+        Route::post('/admin/saveTreatment/', [AdminController::class,'saveTreatment',function(Request $request){}])->name('saveTreatment.post');
+
+        Route::get('/admin/InpTreatment/{TreatmentContentSerial}', [AdminController::class,'InpTreatment',function($TreatmentSerial){}])->name('InpTreatment.get');
+
+        Route::get('/admin/TreatmentList', function () {
+            return view('admin.TreatmentList');
+        })->name('TreatmentList.get');
+       
+        Route::post('/admin/TreatmentList', function () {
+            return view('admin.TreatmentList');
+        })->name('TreatmentList.post');
+
+        Route::get('/admin/YearlyReport', function () {
+            return view('admin.YearlyReport');
+        })->name('YearlyReport.get');
+
+        Route::get('/admin/YearlyReport', function () {
+            return view('admin.YearlyReport');
+        })->name('YearlyReport.get');
+
         Route::post('/admin/YearlyReport', function () {
             return view('admin.YearlyReport');
         })->name('YearlyReport.post');
         
+        Route::get('/admin/ContractsReport', function () {
+            return view('admin.ContractReport');
+        })->name('ContractReport.get');
+
         Route::post('/admin/ContractsReport', function () {
             return view('admin.ContractReport');
         })->name('ContractReport.post');
@@ -48,12 +72,15 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/admin/MonthlyReport', function () {
             return view('admin.MonthlyReport');
         })->name('MonthlyReport.get');
+        
         Route::post('/admin/MonthlyReport', function () {
             return view('admin.MonthlyReport');
         })->name('MonthlyReport.post');
+        
         Route::get('/admin/DailyReport', function () {
             return view('admin.DailyReport');
         })->name('DailyReport.get');
+        
         Route::post('/admin/DailyReport', function () {
             return view('admin.DailyReport');
         })->name('DailyReport.post');
