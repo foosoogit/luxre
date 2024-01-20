@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\ContractDetail;
 use App\Models\VisitHistory;
 use App\Models\TreatmentContent;
+use App\Models\InOutHistory;
 if(!isset($_SESSION)){session_start();}
 
 class AdminController extends Controller
@@ -27,6 +28,100 @@ class AdminController extends Controller
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
 	}
+
+	public function send_mail_in_out(Request $request){
+        $item_array=json_decode( $request->item_json , true );
+        //Log::alert('seated_type='.$item_array['seated_type']);
+        //Log::alert('name-student='.$item_array['name_sei']);
+        if($item_array['seated_type']=='in'){
+            $msg=InitConsts::MsgIn();
+            //Log::alert('msg='.$msg);
+            $sbj=InitConsts::sbjIn();
+        }else if($item_array['seated_type']=='out'){
+            $msg=InitConsts::MsgIn();
+            $sbj=InitConsts::sbjIn();
+        }
+
+        $msg=str_replace('[name-target]', $item_array['name_sei']." ".$item_array['name_mei'], $msg);
+        $msg=str_replace('[time]', $item_array['target_time'], $msg);
+        $msg=OtherFunc::ConvertPlaceholder($msg,"body");
+        $sbj=str_replace('[name-target]', $item_array['name_sei']." ".$item_array['name_mei'], $sbj);
+        $sbj=str_replace('[time]', $item_array['target_time'], $sbj);
+        $sbj=OtherFunc::ConvertPlaceholder($sbj,"sbj");
+
+        $target_item_array['subject']=$sbj;
+        $to_email_array=explode (",",$item_array['email']);
+        $protector_array=explode (",",$item_array['protector']);
+        $target_item_array['from_email']=$item_array['from_email'];
+        $i=0;
+        foreach($to_email_array as $target_email){
+            $target_item_array['msg']=str_replace('[name-protector]', $protector_array[$i], $msg);
+            $target_item_array['to_email']=$target_email;
+            Mail::send(new ContactMail($target_item_array));
+            $i++;
+        }
+        $send_msd="配信しました。";
+        $json_dat = json_encode( $send_msd , JSON_PRETTY_PRINT ) ;
+        echo $json_dat;
+    }
+
+	public function in_out_manage(Request $request)
+    {
+        $target_serial=$request->target_serial;
+        $target_serial_length=strlen($target_serial);
+        $TargetInfSql=Staff::where('serial_staff','=',$target_serial);
+        if($TargetInfSql->count()>0){
+            $TargetInf=$TargetInfSql->first();
+            $target_item_array['target_time']=date("Y-m-d H:i:s");
+            $target_item_array['target_date']=date("Y-m-d");
+            $target_item_array['student_serial']= $student_serial;
+            $target_item_array['from_email']=config('app.MAIL_FROM_ADDRESS');
+            $target_item_array['name_sei']=$TargetInf->name_sei;
+            $target_item_array['name_mei']=$TargetInf->name_mei;
+            $target_item_array['protector']=$TargetInf->protector;
+            $target_item_array['email']=$TargetInf->email;
+            $serch_target_history_sql=InOutHistory::where('student_serial','=',$student_serial)
+                        ->where('target_date','=',date("Y-m-d"))
+                        ->whereNull('time_out')
+                        ->orderBy('id', 'desc');
+            if($serch_target_history_sql->count()>0){
+                $serch_target_history_array=$serch_target_history_sql->first();
+                $time_in= $serch_target_history_array->time_in;
+                $interval=self::time_diff($time_in, $target_item_array['target_time']);
+                if($interval<300){
+                    $target_item_array['seated_type']='false';
+                    $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+                    echo $json;
+                }else{
+                    $target_item_array['seated_type']='out';
+                    $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+                    echo $json;
+                    $inOutHistory = InOutHistory::find($serch_target_history_array->id);
+                    $inOutHistory->update([
+                        "time_out" => $target_item_array['target_time'],
+                    ]);
+                }
+            }else{
+                $target_item_array['seated_type']='in';
+                $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+                echo $json;
+                InOutHistory::create([
+                    //'student_serial'=>$request->student_serial,
+                    'student_serial'=>$student_serial,
+                    'target_date'=>$target_item_array['target_date'],
+                    'time_in'=>$target_item_array['target_time'],
+                    'student_name'=>$TargetInf->name_sei.' '.$TargetInf->name_mei,
+                    'student_name_kana'=>$TargetInf->name_sei_kana.' '.$TargetInf->name_mei_kana,
+                    'to_mail_address'=>$TargetInf->email,
+                    'from_mail_address'=>$target_item_array['from_email'],
+                ]);
+            }
+         }else{
+            $target_item_array['seated_type']='No Record';
+            $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+            echo $json;
+        }
+    }
 
 	public function InpTreatment($TreatmentSerial){
 		//log::alert("TreatmentSerial=".$TreatmentSerial);

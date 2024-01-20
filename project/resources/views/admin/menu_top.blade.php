@@ -82,6 +82,11 @@
 								</form>
 							</li>
 							<li>
+								<form method="GET" action="{{route('admin.InOutStandbyDisplay.get')}}">@csrf
+									<button class="btn btn-primary btn-sm" type="submit">入退出待ち受け</button>
+								</form>
+							</li>
+							<li>
 								<form method="POST" action="{{route('admin.TreatmentList.post')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">施術登録</button>
 								</form>

@@ -35,8 +35,16 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
-   
+
     Route::name('admin.')->group(function() {
+        Route::post('send_mail_in_out', [AdminController::class,'send_mail_in_out'])->name("send_mail_in_out");
+        Route::post('in_out_manage', [AdminController::class,'in_out_manage'])->name("in_out_manage");
+
+        Route::get('admin/InOutStandbyDisplay', function(){
+            session(['target_serial' => ""]);
+            return view('admin.InOutStandbyDisplayJQ');
+        })->name('InOutStandbyDisplay.get');
+
         Route::post('/admin/saveTreatment/', [AdminController::class,'saveTreatment',function(Request $request){}])->name('saveTreatment.post');
 
         Route::get('/admin/InpTreatment/{TreatmentContentSerial}', [AdminController::class,'InpTreatment',function($TreatmentSerial){}])->name('InpTreatment.get');

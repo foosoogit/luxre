@@ -120,8 +120,8 @@
                         </tbody>
                     </table>
                     {{--{{$users->appends(request()->input())->render()}}--}}
-                    {{--{{$users->appends(request()->query())->links('pagination::bootstrap-4')}}--}}
-                    {{ $users->links() }}
+                    {{$users->appends(request()->query())->links('pagination::bootstrap-4')}}
+                    {{-- {{ $users->links() }} --}}
 
                     {{-- </div> --}}
                 {{--</div>--}}
