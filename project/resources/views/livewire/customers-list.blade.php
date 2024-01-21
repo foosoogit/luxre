@@ -5,9 +5,9 @@
             <div class="pb-4 justify-content-center align-middle">
                 {{-- <div class="col-md-12"> --}}
                     {{-- <div class="card" align="center"> --}}
-                        <div class="row">
+                    <div class="row">
                         @include('layouts.header')
-                   
+                    </div>
                         {{--
                         <div class="col-auto">
                             <button class="btn btn-primary" type="button" onclick="location.href='../top'">メニューに戻る</button>
@@ -30,7 +30,7 @@
                             </div>
                         @endif
                         --}}
-                    </div>
+                    
                     <div class="mb-2 bg-secondary text-white">顧客一覧</div>
                     {{--<h3>顧客一覧</h3>--}}
                     <div class="row">
