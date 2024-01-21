@@ -1,7 +1,7 @@
 <div class="col-auto">
     <a class="btn mb-2 btn-primary" href="{{route('admin.top')}}">メニューに戻る</a>
 </div>
-@if(isset($target_historyBack_inf_array[1]))
+{{--@if(isset($target_historyBack_inf_array[1]))--}}
    
 @if($target_historyBack_inf_array[1]!=='admin.top')
     <div class="col-auto">
@@ -19,4 +19,4 @@
         </form>
     </div>
 @endif
-@endif
+{{--@endif--}}

@@ -43,6 +43,7 @@
                             <button type="button" wire:click="searchClear()" onclick="document.getElementById('kensakukey_txt').value=''">解除</button>
                             <input type="text" name="kensakukey_txt" id="kensakukey_txt" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model.defer="kensakukey">
                             <button type="button" name="SerchBtn" id="SerchBtn" wire:click="search()">検索</button>
+                        </div>
                     </div>
                     <table id="table_responsive container-fluid">
                         <thead>
