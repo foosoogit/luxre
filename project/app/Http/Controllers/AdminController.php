@@ -29,13 +29,26 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function ShowInOutStandbyDisplay(){
+		//$host_url=$_SERVER['HTTP_REFERER'];
+		//$host_url=$_SERVER['HTTP_ORIGIN'];
+		if (empty($_SERVER['HTTPS'])) {
+			$ht_type='http://';
+		} else {
+			$ht_type='https://';			
+		}
+		$host_url=$_SERVER['HTTP_HOST'];
+		Log::alert('host_url='.$host_url);
+		session(['target_serial' => ""]);
+		return view('admin.InOutStandbyDisplayJQ',compact('host_url'));
+	}
 	public function send_mail_in_out(Request $request){
         $item_array=json_decode( $request->item_json , true );
         //Log::alert('seated_type='.$item_array['seated_type']);
         //Log::alert('name-student='.$item_array['name_sei']);
         if($item_array['seated_type']=='in'){
             $msg=InitConsts::MsgIn();
-            //Log::alert('msg='.$msg);
+           
             $sbj=InitConsts::sbjIn();
         }else if($item_array['seated_type']=='out'){
             $msg=InitConsts::MsgIn();
@@ -67,7 +80,8 @@ class AdminController extends Controller
 
 	public function in_out_manage(Request $request)
     {
-        $target_serial=$request->target_serial;
+        Log::alert("target_serial=".$request->target_serial);
+		$target_serial=$request->target_serial;
         $target_serial_length=strlen($target_serial);
         $TargetInfSql=Staff::where('serial_staff','=',$target_serial);
         if($TargetInfSql->count()>0){

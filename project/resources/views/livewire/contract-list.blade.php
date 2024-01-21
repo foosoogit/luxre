@@ -1,4 +1,4 @@
-<div class="container text-center">
+<div class="container container-fluid ml-5">
 	<div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="pb-4 justify-content-center align-middle">

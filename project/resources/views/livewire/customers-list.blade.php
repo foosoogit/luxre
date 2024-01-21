@@ -1,11 +1,14 @@
-<div class="container text-center">
+<div class="container-fluid ml-5">
     <script src="{{  asset('/js/ListCustomer.js') }}" defer></script>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="pb-4 justify-content-center align-middle">
                 {{-- <div class="col-md-12"> --}}
                     {{-- <div class="card" align="center"> --}}
-                    <div class="row">
+                        <div class="row">
+                        @include('layouts.header')
+                   
+                        {{--
                         <div class="col-auto">
                             <button class="btn btn-primary" type="button" onclick="location.href='../top'">メニューに戻る</button>
                         </div>
@@ -16,6 +19,7 @@
                                 <button type="submit" name="target_date" class="btn btn-primary" value="{{$target_day}}">{{$target_historyBack_inf_array[0]}}に戻る</button>
                             </form>
                         </div>
+                        --}}
                         {{--
                         @if($from_place=="dayly_rep")
                             <div class="col-auto">
@@ -26,17 +30,21 @@
                             </div>
                         @endif
                         --}}
+                    </div>
+                    <div class="mb-2 bg-secondary text-white">顧客一覧</div>
+                    {{--<h3>顧客一覧</h3>--}}
+                    <div class="row">
                         <div class="col-auto">
                             <form method="GET" action="{{route('customers.ShowInpNewCustomer')}}">@csrf
                                 <button class="btn btn-primary" type="submit" name="CustomerListCreateBtn" value="CustomerList">新規顧客登録</button>
                             </form>
                         </div>
+                        <div class="col-auto">
+                            <button type="button" wire:click="searchClear()" onclick="document.getElementById('kensakukey_txt').value=''">解除</button>
+                            <input type="text" name="kensakukey_txt" id="kensakukey_txt" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model.defer="kensakukey">
+                            <button type="button" name="SerchBtn" id="SerchBtn" wire:click="search()">検索</button>
                     </div>
-                    <h3>顧客一覧</h3>
-                    <button type="button" wire:click="searchClear()" onclick="document.getElementById('kensakukey_txt').value=''">解除</button>
-                    <input type="text" name="kensakukey_txt" id="kensakukey_txt" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model.defer="kensakukey">
-                    <button type="button" name="SerchBtn" id="SerchBtn" wire:click="search()">検索</button>
-                    <table id="table_responsive">
+                    <table id="table_responsive container-fluid">
                         <thead>
                             <tr>
                                 <th class="border px-4 py-2">顧客データ修正

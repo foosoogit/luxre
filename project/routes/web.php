@@ -40,11 +40,15 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('send_mail_in_out', [AdminController::class,'send_mail_in_out'])->name("send_mail_in_out");
         Route::post('in_out_manage', [AdminController::class,'in_out_manage'])->name("in_out_manage");
 
-        Route::get('admin/InOutStandbyDisplay', function(){
-            session(['target_serial' => ""]);
-            return view('admin.InOutStandbyDisplayJQ');
-        })->name('InOutStandbyDisplay.get');
+        Route::get('admin/InOutStandbyDisplay', [AdminController::class,'ShowInOutStandbyDisplay'])->name("InOutStandbyDisplay.get");
 
+        /*
+        Route::get('admin/InOutStandbyDisplay', function(){
+            $host_url=$_SERVER['HTTP_REFERER'];
+            session(['target_serial' => ""]);
+            return view('admin.InOutStandbyDisplayJQ',compact('host_url'));
+        })->name('InOutStandbyDisplay.get');
+        */
         Route::post('/admin/saveTreatment/', [AdminController::class,'saveTreatment',function(Request $request){}])->name('saveTreatment.post');
 
         Route::get('/admin/InpTreatment/{TreatmentContentSerial}', [AdminController::class,'InpTreatment',function($TreatmentSerial){}])->name('InpTreatment.get');
@@ -120,14 +124,17 @@ Route::middleware('auth:admin')->group(function () {
 	    Route::post('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.post");
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
-	    Route::get('/customers/CustomersList', function () {
+	    
+        Route::get('/customers/CustomersList', function () {
             return view('customers.ListCustomers');
         })->name('CustomersList.show');
 
+        Route::post('/customers/CustomersList', [CustomersList::class,function(Request $request){}])->name("CustomersList.show.post");
+        /*
         Route::post('/customers/CustomersList', function () {
             return view('customers.ListCustomers');
         })->name('CustomersList.show.post');
-
+        */
         Route::get('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
 	    Route::post('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
 

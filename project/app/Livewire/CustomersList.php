@@ -55,7 +55,7 @@ class CustomersList extends Component
     public function render()
     {
         OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//log::info($_SESSION['access_history']);
+		log::info($_SESSION['access_history']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		//log::info($target_historyBack_inf_array);
 		
