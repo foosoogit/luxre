@@ -2,12 +2,16 @@
 	<div class="py-12">
 		<div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 			<div class="pb-4 justify-content-center align-middle">
-                @include('layouts.header')
+                <div class="row">
+					@include('layouts.header')
+				</div>
+				{{--
 				<div class="row mb-2">
                     <div class="col-auto">
                         <a class="btn mb-2 btn-primary" href="{{route('admin.top')}}">メニューに戻る</a>
                     </div>
                 </div>
+				--}}
                 <div class="mb-2 bg-info text-white">月報</div>
 					    {{--
                         <form method="GET" action="/customers/ShowInputCustomer">@csrf

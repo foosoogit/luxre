@@ -3,7 +3,9 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="pb-4 justify-content-center align-middle">
-                @include('layouts.header')
+                <div class="row">
+                    @include('layouts.header')
+                </div>
                 {{--
                 <div class="row">
                     <div class="col-auto">
