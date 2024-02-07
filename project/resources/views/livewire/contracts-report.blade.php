@@ -1,8 +1,8 @@
 <div class="container text-center">
     <script src="{{  asset('/js/ContractsReport.js') }}" defer></script>
-    <div class="py-12">
+    <div class="py-12 row justify-content-center">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="pb-4 justify-content-center align-middle">
+            <div class="pb-4 align-middle">
                 <div class="row">
                     <div class="col-auto">
                         <a class="btn mb-2 btn-primary" href="{{route('admin.top')}}">メニューに戻る</a>

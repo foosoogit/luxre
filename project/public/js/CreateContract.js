@@ -5,7 +5,7 @@
 //window.confirm("これが確認ダイアログです。");
 
 function contract_type_manage(){
-	console.log('ontract_type_manage');
+	//console.log('ontract_type_manage');
     subscription_obj=document.getElementById("contract_type_subscription");
     cyclic_obj=document.getElementById("contract_type_cyclic");
 	var obj_subsc_array = document.getElementsByClassName("subsc");

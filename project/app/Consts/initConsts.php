@@ -73,5 +73,6 @@ class initConsts{
 				return array($tgt_page_inf_array[1], $tgt_page_inf_array[2]);
 			}
 		}
+		return array('メニュー','admin.top');
 	}
 }

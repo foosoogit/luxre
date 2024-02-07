@@ -1,8 +1,9 @@
 <div class="container-fluid ml-5">
     <script src="{{  asset('/js/ListCustomer.js') }}" defer></script>
-    <div class="py-12">
+    <div class="py-12 row justify-content-center">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="pb-4 justify-content-center align-middle">
+            {{-- <div class="pb-4 justify-content-center align-middle"> --}}
+            <div class="pb-4 align-middle">
                 {{-- <div class="col-md-12"> --}}
                     {{-- <div class="card" align="center"> --}}
                     <div class="row">
@@ -33,7 +34,7 @@
                     
                     <div class="mb-2 bg-secondary text-white">顧客一覧</div>
                     {{--<h3>顧客一覧</h3>--}}
-                    <div class="row">
+                    <div class="row pb-2">
                         <div class="col-auto">
                             <form method="GET" action="{{route('customers.ShowInpNewCustomer')}}">@csrf
                                 <button class="btn btn-primary" type="submit" name="CustomerListCreateBtn" value="CustomerList">新規顧客登録</button>
@@ -45,8 +46,8 @@
                             <button type="button" name="SerchBtn" id="SerchBtn" wire:click="search()">検索</button>
                         </div>
                     </div>
-                    <table id="table_responsive container-fluid">
-                        <thead>
+                    <table id="table_responsive container-fluid" class="table-striped table-hover">
+                        <thead class="table-success">
                             <tr>
                                 <th class="border px-4 py-2">顧客データ修正
                                     <div class="text-nowrap">
@@ -57,20 +58,20 @@
                                 <th class="border px-4 py-2">
                                     契約
                                 </th>
-                                <th class="border px-4 py-2">氏名
-                                    <div class="text-nowrap">
+                                <th class="border px-4 py-2">
+                                    <div class="text-nowrap">氏名
                                         <button type="button" wire:click="sort('name_sei-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
                                         <button type="button" wire:click="sort('name_sei-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
                                     </div>
                                 </th>
-                                <th class="border px-4 py-2">しめい
-                                    <div class="text-nowrap">
+                                <th class="border px-4 py-2">
+                                    <div class="text-nowrap">しめい
                                         <button type="button" wire:click="sort('name_sei_kana-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
                                         <button type="button" wire:click="sort('name_sei_kana-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
                                     </div>
                                 </th>
-                                <th class="border px-4 py-2">残金
-                                    <div class="text-nowrap">
+                                <th class="border px-4 py-2">
+                                    <div class="text-nowrap">残金
                                         <button type="button" wire:click="sort('zankin-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
                                         <button type="button" wire:click="sort('zankin-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
                                     </div>
@@ -78,20 +79,22 @@
                                         <p>(合計:<button type="button" name="zankinBtn" id="zankinBtn" wire:click="zankin_search()">{{number_format($totalZankin)}}</button>円)</p>
                                     </div>
                                 </th>
-                                <th class="border px-4 py-2">生年月日
-                                    <div class="text-nowrap">
+                                <th class="border px-4 py-2">
+                                    <div class="text-nowrap">生年月日
                                         <button type="button" wire:click="sort('birth_year-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
                                         <button type="button" wire:click="sort('birth_year-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
                                     </div>
                                 </th>
-                                <th class="border px-4 py-2">電話番号
-                                    <div class="text-nowrap">
+                                <th class="border px-4 py-2">
+                                    <div class="text-nowrap">電話番号
                                         <button type="button" wire:click="sort('phone-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
                                         <button type="button" wire:click="sort('phone-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
                                     </div>
                                 </th>
                                 <th class="border px-4 py-2">紹介人数
-                                    <button type="button" wire:click="sort('refereecnt-Desc')"><img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
+                                    <div>
+                                        <button type="button" wire:click="sort('refereecnt-Desc')"><img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
+                                    </div>
                                 </th>
                                 <th class="border px-4 py-2">削除</th>
                             </tr>
@@ -128,10 +131,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{--{{$users->appends(request()->input())->render()}}--}}
                     {{$users->appends(request()->query())->links('pagination::bootstrap-4')}}
-                    {{-- {{ $users->links() }} --}}
-
                     {{-- </div> --}}
                 {{--</div>--}}
             </div>

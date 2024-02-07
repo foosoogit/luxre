@@ -9,37 +9,44 @@ use Livewire\WithPagination;
 use App\Models\User;
 use App\Models\Contract;
 use App\Http\Controllers\OtherFunc;
+use Illuminate\Support\Facades\Log;
 if(!isset($_SESSION)){session_start();}
 
 class ContractList extends Component
 {
     use WithPagination;
-	public $sort_key_p_contract = '',$asc_desc_p_contract="",$serch_key_p_contract="";
-	public $kensakukey="";
-	public $key="";
+	//public $sort_key_p_contract = '',$asc_desc_p_contract="",$serch_key_p_contract="";
+	public $targetPage=null;
 	public static $statickey="";
+	public $serch_key_contract,$sort_key_contract,$sort_type_contract="asc";
 	
 	public function searchClear(){
-		$this->serch_key_p_contract="";
-		$this->kensakukey="";
-		session(['serchKey_contract' => '']);
+		//$this->serch_key_p_contract="";
+		$this->serch_key_contract="";
+		$this->sort_key_contract="";
+		$this->sort_type_contract="asc";
+		session(['serch_key_contract' => '']);
+		session(['sort_key_contract' => '']);
+		session(['sort_type_contract' => 'asc']);
 	}
 	
 	public function search_from_top_menu(Request $request){
-		$this->serch_key_p_contract=$request->input('user_serial');
+		$this->kensakukey_contract=$request->input('user_serial');
 		session(['serchKey_contract' => $request->input('user_serial')]);
 	}
 	
 	public function search(){
-		$this->serch_key_p_contract=$this->kensakukey;
-		session(['serchKey_contract' => $this->kensakukey]);
+		//$this->serch_key_p_contract=$this->kensakukey;
+		session(['serch_key_contract' => $this->serch_key_contract]);
 	}
 
 	public function sort($sort_key){
 		$sort_key_array=array();
 		$sort_key_array=explode("-", $sort_key);
+		$this->sort_key_contract=$sort_key_array[0];
+		$this->sort_type_contract=$sort_key_array[1];
 		session(['sort_key_contract' =>$sort_key_array[0]]);
-		session(['asc_desc_contract' =>$sort_key_array[1]]);
+		session(['sort_type_contract' =>$sort_key_array[1]]);
 	}
 
 	public function ShowManage($userSerial){
@@ -48,39 +55,48 @@ class ContractList extends Component
 
     public function render()
     {
-        if(isset($_SERVER['HTTP_REFERER'])){
-			OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		log::alert("sort_key_contract 1=".$this->sort_key_contract);
+		if($this->sort_key_contract<>session('sort_key_contract')){
+			//session(['sort_key_contract' =>$this->sort_key_contract]);
+			$this->sort_key_contract=session('sort_key_contract');
 		}
-		if(!isset($sort_key_p_contract) and session('sort_key_contract')==null){
-			session(['sort_key_contract' =>'']);
-		}
-		$this->sort_key_p=session('sort_key_contract');
+		//$this->sort_key_p=session('sort_key_contract');
 
-		if(!isset($asc_desc_p) and session('asc_desc_contract')==null){
-			session(['asc_desc_contract' =>'ASC']);
+		if($this->sort_type_contract<>session('sort_type_contract')){
+			$this->sort_type_contract=session('sort_type_contract');
 		}
-		$this->asc_desc_p=session('asc_desc_contract');
+		//$this->sort_type_contract=session('sort_type_contract');
 		
-		$targetSortKey="";
+		//$targetSortKey="";
+		/*
 		if(session('sort_key_contract')<>""){
 			$targetSortKey=session('sort_key_contract');
 		}else{
 			$targetSortKey=$this->sort_key_p_contract;
 		}
-		
+		*/
 		if(isset($_POST['btn_serial'])){
-			session(['serchKey_contract' => $_POST['btn_serial']]);
-			
-		}else if(session('serchKey_contract')==""){
-			session(['serchKey_contract' => $this->serch_key_p_contract]);
+			session(['serch_key_contract' => $_POST['btn_serial']]);
+		}else if(session('serch_key_contract')<>$this->serch_key_contract){
+			session(['serchKey_contract' => $this->serch_key_contract]);
+		}
+		if($this->serch_key_contract<>session('sort_type_contract')){
+			$this->serch_key_contract=session('serch_key_contract');
 		}
 
 		$UserSerial=session('targetUserSerial');
         $Contracts="";$userinf="";
 		$contractQuery = Contract::query();
-		if(null !==session('serchKey_contract')){
-			$key="%".session('serchKey_contract')."%";$userinf="";
-			self::$statickey="%".session('serchKey_contract')."%";$userinf="";
+		
+		//if(null !==session('serchKey_contract')){
+		if($this->serch_key_contract<>""){
+			//$key="%".session('serchKey_contract')."%";
+			$key="%".$this->kensakukey."%";
+			self::$statickey="%".$this->serch_key_contract."%";
+			$userinf="";
+			//self::$statickey="%".session('serchKey_contract')."%";$userinf="";
 		}else{
 			$key="%%";
 			self::$statickey="%%";
@@ -125,33 +141,34 @@ class ContractList extends Component
 				});
 		}
 		
-		if($this->sort_key_p<>''){
-			if($this->sort_key_p=="name_sei"){
-				if($this->asc_desc_p=="ASC"){
+		log::alert("sort_key_contract 2=".$this->sort_key_contract);
+		if($this->sort_key_contract<>''){
+			if($this->sort_key_contract=="name_sei"){
+				if($this->sort_type_contract=="ASC"){
 					$contractQuery =$contractQuery->orderBy('name_sei_kana');
 				}else{
 					$contractQuery =$contractQuery->orderBy('name_sei_kana', 'desc');
 				}
 			}else{
-				if($this->asc_desc_p=="ASC"){
-					$contractQuery =$contractQuery->orderBy($this->sort_key_p, 'asc');
+				if($this->sort_type_contract=="ASC"){
+					$contractQuery =$contractQuery->orderBy($this->sort_key_contract, 'asc');
 				}else{
-					$contractQuery =$contractQuery->orderBy($this->sort_key_p, 'desc');
+					$contractQuery =$contractQuery->orderBy($this->sort_key_contract, 'desc');
 				}
 			}
 		}else{
 			$contractQuery =$contractQuery->orderBy('keiyaku_bi', 'desc');
 		}
 		if(session('target_page_for_pager')!==null){
-			$targetPage=session('target_page_for_pager');
+			$this->targetPage=session('target_page_for_pager');
 			session(['target_page_for_pager'=>null]);
 		}else{
 			session(['target_page_for_pager'=>null]);
 		}
 		if(session('targetUserSerial')!="all"){
-			$targetPage=null;
+			$this->targetPage=null;
 		}
-		$contractQuery=$contractQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',1);
+		$contractQuery=$contractQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->targetPage);
     	$GoBackPlaceName="";
 		foreach($_SESSION['access_history'] as $targetHistory){
 			if(strpos($targetHistory,"UserList")){
@@ -164,7 +181,8 @@ class ContractList extends Component
 			}
 		}
 		$GoBackPlace="/ShowMenuCustomerManagement/";
-		$header="";$slot="";$serchKey_contract=session('serchKey_contract');
-        return view('livewire.contract-list',compact("GoBackPlaceName","GoBackPlace","userinf","contractQuery","UserSerial","header","slot","serchKey_contract"));
+		//$serchKey_contract=session('serchKey_contract');serch_key_contract
+		$serchKey_contract=$this->serch_key_contract;
+        return view('livewire.contract-list',compact("GoBackPlaceName","GoBackPlace","userinf","contractQuery","UserSerial","serchKey_contract"));
     }
 }

@@ -13,14 +13,19 @@ input,textarea{
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12 py-1.5">
-				<div class="row">
-					<div class="col-auto">
-						<a href="{{route('admin.top')}}" class="btn btn-primary btn-sm">メニューに戻る</a>
-					</div>
-					<div class="col-auto">
-                		<button class="btn btn-primary btn-sm" type="button" onclick="location.href='{{$GoBackPlace}}'">前画面に戻る</button>
-					</div>
+			<div class="row">
+				@include('layouts.header')
+			</div>	
+			{{-- 
+			<div class="row">
+				<div class="col-auto">
+					<a href="{{route('admin.top')}}" class="btn btn-primary btn-sm">メニューに戻る</a>
 				</div>
+				<div class="col-auto">
+                	<button class="btn btn-primary btn-sm" type="button" onclick="location.href='{{$GoBackPlace}}'">前画面に戻る</button>
+				</div>
+			</div>
+			 --}}
 				<form name='input_customer_fm' id="input_customer_fm" action="/customers/insertCustomer" method="POST" class="h-adr">@csrf
 				{{--<form action="{{ route('customers.insertCustomer') }}" method="POST" class="h-adr">@csrf--}}
 					@if (optional($target_user)->serial_user<>null)

@@ -29,6 +29,121 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function ShowSyuseiCustomer(Request $request){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		if(isset($_POST['back_flg'])){
+            array_shift($_SESSION['access_history']);
+            array_shift($_SESSION['access_history']);
+        }
+		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		//log::info('access_history='.$_SESSION['access_history'][0]);
+		session(['fromPage' => 'SyuseiCustomer']);
+		//$userInfo=User::where('serial_user','=',$request->input('syusei_Btn'))->first();
+		session(['CustomerManage' => 'syusei']);
+		//$header="";$slot="";
+		$selectedManth=array();$selectedManth=array();
+		$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
+		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list($target_user->birth_year);
+		//$mnt="m".sprintf('%02d', $target_user->birth_month);
+		$selectedManth[(int)$target_user->birth_month]="Selected";
+		$selectedDay[(int)$target_user->birth_day]="Selected";
+		$selectedRegion[$target_user->address_region]="Selected";
+		$GenderRdo=array();
+		$GenderRdo[$target_user->gender]="checked";
+		setcookie('TorokuMessageFlg','false',time()+60);
+		$saveFlg="false,".session('CustomerManage');$btnDisp="修　正";
+		$html_reason_coming="";
+		if(isset($request->syusei_Btn)){
+			//$GoBackPlace="/customers/ShowCustomersList";
+			$GoBackPlace="/customers/CustomersList";
+			//$GoBackPlace="/customers/ShowCustomersList";
+			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
+
+		}else if(isset($request->fromMenu)){
+			//$GoBackPlace="/customers/ShowCustomersList_livewire";
+			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
+			$GoBackPlace="../top";
+		}
+		return view('customers.CreateCustomer',compact('target_historyBack_inf_array','html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
+	}
+
+	public function ShowInputCustomer(Request $request){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		//log::info('access_history='.$_SESSION['access_history']);
+		if(isset($_POST['back_flg'])){
+            
+            array_shift($_SESSION['access_history']);
+            array_shift($_SESSION['access_history']);
+        }
+		//log::info('access_history='.$_SESSION['access_history']);
+        $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		//log::info('access_history='.$_SESSION['access_history'][0]);
+		//log::info('target_historyBack_inf_array='.$target_historyBack_inf_array);
+		/*
+		if(isset($request->CreateCustomer)){
+			session(['fromPage' => 'InputCustomer']);
+			session(['CustomerManage' => 'new']);
+		}else{
+			session(['fromPage' => 'SyuseiCustomer']);
+			session(['CustomerManage' => 'syusei']);
+		}
+		//public function ShowInputCustomer(InpCustomerRequest $request){
+		if(session('CustomerManage')=='new'){
+			//session(['fromPage' => 'InputCustomer']);
+			//session(['CustomerManage' => 'new']);
+			//$header="";$slot="";
+			$target_user=array();
+			$maxUserSerial =DB::table('users')->max('serial_user');
+			//if($maxUserSerial==1){
+
+			$TargetUserSerial=++$maxUserSerial;
+			$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
+			$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
+			$html_birth_year_slct=trim($html_birth_year_slct);
+			$GoBackPlace="../ShowMenuCustomerManagement";
+			if(isset($request->CustomerListCreateBtn)){
+				$GoBackPlace="/customers/ShowCustomersList_livewire";
+			}
+			setcookie('TorokuMessageFlg','false',time()+60);
+			$GenderRdo=array();
+			$selectedManth=null;$selectedDay=null;$selectedRegion=null;
+			$saveFlg="false,".session('CustomerManage');$btnDisp="　登　録　";
+			$html_reason_coming="";
+			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
+			
+		}else{
+			*/
+			session(['fromPage' => 'SyuseiCustomer']);
+			session(['CustomerManage' => 'syusei']);
+			$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
+			$btnDisp="　修　正　";
+		
+			//$header="";$slot="";
+			$selectedManth=array();$selectedManth=array();
+			$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list($target_user->birth_year);
+			//$mnt="m".sprintf('%02d', $target_user->birth_month);
+			$selectedManth[(int)$target_user->birth_month]="Selected";
+			$selectedDay[(int)$target_user->birth_day]="Selected";
+			$selectedRegion[$target_user->address_region]="Selected";
+			$GenderRdo=array();
+			$GenderRdo[$target_user->gender]="checked";
+			setcookie('TorokuMessageFlg','false',time()+60);
+			$saveFlg="false,".session('CustomerManage');
+			$html_reason_coming="";
+			if(isset($request->syusei_Btn)){
+				//$GoBackPlace="/customers/ShowCustomersList";
+				$GoBackPlace="/customers/ShowCustomersList_livewire";
+				$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
+			}else if(isset($request->fromMenu)){
+				//$GoBackPlace="/customers/ShowCustomersList_livewire";
+				$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
+				$GoBackPlace="../ShowMenuCustomerManagement";
+			}
+		//}
+		//return view('customers.CreateCustomer',compact("header","slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
+		return view('customers.CreateCustomer',compact('target_historyBack_inf_array','html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
+	}
+
 	public function ShowInOutStandbyDisplay(){
 		//$host_url=$_SERVER['HTTP_REFERER'];
 		//$host_url=$_SERVER['HTTP_ORIGIN'];
@@ -44,8 +159,6 @@ class AdminController extends Controller
 	}
 	public function send_mail_in_out(Request $request){
         $item_array=json_decode( $request->item_json , true );
-        //Log::alert('seated_type='.$item_array['seated_type']);
-        //Log::alert('name-student='.$item_array['name_sei']);
         if($item_array['seated_type']=='in'){
             $msg=InitConsts::MsgIn();
            
@@ -80,7 +193,7 @@ class AdminController extends Controller
 
 	public function in_out_manage(Request $request)
     {
-        Log::alert("target_serial=".$request->target_serial);
+        //Log::alert("target_serial=".$request->target_serial);
 		$target_serial=$request->target_serial;
         $target_serial_length=strlen($target_serial);
         $TargetInfSql=Staff::where('serial_staff','=',$target_serial);
@@ -138,15 +251,14 @@ class AdminController extends Controller
     }
 
 	public function InpTreatment($TreatmentSerial){
-		//log::alert("TreatmentSerial=".$TreatmentSerial);
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
         if(isset($_POST['back_flg'])){
             array_shift($_SESSION['access_history']);
             array_shift($_SESSION['access_history']);
         }
         $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		log::alert('access_history='.$_SESSION['access_history'][0]);
-		log::info($target_historyBack_inf_array);
+		//log::alert('access_history='.$_SESSION['access_history'][0]);
+		//log::info($target_historyBack_inf_array);
 		//log::info($_SESSION['access_history']);
 		$GoBackPlace="/workers/ShowTreatmentContents";
 		
@@ -394,10 +506,27 @@ class AdminController extends Controller
 		if(isset($request->page_num)){
 			session(['target_page_for_pager'=>$request->page_num]);
 		}
-		$header="";$slot="";
 		
 		$key="";
 		$Contracts="";
+		if($UserSerial=="all"){
+			$userinf="";
+			$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
+			$GoBackPlace="/top";
+			session(['targetUserSerial' => 'all']);
+		}else{
+			session(['targetUserSerial' => $UserSerial]);
+			session(['target_page_for_pager'=>'']);
+			$GoBackPlace="/customers/CustomersList";				
+			$userinf=User::where('serial_user','=',$UserSerial)->first();
+			$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
+				->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
+				->select('contracts.*', 'users.*')
+				->paginate(initConsts::DdisplayLineNumContractList());
+		}
+		return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace"));
+
+		/*
 		if(Auth::user()->serial_admin=="A_0001"){
 			if($UserSerial=="all"){
 				$userinf="";
@@ -414,7 +543,7 @@ class AdminController extends Controller
 					->select('contracts.*', 'users.*')
 					->paginate(initConsts::DdisplayLineNumContractList());
 			}
-			return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace","header","slot"));
+			return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace"));
 
 		}else{
 			if($UserSerial=="all"){
@@ -432,8 +561,9 @@ class AdminController extends Controller
 					->select('contracts.*', 'users.*')
 					->paginate(initConsts::DdisplayLineNumContractList());
 			}
-			return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace","header","slot"));
+			return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace"));
 		}
+		*/
 	}
 
 	public function ShowSyuseiContract($ContractSerial,$UserSerial){
@@ -615,37 +745,6 @@ class AdminController extends Controller
 		session(['InpRecordVisitPaymentFlg' => true]);
 		$this::save_recorder("recordVisitPaymentHistory");
 		return redirect('/customers/ShowInpRecordVisitPayment/'.session("ContractSerial").'/'.session("UserSerial"));
-	}
-
-	public function ShowSyuseiCustomer(Request $request){
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		session(['fromPage' => 'SyuseiCustomer']);
-		//$userInfo=User::where('serial_user','=',$request->input('syusei_Btn'))->first();
-		session(['CustomerManage' => 'syusei']);
-		$header="";$slot="";$selectedManth=array();$selectedManth=array();
-		$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
-		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list($target_user->birth_year);
-		//$mnt="m".sprintf('%02d', $target_user->birth_month);
-		$selectedManth[(int)$target_user->birth_month]="Selected";
-		$selectedDay[(int)$target_user->birth_day]="Selected";
-		$selectedRegion[$target_user->address_region]="Selected";
-		$GenderRdo=array();
-		$GenderRdo[$target_user->gender]="checked";
-		setcookie('TorokuMessageFlg','false',time()+60);
-		$saveFlg="false,".session('CustomerManage');$btnDisp="修　正";
-		$html_reason_coming="";
-		if(isset($request->syusei_Btn)){
-			//$GoBackPlace="/customers/ShowCustomersList";
-			$GoBackPlace="/customers/CustomersList";
-			//$GoBackPlace="/customers/ShowCustomersList";
-			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
-
-		}else if(isset($request->fromMenu)){
-			//$GoBackPlace="/customers/ShowCustomersList_livewire";
-			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
-			$GoBackPlace="../top";
-		}
-		return view('customers.CreateCustomer',compact("header","slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
 
 	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
@@ -1122,73 +1221,6 @@ class AdminController extends Controller
 		$TargetUserSerial=++$maxUserSerial;
 		$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
 		$GoBackPlace=$_SESSION['access_history'][0];
-		return view('customers.CreateCustomer',compact('html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
-	}
-
-	public function ShowInputCustomer(Request $request){
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		/*
-		if(isset($request->CreateCustomer)){
-			session(['fromPage' => 'InputCustomer']);
-			session(['CustomerManage' => 'new']);
-		}else{
-			session(['fromPage' => 'SyuseiCustomer']);
-			session(['CustomerManage' => 'syusei']);
-		}
-		//public function ShowInputCustomer(InpCustomerRequest $request){
-		if(session('CustomerManage')=='new'){
-			//session(['fromPage' => 'InputCustomer']);
-			//session(['CustomerManage' => 'new']);
-			//$header="";$slot="";
-			$target_user=array();
-			$maxUserSerial =DB::table('users')->max('serial_user');
-			//if($maxUserSerial==1){
-
-			$TargetUserSerial=++$maxUserSerial;
-			$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
-			$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
-			$html_birth_year_slct=trim($html_birth_year_slct);
-			$GoBackPlace="../ShowMenuCustomerManagement";
-			if(isset($request->CustomerListCreateBtn)){
-				$GoBackPlace="/customers/ShowCustomersList_livewire";
-			}
-			setcookie('TorokuMessageFlg','false',time()+60);
-			$GenderRdo=array();
-			$selectedManth=null;$selectedDay=null;$selectedRegion=null;
-			$saveFlg="false,".session('CustomerManage');$btnDisp="　登　録　";
-			$html_reason_coming="";
-			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
-			
-		}else{
-			*/
-			session(['fromPage' => 'SyuseiCustomer']);
-			session(['CustomerManage' => 'syusei']);
-			$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
-			$btnDisp="　修　正　";
-		
-			//$header="";$slot="";
-			$selectedManth=array();$selectedManth=array();
-			$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list($target_user->birth_year);
-			//$mnt="m".sprintf('%02d', $target_user->birth_month);
-			$selectedManth[(int)$target_user->birth_month]="Selected";
-			$selectedDay[(int)$target_user->birth_day]="Selected";
-			$selectedRegion[$target_user->address_region]="Selected";
-			$GenderRdo=array();
-			$GenderRdo[$target_user->gender]="checked";
-			setcookie('TorokuMessageFlg','false',time()+60);
-			$saveFlg="false,".session('CustomerManage');
-			$html_reason_coming="";
-			if(isset($request->syusei_Btn)){
-				//$GoBackPlace="/customers/ShowCustomersList";
-				$GoBackPlace="/customers/ShowCustomersList_livewire";
-				$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
-			}else if(isset($request->fromMenu)){
-				//$GoBackPlace="/customers/ShowCustomersList_livewire";
-				$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
-				$GoBackPlace="../ShowMenuCustomerManagement";
-			}
-		//}
-		//return view('customers.CreateCustomer',compact("header","slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 		return view('customers.CreateCustomer',compact('html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
 

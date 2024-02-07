@@ -18,7 +18,7 @@ if(!isset($_SESSION)){session_start();}
 class OtherFunc extends Controller
 {
 	public static function make_html_yearly_Report_table($targetYear,$startMonth){
-		log::alert("targetYear=".$targetYear);
+		//log::alert("targetYear=".$targetYear);
 		$target_contract_money_array=explode( ',',initConsts::TargetContractMoney());
 		$sbj_array=array();
 		$sbj_array=['月','契約金額合計(円)','累計契約金額(円)','解約損金合計(円)','累計解約損金(円)','合計(円)','累計合計(円)','目標値/入力・修正(円)','達成率(%)','前年度比(%)','契約金額合計(契約金-損金)(円)','目標値(円)','達成率(%)','契約金額合計(円)','目標値(円)','達成率(%)'];
@@ -39,9 +39,9 @@ class OtherFunc extends Controller
 				$targetYear=$targetYear+1;
 			}
 			$tm="No Data";$tm_last_year="No Data";$tm_last_last_year="No Data";
-			log::info($target_contract_money_array);
+			//log::info($target_contract_money_array);
 			foreach($target_contract_money_array as $target_contract_money){
-				log::alert("target_contract_money=".$target_contract_money);
+				//log::alert("target_contract_money=".$target_contract_money);
 				$target_contract_money_data_array=explode( '-',$target_contract_money);
 				$cd=$targetYear."-".sprintf('%02d', $targetMonth);
 				$target_last_Year=$targetYear-1;
@@ -345,7 +345,35 @@ class OtherFunc extends Controller
 	}
 
 	public static function set_access_history($REFERER){
-		//print isset($_SESSION['access_history']);
+		/*
+		if(isset($_POST['back_flg'])){
+            array_shift($_SESSION['access_history']);
+            array_shift($_SESSION['access_history']);
+        }
+		*/
+		/*
+		$REQUEST_URI_array=explode("?", $_SERVER['REQUEST_URI']);
+		if(empty($REQUEST_URI_array[1])){
+			$targetPage=1;
+		}else{
+			$targetPage=intval($REQUEST_URI_array[1]);
+			if(str_contains($_SERVER['REQUEST_URI'], "CustomersList")){
+				session(['page_history_CustomersList' => $targetPage]);
+			}
+		}
+		*/
+		$targetPage=1;
+		//log::alert('REQUEST_URI of1 ='.$_SERVER['REQUEST_URI']);
+		if(str_contains($_SERVER['REQUEST_URI'], "?")){
+			$REQUEST_URI_array=explode("?", $_SERVER['REQUEST_URI']);
+			//log::info($REQUEST_URI_array);
+			if(str_contains($REQUEST_URI_array[1], "page")){
+				$targetPage=intval($REQUEST_URI_array[1]);
+			}
+		}
+		if(str_contains($_SERVER['REQUEST_URI'], "CustomersList")){
+			session(['page_history_CustomersList' => $targetPage]);
+		}
 		if(isset($_SESSION['access_history'])){
 			if(is_array($_SESSION['access_history'])){
 				array_unshift($_SESSION['access_history'],$REFERER);
@@ -357,6 +385,14 @@ class OtherFunc extends Controller
 			$_SESSION['access_history']=array();
 			$_SESSION['access_history'][]=$REFERER;
 		}
+		$REF=explode("?", $_SESSION['access_history'][0]);
+		$nw=explode("?", $_SERVER['REQUEST_URI']);
+		if(str_contains($REF[0], $nw[0])){
+			array_shift($_SESSION['access_history']);
+		}
+		//log::info($_SESSION['access_history']);
+		//log::alert('PHP_SELF='.$_SERVER['PHP_SELF']);
+		//log::alert('REQUEST_URI of='.$_SERVER['REQUEST_URI']);
 	}
 	
 	public static function make_htm_get_default_user(){

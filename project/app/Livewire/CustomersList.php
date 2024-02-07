@@ -11,7 +11,6 @@ use App\Consts\initConsts;
 use Illuminate\Http\Request;
 use App\Http\Controllers\OtherFunc;
 use Illuminate\Support\Facades\Log;
-
 if(!isset($_SESSION)){session_start();}
 
 class CustomersList extends Component
@@ -19,6 +18,8 @@ class CustomersList extends Component
     use WithPagination;
 	public $sort_key_p = '',$asc_desc_p="",$serch_key_p="";
 	public $kensakukey="";
+	public $target_page=null;
+
 	/*
     public $count = 0;
  	public function increment(){
@@ -28,6 +29,7 @@ class CustomersList extends Component
     public function searchClear(){
 		$this->serch_key_p="";
 		$this->kensakukey="";
+		$this->target_page=null;
 		session(['serchKey' => '']);
 	}
     
@@ -38,6 +40,7 @@ class CustomersList extends Component
 	
 	public function search(){
 		$this->serch_key_p=$this->kensakukey;
+		$this->target_page=1;
 		session(['serchKey' => $this->kensakukey]);
 	}
 
@@ -54,11 +57,16 @@ class CustomersList extends Component
 	}
     public function render()
     {
-        OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		log::info($_SESSION['access_history']);
+		/*
+		if(empty($REQUEST_URI_array[1])){
+			$targetPage=1;
+		}else{
+			$targetPage=intval($REQUEST_URI_array[1]);
+		}
+		*/
+		//log::alert('kensakukey='.$this->kensakukey);
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		//log::info($target_historyBack_inf_array);
-		
 		if(!isset($sort_key_p) and session('sort_key')==null){
 			session(['sort_key' =>'']);
 		}
@@ -68,13 +76,13 @@ class CustomersList extends Component
 			session(['asc_desc' =>'ASC']);
 		}
 		$this->asc_desc_p=session('asc_desc');
-		
+		/*
 		if($this->sort_key_p=="refereecnt"){
 			$userQuery = User::query();
 		}else{
 			$userQuery = User::query();
 		}
-		
+		*/
 		$from_place="";$target_day="";$backdayly=false;
 		foreach($_SESSION['access_history'] as $targeturl){
 			if(strpos( $targeturl, 'ShowDailyReport') !== false){
@@ -101,6 +109,23 @@ class CustomersList extends Component
 			}
 		}
 		//Log::alert("target_day=".$_POST['target_day']);
+		$userQuery = User::query();
+		if($this->kensakukey=='zankin'){
+			$userQuery =$userQuery->where('zankin','>','0');
+		}else if($this->kensakukey<>""){
+			$key="%".$this->kensakukey."%";
+			$userQuery =$userQuery->where('serial_user','like',$key)
+				->orwhere('name_sei','like',$key)
+				->orwhere('name_mei','like',$key)
+				->orwhere('name_sei_kana','like',$key)
+				->orwhere('name_mei_kana','like',$key)
+				->orwhere('birth_year','like',$key)
+				->orwhere('birth_month','like',$key)
+				->orwhere('birth_day','like',$key)
+				->orwhere('email','like',$key)
+				->orwhere('phone','like',$key);
+		}
+		/*
 		if(session('serchKey')=='zankin'){
 			$userQuery =$userQuery->where('zankin','>','0');
 		}else{
@@ -118,6 +143,7 @@ class CustomersList extends Component
 				->orwhere('email','like',$key)
 				->orwhere('phone','like',$key);
 		}
+		*/
 		$targetSortKey="";
 		if(session('sort_key')<>""){
 			$targetSortKey=session('sort_key');
@@ -172,28 +198,42 @@ class CustomersList extends Component
 				}
 			}
 		}
+		/*
 		if(session('target_page_for_pager')!==null){
 			$targetPage=session('target_page_for_pager');
 			session(['target_page_for_pager'=>null]);
 		}else{
 			$targetPage=null;
 		}
-		$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$targetPage);
+		*/
+		//log::alert("targetPage=".$targetPage);
+
+		//log::alert('page_history_CustomersList='.session('page_history_CustomersList'));
+		if(empty($this->target_page)){
+			$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
+		}else{
+			$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->target_page);
+			$this->target_page=null;
+		}
+		/*
+		if(!str_contains($_SERVER['HTTP_REFERER'], "CustomersList")){
+			$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList());
+		}else{
+			$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',session('page_history_CustomersList'));
+		}
+		*/
 		$cancelPaied=PaymentHistory::whereIn("serial_keiyaku", function($query){
 				$query->from("contracts")
 				->select("serial_keiyaku")
 				->whereNotNull("cancel");
 			})->sum('amount_payment');
 		$cancelKeiyakuKingaku=Contract::whereNotNull("cancel")->sum('keiyaku_kingaku');
-		//print "cancelKeiyakuKingaku=".$cancelKeiyakuKingaku."<br>";
 		$cancelSonkin=$cancelKeiyakuKingaku-$cancelPaied;
 		$totalZankin=Contract::sum('keiyaku_kingaku')-PaymentHistory::sum('amount_payment')-$cancelSonkin;
 
-		$header="";
-		$slot="";
 		//$from_place2=OtherFunc::get_goback_url($_SERVER['REQUEST_URI']);
 		//$from_place2="";
 		$from_place2=$_SESSION['access_history'][0];
-        return view('livewire.customers-list',compact('target_historyBack_inf_array','users','header','slot','totalZankin','from_place','target_day','from_place','from_place2'));
+        return view('livewire.customers-list',compact('target_historyBack_inf_array','users','totalZankin','from_place','target_day','from_place','from_place2'));
     }
 }

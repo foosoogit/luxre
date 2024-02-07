@@ -11,6 +11,7 @@ use App\Http\Livewire\DailyReport;
 use App\Http\Livewire\MonthlyReport;
 use App\Http\Livewire\ContractsReport;
 use App\Http\Livewire\YearlyReport;
+if(!isset($_SESSION)){session_start();}
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -121,7 +122,8 @@ Route::middleware('auth:admin')->group(function () {
 	    Route::post('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminControllerr::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){}]);
 
         Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
-	    Route::post('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.post");
+	    Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
+        //Route::post('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.post");
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
 	    
@@ -129,7 +131,23 @@ Route::middleware('auth:admin')->group(function () {
             return view('customers.ListCustomers');
         })->name('CustomersList.show');
 
-        Route::post('/customers/CustomersList', [CustomersList::class,function(Request $request){}])->name("CustomersList.show.post");
+        Route::post('/customers/CustomersList', function () {
+            return view('customers.ListCustomers');
+        })->name('CustomersList.show.post');
+        
+       //Route::get('livewire/update/all', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
+
+        Route::get('livewire/update', function () {
+            Log::info($_SESSION['access_history']);
+            if(str_contains($_SESSION['access_history'][0],"ContractList")){
+               return view('customers.ListContract');
+            }else{
+                return view('customers.ListCustomers');
+            }
+        });
+
+
+        //Route::post('/customers/CustomersList', [CustomersList::class,function(Request $request){}])->name("CustomersList.show.post");
         /*
         Route::post('/customers/CustomersList', function () {
             return view('customers.ListCustomers');
@@ -159,6 +177,7 @@ Route::middleware('auth:admin')->group(function () {
         return view('admin.ListStaffs');
     })->name('StaffsList.show');
     Route::get('/top', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top');
+    Route::get('/', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top.login');
     //Route::get('/', [AdminController::class,'ShowMenuCustomerManagement']);
     /*
     Route::get('/admin', function () {

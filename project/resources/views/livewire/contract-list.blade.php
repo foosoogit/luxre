@@ -1,32 +1,49 @@
-<div class="container container-fluid ml-5">
-	<div class="py-12">
+<div class="container-fluid ml-5">
+	<div class="py-12 row justify-content-center">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="pb-4 justify-content-center align-middle">
+            <div class="pb-4 align-middle">
+                <div class="row">
+                    @include('layouts.header')
+                </div>
+                {{-- 
                 <div class="row">
                     <div class="col-auto">
                         <form method="GET" action="{{ route('admin.top') }}">@csrf
-                            <button class="btn btn-primary" type="submit">メニュー</button>
+                            <button class="btn btn-primary btn-sm" type="submit">メニュー</button>
                         </form>
                     </div>
                     <div class="col-auto">
-                        <a class="btn btn-primary" href="javascript:history.back();">戻る</a>
+                        <a class="btn btn-primary btn-sm" href="javascript:history.back();">戻る</a>
                     </div>
+                    
+                </div>
+                 --}}
+                <div class="mb-2 bg-secondary text-white">契約リスト</div>
+		        <div class="row pb-2">
                     <div class="col-auto">   
                         <form method="GET" action="/customers/ShowInpContract/{{$UserSerial}}">@csrf
-                            <button class="btn btn-primary" type="submit">新規登録</button>
+                            <button class="btn btn-primary btn-sm" type="submit">新規登録</button>
                         </form>
                     </div>
+                    <div class="col-auto">
+                        @if($UserSerial==="all")
+                            <button type="button" class="btn btn-primary btn-sm" wire:click="searchClear() onclick="document.getElementById('kensakukey_txt').value=''">解除</button>
+                            <input type="text" name="kensakukey_txt" id="kensakukey_txt" wire:model.defer="serch_key_contract" value="{{$serchKey_contract}}" class="form-control-sm">
+                            <button class="btn btn-primary btn-sm" type="submit" wire:click="search()">検索</button>
+                        @else
+                            顧客番号：&nbsp;{{$UserSerial}}&nbsp;&nbsp;契約者：{{$userinf->name_sei}}&nbsp;{{$userinf->name_mei}}
+                        @endif
+                    </div>
                 </div>
-		        @if($UserSerial==="all")
-                    <button class="bg-blue-500 text-white rounded px-3 py-1" type="submit" wire:click="search()">検索</button>
-                    <input type="text" name="kensakukey_txt" id="kensakukey_txt" wire:model.defer="kensakukey" value="{{$serchKey_contract}}"class="mt-1 block rounded-md border-gray-300 border-2 p-0.8 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    <button type="button" class="bg-blue-500 text-white rounded px-3 py-1" wire:click="searchClear() onclick="document.getElementById('kensakukey_txt').value=''">解除</button>
-	        	@else
-			        顧客番号：&nbsp;{{$UserSerial}}&nbsp;&nbsp;契約者：{{$userinf->name_sei}}&nbsp;{{$userinf->name_mei}}
-		        @endif
-                <table class="table-auto" border-solid>
-                    <thead>
+                <table id="table_responsive container-fluid" class="table-striped table-hover">
+                    <thead class="table-success">
                         <tr>
+                            <th class="border px-4 py-2">契約日
+                                <div class="text-nowrap">
+                                    <button type="button" wire:click="sort('keiyaku_bi-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
+                                    <button type="button" wire:click="sort('keiyaku_bi-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                </div>   
+                            </th>
                             <th class="border px-4 py-2">契約番号(修正)
                                 <div class="text-nowrap">
                                     <button type="button" wire:click="sort('serial_keiyaku-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
@@ -53,12 +70,7 @@
                                     </div>
                                 </th>
                             @endif
-                            <th class="border px-4 py-2">契約日
-                                <div class="text-nowrap">
-                                    <button type="button" wire:click="sort('keiyaku_bi-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                    <button type="button" wire:click="sort('keiyaku_bi-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
-                                </div>   
-                            </th>
+                            
                             <th class="border px-4 py-2">契約期間</th>
                             <th class="border px-4 py-2">契約金額
                                 <div class="text-nowrap">
@@ -80,6 +92,7 @@
                     <tbody>
                         @foreach ($contractQuery as $dContracts)
                             <tr>
+                                <td class="border px-4 py-2">{{ $dContracts->keiyaku_bi}}</td>
                                 <td class="border px-4 py-2">
                                     <form action="/customers/ShowSyuseiContract/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
                                         <input name="syusei_Btn" type="submit" value="{{$dContracts->serial_keiyaku}}">
@@ -102,7 +115,7 @@
                                     </td>
                                     <td class="border px-4 py-2">{{$dContracts->name_sei}} &nbsp; {{$dContracts->name_mei}}</td>
                                 @endif
-                                <td class="border px-4 py-2">{{ $dContracts->keiyaku_bi}}</td>
+                                
                                 <td class="border px-4 py-2" {!! $dContracts->closed_color!!}>{{ $dContracts->keiyaku_kikan_start}}-{{ $dContracts->keiyaku_kikan_end}}</td>
                                 <td class="border px-4 py-2">{{ $dContracts->keiyaku_kingaku}}</td>
                                 <td class="border px-4 py-2">{{ $dContracts->how_to_pay}}</td>

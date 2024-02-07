@@ -14,7 +14,7 @@
 function SerchRefereeInf(){
 	TargetSerial=document.getElementById("syokaisya_txt").value;;
 	//console.log("obj="+obj);
-	console.log("TargetSerial="+TargetSerial);
+	//console.log("TargetSerial="+TargetSerial);
 	$.ajax({
 		url: 'getCustomerInf',
 		type: 'post', // getかpostを指定(デフォルトは前者)

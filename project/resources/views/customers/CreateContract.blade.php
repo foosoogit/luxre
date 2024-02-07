@@ -232,7 +232,7 @@ input,textarea{border: 1px solid #aaa;}
 						<div class="auto-style1 cyclic"><span>1回目：<input name="DateFirstPay" id="DateFirstPay" type="date" value="{{optional($targetContract)->date_first_pay_genkin}}" class="cyclic"/><input type="text" name="AmountPaidFirst" id="AmountPaidFirst" class="form-control col-2 form-control-sm my-2 cyclic" value="{{optional($targetContract)->amount_first_pay_cash}}">円</span></div> 
 						<p class="auto-style1 cyclic">2回目：<input name="DateSecondtPay" id="DateSecondtPay" type="date" value="{{optional($targetContract)->date_second_pay_genkin}}" class="cyclic"/><span>(<input type="text" name="AmountPaidSecond" id="AmountPaidSecond" class="form-control col-2 form-control-sm my-2 cyclic" value="{{optional($targetContract)->amount_second_pay_cash}}">円)</p>
 						<p>
-							<label class="cyclic"><input name="HowPayRdio" id="HowPayRdio_card" type="radio" value="Credit Card" onchange="HowPayRdioManage()" {!!optional($HowToPay)['card']!!} class="cyclic"/>クレジットカード</label>　<label>カード会社</label>
+							<label class="cyclic"><input name="HowPayRdio" id="HowPayRdio_card" type="radio" value="Credit Card" onchange="HowPayRdioManage()" {!!optional($HowToPay)['card']!!} class="cyclic"/>クレジットカード</label><label>カード会社</label>
 							<select name="CardCompanyNameSlct" id="CardCompanyNameSlct">
 								<option value="未選択">選択してください</option>
 								{!!$CardCompanySelect!!}
@@ -254,7 +254,7 @@ input,textarea{border: 1px solid #aaa;}
 						<p>メモ：<textarea cols="20" name="memo" id="memo" rows="2" class="bg-white-500 text-black rounded px-3 py-1">{{optional($targetContract)->remarks}}</textarea></p>
 						<p style="text-align: center">
 							@if(optional($targetContract)->cancel===null)
-								{{--<button  class="btn btn-primary w-100 my-3" type="submit" type="submit" onclick="return validate();">登　録</button>--}}
+								{{--<button  class="btn btn-primary w-100 my-3" type="submit" onclick="return validate();">登　録</button>--}}
 								<button  class="btn btn-primary w-100 my-3" type="submit" form="ContractFm">登　録</button>
 							@else
 								<button  class="btn btn-primary w-100 my-3" type="submit" onclick="return canceled_message();" form="ContractFm" style="background-color:gray">登　録</button>
