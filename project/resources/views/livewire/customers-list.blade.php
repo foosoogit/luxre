@@ -108,7 +108,7 @@
                                         </form>
                                     </td>
                                     <td class="border px-4 py-2">
-                                        <form action="/customers/ContractList/{{$user->serial_user}}" method="POST">@csrf<input name="keiyaku_Btn" type="submit" value="履歴・新規">
+                                        <form action="/customers/ContractList/{{$user->serial_user}}" method="GET">@csrf<input name="keiyaku_Btn" type="submit" value="履歴・新規">
                                             <input name="page_num" type="hidden" value="{{$users->currentPage()}}"/>
                                         </form>
                                     </td>

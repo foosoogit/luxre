@@ -57,7 +57,6 @@ class ContractList extends Component
     {
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		log::alert("sort_key_contract 1=".$this->sort_key_contract);
 		if($this->sort_key_contract<>session('sort_key_contract')){
 			//session(['sort_key_contract' =>$this->sort_key_contract]);
 			$this->sort_key_contract=session('sort_key_contract');
@@ -80,7 +79,7 @@ class ContractList extends Component
 		if(isset($_POST['btn_serial'])){
 			session(['serch_key_contract' => $_POST['btn_serial']]);
 		}else if(session('serch_key_contract')<>$this->serch_key_contract){
-			session(['serchKey_contract' => $this->serch_key_contract]);
+			session(['serch_Key_contract' => $this->serch_key_contract]);
 		}
 		if($this->serch_key_contract<>session('sort_type_contract')){
 			$this->serch_key_contract=session('serch_key_contract');
@@ -101,6 +100,10 @@ class ContractList extends Component
 			$key="%%";
 			self::$statickey="%%";
 		}
+		//$ist=isset($session["targetUserSerial"]);
+		//log::alert("sort_key_contract 2=".$ist);
+		//log::alart(session()->has('targetUserSerial'));
+		//log::alert("targetUserSerial=".$session('targetUserSerial'));
 		if(session('targetUserSerial')=="all"){
 			$contractQuery=$contractQuery->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
 				->where('contracts.serial_keiyaku','like',$key)
@@ -141,7 +144,7 @@ class ContractList extends Component
 				});
 		}
 		
-		log::alert("sort_key_contract 2=".$this->sort_key_contract);
+		//log::alert("sort_key_contract 2=".$this->sort_key_contract);
 		if($this->sort_key_contract<>''){
 			if($this->sort_key_contract=="name_sei"){
 				if($this->sort_type_contract=="ASC"){
