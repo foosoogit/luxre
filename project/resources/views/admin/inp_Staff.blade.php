@@ -24,6 +24,9 @@ input,textarea{
                 <div class="col-auto">
 	                <button class="btn btn-primary btn-sm" type="button" onclick="location.href='{{$GoBackPlace}}'">戻る</button>
 	            </div>
+                <div class="col-auto">
+	                <button class="btn btn-primary btn-sm" type="button" onclick="location.href='{{$GoBackPlace}}'">出退勤用QRコードの送信</button>
+	            </div>
 				<form action="{{ route('saveStaff.post') }}" method="POST" class="h-adr">@csrf
 	            	<div class="row">
                 		<div class="col-auto d-flex align-items-center">

@@ -29,6 +29,43 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function send_QRcode_to_staff($staff_serial){
+        $item_array=json_decode( $request->item_json , true );
+        //Log::alert('seated_type='.$item_array['seated_type']);
+        //Log::alert('name-student='.$item_array['name_sei']);
+        if($item_array['seated_type']=='in'){
+            $msg=InitConsts::MsgIn();
+            //Log::alert('msg='.$msg);
+            $sbj=InitConsts::sbjIn();
+        }else if($item_array['seated_type']=='out'){
+            $msg=InitConsts::MsgIn();
+            $sbj=InitConsts::sbjIn();
+        }
+
+        $msg=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $msg);
+        $msg=str_replace('[time]', $item_array['target_time'], $msg);
+        $msg=OtherFunc::ConvertPlaceholder($msg,"body");
+
+        $sbj=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $sbj);
+        $sbj=str_replace('[time]', $item_array['target_time'], $sbj);
+        $sbj=OtherFunc::ConvertPlaceholder($sbj,"sbj");
+
+        $target_item_array['subject']=$sbj;
+        $to_email_array=explode (",",$item_array['email']);
+        $protector_array=explode (",",$item_array['protector']);
+        $target_item_array['from_email']=$item_array['from_email'];
+        $i=0;
+        foreach($to_email_array as $target_email){
+            $target_item_array['msg']=str_replace('[name-protector]', $protector_array[$i], $msg);
+            $target_item_array['to_email']=$target_email;
+            Mail::send(new ContactMail($target_item_array));
+            $i++;
+        }
+        $send_msd="配信しました。";
+        $json_dat = json_encode( $send_msd , JSON_PRETTY_PRINT ) ;
+        echo $json_dat;
+    }
+
 	public function ShowSyuseiCustomer(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		if(isset($_POST['back_flg'])){

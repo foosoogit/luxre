@@ -1,6 +1,7 @@
 {
     "require": {
-        "laravel/jetstream": "^4.1"
+        "laravel/jetstream": "^4.1",
+        "simplesoftwareio/simple-qrcode": "^4.2"
     },
     "require-dev": {
         "laravel-lang/publisher": "^16.2",

@@ -38,8 +38,10 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 Route::middleware('auth:admin')->group(function () {
 
     Route::name('admin.')->group(function() {
-        Route::post('send_mail_in_out', [AdminController::class,'send_mail_in_out'])->name("send_mail_in_out");
-        Route::post('in_out_manage', [AdminController::class,'in_out_manage'])->name("in_out_manage");
+        Route::post('admin/send_QRcode_to_staff', [AdminController::class,'send_QRcode_to_staff'])->name("SendQRcodeToStaff");
+
+        //Route::post('send_mail_in_out', [AdminController::class,'send_mail_in_out'])->name("send_mail_in_out");
+        //Route::post('in_out_manage', [AdminController::class,'in_out_manage'])->name("in_out_manage");
 
         Route::get('admin/InOutStandbyDisplay', [AdminController::class,'ShowInOutStandbyDisplay'])->name("InOutStandbyDisplay.get");
 
