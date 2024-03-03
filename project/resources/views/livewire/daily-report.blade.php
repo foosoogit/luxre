@@ -1,5 +1,5 @@
 <div class="container text-center">
-    <script src="{{  asset('/js/DailyReport.js') }}" defer></script>
+    <script src="{{asset('/js/DailyReport.js')}}" defer></script>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="pb-4 justify-content-center align-middle">
@@ -63,7 +63,7 @@
                                                 <button type="button" wire:click="sort('serial_user-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
                                                 --}}
                                     </th>
-                                    <th class="border px-4 py-2">氏名
+                                    <th class="border px-4 py-2 col-2">氏名
                                                 {{--
                                                 <button type="button" wire:click="sort('name_sei-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
                                                 <button type="button" wire:click="sort('name_sei-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
@@ -114,7 +114,9 @@
                                         <td class="border px-4 py-2">{{ $PaymentHistory->serial_user}}<br></td>
                                         <td class="border px-4 py-2">
                                             {{--<form method="POST" action="/customers/ShowCustomersList_livewire_from_top_menu">@csrf--}}
-                                            <form method="POST" action="{{ route('customers.CustomersList.show')}}">@csrf
+                                            {{-- <form method="POST" action="{{ route('customers.CustomersList.show')}}">@csrf --}}
+                                            {{-- <form method="GET" action="{{ route('/customers/ShowInpRecordVisitPayment/{$PaymentHistory->serial_keiyaku}/{$PaymentHistory->serial_user}')}}">@csrf --}}
+                                            <form method="GET" action="{{ route('customers.ShowInpRecordVisitPayment.get',['SerialKeiyaku' => $PaymentHistory->serial_keiyaku,'SerialUser'=>$PaymentHistory->serial_user])}}">@csrf
                                                 <button type="submit" name="btn_serial" value="{{$PaymentHistory->serial_user}}">{{ $PaymentHistory->name_sei}}&nbsp;{{ $PaymentHistory->name_mei}}</button>
                                                 <input name="target_day" type="hidden" value="{{$today}}"/>
                                             </form>

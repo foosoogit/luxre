@@ -102,6 +102,18 @@
 									<button class="btn btn-primary btn-sm" type="submit" disabled>商品登録</button>
 								</form>
 							</li>
+							{{--
+							<li>
+								<form method="GET" action="{{route("admin.get_imagick_info.get")}}>@csrf
+									<button class="btn btn-primary btn-sm" type="submit" disabled>get_imagick_info</button>
+								</form>
+							</li>
+							--}}
+							<li>
+								<form method="GET" action="{{route('admin.QRcode')}}">@csrf
+									<button class="btn btn-primary btn-sm" type="submit">QRcode</button>
+								</form>
+							</li>
                         </ul>
                     </div>
                 </div>

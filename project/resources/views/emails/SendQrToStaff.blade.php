@@ -1,4 +1,6 @@
 {!!$target_item_array['msg']!!}
+{{-- <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(200)->generate($target_item_array['qr'])) !!} "> --}}
+{{--<img src="data:image/png;base64, {!! base64_encode(QrCode::size(200)->generate('qr')) !!} ">--}}
 {{--  
 {!! $target_item_array['msg'] !!}
 {!! nl2br($target_item_array['msg']) !!}

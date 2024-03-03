@@ -23,8 +23,7 @@ class DailyReport extends Component
         session(['asc_desc' =>$sort_key_array[1]]);
     }
   
-    public function render()
-        {
+    public function render(){
         $header="";$slot="";
         $today = date("Y-m-d");
         $from_place="";
@@ -104,6 +103,8 @@ class DailyReport extends Component
         $Sum['total']=$Sum['cash']+$Sum['card']+$Sum['CashSplit']+$Sum['paypay'];
         session(['targetDay' => $today]);
         $_SESSION['backmonthday']=$today;
+        Log::info($_SESSION['access_history']);
+        Log::info($_SESSION);
         return view('livewire.daily-report',compact('target_historyBack_inf_array','PaymentHistories','SalesRecords','today','subtotal_treatment','subtotal_good','total','Sum','from_place'));
     }
 }

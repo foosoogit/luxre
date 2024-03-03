@@ -1,15 +1,6 @@
 @extends('layouts.appCustomer')
 @section('content')
 <script  type="text/javascript" src="{{ asset('/js/jquery-3.6.0.min.js') }}"></script>
-{{--
-<script>
-	@if ($errors->any())
-		alert("{{ implode('\n', $errors->all()) }}");
-	@elseif (session()->has('success'))
-		alert("{{ session()->get('success') }}");
-	@endif
-</script>
---}}
 <style type="text/css">
 input,textarea{
 	border: 1px solid #aaa;
@@ -21,19 +12,26 @@ input,textarea{
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
+                {{-- 
                 <div class="col-auto">
 	                <button class="btn btn-primary btn-sm" type="button" onclick="location.href='{{$GoBackPlace}}'">戻る</button>
 	            </div>
-                <div class="col-auto">
-	                <button class="btn btn-primary btn-sm" type="button" onclick="location.href='{{$GoBackPlace}}'">出退勤用QRコードの送信</button>
-	            </div>
-				<form action="{{ route('saveStaff.post') }}" method="POST" class="h-adr">@csrf
+                 --}}
+                <div class="row">
+                    @include('layouts.header')
+                </div>
+                <div class="mb-2 bg-success text-white">スタッフ情報入力</div>
+				<form action="{{ route('saveStaff.post') }}" method="POST" class="h-adr" id="save_staff" name="save_staff">@csrf
 	            	<div class="row">
                 		<div class="col-auto d-flex align-items-center">
 							<label for="serial_student" class="max-w-7xl font-large">スタッフ番号</label>
                         </div>
                         <div class="col-auto d-flex align-items-center">
                         	<input id="serial_staff" name="serial_staff" type="text" class="form-control" value="{{$TargetStaffSerial}}" readonly/>
+                        </div>
+                        <div class="col-auto">
+                            {{--<button type="submit" class="btn btn-primary btn-sm" value="送信" formaction="{{ route('admin.QRcode.post') }}">出退勤用QRコードの送信</button>--}}
+                            <button type="submit" class="btn btn-primary btn-sm" value="送信" formaction="{{ route('admin.SendQRcodeToStaff.post') }}">出退勤用QRコードの送信</button>
                         </div>
                      </div>
                      <div class="row"> 
@@ -89,7 +87,7 @@ input,textarea{
                             </div>
                         </div><br>					
 						{{--<input name="TorokuMessageFlg" id="TorokuMessageFlg" type="hidden" value="{{$saveFlg}}"/>--}}
-						<button class="btn btn-primary btn-sm" type="submit">{{$btnDisp}}</button>
+						<button type="submit" class="btn btn-primary btn-sm">{{$btnDisp}}</button>
 					</form>
             </div>
         </div>

@@ -23,10 +23,14 @@ class MonthlyReport extends Component
     		$split_year_month_day_array=explode( '-', $_POST['year_month_day'] );
     		$targetYear=$split_year_month_day_array[0];
     		$targetMonth=$split_year_month_day_array[1];
-    	}else{
-    	    $targetYear=$_POST['year'];
+    	}else if(isset($_POST['year'])){
+			$targetYear=$_POST['year'];
     		$targetMonth=$_POST['month'];
-    	}
+    	}else{
+			$target_year_array=explode("-", $_SESSION['backmonthday']);
+    	    $targetYear=$target_year_array[0];
+			$targetMonth=$target_year_array[1];
+		}
    	
     	$RaitenReason="来店理由 : ".OtherFunc::get_raitenReason($targetYear,$targetMonth);
     	$html_year_slct=OtherFunc::make_html_year_slct($targetYear);

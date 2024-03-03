@@ -2,22 +2,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\OtherFunc;
-use App\Models\PaymentHistory;
-use App\Consts\initConsts;
-use App\Models\Staff;
-use App\Models\Recorder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use App\Models\User;
-use App\Http\Requests\InpCustomerRequest;
-use App\Models\Contract;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Contract;
+use App\Models\PaymentHistory;
+use App\Models\Staff;
+use App\Models\Recorder;
+use App\Models\User;
 use App\Models\ContractDetail;
 use App\Models\VisitHistory;
 use App\Models\TreatmentContent;
 use App\Models\InOutHistory;
+use App\Mail\SendMail;
+use App\Http\Requests\InpCustomerRequest;
+use App\Http\Controllers\OtherFunc;
+use App\Consts\initConsts;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+//use App\Consts\get_imagick_info;
+
+use Intervention\Image\Facades\Image;
 if(!isset($_SESSION)){session_start();}
 
 class AdminController extends Controller
@@ -29,41 +36,57 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
-	public function send_QRcode_to_staff($staff_serial){
-        $item_array=json_decode( $request->item_json , true );
-        //Log::alert('seated_type='.$item_array['seated_type']);
-        //Log::alert('name-student='.$item_array['name_sei']);
-        if($item_array['seated_type']=='in'){
-            $msg=InitConsts::MsgIn();
-            //Log::alert('msg='.$msg);
-            $sbj=InitConsts::sbjIn();
-        }else if($item_array['seated_type']=='out'){
-            $msg=InitConsts::MsgIn();
-            $sbj=InitConsts::sbjIn();
-        }
+	public function GetQrImage($target){
+		//$url = 'https://google.com';
+		/*
+		$qr_image = QrCode::format('png')
+			//->merge('/storage/'.$target)
+			->merge('/storage/MedicalRecord')
+			->style('square')
+			->backgroundcolor(255,255,255)
+			->size(300)
+			->errorcorrection('H')
+			->generate('TEST');
+			//->generate($target);
+		*/
+		//$qr_image = Image::make($qr_image);
+		//return $qr_image;
+		//$src = base64_encode(QrCode::size(100)->generate('https://qiita.com/nobuhiro-kobayashi'));
+		//$src = base64_encode(QrCode::size(100)->generate($target));
+		$path = public_path(time().'.eps');
+		QrCode::format('eps')->size(300)->generate($target, $path);
+		//QrCode::email(null, 'This is the subject.', 'This is the message body.');
+		//$src = QrCode::size(100)->generate($target);
+		//return $src;
+		//return response('<img src="data:image/png;base64, ' . $src . '">');
+	}
 
-        $msg=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $msg);
-        $msg=str_replace('[time]', $item_array['target_time'], $msg);
-        $msg=OtherFunc::ConvertPlaceholder($msg,"body");
+	public function send_QRcode_to_staff(Request $request){
+		$target_item_array=array();
+		log::alert("StaffSerial=".$request->serial_staff);
+        $staff_inf=Staff::where('serial_staff','=',$request->serial_staff)->first();
+		log::alert("target_mail=".$staff_inf->email);
+		//$enc_target_mail=encrypt($staff_inf->email);
+		//log::alert("enc_target_mail=".$enc_target_mail);
+		$qr_image=self::GetQrImage($staff_inf->email);
+		//base64_encode($qr_image);
+		
+		
+		//Storage::disk('local')->put('qr_image.png', base64_encode($qr_image));
+		//$qr_image->store('qr');
+		//$qr_image=self::GetQrImage($enc_target_mail);
+		//$fp = fopen("MedicalRecord/QRTest",'w');
+		//$upload_data=$_POST['upload_data'];
+		//fwrite($fp,$qr_image);
+		//fclose($fp);
 
-        $sbj=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $sbj);
-        $sbj=str_replace('[time]', $item_array['target_time'], $sbj);
-        $sbj=OtherFunc::ConvertPlaceholder($sbj,"sbj");
-
-        $target_item_array['subject']=$sbj;
-        $to_email_array=explode (",",$item_array['email']);
-        $protector_array=explode (",",$item_array['protector']);
-        $target_item_array['from_email']=$item_array['from_email'];
-        $i=0;
-        foreach($to_email_array as $target_email){
-            $target_item_array['msg']=str_replace('[name-protector]', $protector_array[$i], $msg);
-            $target_item_array['to_email']=$target_email;
-            Mail::send(new ContactMail($target_item_array));
-            $i++;
-        }
-        $send_msd="配信しました。";
-        $json_dat = json_encode( $send_msd , JSON_PRETTY_PRINT ) ;
-        echo $json_dat;
+		//$target_item_array['qr']=self::GetQrImage($enc_target_mail);
+		//$target_item_array['qr']=$enc_target_mail;
+		$target_item_array['msg']='出退記録用QRコード';
+        $target_item_array['to_email']=$staff_inf->email;
+		$target_item_array['subject']='出退記録用QRコード';
+		$target_item_array['from_email']=env('MAIL_FROM_ADDRESS');
+		Mail::send(new SendMail($target_item_array));
     }
 
 	public function ShowSyuseiCustomer(Request $request){
@@ -1313,6 +1336,7 @@ class AdminController extends Controller
 			}
 			//return view('teacher.inp_Staff',compact("header","slot",'TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","saveFlg"));
 		}
+		//$btnDisp="登録";
 		$html_birth_select['year']=$html_year_slct;
 		$html_birth_select['day']=$html_day_slct;
 		$html_birth_select['month']=$html_Month_slct;

@@ -11,6 +11,8 @@ use App\Http\Livewire\DailyReport;
 use App\Http\Livewire\MonthlyReport;
 use App\Http\Livewire\ContractsReport;
 use App\Http\Livewire\YearlyReport;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 if(!isset($_SESSION)){session_start();}
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +40,25 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 Route::middleware('auth:admin')->group(function () {
 
     Route::name('admin.')->group(function() {
-        Route::post('admin/send_QRcode_to_staff', [AdminController::class,'send_QRcode_to_staff'])->name("SendQRcodeToStaff");
+        //Route::get('admin/get_imagick_info', [OtherFunc::class,'get_imagick_info'])->name("get_imagick_info.get");
+        /*
+        Route::get('qr-code', function() {
+            return response()->streamDownload(function () {
+                \QRCode::url('https://laravel.com/')
+                    ->setSize(10)
+                    ->setMargin(2)
+                    ->png();
+            }, 'qr-code.png');
+        });
+        */
+
+        Route::get('QRcode', function () {
+            return QrCode::size(300)->generate('A basic example of QR code!');
+        })->name("QRcode");
+
+        Route::post('admin/send_QRcode_to_staff', [AdminController::class,'send_QRcode_to_staff'])->name("SendQRcodeToStaff.post");
+
+        //Route::post('admin/send_QRcode_to_staff', [AdminController::class,'GetQrImage'])->name("SendQRcodeToStaff.post");
 
         //Route::post('send_mail_in_out', [AdminController::class,'send_mail_in_out'])->name("send_mail_in_out");
         //Route::post('in_out_manage', [AdminController::class,'in_out_manage'])->name("in_out_manage");
@@ -136,6 +156,8 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/customers/CustomersList', function () {
             return view('customers.ListCustomers');
         })->name('CustomersList.show.post');
+
+        //Route::post('/customers/CustomersList', [CustomerSearch::class,'ShowSyuseiCustomer',function(Request $request){});
         
        //Route::get('livewire/update/all', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
 
@@ -159,7 +181,7 @@ Route::middleware('auth:admin')->group(function () {
 	    Route::post('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
 
         Route::post('/customers/recordVisitPaymentHistory/', [AdminController::class,'recordVisitPaymentHistory',function(Request $request){}])->name("recordVisitPaymentHistory");
-        Route::get('/customers/ShowInpRecordVisitPayment/{SerialKeiyaku}/{SerialUser}', [AdminController::class,'ShowInpRecordVisitPayment',function($SerialKeiyaku,$SerialUser){}]);
+        Route::get('/customers/ShowInpRecordVisitPayment/{SerialKeiyaku}/{SerialUser}', [AdminController::class,'ShowInpRecordVisitPayment',function($SerialKeiyaku,$SerialUser){}])->name('ShowInpRecordVisitPayment.get');
 	    Route::post('/customers/ShowInpRecordVisitPayment', [AdminController::class,'ShowInpRecordVisitPayment']);
         Route::get('/customers/insertContract', [AdminController::class,'insertContract'])->name('insertContract');
         Route::post('/customers/insertContract', [AdminController::class,'insertContract'])->name('insertContract');

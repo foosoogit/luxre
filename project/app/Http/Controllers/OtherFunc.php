@@ -17,6 +17,7 @@ if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+
 	public static function make_html_yearly_Report_table($targetYear,$startMonth){
 		//log::alert("targetYear=".$targetYear);
 		$target_contract_money_array=explode( ',',initConsts::TargetContractMoney());

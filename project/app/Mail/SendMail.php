@@ -16,9 +16,10 @@ class SendMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(public array $target_item_array)
     {
-        //
+        //$this->name = $name;
+        //$this->email = $email;
     }
 
     /**
@@ -27,7 +28,10 @@ class SendMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Mail',
+            subject: $this->target_item_array['subject'],
+            to: $this->target_item_array['to_email'],
+            replyTo: $this->target_item_array['from_email'],
+            from: $this->target_item_array['from_email'],
         );
     }
 
@@ -37,7 +41,9 @@ class SendMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            //html: 'emails.test',
+            //view: 'view.SendQrToStaff',
+            view: 'emails.SendQrToStaff',
         );
     }
 
@@ -48,6 +54,8 @@ class SendMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        return [
+            //Attachment::fromPath('/path/to/file'),
+        ];
     }
 }
