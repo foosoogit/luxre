@@ -82,7 +82,7 @@ input,textarea{border: 1px solid #aaa;}
 									<span id="inpTotalAmount_for_error" class="text-danger fw-bold"></span>
 								</div>
 							</div>
-							<div class="py-2">
+							<div class="py-2 cyclic">
 								●役務契約期間：<span class="auto-style2">*</span><input name="ContractsDateStart" id="ContractsDateStart" type="date"  value="{{optional($targetContract)->keiyaku_kikan_start}}"/><span id="ContractsDateStart_for_error" class="text-danger fw-bold"> ～ <input name="ContractsDateEnd" id="ContractsDateEnd" type="date" class="cyclic" value="{{optional($targetContract)->keiyaku_kikan_end}}"/>
 							</div>
 							<p class="cyclic">●<span class="auto-style2">*</span>施術回数 {!!$TreatmentsTimes_slct!!}</p>

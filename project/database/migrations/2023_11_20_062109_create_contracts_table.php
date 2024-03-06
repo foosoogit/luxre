@@ -22,7 +22,7 @@ return new class extends Migration
 			
 			$table->string('course')->nullable()->comment('コース');
 			$table->string('treatments_num')->nullable()->comment('施術シリアル');
-			$table->string('keiyaku_kikan_start',20)->comment('契約開始日');
+			$table->string('keiyaku_kikan_start',20)->nullable()->comment('契約開始日');
 			
 			$table->string('keiyaku_kikan_end',20)->nullable()->comment('契約終了日');
 			$table->string('keiyaku_type',20)->comment('契約形態(サブスク/期間・内容設定)');

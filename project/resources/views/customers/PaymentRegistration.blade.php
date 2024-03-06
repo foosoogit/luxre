@@ -10,6 +10,9 @@ table td {border: 1px solid #aaa;}
 	<div class="row justify-content-center">
 		<div class="col-md-12">
 			<!--<div class="card">-->
+				<div class="row">
+                    @include('layouts.header')
+                </div>
 				<div class="container gap-3">
 					<div class="row justify-content-left">
 						<a href="{{ route('admin.top') }}" class="btn btn-primary btn-sm">メニュー</a>

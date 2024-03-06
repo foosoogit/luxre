@@ -46,7 +46,7 @@
                             <button type="button" name="SerchBtn" id="SerchBtn" wire:click="search()">検索</button>
                         </div>
                     </div>
-                    <table id="table_responsive container-fluid" class="table-striped table-hover">
+                    <table id="table_responsive container-fluid" class="table-striped table-hover table-bordered">
                         <thead class="table-success">
                             <tr>
                                 <th class="border px-4 py-2">顧客データ修正
