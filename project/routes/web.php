@@ -29,6 +29,11 @@ Route::get('/', function () {
     redirect ('/top');
 });
 */
+/*
+Route::get('/login_customer', function () {
+    return view('customer.LoginProtector');
+})->name('customer.login');
+*/
 // 管理ログイン画面
 Route::get('/admin-login', [AdminLoginController::class, 'create'])->name('admin.login');
 // 管理ログイン
@@ -36,9 +41,15 @@ Route::post('/admin-login', [AdminLoginController::class, 'store'])->name('admin
 // 管理ログアウト
 Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('admin.login.destroy');
 
+//Route::get('/user', [AdminController::class,'ShowMenuCustomers'])->name('customer.MyPage.login');
+Route::middleware('auth')->group(function () {
+    Route::get('/user', function () {
+        //return "Hello Laravel from {$request->path()}";
+        return "Hello Laravel";
+    });
+});
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
-
     Route::name('admin.')->group(function() {
         //Route::get('admin/get_imagick_info', [OtherFunc::class,'get_imagick_info'])->name("get_imagick_info.get");
         /*
@@ -51,6 +62,9 @@ Route::middleware('auth:admin')->group(function () {
             }, 'qr-code.png');
         });
         */
+        Route::get('QRcode', function () {
+            return QrCode::size(300)->generate('A basic example of QR code!');
+        })->name("QRcode");
 
         Route::get('QRcode', function () {
             return QrCode::size(300)->generate('A basic example of QR code!');
@@ -63,6 +77,7 @@ Route::middleware('auth:admin')->group(function () {
         //Route::post('send_mail_in_out', [AdminController::class,'send_mail_in_out'])->name("send_mail_in_out");
         //Route::post('in_out_manage', [AdminController::class,'in_out_manage'])->name("in_out_manage");
 
+        Route::get('admin/CustomerStandbyDisplay', [AdminController::class,'ShowCustomerStandbyDisplay'])->name("CustomerStandbyDisplay.get");
         Route::get('admin/InOutStandbyDisplay', [AdminController::class,'ShowInOutStandbyDisplay'])->name("InOutStandbyDisplay.get");
 
         /*
@@ -130,8 +145,6 @@ Route::middleware('auth:admin')->group(function () {
     */
     
     Route::controller(AdminController::class)->name('customers.')->group(function() {
-
-
         //Route::get('/customers/CustomerInfFromDayly/{target_user_serial}', [CustomersList::class,'search_from_top_menu'],function($target_user_serial){})->name("CustomerInfFromDayly");
     	//Route::post('/customers/ShowCustomersList_livewire_from_top_menu', CustomerSearch::class,function(Request $request){});
 	    Route::post('/customers/CustomerInfFromDaylyRep', [CustomersList::class,function(Request $request){}])->name("CustomerInfFromDayly.post");
@@ -141,7 +154,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/ajax_SaveMedicalRecord', [AdminController::class,'ajax_SaveMedicalRecord'])->name("SaveMedicalRecord");
         Route::get('/customers/MakeContractPDF/{ContractSerial}', [AdminController::class,'MakeContractPDF',function($TargetMonth){}])->name("MakeContractPDF");
         Route::get('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminController::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){session(['ContractSerial' => $ContractSerial,'UserSerial'=>$UserSerial]);}]);
-	    Route::post('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminControllerr::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){}]);
+	    Route::post('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminController::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){}]);
 
         Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
 	    Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
@@ -162,7 +175,7 @@ Route::middleware('auth:admin')->group(function () {
        //Route::get('livewire/update/all', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
 
         Route::get('livewire/update', function () {
-            Log::info($_SESSION['access_history']);
+            //Log::info($_SESSION['access_history']);
             if(str_contains($_SESSION['access_history'][0],"ContractList")){
                return view('customers.ListContract');
             }else{
@@ -201,8 +214,8 @@ Route::middleware('auth:admin')->group(function () {
         return view('admin.ListStaffs');
     })->name('StaffsList.show');
     Route::get('/top', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top');
-    Route::get('/', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top.login');
-    //Route::get('/', [AdminController::class,'ShowMenuCustomerManagement']);
+    //Route::get('/', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top.login');
+    //Route::get('/', [UserController::class,'ShowMyPage'])->name('admin.top.login');
     /*
     Route::get('/admin', function () {
         return view('admin.menu_top');

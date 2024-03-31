@@ -36,6 +36,20 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function ShowCustomerStandbyDisplay(){
+		//$host_url=$_SERVER['HTTP_REFERER'];
+		//$host_url=$_SERVER['HTTP_ORIGIN'];
+		if (empty($_SERVER['HTTPS'])) {
+			$ht_type='http://';
+		} else {
+			$ht_type='https://';			
+		}
+		$host_url=$_SERVER['HTTP_HOST'];
+		//Log::alert('host_url='.$host_url);
+		session(['target_serial' => ""]);
+		return view('admin.InOutStandbyDisplayJQ',compact('host_url'));
+	}
+
 	public function GetQrImage($target){
 		//$url = 'https://google.com';
 		/*

@@ -83,8 +83,13 @@
 								</form>
 							</li>
 							<li>
+								<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf
+									<button class="btn btn-primary btn-sm" type="submit">顧客受付</button>
+								</form>
+							</li>
+							<li>
 								<form method="GET" action="{{route('admin.InOutStandbyDisplay.get')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">入退出待ち受け</button>
+									<button class="btn btn-primary btn-sm" type="submit">スタッフ入退出待ち受け</button>
 								</form>
 							</li>
 							<li>
@@ -112,6 +117,11 @@
 							<li>
 								<form method="GET" action="{{route('admin.QRcode')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">QRcode</button>
+								</form>
+							</li>
+							<li>
+								<form method="GET" action="{{route('admin.QRcode')}}">@csrf
+									<button class="btn btn-primary btn-sm" type="submit">暗号化チェック</button>
 								</form>
 							</li>
                         </ul>
