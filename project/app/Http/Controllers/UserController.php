@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\VisitHistory;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class UserController extends Controller
 {
     public function ShowMyPage(){
-
+        /*
 		$DefaultUsersInf=PaymentHistory::leftJoin('users', 'payment_histories.serial_user', '=', 'users.serial_user')
 			->where('payment_histories.how_to_pay','=', 'default')
 			->whereIn('users.serial_user', function ($query) {
@@ -23,6 +26,11 @@ class UserController extends Controller
 		//list($targetNameHtmFront, $targetNameHtmBack) =OtherFunc::make_htm_get_not_coming_customer();
 		$csrf="csrf";
 		session(['GoBackPlace' => '../ShowMenuCustomerManagement']);
-		return view('admin.menu_top',compact("html_year_slct","html_month_slct","DefaultUsersInf","not_coming_customers","default_customers",'htm_kesanMonth'));
+        */
+        $user_inf = Auth::user();
+        $point_total=VisitHistory::where("serial_user","=", $user_inf->serial_user)->sum('point');
+        $user_inf = Auth::user();
+        $serial_user=$user_inf->serial_user;
+		return view('customers.InfCustomer', compact('user_inf','point_total','serial_user'));
 	}
 }

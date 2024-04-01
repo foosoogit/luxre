@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 use App\Http\Requests\InpCustomerRequest;
 use App\Http\Controllers\OtherFunc;
 use App\Http\Livewire\CustomersList;
@@ -43,10 +44,7 @@ Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('a
 
 //Route::get('/user', [AdminController::class,'ShowMenuCustomers'])->name('customer.MyPage.login');
 Route::middleware('auth')->group(function () {
-    Route::get('/user', function () {
-        //return "Hello Laravel from {$request->path()}";
-        return "Hello Laravel";
-    });
+        Route::get('/user', [UserController::class,'ShowMyPage']);
 });
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
@@ -62,6 +60,8 @@ Route::middleware('auth:admin')->group(function () {
             }, 'qr-code.png');
         });
         */
+        Route::post('admin/setting_update', [AdminController::class,'update_setting'])->name('setting.update');
+        Route::get('admin/show_setting',[AdminController::class,'show_setting'])->name('show_setting');
         Route::get('QRcode', function () {
             return QrCode::size(300)->generate('A basic example of QR code!');
         })->name("QRcode");

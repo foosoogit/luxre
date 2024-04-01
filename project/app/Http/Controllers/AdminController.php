@@ -17,6 +17,7 @@ use App\Models\ContractDetail;
 use App\Models\VisitHistory;
 use App\Models\TreatmentContent;
 use App\Models\InOutHistory;
+use App\Models\Configration;
 use App\Mail\SendMail;
 use App\Http\Requests\InpCustomerRequest;
 use App\Http\Controllers\OtherFunc;
@@ -35,6 +36,57 @@ class AdminController extends Controller
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
 	}
+	
+	public function update_setting(Request $request)
+    {
+        $configration_all_array=configration::all();
+        foreach($configration_all_array as $configration_array){
+            if(isset($_POST[$configration_array['subject']])){
+
+                $udsql=configration::where('subject','=',$configration_array['subject'])
+                    ->update(['value1' => $_POST[$configration_array['subject']]]);
+            }
+        }
+		$configration_all=Configration::all();
+		
+        foreach($configration_all as $configration){
+            $configration_array[$configration['subject']]=$configration['value1'];
+        }
+		/*
+        $msg="送信しました。";
+        $configration_all_array=configration::all();
+        foreach($configration_all_array as $configration){
+            $configration_array[$configration['subject']]=$configration['value1'];
+            $msg="登録しました。";
+        }
+        if(isset($request->SendMsgInBtn)){
+            $this->send_test_mail("MsgIn");
+            $msg="送信しました。";
+        }else if(isset($request->SendMsgOutBtn)){
+            $this->send_test_mail("MsgOut");
+            $msg="送信しました。";
+        }else if(isset($request->SendMsgTestBtn)){
+            $this->send_test_mail("MsgTest");
+            $msg="送信しました。";
+        }
+		*/
+		//self::show_setting();
+		$msg="登録しました。";
+        //return view('admin.Setting',compact("configration_array"))->with('success',$msg);
+		return redirect()->route('admin.show_setting')->with('success',$msg);
+        //return redirect('show_setting',compact("configration_array"))->with('success',$msg);
+    }
+
+	public function show_setting()
+    {
+        $configration_all=Configration::all();
+		
+        foreach($configration_all as $configration){
+            $configration_array[$configration['subject']]=$configration['value1'];
+        }
+		//Log::info($configration_array);
+        return view('admin.Setting',compact("configration_array"));
+    }
 
 	public function ShowCustomerStandbyDisplay(){
 		//$host_url=$_SERVER['HTTP_REFERER'];

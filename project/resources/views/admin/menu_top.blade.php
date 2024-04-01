@@ -55,10 +55,21 @@
                 			<li>
 								<form method="GET" action="/customers/ContractList/all">@csrf<button class="btn btn-primary btn-sm" type="submit" >契約一覧</button>&nbsp;修正・新規登録・契約</form>
 							</li>
+							<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf
+								<button class="btn btn-primary btn-sm" type="submit">顧客受付</button>
+							</form>
 							<li>
 								<form method="GET" action="/workers/ShowCampaigns">@csrf
 									<button class="btn btn-primary btn-sm" type="submit" disabled>キャンペーン</button>
 								</form>
+							</li>
+							<li>
+								<a href="{{ route('admin.show_setting') }}" class="btn btn-primary btn-sm">環境設定</a>
+								{{-- 
+								<form method="GET" action="/workers/ShowCampaigns">@csrf
+									<button class="btn btn-primary btn-sm" type="submit" disabled>環境設定</button>
+								</form>
+								 --}}
 							</li>
 							<li>
 								{{--<form method="GET" action="admin/ShowDailyReport">@csrf--}}
@@ -83,9 +94,6 @@
 								</form>
 							</li>
 							<li>
-								<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">顧客受付</button>
-								</form>
 							</li>
 							<li>
 								<form method="GET" action="{{route('admin.InOutStandbyDisplay.get')}}">@csrf

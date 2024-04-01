@@ -234,6 +234,11 @@ class DatabaseSeeder extends Seeder
 				'value1' => "top,メニュー,admin.top;ContractList,契約リスト,customers.ContractList.post;CustomersList,顧客リスト,customers.CustomersList.show.post;DailyReport,日報,admin.DailyReport.post;MonthlyReport,月報,admin.MonthlyReport.post;TreatmentList,施術一覧,admin.TreatmentList.post",
 				'setumei' => "URLから対応ページ設定",
 			],
+			[
+				'subject'=> "UserPoint",
+				'value1' => "1",
+				'setumei' => "顧客ポイント",
+			],
         ];
 
 		foreach($configrations as $configration){
