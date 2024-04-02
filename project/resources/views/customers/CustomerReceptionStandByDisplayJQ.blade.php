@@ -26,11 +26,11 @@
                         <div class="flex items-center gap-4">
                             <button class="btn btn-primary" onclick="location.href='{{route('admin.top')}}'" >メニューに戻る</button>
                         </div>
-							<div class="row height:25rem" style="width: 20rem;">待ち受け画面</div>
+							<div class="row height:25rem" style="width: 20rem;">お客様受付画面</div>
                             <div class="row">
 								<div class="col">
                                 <label>QRコードの読み込み</label>
-                                <input type="text" class="mt-1 block w-full" name="target_custiner_serial_txt" id="target_custiner_serial_txt" autofocus />
+                                <input type="text" class="mt-1 block w-full" name="target_customer_serial_txt" id="target_customer_serial_txt" autofocus />
                                 {{-- <x-input-error class="mt-2" :messages="$errors->get('student_serial')" /> --}}
 								</div>
 								<div class="col"> 
@@ -60,26 +60,54 @@
 		
 		//var audio_out= new Audio(document.getElementById("sound_out_url").value);
 		//var audio_in= new Audio(document.getElementById("sound_in_url").value);
-		//var audio_false= new Audio(document.getElementById("sound_false_url").value);
+		var audio_false= new Audio(document.getElementById("sound_false_url").value);
 		//var audio;
 		$(document).ready( function(){
-			document.getElementById('target_serial_txt').focus();
+			document.getElementById('target_customer_serial_txt').focus();
 		});
-		$('#target_custiner_serial_txt').keypress(function(e) {
+		$('#target_customer_serial_txt').keypress(function(e) {
+			//console.log('target_customer_serial_txt='+$('#target_customer_serial_txt').val());
 			if(e.which == 13) {
-				document.getElementById("target_custiner_serial_txt").disabled=true;
+				document.getElementById("target_customer_serial_txt").disabled=true;
 				$.ajax({
 					//url: 'send_mail',
-					url: 'in_out_manage',
+					url: 'customer_reception_manage',
 					type: 'post', // getかpostを指定(デフォルトは前者)
 					dataType: 'text', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
 					scriptCharset: 'utf-8',
-					data: {"target_serial":$('#target_serial_txt').val()},
+					data: {"target_serial":$('#target_customer_serial_txt').val()},
 					headers: {
 						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 					}
 				}).done(function (data) {
 					const item_json = JSON.parse(data);
+					console.log('res='+item_json.res);
+					document.getElementById("name_fadeout_alert").style.display="";
+					if(item_json.res=="no serial"){
+						audio_false.play();
+						console.log('msg='+item_json.msg);
+						document.getElementById("seated_type").style.display="";
+						document.getElementById("seated_type").innerText = item_json.msg;
+					}else if(item_json.res=="no contract"){
+						audio_false.play();
+						console.log('msg='+item_json.msg);
+						//console.log(data);
+						document.getElementById("seated_type").style.display="";
+						document.getElementById("seated_type").innerText = item_json.msg;
+						//document.getElementById("seated_type").innerText = item_json.name_sei + ' '+item_json.name_mei+'さんの契約が見つかりません。';
+						//dispNone();
+					}else{
+						audio_in.play();
+						//console.log('msg='+item_json.msg);
+						//console.log(data);
+						document.getElementById("seated_type").style.display="";
+						document.getElementById("seated_type").innerText = item_json.msg;
+						receipt_manage(item_json);
+						//document.getElementById("seated_type").innerText = item_json.name_sei + ' '+item_json.name_mei+'さんの契約が見つかりません。';
+						//dispNone();
+					}
+					//console.log('latest_VisitHistory_serial='+item_json.latest_VisitHistory_serial);
+					/*
 					if(item_json.seated_type=="false"){
 					//if(data=="false"){
 						audio_false.play();
@@ -104,8 +132,9 @@
 						document.getElementById("seated_type").innerText = '登録データが見つかりません。';
 						dispNone();
 					}
-					document.getElementById('target_custiner_serial_txt').value="";
-					document.getElementById('target_custiner_serial_txt').focus();
+					*/
+					document.getElementById('target_customer_serial_txt').value="";
+					document.getElementById('target_customer_serial_txt').focus();
 					data=null;
 					window.setTimeout(dispNone, 5000);
 					//name_fadeOut();
@@ -118,18 +147,17 @@
 			}else{
 				//alert("TEST");
 			}
-			document.getElementById("target_serial_txt").disabled=false;
+			//document.getElementById("target_serial_txt").disabled=false;
 		});
 
 		function dispNone(){
 			document.getElementById("name_fadeout_alert").style.display="none";
-			document.getElementById("target_custiner_serial_txt").disabled=false;
-			document.getElementById("target_custiner_serial_txt").focus();
+			document.getElementById("target_customer_serial_txt").disabled=false;
+			document.getElementById("target_customer_serial_txt").focus();
 		}
-		function send_mail(item_json){
-			/*
+		function receipt_manage(item_json){
 			$.ajax({
-				url: 'send_mail_in_out',
+				url: 'receipt_manage',
 				type: 'post', // getかpostを指定(デフォルトは前者)
 				dataType: 'json', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
 				scriptCharset: 'utf-8',
@@ -146,8 +174,7 @@
 				alert(errorThrown);	
 				alert('エラー');
 			});
-			*/
-			$('#name_fadeout_alert').show();		
+			//$('#name_fadeout_alert').show();		
 		}
 
 		function name_fadeOut(){

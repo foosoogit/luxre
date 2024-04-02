@@ -55,9 +55,11 @@
                 			<li>
 								<form method="GET" action="/customers/ContractList/all">@csrf<button class="btn btn-primary btn-sm" type="submit" >契約一覧</button>&nbsp;修正・新規登録・契約</form>
 							</li>
-							<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf
-								<button class="btn btn-primary btn-sm" type="submit">顧客受付</button>
-							</form>
+							<li>
+								<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf
+									<button class="btn btn-primary btn-sm" type="submit">顧客受付</button>
+								</form>
+							</li>
 							<li>
 								<form method="GET" action="/workers/ShowCampaigns">@csrf
 									<button class="btn btn-primary btn-sm" type="submit" disabled>キャンペーン</button>
@@ -92,8 +94,6 @@
 								<form method="POST" action="{{route('admin.YearlyReport.post')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">年報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option  value="0" >選択</option>{!!$htm_kesanMonth!!}</select>&emsp;契約達成率、前年度比等
 								</form>
-							</li>
-							<li>
 							</li>
 							<li>
 								<form method="GET" action="{{route('admin.InOutStandbyDisplay.get')}}">@csrf

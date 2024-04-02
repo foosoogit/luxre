@@ -37,12 +37,178 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 	
+	public function  receipt_manage(Request $request){
+        $item_array=json_decode( $request->item_json , true );
+        //Log::alert('seated_type='.$item_array['seated_type']);
+        //Log::alert('name-student='.$item_array['name_sei']);
+        if($item_array['seated_type']=='in'){
+            $msg=InitConsts::MsgIn();
+            //Log::alert('msg='.$msg);
+            $sbj=InitConsts::sbjIn();
+        }else if($item_array['seated_type']=='out'){
+            $msg=InitConsts::MsgIn();
+            $sbj=InitConsts::sbjIn();
+        }
+
+        $msg=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $msg);
+        $msg=str_replace('[time]', $item_array['target_time'], $msg);
+        $msg=OtherFunc::ConvertPlaceholder($msg,"body");
+        /*
+        $msg=str_replace('[name-jyuku]', InitConsts::JyukuName(), $msg);
+        $msg=str_replace('[footer]', InitConsts::MsgFooter(), $msg);
+        */
+        //$sbj=str_replace('[name-protector]', $item_array['name_sei'], $sbj);
+        $sbj=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $sbj);
+        $sbj=str_replace('[time]', $item_array['target_time'], $sbj);
+        $sbj=OtherFunc::ConvertPlaceholder($sbj,"sbj");
+        /*
+        $sbj=str_replace('[footer]', InitConsts::MsgFooter(), $sbj);
+        $sbj=str_replace('[name-jyuku]', InitConsts::JyukuName(), $sbj);
+        */
+
+        $target_item_array['subject']=$sbj;
+        $to_email_array=explode (",",$item_array['email']);
+        $protector_array=explode (",",$item_array['protector']);
+        $target_item_array['from_email']=$item_array['from_email'];
+        $i=0;
+        foreach($to_email_array as $target_email){
+            $target_item_array['msg']=str_replace('[name-protector]', $protector_array[$i], $msg);
+            $target_item_array['to_email']=$target_email;
+            Mail::send(new ContactMail($target_item_array));
+            $i++;
+        }
+        $send_msd="配信しました。";
+        $json_dat = json_encode( $send_msd , JSON_PRETTY_PRINT ) ;
+        echo $json_dat;
+    }
+
+	public function customer_reception_manage(Request $request)
+    {
+        $user_serial=$request->target_serial;
+		$user_inf=User::where("serial_user","=",$user_serial)->first();
+		//Log::alert("empty=".empty($user_inf));
+		$latest_contract_serial=Contract::where("serial_user","=",$user_serial)
+				->orderBy('serial_keiyaku','desc')->first('serial_keiyaku');
+		$latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$user_serial)
+				->orderBy('visit_history_serial','desc')->first('visit_history_serial');
+		$target_item_array['user_serial']=$user_serial;
+		if(empty($user_inf)){
+			$target_item_array['msg']='お客様のご登録が見つかりません。';
+			$target_item_array['res']='no serial';
+			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+			echo $json;
+			//return;	
+		}else if(empty($latest_contract_serial['serial_keiyaku'])){
+			$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の契約が見つかりません。';
+			$target_item_array['res']='no contract';
+			//$target_item_array['name_sei']=$user_inf->name_sei;
+            //$target_item_array['name_mei']=$user_inf->name_mei;
+			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+			echo $json;
+			//return;	
+		}else{
+			Log::info($user_inf);
+			$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様のご来店を受け付けました。';
+			$target_item_array['res']='true';
+			Log::alert('msg='.$target_item_array['msg']);
+			//$target_item_array['name_sei']=$user_inf->name_sei;
+            //$target_item_array['name_mei']=$user_inf->name_mei;
+			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+			echo $json;
+			//$target_item_array['latest_VisitHistory_serial']=$latest_VisitHistory_serial["visit_history_serial"];
+		}
+
+        /*
+		if(empty($StudentInf->email)){
+            //Log::alert('email=null');
+            $target_item_array['seated_type']='NoUser';
+            //$target_item_array['name_sei']=$StudentInf->name_sei;
+            //$target_item_array['name_mei']=$StudentInf->name_mei;
+            $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+            echo $json;
+            return;   
+        }
+		*/
+        //Log::alert('Auth check='.Auth::check());
+        //Log::alert('StudentInfSql->count='.$StudentInfSql->count());
+        //if($UserInfSql->count()>0){
+			/*
+            $UserInf=$UserInfSql->first();
+            $target_item_array['target_time']=date("Y-m-d H:i:s");
+            $target_item_array['target_date']=date("Y-m-d");
+            $target_item_array['User_serial']= $User_serial;
+            $target_item_array['from_email']=config('app.MAIL_FROM_ADDRESS');
+            $target_item_array['name_sei']=$UserInf->name_sei;
+            $target_item_array['name_mei']=$UserInf->name_mei;
+            $target_item_array['protector']=$UserInf->protector;
+            $target_item_array['email']=$UserInf->email;
+            $latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$User_serial)
+				->orderBy('visit_history_serial','desc')->first('visit_history_serial');
+			*/
+			/*
+			VisitHistory::create([
+				//'student_serial'=>$request->student_serial,
+				'serial_user'=>$user_serial,
+				'target_date'=>$target_item_array['target_date'],
+				'time_in'=>$target_item_array['target_time'],
+				'student_name'=>$StudentInf->name_sei.' '.$StudentInf->name_mei,
+				'student_name_kana'=>$StudentInf->name_sei_kana.' '.$StudentInf->name_mei_kana,
+				'to_mail_address'=>$StudentInf->email,
+				'from_mail_address'=>$target_item_array['from_email'],
+			]);
+
+			$create_target_history_sql=VisitHistory::where('serial_user','=',$user_serial)
+                        ->where('target_date','=',date("Y-m-d"))
+                        ->whereNull('time_out')
+                        ->orderBy('id', 'desc');
+            if($serch_target_history_sql->count()>0){
+                $serch_target_history_array=$serch_target_history_sql->first();
+                $time_in= $serch_target_history_array->time_in;
+                $interval=self::time_diff($time_in, $target_item_array['target_time']);
+                if($interval<300){
+                    $target_item_array['seated_type']='false';
+                    $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+                    echo $json;
+                }else{
+                    $target_item_array['seated_type']='out';
+                    $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+                    echo $json;
+                    $inOutHistory = InOutHistory::find($serch_target_history_array->id);
+                    $inOutHistory->update([
+                        "time_out" => $target_item_array['target_time'],
+                    ]);
+                }
+            }else{
+                $target_item_array['seated_type']='in';
+                $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+                echo $json;
+                InOutHistory::create([
+                    //'student_serial'=>$request->student_serial,
+                    'student_serial'=>$student_serial,
+                    'target_date'=>$target_item_array['target_date'],
+                    'time_in'=>$target_item_array['target_time'],
+                    'student_name'=>$StudentInf->name_sei.' '.$StudentInf->name_mei,
+                    'student_name_kana'=>$StudentInf->name_sei_kana.' '.$StudentInf->name_mei_kana,
+                    'to_mail_address'=>$StudentInf->email,
+                    'from_mail_address'=>$target_item_array['from_email'],
+                ]);
+            }
+         }else{
+            $target_item_array['seated_type']='No Record';
+            $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+            echo $json;
+        }
+		*/
+        //echo session('seated_type');
+        //echo json_encode($res);
+        //return view('admin.StandbyDisplay');
+    }
+
 	public function update_setting(Request $request)
     {
         $configration_all_array=configration::all();
         foreach($configration_all_array as $configration_array){
             if(isset($_POST[$configration_array['subject']])){
-
                 $udsql=configration::where('subject','=',$configration_array['subject'])
                     ->update(['value1' => $_POST[$configration_array['subject']]]);
             }
@@ -89,17 +255,14 @@ class AdminController extends Controller
     }
 
 	public function ShowCustomerStandbyDisplay(){
-		//$host_url=$_SERVER['HTTP_REFERER'];
-		//$host_url=$_SERVER['HTTP_ORIGIN'];
 		if (empty($_SERVER['HTTPS'])) {
 			$ht_type='http://';
 		} else {
 			$ht_type='https://';			
 		}
 		$host_url=$_SERVER['HTTP_HOST'];
-		//Log::alert('host_url='.$host_url);
 		session(['target_serial' => ""]);
-		return view('admin.InOutStandbyDisplayJQ',compact('host_url'));
+		return view('customers.CustomerReceptionStandByDisplayJQ',compact('host_url'));
 	}
 
 	public function GetQrImage($target){
@@ -129,11 +292,7 @@ class AdminController extends Controller
 
 	public function send_QRcode_to_staff(Request $request){
 		$target_item_array=array();
-		log::alert("StaffSerial=".$request->serial_staff);
         $staff_inf=Staff::where('serial_staff','=',$request->serial_staff)->first();
-		log::alert("target_mail=".$staff_inf->email);
-		//$enc_target_mail=encrypt($staff_inf->email);
-		//log::alert("enc_target_mail=".$enc_target_mail);
 		$qr_image=self::GetQrImage($staff_inf->email);
 		//base64_encode($qr_image);
 		

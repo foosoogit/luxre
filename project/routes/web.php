@@ -35,6 +35,10 @@ Route::get('/login_customer', function () {
     return view('customer.LoginProtector');
 })->name('customer.login');
 */
+// 顧客受付
+
+Route::post('admin/receipt_manage', [AdminController::class,'receipt_manage'])->name("admin.receipt_manage.post");
+Route::get('admin/CustomerStandbyDisplay', [AdminController::class,'ShowCustomerStandbyDisplay'])->name("admin.CustomerStandbyDisplay.get");
 // 管理ログイン画面
 Route::get('/admin-login', [AdminLoginController::class, 'create'])->name('admin.login');
 // 管理ログイン
@@ -60,6 +64,7 @@ Route::middleware('auth:admin')->group(function () {
             }, 'qr-code.png');
         });
         */
+        Route::post('admin/customer_reception_manage', [AdminController::class,'customer_reception_manage'])->name('setting.update');
         Route::post('admin/setting_update', [AdminController::class,'update_setting'])->name('setting.update');
         Route::get('admin/show_setting',[AdminController::class,'show_setting'])->name('show_setting');
         Route::get('QRcode', function () {
@@ -77,7 +82,6 @@ Route::middleware('auth:admin')->group(function () {
         //Route::post('send_mail_in_out', [AdminController::class,'send_mail_in_out'])->name("send_mail_in_out");
         //Route::post('in_out_manage', [AdminController::class,'in_out_manage'])->name("in_out_manage");
 
-        Route::get('admin/CustomerStandbyDisplay', [AdminController::class,'ShowCustomerStandbyDisplay'])->name("CustomerStandbyDisplay.get");
         Route::get('admin/InOutStandbyDisplay', [AdminController::class,'ShowInOutStandbyDisplay'])->name("InOutStandbyDisplay.get");
 
         /*
