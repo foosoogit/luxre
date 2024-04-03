@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('serial_staff',10)->nullable()->comment('serial Staff');
             $table->string('date_visit',20)->nullable()->comment('来店日');
             $table->text('treatment_dtails')->nullable()->comment('施術内容');
-            $table->number('point')->nullable()->comment('取得ポイント');
+            $table->integer('point')->nullable()->comment('取得ポイント');
             $table->text('remarks')->nullable()->comment('備考');
         });
     }

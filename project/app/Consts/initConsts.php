@@ -6,10 +6,12 @@ use Illuminate\Support\Facades\DB;
 
 // usersで使う定数
 class initConsts{
+	public static function UserPoint(){
+		$inits_array=DB::table('configrations')->where('subject','=','UserPoint')->first();
+		return $inits_array->value1;
+	}
 	public static function MinimumLessonTimeInterval(){
 		$inits_array=DB::table('configrations')->where('subject','=','MinimumLessonTimeInterval')->first();
-		//print_r($inits_array);
-		//print 'value1='.$inits_array->value1;
 		return $inits_array->value1;
 	}
 	public static function LessonInterval(){

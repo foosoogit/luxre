@@ -37,34 +37,40 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 	
-	public function  receipt_manage(Request $request){
+	public function  receipt_set_manage(Request $request){
         $item_array=json_decode( $request->item_json , true );
-        //Log::alert('seated_type='.$item_array['seated_type']);
-        //Log::alert('name-student='.$item_array['name_sei']);
-        if($item_array['seated_type']=='in'){
-            $msg=InitConsts::MsgIn();
-            //Log::alert('msg='.$msg);
-            $sbj=InitConsts::sbjIn();
-        }else if($item_array['seated_type']=='out'){
-            $msg=InitConsts::MsgIn();
-            $sbj=InitConsts::sbjIn();
-        }
+		$contract_array=explode("-", $item_array["contract_serial"]);
+		$contract_branch=$contract_array[1];
+		if(empty($item_array["visit_history_serial"])){
+			$visit_history_branch="";
+		}else{
+			$visit_history_array=explode("-", $item_array["visit_history_serial"]);
+			$visit_history_branch=$visit_history_array[1];
+		}
+		if($contract_branch==$visit_history_branch){
+			$new_visit_history_serial=$item_array["visit_history_serial"];
+			$new_visit_history_serial++;
+		}else{
+			$new_visit_history_serial=$item_array["contract_serial"]."-01";
+		}
+		VisitHistory::insert([
+			'visit_history_serial' => $new_visit_history_serial,
+			'serial_keiyaku' => $item_array["contract_serial"],
+			'serial_user' => $item_array["user_serial"],
+			'date_visit' => date('Y-m-d'),
+			'point' => initConsts::UserPoint(),
+		]);
 
-        $msg=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $msg);
+		Contract::where('serial_keiyaku','=',$item_array["contract_serial"])->update(['date_latest_visit' =>date('Y-m-d')]);
+		
+		/*
+		$msg=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $msg);
         $msg=str_replace('[time]', $item_array['target_time'], $msg);
         $msg=OtherFunc::ConvertPlaceholder($msg,"body");
-        /*
-        $msg=str_replace('[name-jyuku]', InitConsts::JyukuName(), $msg);
-        $msg=str_replace('[footer]', InitConsts::MsgFooter(), $msg);
-        */
-        //$sbj=str_replace('[name-protector]', $item_array['name_sei'], $sbj);
+
         $sbj=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $sbj);
         $sbj=str_replace('[time]', $item_array['target_time'], $sbj);
         $sbj=OtherFunc::ConvertPlaceholder($sbj,"sbj");
-        /*
-        $sbj=str_replace('[footer]', InitConsts::MsgFooter(), $sbj);
-        $sbj=str_replace('[name-jyuku]', InitConsts::JyukuName(), $sbj);
-        */
 
         $target_item_array['subject']=$sbj;
         $to_email_array=explode (",",$item_array['email']);
@@ -79,14 +85,16 @@ class AdminController extends Controller
         }
         $send_msd="配信しました。";
         $json_dat = json_encode( $send_msd , JSON_PRETTY_PRINT ) ;
-        echo $json_dat;
+		*/
+		$res = ['res'    => 'OK'];
+		$json = json_encode( $res, JSON_PRETTY_PRINT ) ;
+		echo $json;
     }
 
 	public function customer_reception_manage(Request $request)
     {
         $user_serial=$request->target_serial;
 		$user_inf=User::where("serial_user","=",$user_serial)->first();
-		//Log::alert("empty=".empty($user_inf));
 		$latest_contract_serial=Contract::where("serial_user","=",$user_serial)
 				->orderBy('serial_keiyaku','desc')->first('serial_keiyaku');
 		$latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$user_serial)
@@ -97,25 +105,27 @@ class AdminController extends Controller
 			$target_item_array['res']='no serial';
 			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
 			echo $json;
-			//return;	
 		}else if(empty($latest_contract_serial['serial_keiyaku'])){
 			$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の契約が見つかりません。';
 			$target_item_array['res']='no contract';
-			//$target_item_array['name_sei']=$user_inf->name_sei;
-            //$target_item_array['name_mei']=$user_inf->name_mei;
-			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-			echo $json;
-			//return;	
 		}else{
-			Log::info($user_inf);
-			$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様のご来店を受け付けました。';
-			$target_item_array['res']='true';
-			Log::alert('msg='.$target_item_array['msg']);
-			//$target_item_array['name_sei']=$user_inf->name_sei;
-            //$target_item_array['name_mei']=$user_inf->name_mei;
+			$ck_jyufuku=VisitHistory::where("serial_user","=",$user_serial)
+				->where("date_visit","=",date('Y-m-d'))->count();
+			if($ck_jyufuku>0){
+				$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の本日の受付は済んでいます。';
+				$target_item_array['res']='double registration';
+			}else{
+				$target_item_array['contract_serial']=$latest_contract_serial->serial_keiyaku;
+				if(empty($latest_VisitHistory_serial->visit_history_serial)){
+					$target_item_array['visit_history_serial']="";	
+				}else{
+					$target_item_array['visit_history_serial']=$latest_VisitHistory_serial->visit_history_serial;
+				}
+				$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様のご来店を受け付けました。';
+				$target_item_array['res']='true';
+			}
 			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
 			echo $json;
-			//$target_item_array['latest_VisitHistory_serial']=$latest_VisitHistory_serial["visit_history_serial"];
 		}
 
         /*
@@ -1014,8 +1024,8 @@ class AdminController extends Controller
 					'visit_history_serial'=>$VisitHistorySerial,
 					'serial_staff'=>Auth::user()->serial_staff,
 					'date_visit'=>$visitDateValue,
-					//'treatment_dtails'=>$request->TreatmentDetails[$i]
 					'treatment_dtails'=>$request->TreatmentDetailsSelect[$i],
+					'point'=>$request->point[$i],
 					'deleted_at'=>null
 				];
 				VisitHistory::where('visit_history_serial','=', $VisitHistorySerial)->restore();
@@ -1082,15 +1092,21 @@ class AdminController extends Controller
 				}
 			}
 		}
-		$i=0;$TreatmentDetailsArray=array();$TreatmentDetailsSelectArray=array();$VisitSerialArray=array();
+		$i=0;$TreatmentDetailsArray=array();$TreatmentDetailsSelectArray=array();$VisitSerialArray=array();$PointArray=array();
 		foreach($targetVisitHistoryArray as $targetVisitHistory){
 			//$VisitSerialArray[]=$targetVisitHistory->visit_history_serial;
 			$VisitSerialArray[]=sprintf('%02d', $i+1);
 			$_SESSION['VisitSerialSessionArray'][]=$targetVisitHistory->visit_history_serial;
 			$VisitDateArray[]=$targetVisitHistory->date_visit;
+			$PointArray[]=$targetVisitHistory->point;
 			$TreatmentDetailsArray[]=$targetVisitHistory->treatment_dtails;
 			$TreatmentDetailsSelectArray[]=OtherFunc::make_htm_get_treatment_slct($targetVisitHistory->treatment_dtails);
-			$set_gray_array[$i]='style="background-color:#e0ffff"';$only_treatment_color_array[$i]='#e0ffff';
+			$set_gray_array[$i]='style="background-color:#e0ffff"';
+			if(empty($targetVisitHistory->treatment_dtails)){
+				$only_treatment_color_array[$i]='red';
+			}else{
+				$only_treatment_color_array[$i]='#e0ffff';
+			}
 			$i++;
 		}
 
@@ -1175,7 +1191,7 @@ class AdminController extends Controller
 		}
 		$GoBackToPlace=session('ShowInpRecordVisitPaymentfromPage');
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		return view('customers.PaymentRegistration',compact("target_historyBack_inf_array","only_treatment_color_array","GoBackToPlace","header","slot",'VisitSerialArray','VisitDateArray','PaymentDateArray','targetUser','targetContract','KeiyakuNaiyou','PaymentAmountArray','HowToPayCheckedArray','visit_disabeled','sejyutukaisu','set_gray_array','payment_disabeled','set_gray_pay_array','set_background_gray_pay_array','paymentCount','TreatmentDetailsArray','TreatmentDetailsSelectArray'));
+		return view('customers.PaymentRegistration',compact("PointArray","target_historyBack_inf_array","only_treatment_color_array","GoBackToPlace","header","slot",'VisitSerialArray','VisitDateArray','PaymentDateArray','targetUser','targetContract','KeiyakuNaiyou','PaymentAmountArray','HowToPayCheckedArray','visit_disabeled','sejyutukaisu','set_gray_array','payment_disabeled','set_gray_pay_array','set_background_gray_pay_array','paymentCount','TreatmentDetailsArray','TreatmentDetailsSelectArray'));
 	}
 
 	function insertContract(Request $request){
