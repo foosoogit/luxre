@@ -18,8 +18,14 @@ if(!isset($_SESSION)){session_start();}
 class OtherFunc extends Controller
 {
 
+	public static function complex($target_string){
+		return decrypt($target_string);
+	}
+	public static function encryption($target_string){
+		return encrypt($target_string);
+	}
+
 	public static function make_html_yearly_Report_table($targetYear,$startMonth){
-		//log::alert("targetYear=".$targetYear);
 		$target_contract_money_array=explode( ',',initConsts::TargetContractMoney());
 		$sbj_array=array();
 		$sbj_array=['月','契約金額合計(円)','累計契約金額(円)','解約損金合計(円)','累計解約損金(円)','合計(円)','累計合計(円)','目標値/入力・修正(円)','達成率(%)','前年度比(%)','契約金額合計(契約金-損金)(円)','目標値(円)','達成率(%)','契約金額合計(円)','目標値(円)','達成率(%)'];
@@ -40,9 +46,7 @@ class OtherFunc extends Controller
 				$targetYear=$targetYear+1;
 			}
 			$tm="No Data";$tm_last_year="No Data";$tm_last_last_year="No Data";
-			//log::info($target_contract_money_array);
 			foreach($target_contract_money_array as $target_contract_money){
-				//log::alert("target_contract_money=".$target_contract_money);
 				$target_contract_money_data_array=explode( '-',$target_contract_money);
 				$cd=$targetYear."-".sprintf('%02d', $targetMonth);
 				$target_last_Year=$targetYear-1;
@@ -53,19 +57,15 @@ class OtherFunc extends Controller
 				if($cd==$tv){
 					$tm=$target_contract_money_data_array[2];
 					$flg=true;
-					//break;
 				}
 				if($cd_last_year==$tv){
 					$tm_last_year=$target_contract_money_data_array[2];
 					$flg_last_year=true;
-					//break;
 				}
 				if($target_last_last_Year==$tv){
 					$tm_last_last_year=$target_contract_money_data_array[2];
 					$flg_last_last_year=true;
-					//break;
 				}
-
 			}
 			$contract_amount=self::get_keiyaku_monthly_amount($targetYear,$targetMonth);
 			$contract_amount_last_year=self::get_keiyaku_monthly_amount($targetYear-1,$targetMonth);

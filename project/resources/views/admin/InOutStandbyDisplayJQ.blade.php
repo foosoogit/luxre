@@ -53,7 +53,7 @@
     {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>--}}
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 	<script type="text/javascript">
-		console.log("sound_in_url="+document.getElementById("sound_in_url").value);
+		//console.log("sound_in_url="+document.getElementById("sound_in_url").value);
 		let host_url=document.getElementById("HTTP_HOST").value;
 		//var audio_in= new Audio(host_url+"/storage/sounds/in.mp3");
 		var audio_in= new Audio(document.getElementById("sound_in_url").value);

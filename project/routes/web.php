@@ -48,8 +48,10 @@ Route::post('/admin-login', [AdminLoginController::class, 'store'])->name('admin
 Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('admin.login.destroy');
 
 //Route::get('/user', [AdminController::class,'ShowMenuCustomers'])->name('customer.MyPage.login');
+Route::get('/user', [UserController::class,'ShowMyPage']);
 Route::middleware('auth')->group(function () {
-        Route::get('/user', [UserController::class,'ShowMyPage']);
+    Route::get('/', [UserController::class,'ShowMyPage']);
+    Route::get('/user', [UserController::class,'ShowMyPage']);
 });
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
@@ -65,7 +67,11 @@ Route::middleware('auth:admin')->group(function () {
             }, 'qr-code.png');
         });
         */
-        
+        Route::get('/admin/GetEncryption', function () {
+            return view('admin.GetEncryption');
+        })->name('GetEncryption.get');
+
+        //Route::get('admin/GetEncryption', [AdminController::class,'update_setting'])->name('setting.update');
         Route::post('admin/setting_update', [AdminController::class,'update_setting'])->name('setting.update');
         Route::get('admin/show_setting',[AdminController::class,'show_setting'])->name('show_setting');
         Route::get('QRcode', function () {
@@ -234,7 +240,11 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::get('/dashboard', [UserController::class,'ShowMyPage']);
+    /*
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        //Route::get('/user', [UserController::class,'ShowMyPage']);
+        //return view('dashboard');
     })->name('dashboard');
+    */
 });

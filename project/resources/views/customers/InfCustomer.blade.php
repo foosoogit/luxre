@@ -17,6 +17,10 @@ input,textarea{
                     @include('layouts.header')
                 </div>
                  --}}
+                 <form action="{{ route('logout') }}" method="post">
+                    @csrf
+                    <input type="submit" value="ログアウト">
+                  </form>
                 <div class="mb-2 bg-success text-white">お客様情報</div>
 				<form action="{{ route('saveStaff.post') }}" method="POST" class="h-adr" id="save_staff" name="save_staff">@csrf
 	            	{!! QrCode::size(100)->generate($serial_user)!!}
