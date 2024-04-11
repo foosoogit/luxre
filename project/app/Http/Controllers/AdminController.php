@@ -37,31 +37,65 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 	
-	public function  receipt_set_manage(Request $request){
-        $item_array=json_decode( $request->item_json , true );
-		$contract_array=explode("-", $item_array["contract_serial"]);
-		$contract_branch=$contract_array[1];
-		if(empty($item_array["visit_history_serial"])){
-			$visit_history_branch="";
-		}else{
-			$visit_history_array=explode("-", $item_array["visit_history_serial"]);
-			$visit_history_branch=$visit_history_array[1];
-		}
-		if($contract_branch==$visit_history_branch){
-			$new_visit_history_serial=$item_array["visit_history_serial"];
-			$new_visit_history_serial++;
-		}else{
-			$new_visit_history_serial=$item_array["contract_serial"]."-01";
-		}
+	private function staff_receipt_set_manage($item_array){
+        //$item_array=json_decode( $request->item_json , true );
+		//$contract_array=explode("-", $item_array["contract_serial"]);
+		//$contract_branch=$contract_array[1];
+		//if(empty($item_array["visit_history_serial"])){
+		//	$visit_history_branch="";
+		//}else{
+			//$visit_history_array=explode("-", $item_array["visit_history_serial"]);
+			//$visit_history_branch=$visit_history_array[1];
+		//}
+		//if($contract_branch==$visit_history_branch){
+		//	$new_visit_history_serial=$item_array["visit_history_serial"];
+		//	$new_visit_history_serial++;
+		//}else{
+		//	$new_visit_history_serial=$item_array["contract_serial"]."-01";
+		//}
+		$new_visit_history_serial=$item_array["visit_history_serial"]."-".date('Y-m-d');
+		//$new_visit_history_serial++;
 		VisitHistory::insert([
 			'visit_history_serial' => $new_visit_history_serial,
-			'serial_keiyaku' => $item_array["contract_serial"],
+			'serial_keiyaku' => "STAFF",
 			'serial_user' => $item_array["user_serial"],
 			'date_visit' => date('Y-m-d'),
-			'point' => initConsts::UserPoint(),
+			'created_at'=> date('Y/m/d H:i:s'),
+			'updated_at'=> date('Y/m/d H:i:s'),
+			//'point' => initConsts::UserPoint(),
 		]);
+    }
 
-		Contract::where('serial_keiyaku','=',$item_array["contract_serial"])->update(['date_latest_visit' =>date('Y-m-d')]);
+	public function  receipt_set_manage(Request $request){
+        $item_array=json_decode( $request->item_json , true );
+		if(substr($item_array["user_serial"], 0, 2)=="SF"){
+			$this::staff_receipt_set_manage($item_array);
+		}else{
+			$contract_array=explode("-", $item_array["contract_serial"]);
+			$contract_branch=$contract_array[1];
+			if(empty($item_array["visit_history_serial"])){
+				$visit_history_branch="";
+			}else{
+				$visit_history_array=explode("-", $item_array["visit_history_serial"]);
+				$visit_history_branch=$visit_history_array[1];
+			}
+			if($contract_branch==$visit_history_branch){
+				$new_visit_history_serial=$item_array["visit_history_serial"];
+				$new_visit_history_serial++;
+			}else{
+				$new_visit_history_serial=$item_array["contract_serial"]."-01";
+			}
+			VisitHistory::insert([
+				'visit_history_serial' => $new_visit_history_serial,
+				'serial_keiyaku' => $item_array["contract_serial"],
+				'serial_user' => $item_array["user_serial"],
+				'date_visit' => date('Y-m-d'),
+				'point' => initConsts::UserPoint(),
+				'created_at'=> date('Y/m/d H:i:s'),
+				'updated_at'=> date('Y/m/d H:i:s'),
+			]);
+			Contract::where('serial_keiyaku','=',$item_array["contract_serial"])->update(['date_latest_visit' =>date('Y-m-d')]);
+		}
 		
 		/*
 		$msg=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $msg);
@@ -91,43 +125,84 @@ class AdminController extends Controller
 		echo $json;
     }
 
-	public function customer_reception_manage(Request $request)
-    {
-        $user_serial=$request->target_serial;
-		$user_inf=User::where("serial_user","=",$user_serial)->first();
-		$latest_contract_serial=Contract::where("serial_user","=",$user_serial)
-				->orderBy('serial_keiyaku','desc')->first('serial_keiyaku');
-		$latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$user_serial)
+	private function staff_reception_manage($staff_serial){
+		Log::alert("staff_serial=".$staff_serial);
+		$staff_inf=Staff::where("serial_staff","=",$staff_serial)->first();
+		$latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$staff_serial)
 				->orderBy('visit_history_serial','desc')->first('visit_history_serial');
-		$target_item_array['user_serial']=$user_serial;
-		if(empty($user_inf)){
-			$target_item_array['msg']='お客様のご登録が見つかりません。';
+		$target_item_array['user_serial']=$staff_serial;
+
+		if(empty($staff_inf)){
+			$target_item_array['msg']='スタッフのご登録が見つかりません。';
 			$target_item_array['res']='no serial';
 			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-			echo $json;
-		}else if(empty($latest_contract_serial['serial_keiyaku'])){
-			$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の契約が見つかりません。';
-			$target_item_array['res']='no contract';
+			//echo $json;
 		}else{
-			$ck_jyufuku=VisitHistory::where("serial_user","=",$user_serial)
+			$ck_jyufuku=VisitHistory::where("serial_user","=",$staff_serial)
 				->where("date_visit","=",date('Y-m-d'))->count();
 			if($ck_jyufuku>0){
-				$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の本日の受付は済んでいます。';
+				$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの本日の出社受付は済んでいます。';
 				$target_item_array['res']='double registration';
 			}else{
-				$target_item_array['contract_serial']=$latest_contract_serial->serial_keiyaku;
+				$target_item_array['visit_history_serial']=$staff_serial;
+				/*
 				if(empty($latest_VisitHistory_serial->visit_history_serial)){
-					$target_item_array['visit_history_serial']="";	
+					$target_item_array['visit_history_serial']=$staff_serial;	
 				}else{
 					$target_item_array['visit_history_serial']=$latest_VisitHistory_serial->visit_history_serial;
 				}
-				$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様のご来店を受け付けました。';
+				*/
+				$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの出社を受け付けました。';
 				$target_item_array['res']='true';
 			}
 			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-			echo $json;
+			//echo $json;
 		}
+		return $json;
+	}
 
+	public function customer_reception_manage(Request $request)
+    {
+        $user_serial=$request->target_serial;
+		//$user_serial_strtoupper= ;
+		Log::alert("user_serial=".$user_serial);
+		if(substr(strtoupper($user_serial), 0, 2)=="SF"){
+			$json=$this::staff_reception_manage(strtoupper($user_serial));
+		}else{
+			$user_inf=User::where("serial_user","=",$user_serial)->first();
+			$latest_contract_serial=Contract::where("serial_user","=",$user_serial)
+					->orderBy('serial_keiyaku','desc')->first('serial_keiyaku');
+			$latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$user_serial)
+					->orderBy('visit_history_serial','desc')->first('visit_history_serial');
+			$target_item_array['user_serial']=$user_serial;
+			if(empty($user_inf)){
+				$target_item_array['msg']='お客様のご登録が見つかりません。';
+				$target_item_array['res']='no serial';
+				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+				echo $json;
+			}else if(empty($latest_contract_serial['serial_keiyaku'])){
+				$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の契約が見つかりません。';
+				$target_item_array['res']='no contract';
+			}else{
+				$ck_jyufuku=VisitHistory::where("serial_user","=",$user_serial)
+					->where("date_visit","=",date('Y-m-d'))->count();
+				if($ck_jyufuku>0){
+					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の本日の受付は済んでいます。';
+					$target_item_array['res']='double registration';
+				}else{
+					$target_item_array['contract_serial']=$latest_contract_serial->serial_keiyaku;
+					if(empty($latest_VisitHistory_serial->visit_history_serial)){
+						$target_item_array['visit_history_serial']="";	
+					}else{
+						$target_item_array['visit_history_serial']=$latest_VisitHistory_serial->visit_history_serial;
+					}
+					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様のご来店を受け付けました。';
+					$target_item_array['res']='true';
+				}
+				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+			}
+		}
+		echo $json;
         /*
 		if(empty($StudentInf->email)){
             //Log::alert('email=null');
@@ -435,20 +510,16 @@ class AdminController extends Controller
 				$GoBackPlace="../ShowMenuCustomerManagement";
 			}
 		//}
-		//return view('customers.CreateCustomer',compact("header","slot",'html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 		return view('customers.CreateCustomer',compact('target_historyBack_inf_array','html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
 
 	public function ShowInOutStandbyDisplay(){
-		//$host_url=$_SERVER['HTTP_REFERER'];
-		//$host_url=$_SERVER['HTTP_ORIGIN'];
 		if (empty($_SERVER['HTTPS'])) {
 			$ht_type='http://';
 		} else {
 			$ht_type='https://';			
 		}
 		$host_url=$_SERVER['HTTP_HOST'];
-		Log::alert('host_url='.$host_url);
 		session(['target_serial' => ""]);
 		return view('admin.InOutStandbyDisplayJQ',compact('host_url'));
 	}
@@ -488,7 +559,6 @@ class AdminController extends Controller
 
 	public function in_out_manage(Request $request)
     {
-        //Log::alert("target_serial=".$request->target_serial);
 		$target_serial=$request->target_serial;
         $target_serial_length=strlen($target_serial);
         $TargetInfSql=Staff::where('serial_staff','=',$target_serial);
@@ -528,7 +598,6 @@ class AdminController extends Controller
                 $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
                 echo $json;
                 InOutHistory::create([
-                    //'student_serial'=>$request->student_serial,
                     'student_serial'=>$student_serial,
                     'target_date'=>$target_item_array['target_date'],
                     'time_in'=>$target_item_array['target_time'],
@@ -552,13 +621,9 @@ class AdminController extends Controller
             array_shift($_SESSION['access_history']);
         }
         $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		//log::alert('access_history='.$_SESSION['access_history'][0]);
-		//log::info($target_historyBack_inf_array);
-		//log::info($_SESSION['access_history']);
 		$GoBackPlace="/workers/ShowTreatmentContents";
 		
 		if($TreatmentSerial=="new"){
-			//$manageFlg="new";
 			session(['TreatmentContentmanage' => 'new']);
 			$maxSerial=DB::table('treatment_contents')->max('serial_treatment_contents');
 			if($maxSerial==""){
@@ -588,13 +653,11 @@ class AdminController extends Controller
 	}
 
 	public function deleteCustomer($serial_user){
-		//$header="";$slot="";
 		$deleUser=User::where('serial_user','=',$serial_user)->delete();
 		$deleKeiyaku=Contract::where('serial_user','=',$serial_user)->delete();
 		$deleContractDetail=ContractDetail::where('serial_user','=',$serial_user)->delete();
 		$deleContractDetail=PaymentHistory::where('serial_user','=',$serial_user)->delete();
 		$deleVisitHistory=VisitHistory::where('serial_user','=',$serial_user)->delete();
-		//return redirect('/customers/ShowCustomersList');
 		return redirect('/customers/CustomersList');
 	}
 

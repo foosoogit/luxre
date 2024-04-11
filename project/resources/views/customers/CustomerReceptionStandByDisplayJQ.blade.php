@@ -76,21 +76,17 @@
 					}
 				}).done(function (data) {
 					const item_json = JSON.parse(data);
-					//console.log('res='+item_json.res);
 					document.getElementById("name_fadeout_alert").style.display="";
 					if(item_json.res=="no serial"){
 						audio_false.play();
-						//console.log('msg='+item_json.msg);
 						document.getElementById("seated_type").style.display="";
 						document.getElementById("seated_type").innerText = item_json.msg;
 					}else if(item_json.res=="no contract"){
 						audio_false.play();
-						//console.log('msg='+item_json.msg);
 						document.getElementById("seated_type").style.display="";
 						document.getElementById("seated_type").innerText = item_json.msg;
 					}else if(item_json.res=="double registration"){
 						audio_false.play();
-						//console.log('msg='+item_json.msg);
 						document.getElementById("seated_type").style.display="";
 						document.getElementById("seated_type").innerText = item_json.msg;
 					}else{
@@ -102,7 +98,7 @@
 					document.getElementById('target_customer_serial_txt').value="";
 					document.getElementById('target_customer_serial_txt').focus();
 					data=null;
-					window.setTimeout(dispNone, 5000);
+					window.setTimeout(dispNone, 4000);
 				}).fail(function (XMLHttpRequest, textStatus, errorThrown) {
 					alert(XMLHttpRequest.status);
 					alert(textStatus);

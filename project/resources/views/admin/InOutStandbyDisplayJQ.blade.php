@@ -107,7 +107,7 @@
 					document.getElementById('student_serial_txt').value="";
 					document.getElementById('student_serial_txt').focus();
 					data=null;
-					window.setTimeout(dispNone, 5000);
+					window.setTimeout(dispNone, 3000);
 					//name_fadeOut();
 				}).fail(function (XMLHttpRequest, textStatus, errorThrown) {
 					alert(XMLHttpRequest.status);
