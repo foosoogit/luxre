@@ -131,6 +131,7 @@ input,textarea{
 						<div class="col-auto">
 							〒<input type="text" name="postal" class="p-postal-code bg-white-500 text-black rounded px-3 py-1" size="8" maxlength="8" value="{{optional($target_user)->postal}}" placeholder="123-4567" tabindex="8" ></p>
 						</div>
+						<span class="p-country-name" style="display:none;">Japan</span>
 						<div class="col-auto">
 							<select class="p-region-id bg-white-500 text-black rounded px-3 py-1" name="region" id="region"tabindex="9">
 								<option value="">--都道府県--</option>

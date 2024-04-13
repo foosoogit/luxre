@@ -57,7 +57,7 @@
 							</li>
 							<li>
 								<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">顧客受付</button>
+									<button class="btn btn-primary btn-sm" type="submit">顧客受付・スタッフ入社受付</button>
 								</form>
 							</li>
 							<li>
@@ -73,43 +73,66 @@
 								</form>
 								 --}}
 							</li>
-							<li>
-								{{--<form method="GET" action="admin/ShowDailyReport">@csrf--}}
-								{{--<form method="GET" action="{{route('ShowDailyReport')}}">@csrf--}}
-								<form method="GET" action="{{route('admin.DailyReport.get')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">日報</button>
-								</form>
-							</li>
-							<li>
-								<form method="POST" action="{{route('admin.MonthlyReport.post')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">月報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
-								</form>
-							</li>
-							<li>
-								<form method="POST" action="{{route('admin.ContractReport.post')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">契約金額集計</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
-								</form>
-							</li>
-							<li>
-								<form method="POST" action="{{route('admin.YearlyReport.post')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">年報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option  value="0" >選択</option>{!!$htm_kesanMonth!!}</select>&emsp;契約達成率、前年度比等
-								</form>
-							</li>
+							<div class="row">
+								<div class="col-auto">
+									<li>
+										{{--<form method="GET" action="admin/ShowDailyReport">@csrf--}}
+										{{--<form method="GET" action="{{route('ShowDailyReport')}}">@csrf--}}
+										<form method="GET" action="{{route('admin.DailyReport.get')}}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">日報</button>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="POST" action="{{route('admin.MonthlyReport.post')}}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">月報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="POST" action="{{route('admin.ContractReport.post')}}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">契約金額集計</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> <select name="month"><option  value="0" >選択</option>{!!$html_month_slct!!}</select>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="POST" action="{{route('admin.YearlyReport.post')}}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">年報</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option  value="0" >選択</option>{!!$htm_kesanMonth!!}</select>&emsp;契約達成率、前年度比等
+										</form>
+									</li>
+								</div>
+							</div>
+							{{--
 							<li>
 								<form method="GET" action="{{route('admin.InOutStandbyDisplay.get')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">スタッフ入退出待ち受け</button>
 								</form>
 							</li>
+							--}}
 							<li>
 								<form method="POST" action="{{route('admin.TreatmentList.post')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">施術登録</button>
 								</form>
 							</li>
-							<li>
-								<form method="GET" action="{{ route('StaffsList.show') }}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">スタッフ登録</button>
-								</form>
-							</li>
+							<div class="row">
+								<div class="col-auto">
+									<li>
+										<form method="GET" action="{{ route('StaffsList.show') }}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">スタッフ出勤履歴</button>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="GET" action="{{ route('StaffsList.show') }}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">スタッフ登録</button>
+										</form>
+									</li>
+								</div>
+							</div>
 							<li>
 								<form method="GET" action="/workers/ShowGoodsList">@csrf
 									<button class="btn btn-primary btn-sm" type="submit" disabled>商品登録</button>
@@ -122,16 +145,20 @@
 								</form>
 							</li>
 							--}}
+							{{--
 							<li>
 								<form method="GET" action="{{route('admin.QRcode')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">QRcode</button>
 								</form>
 							</li>
+							--}}
+							{{--
 							<li>
 								<form method="GET" action="{{route('admin.QRcode')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">暗号化チェック</button>
 								</form>
 							</li>
+							--}}
                         </ul>
                     </div>
                 </div>
