@@ -1,6 +1,6 @@
 @extends('layouts.appCustomer')
     @section('content')
-    <script  type="text/javascript" src="{{ asset('/js/jquery-3.6.0.min.js') }}"></script>
+    {{-- <script  type="text/javascript" src="{{ asset('/js/jquery-3.6.0.min.js') }}"></script> --}}
     <style type="text/css">
     input,textarea{
         border: 1px solid #aaa;
@@ -16,11 +16,17 @@
                     @include('layouts.header')
                 </div>
                 <div class="mb-2 bg-success text-white">環境設定</div>
-                <form action="{{ route('admin.setting.update') }}" method="POST" class="h-adr" id="save_setting" name="save_setting">@csrf
+                <form action="{{ route('admin.setting.update') }}" method="POST" id="save_setting" name="save_setting">@csrf
                     <div class="row"> 
                         <div class="col-4">
-                            <label for="UserPoint" class="form-label">来店付加ポイント</label>
-                            <input id="UserPoint" name="UserPoint" type="text" class="form-control" value="{{ $configration_array["UserPoint"] }}" required autofocus />
+                            <label for="UserPointVisit" class="form-label">来店付加ポイント</label>
+                            <input id="UserPointVisit" name="UserPointVisit" type="text" class="form-control" value="{{ $configration_array["UserPointVisit"] }}" required autofocus />
+                        </div>
+                    </div>
+                    <div class="row"> 
+                        <div class="col-4">
+                            <label for="UserPointReferral" class="form-label">紹介付加ポイント</label>
+                            <input id="UserPointReferral" name="UserPointReferral" type="text" class="form-control" value="{{ $configration_array["UserPointReferral"] }}" required autofocus />
                         </div>
                     </div>
                             {{--  
@@ -76,10 +82,18 @@
                             </div><br>
                             --}}				
                             {{--<input name="TorokuMessageFlg" id="TorokuMessageFlg" type="hidden" value="{{$saveFlg}}"/>--}}
-                    @if(session('message'))
-                        <div class="row"><div class="alert alert-success col-4">{{session('message')}}</div></div>
-                    @endif
-                    <button type="submit" class="btn btn-primary btn-sm">保存</button>
+                    <div class="row"> 
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary btn-sm">保存</button>
+                        </div>
+                        {{-- 
+                        @if(session('message'))
+                            <div class="col-auto">
+                                {{session('message')}}
+                            </div>
+                        @endif
+                         --}}
+                    </div>
                 </form>
             </div>
         </div>

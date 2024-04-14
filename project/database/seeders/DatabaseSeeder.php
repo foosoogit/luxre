@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+		/*
 		$admins =[ 
 			[
 				'name' => 'fsuzuki',
@@ -182,7 +183,7 @@ class DatabaseSeeder extends Seeder
 		foreach($staffs as $staff){
             Staff::create($staff);
         }
-
+		*/
 		$configrations = [
 			[
 				'subject'=> "KeiyakuNumMax",
@@ -235,9 +236,14 @@ class DatabaseSeeder extends Seeder
 				'setumei' => "URLから対応ページ設定",
 			],
 			[
-				'subject'=> "UserPoint",
-				'value1' => "1",
-				'setumei' => "顧客ポイント",
+				'subject'=> "UserPointVisit",
+				'value1' => "10",
+				'setumei' => "来店時ポイント",
+			],
+			[
+				'subject'=> "UserPointReferral",
+				'value1' => "20",
+				'setumei' => "紹介時ポイント",
 			],
         ];
 

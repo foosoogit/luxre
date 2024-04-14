@@ -291,18 +291,22 @@ class AdminController extends Controller
 
 	public function update_setting(Request $request)
     {
-        $configration_all_array=configration::all();
+        Log::info($request);
+
+		$configration_all_array=configration::all();
         foreach($configration_all_array as $configration_array){
             if(isset($_POST[$configration_array['subject']])){
                 $udsql=configration::where('subject','=',$configration_array['subject'])
                     ->update(['value1' => $_POST[$configration_array['subject']]]);
             }
         }
+		/*
 		$configration_all=Configration::all();
 		
         foreach($configration_all as $configration){
             $configration_array[$configration['subject']]=$configration['value1'];
         }
+		*/
 		/*
         $msg="送信しました。";
         $configration_all_array=configration::all();
@@ -322,9 +326,13 @@ class AdminController extends Controller
         }
 		*/
 		//self::show_setting();
-		$msg="登録しました。";
+		//$msg="登録しました。";
         //return view('admin.Setting',compact("configration_array"))->with('success',$msg);
-		return redirect()->route('admin.show_setting')->with('success',$msg);
+		//'flashSuccess', '登録が完了しました'
+		//session()->flash('flashSuccess', '登録が完了しました');
+		
+		return redirect()->route('admin.show_setting')->with('success','登録しました。');
+		//return redirect()->route('admin.show_setting')->with('flashSuccess','登録しました。');
         //return redirect('show_setting',compact("configration_array"))->with('success',$msg);
     }
 
