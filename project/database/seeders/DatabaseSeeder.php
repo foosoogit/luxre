@@ -17,7 +17,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-		/*
 		$admins =[ 
 			[
 				'name' => 'fsuzuki',
@@ -183,7 +182,7 @@ class DatabaseSeeder extends Seeder
 		foreach($staffs as $staff){
             Staff::create($staff);
         }
-		*/
+
 		$configrations = [
 			[
 				'subject'=> "KeiyakuNumMax",
@@ -250,5 +249,6 @@ class DatabaseSeeder extends Seeder
 		foreach($configrations as $configration){
             Configration::create($configration);
         }
+
     }
 }

@@ -38,37 +38,34 @@ class AdminController extends Controller
 	}
 	
 	private function staff_receipt_set_manage($item_array){
-        //$item_array=json_decode( $request->item_json , true );
-		//$contract_array=explode("-", $item_array["contract_serial"]);
-		//$contract_branch=$contract_array[1];
-		//if(empty($item_array["visit_history_serial"])){
-		//	$visit_history_branch="";
-		//}else{
-			//$visit_history_array=explode("-", $item_array["visit_history_serial"]);
-			//$visit_history_branch=$visit_history_array[1];
-		//}
-		//if($contract_branch==$visit_history_branch){
-		//	$new_visit_history_serial=$item_array["visit_history_serial"];
-		//	$new_visit_history_serial++;
-		//}else{
-		//	$new_visit_history_serial=$item_array["contract_serial"]."-01";
-		//}
-		$new_visit_history_serial=$item_array["visit_history_serial"]."-".date('Y-m-d');
-		//$new_visit_history_serial++;
-		VisitHistory::insert([
-			'visit_history_serial' => $new_visit_history_serial,
-			'serial_keiyaku' => "STAFF",
-			'serial_user' => $item_array["user_serial"],
-			'date_visit' => date('Y-m-d'),
-			'created_at'=> date('Y/m/d H:i:s'),
-			'updated_at'=> date('Y/m/d H:i:s'),
-			//'point' => initConsts::UserPoint(),
-		]);
-    }
+  		//$new_visit_history_serial=$item_array["visit_history_serial"]."-".date('Y-m-d');
+		Log::alert("staff_serial=".$item_array['staff_serial']);
+		$nyuusya_ck_cnt= InOutHistory::where("target_serial","=",$item_array['staff_serial'])
+			->where("target_date","=",date('Y-m-d'))->count();
+		Log::alert("nyuusya_ck_cnt=".$nyuusya_ck_cnt);
+		if($nyuusya_ck_cnt==0){
+			InOutHistory::insert([
+				'target_serial' => $item_array["user_serial"],
+				'target_date' => date('Y-m-d'),
+				'time_in' => date('Y-m-d H:i:s'),
+				//'target_name'=>
+				'created_at'=> date('Y-m-d H:i:s'),
+				'updated_at'=> date('Y-m-d H:i:s'),
+			]);
+		}else if($nyuusya_ck_cnt>0){
+			InOutHistory::where("target_serial","=",$item_array['staff_serial'])
+				->where("target_date","=",date('Y-m-d'))
+				->update([
+					'time_out' => date('Y-m-d H:i:s'),
+					'updated_at'=> date('Y-m-d H:i:s'),
+				]);
+		}
+	}
 
 	public function  receipt_set_manage(Request $request){
         $item_array=json_decode( $request->item_json , true );
 		if(substr($item_array["user_serial"], 0, 2)=="SF"){
+			$item_array["staff_serial"]=$item_array["user_serial"];
 			$this::staff_receipt_set_manage($item_array);
 		}else{
 			$contract_array=explode("-", $item_array["contract_serial"]);
@@ -90,9 +87,9 @@ class AdminController extends Controller
 				'serial_keiyaku' => $item_array["contract_serial"],
 				'serial_user' => $item_array["user_serial"],
 				'date_visit' => date('Y-m-d'),
-				'point' => initConsts::UserPoint(),
-				'created_at'=> date('Y/m/d H:i:s'),
-				'updated_at'=> date('Y/m/d H:i:s'),
+				'point' => initConsts::UserPointVisit(),
+				'created_at'=> date('Y-m-d H:i:s'),
+				'updated_at'=> date('Y-m-d H:i:s'),
 			]);
 			Contract::where('serial_keiyaku','=',$item_array["contract_serial"])->update(['date_latest_visit' =>date('Y-m-d')]);
 		}
@@ -128,8 +125,8 @@ class AdminController extends Controller
 	private function staff_reception_manage($staff_serial){
 		Log::alert("staff_serial=".$staff_serial);
 		$staff_inf=Staff::where("serial_staff","=",$staff_serial)->first();
-		$latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$staff_serial)
-				->orderBy('visit_history_serial','desc')->first('visit_history_serial');
+		$latest_in_out_history_id=InOutHistory::where("target_serial","=",$staff_serial)
+				->orderBy('id','desc')->first('id');
 		$target_item_array['user_serial']=$staff_serial;
 
 		if(empty($staff_inf)){
@@ -138,20 +135,14 @@ class AdminController extends Controller
 			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
 			//echo $json;
 		}else{
-			$ck_jyufuku=VisitHistory::where("serial_user","=",$staff_serial)
-				->where("date_visit","=",date('Y-m-d'))->count();
+			$ck_jyufuku=InOutHistory::where("target_serial","=",$staff_serial)
+				->where("target_date","=",date('Y-m-d'))->count();
 			if($ck_jyufuku>0){
-				$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの本日の出社受付は済んでいます。';
-				$target_item_array['res']='double registration';
+				$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの本日の退社を受け付けました。';
+				//$target_item_array['res']='double registration';
+				$target_item_array['res']='true';
 			}else{
-				$target_item_array['visit_history_serial']=$staff_serial;
-				/*
-				if(empty($latest_VisitHistory_serial->visit_history_serial)){
-					$target_item_array['visit_history_serial']=$staff_serial;	
-				}else{
-					$target_item_array['visit_history_serial']=$latest_VisitHistory_serial->visit_history_serial;
-				}
-				*/
+				//$target_item_array['visit_history_serial']=$staff_serial;
 				$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの出社を受け付けました。';
 				$target_item_array['res']='true';
 			}
@@ -165,7 +156,7 @@ class AdminController extends Controller
     {
         $user_serial=$request->target_serial;
 		//$user_serial_strtoupper= ;
-		Log::alert("user_serial=".$user_serial);
+		//Log::alert("user_serial=".$user_serial);
 		if(substr(strtoupper($user_serial), 0, 2)=="SF"){
 			$json=$this::staff_reception_manage(strtoupper($user_serial));
 		}else{
@@ -203,95 +194,11 @@ class AdminController extends Controller
 			}
 		}
 		echo $json;
-        /*
-		if(empty($StudentInf->email)){
-            //Log::alert('email=null');
-            $target_item_array['seated_type']='NoUser';
-            //$target_item_array['name_sei']=$StudentInf->name_sei;
-            //$target_item_array['name_mei']=$StudentInf->name_mei;
-            $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-            echo $json;
-            return;   
-        }
-		*/
-        //Log::alert('Auth check='.Auth::check());
-        //Log::alert('StudentInfSql->count='.$StudentInfSql->count());
-        //if($UserInfSql->count()>0){
-			/*
-            $UserInf=$UserInfSql->first();
-            $target_item_array['target_time']=date("Y-m-d H:i:s");
-            $target_item_array['target_date']=date("Y-m-d");
-            $target_item_array['User_serial']= $User_serial;
-            $target_item_array['from_email']=config('app.MAIL_FROM_ADDRESS');
-            $target_item_array['name_sei']=$UserInf->name_sei;
-            $target_item_array['name_mei']=$UserInf->name_mei;
-            $target_item_array['protector']=$UserInf->protector;
-            $target_item_array['email']=$UserInf->email;
-            $latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$User_serial)
-				->orderBy('visit_history_serial','desc')->first('visit_history_serial');
-			*/
-			/*
-			VisitHistory::create([
-				//'student_serial'=>$request->student_serial,
-				'serial_user'=>$user_serial,
-				'target_date'=>$target_item_array['target_date'],
-				'time_in'=>$target_item_array['target_time'],
-				'student_name'=>$StudentInf->name_sei.' '.$StudentInf->name_mei,
-				'student_name_kana'=>$StudentInf->name_sei_kana.' '.$StudentInf->name_mei_kana,
-				'to_mail_address'=>$StudentInf->email,
-				'from_mail_address'=>$target_item_array['from_email'],
-			]);
-
-			$create_target_history_sql=VisitHistory::where('serial_user','=',$user_serial)
-                        ->where('target_date','=',date("Y-m-d"))
-                        ->whereNull('time_out')
-                        ->orderBy('id', 'desc');
-            if($serch_target_history_sql->count()>0){
-                $serch_target_history_array=$serch_target_history_sql->first();
-                $time_in= $serch_target_history_array->time_in;
-                $interval=self::time_diff($time_in, $target_item_array['target_time']);
-                if($interval<300){
-                    $target_item_array['seated_type']='false';
-                    $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-                    echo $json;
-                }else{
-                    $target_item_array['seated_type']='out';
-                    $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-                    echo $json;
-                    $inOutHistory = InOutHistory::find($serch_target_history_array->id);
-                    $inOutHistory->update([
-                        "time_out" => $target_item_array['target_time'],
-                    ]);
-                }
-            }else{
-                $target_item_array['seated_type']='in';
-                $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-                echo $json;
-                InOutHistory::create([
-                    //'student_serial'=>$request->student_serial,
-                    'student_serial'=>$student_serial,
-                    'target_date'=>$target_item_array['target_date'],
-                    'time_in'=>$target_item_array['target_time'],
-                    'student_name'=>$StudentInf->name_sei.' '.$StudentInf->name_mei,
-                    'student_name_kana'=>$StudentInf->name_sei_kana.' '.$StudentInf->name_mei_kana,
-                    'to_mail_address'=>$StudentInf->email,
-                    'from_mail_address'=>$target_item_array['from_email'],
-                ]);
-            }
-         }else{
-            $target_item_array['seated_type']='No Record';
-            $json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-            echo $json;
-        }
-		*/
-        //echo session('seated_type');
-        //echo json_encode($res);
-        //return view('admin.StandbyDisplay');
     }
 
 	public function update_setting(Request $request)
     {
-        Log::info($request);
+        //Log::info($request);
 
 		$configration_all_array=configration::all();
         foreach($configration_all_array as $configration_array){
@@ -300,31 +207,7 @@ class AdminController extends Controller
                     ->update(['value1' => $_POST[$configration_array['subject']]]);
             }
         }
-		/*
-		$configration_all=Configration::all();
-		
-        foreach($configration_all as $configration){
-            $configration_array[$configration['subject']]=$configration['value1'];
-        }
-		*/
-		/*
-        $msg="送信しました。";
-        $configration_all_array=configration::all();
-        foreach($configration_all_array as $configration){
-            $configration_array[$configration['subject']]=$configration['value1'];
-            $msg="登録しました。";
-        }
-        if(isset($request->SendMsgInBtn)){
-            $this->send_test_mail("MsgIn");
-            $msg="送信しました。";
-        }else if(isset($request->SendMsgOutBtn)){
-            $this->send_test_mail("MsgOut");
-            $msg="送信しました。";
-        }else if(isset($request->SendMsgTestBtn)){
-            $this->send_test_mail("MsgTest");
-            $msg="送信しました。";
-        }
-		*/
+
 		//self::show_setting();
 		//$msg="登録しました。";
         //return view('admin.Setting',compact("configration_array"))->with('success',$msg);
@@ -346,6 +229,17 @@ class AdminController extends Controller
 		//Log::info($configration_array);
         return view('admin.Setting',compact("configration_array"));
     }
+
+	public function ShowStaffStandbyDisplay(){
+		if (empty($_SERVER['HTTPS'])) {
+			$ht_type='http://';
+		} else {
+			$ht_type='https://';			
+		}
+		$host_url=$_SERVER['HTTP_HOST'];
+		session(['target_serial' => ""]);
+		return view('admin.StaffReceptionStandByDisplayJQ',compact('host_url'));
+	}
 
 	public function ShowCustomerStandbyDisplay(){
 		if (empty($_SERVER['HTTPS'])) {
@@ -1268,7 +1162,7 @@ class AdminController extends Controller
 	function insertContract(Request $request){
 		$motourl = $_SERVER['HTTP_REFERER'];
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		$kyo=date("Y/m/d H:i:s");
+		$kyo=date("Y-m-d H:i:s");
 		Storage::append('errorCK.txt', $kyo." / ".$motourl);
 		$targetData=array();
 		$how_many_pay_card=1;$how_many_pay_card="";

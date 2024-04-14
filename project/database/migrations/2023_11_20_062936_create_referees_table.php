@@ -14,6 +14,11 @@ return new class extends Migration
         Schema::create('referees', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
+            $table->string('introducer',10)->nullable()->comment('紹介した人のシリアル');
+            $table->string('referred',10)->nullable()->comment('紹介された人');
+            $table->string('point',6)->nullable()->comment('取得ポイント');
+
         });
     }
 

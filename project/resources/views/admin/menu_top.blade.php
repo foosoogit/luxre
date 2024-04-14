@@ -57,7 +57,7 @@
 							</li>
 							<li>
 								<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">顧客受付・スタッフ入社受付</button>
+									<button class="btn btn-primary btn-sm" type="submit">顧客受付待ち受け</button>
 								</form>
 							</li>
 							<li>
@@ -118,6 +118,14 @@
 								</form>
 							</li>
 							<div class="row">
+								<div class="col-auto">
+									<li> 
+										{{--<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf   --}}
+										<form method="GET" action="{{ route('admin.StaffStandbyDisplay.get') }}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">スタッフ入退社受付待ち受け</button>
+										</form>
+									</li>
+								</div>
 								<div class="col-auto">
 									<li>
 										<form method="GET" action="{{ route('StaffsList.show') }}">@csrf
