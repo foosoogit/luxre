@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('target_date',10)->comment('日付');
             $table->string('time_in',20)->comment('入出時間');
             $table->string('time_out',20)->nullable()->comment('退出時間');
-            $table->string('target_name',50)->comment('氏名');
+            $table->string('target_name',50)->nullable()->comment('氏名');
             $table->string('staff_name_kana',50)->nullable()->comment('しめい');
             $table->string('to_mail_address',200)->nullable()->comment('送り先メールアドレス');
             $table->string('from_mail_address',50)->nullable()->comment('送り元メールアドレス');

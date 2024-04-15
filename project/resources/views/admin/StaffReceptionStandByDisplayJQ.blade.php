@@ -24,7 +24,7 @@
 				<div class="col"> 
 					<p id="RealtimeClockArea" class="display-3 lead"></p>
 				</div>
-				<div class="row height:25rem" style="width: 30rem;"><mark class="mark3">スタッフ入退社受付画面</mark></div>
+				<div class="row height:25rem" style="width: 30rem;"><mark class="mark3">スタッフ入出勤受付画面</mark></div>
                 <div class="row">
 					<div class="col">
                         <label>QRコードの読み込み</label>

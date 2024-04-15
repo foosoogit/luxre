@@ -122,14 +122,14 @@
 									<li> 
 										{{--<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf   --}}
 										<form method="GET" action="{{ route('admin.StaffStandbyDisplay.get') }}">@csrf
-											<button class="btn btn-primary btn-sm" type="submit">スタッフ入退社受付待ち受け</button>
+											<button class="btn btn-primary btn-sm" type="submit">スタッフ入出勤受付待ち受け</button>
 										</form>
 									</li>
 								</div>
 								<div class="col-auto">
 									<li>
-										<form method="GET" action="{{ route('StaffsList.show') }}">@csrf
-											<button class="btn btn-primary btn-sm" type="submit">スタッフ出勤履歴</button>
+										<form method="GET" action="{{ route('admin.show_staff_in_out_rireki.get') }}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">スタッフ入出勤履歴</button>
 										</form>
 									</li>
 								</div>

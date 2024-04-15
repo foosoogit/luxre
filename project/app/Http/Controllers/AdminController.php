@@ -39,16 +39,16 @@ class AdminController extends Controller
 	
 	private function staff_receipt_set_manage($item_array){
   		//$new_visit_history_serial=$item_array["visit_history_serial"]."-".date('Y-m-d');
-		Log::alert("staff_serial=".$item_array['staff_serial']);
+		//Log::alert("staff_serial=".$item_array['staff_serial']);
 		$nyuusya_ck_cnt= InOutHistory::where("target_serial","=",$item_array['staff_serial'])
 			->where("target_date","=",date('Y-m-d'))->count();
-		Log::alert("nyuusya_ck_cnt=".$nyuusya_ck_cnt);
+		//Log::alert("nyuusya_ck_cnt=".$nyuusya_ck_cnt);
 		if($nyuusya_ck_cnt==0){
 			InOutHistory::insert([
 				'target_serial' => $item_array["user_serial"],
 				'target_date' => date('Y-m-d'),
 				'time_in' => date('Y-m-d H:i:s'),
-				//'target_name'=>
+				'target_name'=>$item_array["name"],
 				'created_at'=> date('Y-m-d H:i:s'),
 				'updated_at'=> date('Y-m-d H:i:s'),
 			]);
@@ -123,7 +123,7 @@ class AdminController extends Controller
     }
 
 	private function staff_reception_manage($staff_serial){
-		Log::alert("staff_serial=".$staff_serial);
+		//Log::alert("staff_serial=".$staff_serial);
 		$staff_inf=Staff::where("serial_staff","=",$staff_serial)->first();
 		$latest_in_out_history_id=InOutHistory::where("target_serial","=",$staff_serial)
 				->orderBy('id','desc')->first('id');
@@ -137,15 +137,19 @@ class AdminController extends Controller
 		}else{
 			$ck_jyufuku=InOutHistory::where("target_serial","=",$staff_serial)
 				->where("target_date","=",date('Y-m-d'))->count();
+			$target_item_array['name']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji;
 			if($ck_jyufuku>0){
-				$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの本日の退社を受け付けました。';
+				$target_item_array['msg']=$target_item_array['name'].' さんの本日の退勤を受け付けました。';
+				//$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの本日の退社を受け付けました。';
 				//$target_item_array['res']='double registration';
 				$target_item_array['res']='true';
 			}else{
 				//$target_item_array['visit_history_serial']=$staff_serial;
-				$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの出社を受け付けました。';
+				$target_item_array['msg']=$target_item_array['name'].' さんの本日の出勤を受け付けました。';
+				//$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの出社を受け付けました。';
 				$target_item_array['res']='true';
 			}
+			
 			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
 			//echo $json;
 		}

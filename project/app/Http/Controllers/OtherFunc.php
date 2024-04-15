@@ -264,6 +264,21 @@ class OtherFunc extends Controller
 		return $htm_year_slct;
 	}
 
+	public static function make_html_staff_inout_slct($targetStaffSerial){
+		$htm_staff_slct="";
+		$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm">';
+		$htm_staff_slct.='<option value="">すべて</option>';
+		//$staff_array=Staff::all();
+		$staff_array=DB::table('staff')->get();
+		foreach($staff_array as $staff) {
+			$sct='';
+			if($staff->serial_staff==$targetStaffSerial){$sct='Selected';}
+			$htm_staff_slct.='<option value="'.$staff->serial_staff.'" '.$sct.'>'.$staff->last_name_kanji.' '.$staff->first_name_kanji.'</option>';
+		}
+		$htm_staff_slct.='</select>';
+		return $htm_staff_slct;
+	}
+
 	public static function make_html_staff_slct($targetStaffSerial){
 		$htm_staff_slct="";
 		$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm">';
