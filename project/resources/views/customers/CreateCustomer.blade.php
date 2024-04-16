@@ -35,8 +35,12 @@ input,textarea{
 						<p><div class="mb-2 bg-secondary text-white">新規顧客登録</div> </p>
 						<p>顧客番号<input type="text" name="serial_user" value="{{$target_user['serial_user']}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" readonly></p>	
 					@endif
+					<div class="col-auto">
+						取得ポイント<input type="text" name="name_sei_kana" id="name_sei_kana" readonly value="{{$target_user->point}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="3"><span id="name_sei_kana_for_error" class="text-danger fw-bold"></span>
+					</div>
 					<p><span class="text-danger">*</span><span class="font-semibold text-1xl text-slate-600">: 必須項目</span></p>
 					<p style="py-2.5">●<span class="text-danger">*</span>入会日<input name="AdmissionDate" id="AdmissionDate" type="date" value="{{optional($target_user)->admission_date}}" required autofocus/><span id="AdmissionDate_for_error" class="text-danger fw-bold"></span></p>
+					
 					<p class="py-2.5">●氏名</p>
 					<div class="row" style="text-indent: 1em">
 						<div class="col-auto">
@@ -58,9 +62,7 @@ input,textarea{
 						</div>
 					</div>
 					<div class="row" style="text-indent: 1em">
-						<div class="col-auto">
-							取得ポイント<input type="text" name="name_sei_kana" id="name_sei_kana" readonly value="{{$target_user->point)}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="3"><span id="name_sei_kana_for_error" class="text-danger fw-bold"></span>
-						</div>
+						
 						<div class="col-auto">
 							{{-- <p style="text-indent:20px"> --}}
 							<span class="text-danger">*</span>めい<input type="text" name="name_mei_kana" id="name_mei_kana" value="{{old('name_mei_kana',optional($target_user)->name_mei_kana)}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="4"><span id="name_mei_kana_for_error" class="text-danger fw-bold"></span>
