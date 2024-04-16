@@ -188,5 +188,4 @@ return [
         // 'Example' => App\Facades\Example::class,
         //'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ])->toArray(),
-
 ];
