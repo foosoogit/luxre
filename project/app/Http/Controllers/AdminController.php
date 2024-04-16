@@ -40,10 +40,10 @@ class AdminController extends Controller
 	private function staff_receipt_set_manage($item_array){
   		//$new_visit_history_serial=$item_array["visit_history_serial"]."-".date('Y-m-d');
 		//Log::alert("staff_serial=".$item_array['staff_serial']);
-		$nyuusya_ck_cnt= InOutHistory::where("target_serial","=",$item_array['staff_serial'])
-			->where("target_date","=",date('Y-m-d'))->count();
+		//$nyuusya_ck_cnt= InOutHistory::where("target_serial","=",$item_array['staff_serial'])
+		//	->where("target_date","=",date('Y-m-d'))->count();
 		//Log::alert("nyuusya_ck_cnt=".$nyuusya_ck_cnt);
-		if($nyuusya_ck_cnt==0){
+		if($item_array['in_out_type']=='出勤'){
 			InOutHistory::insert([
 				'target_serial' => $item_array["user_serial"],
 				'target_date' => date('Y-m-d'),
@@ -52,7 +52,7 @@ class AdminController extends Controller
 				'created_at'=> date('Y-m-d H:i:s'),
 				'updated_at'=> date('Y-m-d H:i:s'),
 			]);
-		}else if($nyuusya_ck_cnt>0){
+		}else if($item_array['in_out_type']=='退勤'){
 			InOutHistory::where("target_serial","=",$item_array['staff_serial'])
 				->where("target_date","=",date('Y-m-d'))
 				->update([
@@ -133,11 +133,27 @@ class AdminController extends Controller
 			$target_item_array['msg']='スタッフのご登録が見つかりません。';
 			$target_item_array['res']='no serial';
 			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-			//echo $json;
 		}else{
+			$target_item_array['res']='true';
 			$ck_jyufuku=InOutHistory::where("target_serial","=",$staff_serial)
-				->where("target_date","=",date('Y-m-d'))->count();
+				->where("target_date","=",date('Y-m-d'))
+				->orderBy('id','desc');
+			$rec_cnt=$ck_jyufuku->count();
 			$target_item_array['name']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji;
+			
+			if($rec_cnt==0){
+				$target_item_array['in_out_type']="出勤";
+			}else{
+				$in_out_inf=$ck_jyufuku->first();
+				if(empty($in_out_inf->time_out)){
+					$target_item_array['in_out_type']="退勤";
+					$target_item_array['target_id']=$latest_in_out_history_id;
+				}else{
+					$target_item_array['in_out_type']="出勤";
+				}
+			}
+			$target_item_array['msg']=$target_item_array['name'].' さんの'.$target_item_array['in_out_type'].'を受け付けました。';
+			/*
 			if($ck_jyufuku>0){
 				$target_item_array['msg']=$target_item_array['name'].' さんの本日の退勤を受け付けました。';
 				//$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの本日の退社を受け付けました。';
@@ -149,9 +165,8 @@ class AdminController extends Controller
 				//$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの出社を受け付けました。';
 				$target_item_array['res']='true';
 			}
-			
+			*/
 			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-			//echo $json;
 		}
 		return $json;
 	}
