@@ -38,7 +38,6 @@ class AdminController extends Controller
 	}
 	
 	private function staff_receipt_set_manage($item_array){
-  		//$new_visit_history_serial=$item_array["visit_history_serial"]."-".date('Y-m-d');
 		//$nyuusya_ck_cnt= InOutHistory::where("target_serial","=",$item_array['staff_serial'])
 		//	->where("target_date","=",date('Y-m-d'))->count();
 		if($item_array['in_out_type']=='出勤'){
