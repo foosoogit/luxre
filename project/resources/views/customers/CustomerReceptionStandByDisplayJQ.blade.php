@@ -77,6 +77,7 @@
 				}).done(function (data) {
 					const item_json = JSON.parse(data);
 					document.getElementById("name_fadeout_alert").style.display="";
+					console.log("res="+item_json.res);
 					if(item_json.res=="no serial"){
 						audio_false.play();
 						document.getElementById("seated_type").style.display="";

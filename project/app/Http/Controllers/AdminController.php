@@ -84,7 +84,7 @@ class AdminController extends Controller
 				'serial_keiyaku' => $item_array["contract_serial"],
 				'serial_user' => $item_array["user_serial"],
 				'date_visit' => date('Y-m-d'),
-				'point' => initConsts::UserPointVisit(),
+				//'point' => initConsts::UserPointVisit(),
 				'created_at'=> date('Y-m-d H:i:s'),
 				'updated_at'=> date('Y-m-d H:i:s'),
 			]);
@@ -141,6 +141,15 @@ class AdminController extends Controller
 			if($rec_cnt==0){
 				$target_item_array['in_out_type']="出勤";
 			}else{
+				//$in_out_inf=$ck_jyufuku->first();
+				$target_item_array['in_out_type']="退勤";
+				$target_item_array['target_id']=$latest_in_out_history_id;
+			}
+			/*	
+				if(empty($in_out_inf->time_out)){
+					$target_item_array['in_out_type']="退勤";
+					$target_item_array['target_id']=$latest_in_out_history_id;
+				}else{
 				$in_out_inf=$ck_jyufuku->first();
 				if(empty($in_out_inf->time_out)){
 					$target_item_array['in_out_type']="退勤";
@@ -149,6 +158,7 @@ class AdminController extends Controller
 					$target_item_array['in_out_type']="出勤";
 				}
 			}
+			*/
 			$target_item_array['msg']=$target_item_array['name'].' さんの'.$target_item_array['in_out_type'].'を受け付けました。';
 			/*
 			if($ck_jyufuku>0){
@@ -182,6 +192,7 @@ class AdminController extends Controller
 			$latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$user_serial)
 					->orderBy('visit_history_serial','desc')->first('visit_history_serial');
 			$target_item_array['user_serial']=$user_serial;
+			log::alert('empty='.empty($user_inf));
 			if(empty($user_inf)){
 				$target_item_array['msg']='お客様のご登録が見つかりません。';
 				$target_item_array['res']='no serial';
@@ -1006,7 +1017,7 @@ class AdminController extends Controller
 					'serial_staff'=>Auth::user()->serial_staff,
 					'date_visit'=>$visitDateValue,
 					'treatment_dtails'=>$request->TreatmentDetailsSelect[$i],
-					'point'=>$request->point[$i],
+					//'point'=>$request->point[$i],
 					'deleted_at'=>null
 				];
 				VisitHistory::where('visit_history_serial','=', $VisitHistorySerial)->restore();

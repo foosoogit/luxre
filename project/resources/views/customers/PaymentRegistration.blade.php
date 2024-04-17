@@ -180,23 +180,23 @@ table td {border: 1px solid #aaa;}
 							8回<button name="count_btn" type="submit" value="08" formaction="{{ route('customers.ShowMedicalRecord') }}" formtarget="_blank" class="btn btn-outline-primary btn-sm" {{$visit_disabeled[7]}}>カルテ</button>
 						</td>
 					</tr>
-					<tr>
+					<tr>{{--  --}}
 						<td {!!$set_gray_array[0]!!}>
-						<input name="visitDate[]" id="visitDateId[0]" type="date" value="{{optional($VisitDateArray)[0]}}" {!!$set_gray_array[0]!!} {{$visit_disabeled[0]}}/>&nbsp;Point<input name="point[]" id="point[0]" type="text" size="3" value="{{optional($PointArray)[0]}}" {!!$set_gray_array[0]!!} {{$visit_disabeled[0]}}/></td>
+						<input name="visitDate[]" id="visitDateId[0]" type="date" value="{{optional($VisitDateArray)[0]}}" {!!$set_gray_array[0]!!} {{$visit_disabeled[0]}}/>{{--&nbsp;Point<input name="point[]" id="point[0]" type="text" size="3" value="{{optional($PointArray)[0]}}" {!!$set_gray_array[0]!!} {{$visit_disabeled[0]}}/>--}}</td>
 						<td {!!$set_gray_array[1]!!}>
-						<input name="visitDate[]" id="visitDateId[1]" type="date" value="{{optional($VisitDateArray)[1]}}" {!!$set_gray_array[1]!!} {{$visit_disabeled[1]}}/>&nbsp;Point<input name="point[]" id="point[1]" type="text" size="3" value="{{optional($PointArray)[1]}}" {!!$set_gray_array[1]!!} {{$visit_disabeled[1]}}/></td>
+						<input name="visitDate[]" id="visitDateId[1]" type="date" value="{{optional($VisitDateArray)[1]}}" {!!$set_gray_array[1]!!} {{$visit_disabeled[1]}}/>{{--&nbsp;Point<input name="point[]" id="point[1]" type="text" size="3" value="{{optional($PointArray)[1]}}" {!!$set_gray_array[1]!!} {{$visit_disabeled[1]}}/>--}}</td>
 						<td {!!$set_gray_array[2]!!}>
-						<input name="visitDate[]" id="visitDateId[2]" type="date" value="{{optional($VisitDateArray)[2]}}" {!!$set_gray_array[2]!!} {{$visit_disabeled[2]}}/>&nbsp;Point<input name="point[]" id="point[2]" type="text" size="3" value="{{optional($PointArray)[2]}}" {!!$set_gray_array[2]!!} {{$visit_disabeled[2]}}/></td>
+						<input name="visitDate[]" id="visitDateId[2]" type="date" value="{{optional($VisitDateArray)[2]}}" {!!$set_gray_array[2]!!} {{$visit_disabeled[2]}}/>{{--&nbsp;Point<input name="point[]" id="point[2]" type="text" size="3" value="{{optional($PointArray)[2]}}" {!!$set_gray_array[2]!!} {{$visit_disabeled[2]}}/>--}}</td>
 						<td {!!$set_gray_array[3]!!}>
-						<input name="visitDate[]" id="visitDateId[3]" type="date" value="{{optional($VisitDateArray)[3]}}" {!!$set_gray_array[3]!!} {{$visit_disabeled[3]}}/>&nbsp;Point<input name="point[]" id="point[3]" type="text" size="3" value="{{optional($PointArray)[3]}}" {!!$set_gray_array[3]!!} {{$visit_disabeled[3]}}/></td>
+						<input name="visitDate[]" id="visitDateId[3]" type="date" value="{{optional($VisitDateArray)[3]}}" {!!$set_gray_array[3]!!} {{$visit_disabeled[3]}}/>{{--&nbsp;Point<input name="point[]" id="point[3]" type="text" size="3" value="{{optional($PointArray)[3]}}" {!!$set_gray_array[3]!!} {{$visit_disabeled[3]}}/>--}}</td>
 						<td {!!$set_gray_array[4]!!}>
-						<input name="visitDate[]" id="visitDateId[4]" type="date" value="{{optional($VisitDateArray)[4]}}" {!!$set_gray_array[4]!!} {{$visit_disabeled[4]}}/>&nbsp;Point<input name="point[]" id="point[4]" type="text" size="3" value="{{optional($PointArray)[4]}}" {!!$set_gray_array[4]!!} {{$visit_disabeled[4]}}/></td>
+						<input name="visitDate[]" id="visitDateId[4]" type="date" value="{{optional($VisitDateArray)[4]}}" {!!$set_gray_array[4]!!} {{$visit_disabeled[4]}}/>{{--&nbsp;Point<input name="point[]" id="point[4]" type="text" size="3" value="{{optional($PointArray)[4]}}" {!!$set_gray_array[4]!!} {{$visit_disabeled[4]}}/>--}}</td>
 						<td {!!$set_gray_array[5]!!}>
-						<input name="visitDate[]" id="visitDateId[5]" type="date" value="{{optional($VisitDateArray)[5]}}" {!!$set_gray_array[5]!!} {{$visit_disabeled[5]}}/>&nbsp;Point<input name="point[]" id="point[5]" type="text" size="3" value="{{optional($PointArray)[5]}}" {!!$set_gray_array[5]!!} {{$visit_disabeled[5]}}/></td>
+						<input name="visitDate[]" id="visitDateId[5]" type="date" value="{{optional($VisitDateArray)[5]}}" {!!$set_gray_array[5]!!} {{$visit_disabeled[5]}}/>{{--&nbsp;Point<input name="point[]" id="point[5]" type="text" size="3" value="{{optional($PointArray)[5]}}" {!!$set_gray_array[5]!!} {{$visit_disabeled[5]}}/>--}}</td>
 						<td {!!$set_gray_array[6]!!}>
-						<input name="visitDate[]" id="visitDateId[6]" type="date" value="{{optional($VisitDateArray)[6]}}" {!!$set_gray_array[6]!!} {{$visit_disabeled[6]}}/>&nbsp;Point<input name="point[]" id="point[6]" type="text" size="3" value="{{optional($PointArray)[6]}}" {!!$set_gray_array[6]!!} {{$visit_disabeled[6]}}/></td>
+						<input name="visitDate[]" id="visitDateId[6]" type="date" value="{{optional($VisitDateArray)[6]}}" {!!$set_gray_array[6]!!} {{$visit_disabeled[6]}}/>{{--&nbsp;Point<input name="point[]" id="point[6]" type="text" size="3" value="{{optional($PointArray)[6]}}" {!!$set_gray_array[6]!!} {{$visit_disabeled[6]}}/>--}}</td>
 						<td {!!$set_gray_array[7]!!}>
-						<input name="visitDate[]" id="visitDateId[7]" type="date" value="{{optional($VisitDateArray)[7]}}" {!!$set_gray_array[7]!!} {{$visit_disabeled[7]}}/>&nbsp;Point<input name="point[]" id="point[7]" type="text" size="3" value="{{optional($PointArray)[7]}}" {!!$set_gray_array[7]!!} {{$visit_disabeled[7]}}/></td>
+						<input name="visitDate[]" id="visitDateId[7]" type="date" value="{{optional($VisitDateArray)[7]}}" {!!$set_gray_array[7]!!} {{$visit_disabeled[7]}}/>{{--&nbsp;Point<input name="point[]" id="point[7]" type="text" size="3" value="{{optional($PointArray)[7]}}" {!!$set_gray_array[7]!!} {{$visit_disabeled[7]}}/>--}}</td>
 					</tr>
 					<tr>
 						<td {!!$set_gray_array[0]!!}>
@@ -255,54 +255,46 @@ table td {border: 1px solid #aaa;}
 					</tr>
 					<tr>
 						<td {!!$set_gray_array[8]!!}>
-						<input name="visitDate[]" id="visitDateId[8]" type="date" value="{{optional($VisitDateArray)[8]}}" {!!$set_gray_array[8]!!} {{$visit_disabeled[8]}}/>&nbsp;Point<input name="point[]" id="point[8]" type="text" size="3" value="{{optional($PointArray)[8]}}" {!!$set_gray_array[8]!!} {{$visit_disabeled[8]}}/></td>
+						<input name="visitDate[]" id="visitDateId[8]" type="date" value="{{optional($VisitDateArray)[8]}}" {!!$set_gray_array[8]!!} {{$visit_disabeled[8]}}/>{{--&nbsp;Point<input name="point[]" id="point[8]" type="text" size="3" value="{{optional($PointArray)[8]}}" {!!$set_gray_array[8]!!} {{$visit_disabeled[8]}}/>--}}</td>
 						<td {!!$set_gray_array[9]!!}>
-						<input name="visitDate[]" id="visitDateId[9]" type="date" value="{{optional($VisitDateArray)[9]}}" {!!$set_gray_array[9]!!} {{$visit_disabeled[9]}}/>&nbsp;Point<input name="point[]" id="point[9]" type="text" size="3" value="{{optional($PointArray)[9]}}" {!!$set_gray_array[9]!!} {{$visit_disabeled[9]}}/></td>
+						<input name="visitDate[]" id="visitDateId[9]" type="date" value="{{optional($VisitDateArray)[9]}}" {!!$set_gray_array[9]!!} {{$visit_disabeled[9]}}/>{{--&nbsp;Point<input name="point[]" id="point[9]" type="text" size="3" value="{{optional($PointArray)[9]}}" {!!$set_gray_array[9]!!} {{$visit_disabeled[9]}}/>--}}</td>
 						<td {!!$set_gray_array[10]!!}>
-						<input name="visitDate[]" id="visitDateId[10]" type="date" value="{{optional($VisitDateArray)[10]}}" {!!$set_gray_array[10]!!} {{$visit_disabeled[10]}}/>&nbsp;Point<input name="point[]" id="point[10]" type="text" size="3" value="{{optional($PointArray)[10]}}" {!!$set_gray_array[10]!!} {{$visit_disabeled[10]}}/></td>
+						<input name="visitDate[]" id="visitDateId[10]" type="date" value="{{optional($VisitDateArray)[10]}}" {!!$set_gray_array[10]!!} {{$visit_disabeled[10]}}/>{{--&nbsp;Point<input name="point[]" id="point[10]" type="text" size="3" value="{{optional($PointArray)[10]}}" {!!$set_gray_array[10]!!} {{$visit_disabeled[10]}}/>--}}</td>
 						<td {!!$set_gray_array[11]!!}>
-						<input name="visitDate[]" id="visitDateId[11]" type="date" value="{{optional($VisitDateArray)[11]}}" {!!$set_gray_array[11]!!} {{$visit_disabeled[11]}}/>&nbsp;Point<input name="point[]" id="point[11]" type="text" size="3" value="{{optional($PointArray)[11]}}" {!!$set_gray_array[11]!!} {{$visit_disabeled[11]}}/></td>
+						<input name="visitDate[]" id="visitDateId[11]" type="date" value="{{optional($VisitDateArray)[11]}}" {!!$set_gray_array[11]!!} {{$visit_disabeled[11]}}/>{{--&nbsp;Point<input name="point[]" id="point[11]" type="text" size="3" value="{{optional($PointArray)[11]}}" {!!$set_gray_array[11]!!} {{$visit_disabeled[11]}}/>--}}</td>
 						<td {!!$set_gray_array[12]!!}>
-						<input name="visitDate[]" id="visitDateId[12]" type="date" value="{{optional($VisitDateArray)[12]}}" {!!$set_gray_array[12]!!} {{$visit_disabeled[12]}}/>&nbsp;Point<input name="point[]" id="point[12]" type="text" size="3" value="{{optional($PointArray)[12]}}" {!!$set_gray_array[12]!!} {{$visit_disabeled[12]}}/></td>
+						<input name="visitDate[]" id="visitDateId[12]" type="date" value="{{optional($VisitDateArray)[12]}}" {!!$set_gray_array[12]!!} {{$visit_disabeled[12]}}/>{{--&nbsp;Point<input name="point[]" id="point[12]" type="text" size="3" value="{{optional($PointArray)[12]}}" {!!$set_gray_array[12]!!} {{$visit_disabeled[12]}}/>--}}</td>
 						<td {!!$set_gray_array[13]!!}>
-						<input name="visitDate[]" id="visitDateId[13]" type="date" value="{{optional($VisitDateArray)[13]}}" {!!$set_gray_array[13]!!} {{$visit_disabeled[13]}}/>&nbsp;Point<input name="point[]" id="point[13]" type="text" size="3" value="{{optional($PointArray)[13]}}" {!!$set_gray_array[13]!!} {{$visit_disabeled[13]}}/></td>
+						<input name="visitDate[]" id="visitDateId[13]" type="date" value="{{optional($VisitDateArray)[13]}}" {!!$set_gray_array[13]!!} {{$visit_disabeled[13]}}/>{{--&nbsp;Point<input name="point[]" id="point[13]" type="text" size="3" value="{{optional($PointArray)[13]}}" {!!$set_gray_array[13]!!} {{$visit_disabeled[13]}}/>--}}</td>
 						<td {!!$set_gray_array[14]!!}>
-						<input name="visitDate[]" id="visitDateId[14]" type="date" value="{{optional($VisitDateArray)[14]}}" {!!$set_gray_array[14]!!} {{$visit_disabeled[14]}}/>&nbsp;Point<input name="point[]" id="point[14]" type="text" size="3" value="{{optional($PointArray)[14]}}" {!!$set_gray_array[14]!!} {{$visit_disabeled[14]}}/></td>
+						<input name="visitDate[]" id="visitDateId[14]" type="date" value="{{optional($VisitDateArray)[14]}}" {!!$set_gray_array[14]!!} {{$visit_disabeled[14]}}/>{{--&nbsp;Point<input name="point[]" id="point[14]" type="text" size="3" value="{{optional($PointArray)[14]}}" {!!$set_gray_array[14]!!} {{$visit_disabeled[14]}}/>--}}</td>
 						<td {!!$set_gray_array[15]!!}>
-						<input name="visitDate[]" id="visitDateId[15]" type="date" value="{{optional($VisitDateArray)[15]}}" {!!$set_gray_array[15]!!} {{$visit_disabeled[15]}}/>&nbsp;Point<input name="point[]" id="point[15]" type="text" size="3" value="{{optional($PointArray)[15]}}" {!!$set_gray_array[15]!!} {{$visit_disabeled[15]}}/></td>
+						<input name="visitDate[]" id="visitDateId[15]" type="date" value="{{optional($VisitDateArray)[15]}}" {!!$set_gray_array[15]!!} {{$visit_disabeled[15]}}/>{{--&nbsp;Point<input name="point[]" id="point[15]" type="text" size="3" value="{{optional($PointArray)[15]}}" {!!$set_gray_array[15]!!} {{$visit_disabeled[15]}}/>--}}</td>
 					</tr>
 					<tr>
 						<td {!!$set_gray_array[8]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[8]}};">{!!$TreatmentDetailsSelectArray[8]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[8]}}" {!!$set_gray_array[8]!!} {{$visit_disabeled[8]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[9]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[9]}};">{!!$TreatmentDetailsSelectArray[9]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[9]}}" {!!$set_gray_array[9]!!} {{$visit_disabeled[9]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[10]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[10]}};">{!!$TreatmentDetailsSelectArray[10]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[10]}}" {!!$set_gray_array[10]!!} {{$visit_disabeled[10]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[11]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[11]}};">{!!$TreatmentDetailsSelectArray[11]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[11]}}" {!!$set_gray_array[11]!!} {{$visit_disabeled[11]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[12]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[12]}};">{!!$TreatmentDetailsSelectArray[12]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[12]}}" {!!$set_gray_array[12]!!} {{$visit_disabeled[12]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[13]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[13]}};">{!!$TreatmentDetailsSelectArray[13]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[13]}}" {!!$set_gray_array[13]!!} {{$visit_disabeled[13]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[14]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[14]}};">{!!$TreatmentDetailsSelectArray[14]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[14]}}" {!!$set_gray_array[14]!!} {{$visit_disabeled[14]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[15]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[15]}};">{!!$TreatmentDetailsSelectArray[15]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[15]}}" {!!$set_gray_array[15]!!} {{$visit_disabeled[15]}} placeholder="施術内容"/>--}}
 						</td>
 					</tr>
 					<tr>
@@ -320,54 +312,46 @@ table td {border: 1px solid #aaa;}
 					</tr>
 					<tr>
 						<td {!!$set_gray_array[16]!!}>
-						<input name="visitDate[]" id="visitDateId[16]" type="date" value="{{optional($VisitDateArray)[16]}}"  {!!$set_gray_array[16]!!} {{$visit_disabeled[16]}}/>&nbsp;Point<input name="point[]" id="point[16]" type="text" size="3" value="{{optional($PointArray)[16]}}" {!!$set_gray_array[16]!!} {{$visit_disabeled[16]}}/></td>
+						<input name="visitDate[]" id="visitDateId[16]" type="date" value="{{optional($VisitDateArray)[16]}}"  {!!$set_gray_array[16]!!} {{$visit_disabeled[16]}}/>{{--&nbsp;Point<input name="point[]" id="point[16]" type="text" size="3" value="{{optional($PointArray)[16]}}" {!!$set_gray_array[16]!!} {{$visit_disabeled[16]}}/>--}}</td>
 						<td {!!$set_gray_array[17]!!}>
-						<input name="visitDate[]" id="visitDateId[17]" type="date" value="{{optional($VisitDateArray)[17]}}"  {!!$set_gray_array[16]!!} {{$visit_disabeled[17]}}/>&nbsp;Point<input name="point[]" id="point[17]" type="text" size="3" value="{{optional($PointArray)[17]}}" {!!$set_gray_array[17]!!} {{$visit_disabeled[17]}}/></td>
+						<input name="visitDate[]" id="visitDateId[17]" type="date" value="{{optional($VisitDateArray)[17]}}"  {!!$set_gray_array[16]!!} {{$visit_disabeled[17]}}/>{{--&nbsp;Point<input name="point[]" id="point[17]" type="text" size="3" value="{{optional($PointArray)[17]}}" {!!$set_gray_array[17]!!} {{$visit_disabeled[17]}}/>--}}</td>
 						<td {!!$set_gray_array[18]!!}>
-						<input name="visitDate[]" id="visitDateId[18]" type="date" value="{{optional($VisitDateArray)[18]}}"  {!!$set_gray_array[16]!!} {{$visit_disabeled[18]}}/>&nbsp;Point<input name="point[]" id="point[18]" type="text" size="3" value="{{optional($PointArray)[18]}}" {!!$set_gray_array[18]!!} {{$visit_disabeled[18]}}/></td>
+						<input name="visitDate[]" id="visitDateId[18]" type="date" value="{{optional($VisitDateArray)[18]}}"  {!!$set_gray_array[16]!!} {{$visit_disabeled[18]}}/>{{--&nbsp;Point<input name="point[]" id="point[18]" type="text" size="3" value="{{optional($PointArray)[18]}}" {!!$set_gray_array[18]!!} {{$visit_disabeled[18]}}/>--}}</td>
 						<td {!!$set_gray_array[19]!!}>
-						<input name="visitDate[]" id="visitDateId[19]" type="date" value="{{optional($VisitDateArray)[19]}}"  {!!$set_gray_array[16]!!} {{$visit_disabeled[19]}}/>&nbsp;Point<input name="point[]" id="point[19]" type="text" size="3" value="{{optional($PointArray)[19]}}" {!!$set_gray_array[19]!!} {{$visit_disabeled[19]}}/></td>
+						<input name="visitDate[]" id="visitDateId[19]" type="date" value="{{optional($VisitDateArray)[19]}}"  {!!$set_gray_array[16]!!} {{$visit_disabeled[19]}}/>{{--&nbsp;Point<input name="point[]" id="point[19]" type="text" size="3" value="{{optional($PointArray)[19]}}" {!!$set_gray_array[19]!!} {{$visit_disabeled[19]}}/>--}}</td>
 						<td {!!$set_gray_array[20]!!}>
-						<input name="visitDate[]" id="visitDateId[20]" type="date" value="{{optional($VisitDateArray)[20]}}" {!!$set_gray_array[20]!!} {{$visit_disabeled[20]}}/>&nbsp;Point<input name="point[]" id="point[20]" type="text" size="3" value="{{optional($PointArray)[20]}}" {!!$set_gray_array[20]!!} {{$visit_disabeled[20]}}/></td>
+						<input name="visitDate[]" id="visitDateId[20]" type="date" value="{{optional($VisitDateArray)[20]}}" {!!$set_gray_array[20]!!} {{$visit_disabeled[20]}}/>{{--&nbsp;Point<input name="point[]" id="point[20]" type="text" size="3" value="{{optional($PointArray)[20]}}" {!!$set_gray_array[20]!!} {{$visit_disabeled[20]}}/>--}}</td>
 						<td {!!$set_gray_array[21]!!}>
-						<input name="visitDate[]" id="visitDateId[21]" type="date" value="{{optional($VisitDateArray)[21]}}" {!!$set_gray_array[21]!!} {{$visit_disabeled[21]}}/>&nbsp;Point<input name="point[]" id="point[21]" type="text" size="3" value="{{optional($PointArray)[21]}}" {!!$set_gray_array[21]!!} {{$visit_disabeled[21]}}/></td>
+						<input name="visitDate[]" id="visitDateId[21]" type="date" value="{{optional($VisitDateArray)[21]}}" {!!$set_gray_array[21]!!} {{$visit_disabeled[21]}}/>{{--&nbsp;Point<input name="point[]" id="point[21]" type="text" size="3" value="{{optional($PointArray)[21]}}" {!!$set_gray_array[21]!!} {{$visit_disabeled[21]}}/>--}}</td>
 						<td {!!$set_gray_array[22]!!}>
-						<input name="visitDate[]" id="visitDateId[22]" type="date" value="{{optional($VisitDateArray)[22]}}" {!!$set_gray_array[22]!!} {{$visit_disabeled[22]}}/>&nbsp;Point<input name="point[]" id="point[22]" type="text" size="3" value="{{optional($PointArray)[22]}}" {!!$set_gray_array[22]!!} {{$visit_disabeled[22]}}/></td>
+						<input name="visitDate[]" id="visitDateId[22]" type="date" value="{{optional($VisitDateArray)[22]}}" {!!$set_gray_array[22]!!} {{$visit_disabeled[22]}}/>{{--&nbsp;Point<input name="point[]" id="point[22]" type="text" size="3" value="{{optional($PointArray)[22]}}" {!!$set_gray_array[22]!!} {{$visit_disabeled[22]}}/>--}}</td>
 						<td {!!$set_gray_array[23]!!}>
-						<input name="visitDate[]" id="visitDateId[23]" type="date" value="{{optional($VisitDateArray)[23]}}" {!!$set_gray_array[23]!!} {{$visit_disabeled[23]}}/>&nbsp;Point<input name="point[]" id="point[23]" type="text" size="3" value="{{optional($PointArray)[23]}}" {!!$set_gray_array[23]!!} {{$visit_disabeled[23]}}/></td>
+						<input name="visitDate[]" id="visitDateId[23]" type="date" value="{{optional($VisitDateArray)[23]}}" {!!$set_gray_array[23]!!} {{$visit_disabeled[23]}}/>{{--&nbsp;Point<input name="point[]" id="point[23]" type="text" size="3" value="{{optional($PointArray)[23]}}" {!!$set_gray_array[23]!!} {{$visit_disabeled[23]}}/>--}}</td>
 					</tr>
 					<tr>
 						<td {!!$set_gray_array[16]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[16]}};">{!!$TreatmentDetailsSelectArray[16]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[16]}}" {!!$set_gray_array[16]!!} {{$visit_disabeled[16]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[17]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[17]}};">{!!$TreatmentDetailsSelectArray[17]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[17]}}" {!!$set_gray_array[17]!!} {{$visit_disabeled[17]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[18]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[18]}};">{!!$TreatmentDetailsSelectArray[18]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[18]}}" {!!$set_gray_array[18]!!} {{$visit_disabeled[18]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[19]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[19]}};">{!!$TreatmentDetailsSelectArray[19]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[19]}}" {!!$set_gray_array[19]!!} {{$visit_disabeled[19]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[20]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[20]}};">{!!$TreatmentDetailsSelectArray[20]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[20]}}" {!!$set_gray_array[20]!!} {{$visit_disabeled[20]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[21]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[21]}};">{!!$TreatmentDetailsSelectArray[21]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[21]}}" {!!$set_gray_array[21]!!} {{$visit_disabeled[21]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[22]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[22]}};">{!!$TreatmentDetailsSelectArray[22]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[22]}}" {!!$set_gray_array[22]!!} {{$visit_disabeled[22]}} placeholder="施術内容"/>--}}
 						</td>
 						<td {!!$set_gray_array[23]!!}>
 						<select name="TreatmentDetailsSelect[]" style="width:200px;background-color:{{$only_treatment_color_array[23]}};">{!!$TreatmentDetailsSelectArray[23]!!}</select>
-						{{--<input name="TreatmentDetails[]" type="Text" value="{{optional($TreatmentDetailsArray)[23]}}" {!!$set_gray_array[23]!!} {{$visit_disabeled[23]}} placeholder="施術内容"/>--}}
 						</td>
 					</tr>
 					<tr>
@@ -392,18 +376,12 @@ table td {border: 1px solid #aaa;}
 					<p style="text-align: center"><button class="btn btn-primary w-100 my-3" type="submit" name="KeiyakuSerialBtn" id="KeiyakuSerialBtn" onclick="return canceled_message();" style="background-color:gray">　　登　録　　</button></p>
 				@endif
 				</form>
-                        <p>郵便番号：{{ $targetUser->postal }}</p>
-                        <p>住所：{{ $targetUser->address }}</p>
-                        <p>メール：{{ $targetUser->email }}</p>
-                        <p>生年月日：{{ $targetUser->birthdate }}</p>
-                        <p>電話番号：{{$targetUser->phone }}</p>
-                {{--
-                 <button class="bg-blue-500 text-white rounded px-3 py-2" type="submit" formaction="../ShowInpContract/{{$targetUser->serial_user}}">新規契約</button>
-                <button class="bg-blue-500 text-white rounded px-3 py-2" type="submit" formaction="../ShowVisitHistory/{{$targetUser->serial_user}}">施術記録</button> 
-                <button class="bg-blue-500 text-white rounded px-3 py-2" type="submit" formaction="../ShowContractHistory/{{$targetUser->serial_user}}">契約履歴</button>
-                --}}
-                <!--</div>-->
-                </div>
+                <p>郵便番号：{{ $targetUser->postal }}</p>
+                <p>住所：{{ $targetUser->address }}</p>
+                <p>メール：{{ $targetUser->email }}</p>
+                <p>生年月日：{{ $targetUser->birthdate }}</p>
+                <p>電話番号：{{$targetUser->phone }}</p>
+            </div>
         </div>
     </div>
 @endsection

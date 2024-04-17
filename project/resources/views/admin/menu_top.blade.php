@@ -60,11 +60,21 @@
 									<button class="btn btn-primary btn-sm" type="submit">顧客受付待ち受け</button>
 								</form>
 							</li>
-							<li>
-								<form method="GET" action="/workers/ShowCampaigns">@csrf
-									<button class="btn btn-primary btn-sm" type="submit" disabled>キャンペーン</button>
-								</form>
-							</li>
+							<div class="row">
+								<div class="col-auto">
+									<li>
+										<form method="GET" action="/workers/ShowCampaigns">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">ポイント管理</button>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="GET" action="/workers/ShowCampaigns">@csrf
+											<button class="btn btn-primary btn-sm" type="submit" disabled>キャンペーン</button>
+										</form>
+									</li>
+								</div>
 							<li>
 								<a href="{{ route('admin.show_setting') }}" class="btn btn-primary btn-sm">環境設定</a>
 								{{-- 
@@ -83,6 +93,7 @@
 										</form>
 									</li>
 								</div>
+
 								<div class="col-auto">
 									<li>
 										<form method="POST" action="{{route('admin.MonthlyReport.post')}}">@csrf
