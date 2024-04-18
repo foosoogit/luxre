@@ -88,7 +88,7 @@ class AdminController extends Controller
 				'method' => "来店",
 				'date_get' => date('Y-m-d'),
 				'point' => initConsts::UserPointVisit(),
-				'visit_date' => date('Y-m-d'),
+				'visit_date' => date('Y-m-d H:i:s'),
 				//'referred_serial' => date('Y-m-d'),
 				'validity_flg' => "true",
 				'digestion_flg' => "false",
@@ -203,7 +203,7 @@ class AdminController extends Controller
 			$json=$this::staff_reception_manage(strtoupper($user_serial));
 		}else{
 			$user_inf=User::where("serial_user","=",$user_serial)->first();
-			Log::info($user_inf);
+			//Log::info($user_inf);
 			
 			$latest_contract_serial=Contract::where("serial_user","=",$user_serial)
 					->orderBy('serial_keiyaku','desc')->first('serial_keiyaku');
@@ -217,15 +217,16 @@ class AdminController extends Controller
 
 			$target_item_array['user_serial']=$user_serial;
 			if(empty($user_inf)){
-				Log::alert("empty=".empty($user_inf));
+				//Log::alert("empty=".empty($user_inf));
 				$target_item_array['msg']='お客様のご登録が見つかりません。';
 				$target_item_array['res']='no serial';
 				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
 				//echo $json;
 			}else{
-				Log::alert("no empty=".empty($user_inf));
+				//Log::alert("no empty=".empty($user_inf));
 				$ck_jyufuku=Point::where("serial_user","=",$user_serial)
-					->where("visit_date","=",date('Y-m-d'))->count();
+					->where("visit_date","LIKE",date('Y-m-d')."%")
+					->where("method","=","来店")->count();
 				if($ck_jyufuku>0){
 					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の本日の受付は済んでいます。';
 					$target_item_array['res']='double registration';
