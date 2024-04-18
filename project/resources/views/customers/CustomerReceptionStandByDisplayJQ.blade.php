@@ -99,7 +99,7 @@
 					document.getElementById('target_customer_serial_txt').value="";
 					document.getElementById('target_customer_serial_txt').focus();
 					data=null;
-					window.setTimeout(dispNone, 4000);
+					window.setTimeout(dispNone, 3000);
 				}).fail(function (XMLHttpRequest, textStatus, errorThrown) {
 					alert(XMLHttpRequest.status);
 					alert(textStatus);

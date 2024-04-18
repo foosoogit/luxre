@@ -72,11 +72,16 @@ Route::middleware('auth:admin')->group(function () {
             }, 'qr-code.png');
         });
         */
+
+        Route::get('/admin/show_point_list', function () {
+            return view('admin.TreatmentList');
+        })->name('TreatmentList.get');
+
+
         Route::get('/admin/GetEncryption', function () {
             return view('admin.GetEncryption');
         })->name('GetEncryption.get');
 
-        //Route::get('admin/GetEncryption', [AdminController::class,'update_setting'])->name('setting.update');
         Route::post('admin/setting_update', [AdminController::class,'update_setting'])->name('setting.update');
         Route::get('admin/show_setting',[AdminController::class,'show_setting'])->name('show_setting');
         Route::get('QRcode', function () {
@@ -89,20 +94,7 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::post('admin/send_QRcode_to_staff', [AdminController::class,'send_QRcode_to_staff'])->name("SendQRcodeToStaff.post");
 
-        //Route::post('admin/send_QRcode_to_staff', [AdminController::class,'GetQrImage'])->name("SendQRcodeToStaff.post");
-
-        //Route::post('send_mail_in_out', [AdminController::class,'send_mail_in_out'])->name("send_mail_in_out");
-        //Route::post('in_out_manage', [AdminController::class,'in_out_manage'])->name("in_out_manage");
-
         Route::get('admin/InOutStandbyDisplay', [AdminController::class,'ShowInOutStandbyDisplay'])->name("InOutStandbyDisplay.get");
-
-        /*
-        Route::get('admin/InOutStandbyDisplay', function(){
-            $host_url=$_SERVER['HTTP_REFERER'];
-            session(['target_serial' => ""]);
-            return view('admin.InOutStandbyDisplayJQ',compact('host_url'));
-        })->name('InOutStandbyDisplay.get');
-        */
         Route::post('/admin/saveTreatment/', [AdminController::class,'saveTreatment',function(Request $request){}])->name('saveTreatment.post');
 
         Route::get('/admin/InpTreatment/{TreatmentContentSerial}', [AdminController::class,'InpTreatment',function($TreatmentSerial){}])->name('InpTreatment.get');
@@ -152,14 +144,6 @@ Route::middleware('auth:admin')->group(function () {
         })->name('DailyReport.post');
     });
 
-    //Route::get('/admin/ShowDailyReport', [DailyReport::class])->name("ShowDailyReport");
-    /*
-    Route::post('/admin/ShowDailyReport', DailyReport::class);
-    Route::post('/admin/ShowDailyReport_from_monthly_report', DailyReport::class,function(Request $request){});
-    Route::get('/admin/ShowDailyReport_from_customers_List', DailyReport::class);
-    Route::post('/admin/ShowDailyReport_from_customers_List', DailyReport::class,function(Request $request){});
-    */
-    
     Route::controller(AdminController::class)->name('customers.')->group(function() {
         //Route::get('/customers/CustomerInfFromDayly/{target_user_serial}', [CustomersList::class,'search_from_top_menu'],function($target_user_serial){})->name("CustomerInfFromDayly");
     	//Route::post('/customers/ShowCustomersList_livewire_from_top_menu', CustomerSearch::class,function(Request $request){});
@@ -174,7 +158,6 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
 	    Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
-        //Route::post('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.post");
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
 	    
@@ -186,12 +169,7 @@ Route::middleware('auth:admin')->group(function () {
             return view('customers.ListCustomers');
         })->name('CustomersList.show.post');
 
-        //Route::post('/customers/CustomersList', [CustomerSearch::class,'ShowSyuseiCustomer',function(Request $request){});
-        
-       //Route::get('livewire/update/all', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
-
         Route::get('livewire/update', function () {
-            //Log::info($_SESSION['access_history']);
             if(str_contains($_SESSION['access_history'][0],"ContractList")){
                return view('customers.ListContract');
             }else{
@@ -199,23 +177,14 @@ Route::middleware('auth:admin')->group(function () {
             }
         });
 
-
-        //Route::post('/customers/CustomersList', [CustomersList::class,function(Request $request){}])->name("CustomersList.show.post");
-        /*
-        Route::post('/customers/CustomersList', function () {
-            return view('customers.ListCustomers');
-        })->name('CustomersList.show.post');
-        */
         Route::get('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
 	    Route::post('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
-
         Route::post('/customers/recordVisitPaymentHistory/', [AdminController::class,'recordVisitPaymentHistory',function(Request $request){}])->name("recordVisitPaymentHistory");
         Route::get('/customers/ShowInpRecordVisitPayment/{SerialKeiyaku}/{SerialUser}', [AdminController::class,'ShowInpRecordVisitPayment',function($SerialKeiyaku,$SerialUser){}])->name('ShowInpRecordVisitPayment.get');
 	    Route::post('/customers/ShowInpRecordVisitPayment', [AdminController::class,'ShowInpRecordVisitPayment']);
         Route::get('/customers/insertContract', [AdminController::class,'insertContract'])->name('insertContract');
         Route::post('/customers/insertContract', [AdminController::class,'insertContract'])->name('insertContract');
         Route::get('/customers/ShowInpContract/{serial_user}', [AdminController::class,'ShowInpKeiyaku'],function($serial_user){})->name('ShowInpKeiyaku');
-        //Route::get('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
         Route::post('/customers/getCustomerInf', [OtherFunc::class,'get_customer_inf'],function(Request $request){})->name('getCustomerInf');
         Route::get('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
         Route::post('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');

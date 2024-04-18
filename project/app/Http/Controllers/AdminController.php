@@ -23,6 +23,7 @@ use App\Http\Requests\InpCustomerRequest;
 use App\Http\Controllers\OtherFunc;
 use App\Consts\initConsts;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Models\Point;
 //use App\Consts\get_imagick_info;
 
 use Intervention\Image\Facades\Image;
@@ -65,8 +66,9 @@ class AdminController extends Controller
 			$item_array["staff_serial"]=$item_array["user_serial"];
 			$this::staff_receipt_set_manage($item_array);
 		}else{
-			$contract_array=explode("-", $item_array["contract_serial"]);
-			$contract_branch=$contract_array[1];
+			//$contract_array=explode("-", $item_array["contract_serial"]);
+			//$contract_branch=$contract_array[1];
+			/*
 			if(empty($item_array["visit_history_serial"])){
 				$visit_history_branch="";
 			}else{
@@ -79,6 +81,21 @@ class AdminController extends Controller
 			}else{
 				$new_visit_history_serial=$item_array["contract_serial"]."-01";
 			}
+			*/
+			Log::alert("user_serial=".$item_array["user_serial"]);
+			Point::insert([
+				'serial_user' => $item_array["user_serial"],
+				'method' => "来店",
+				'date_get' => date('Y-m-d'),
+				'point' => initConsts::UserPointVisit(),
+				'visit_date' => date('Y-m-d'),
+				//'referred_serial' => date('Y-m-d'),
+				'validity_flg' => "true",
+				'digestion_flg' => "false",
+				'created_at'=> date('Y-m-d H:i:s'),
+				'updated_at'=> date('Y-m-d H:i:s'),
+			]);
+			/*
 			VisitHistory::insert([
 				'visit_history_serial' => $new_visit_history_serial,
 				'serial_keiyaku' => $item_array["contract_serial"],
@@ -89,6 +106,7 @@ class AdminController extends Controller
 				'updated_at'=> date('Y-m-d H:i:s'),
 			]);
 			Contract::where('serial_keiyaku','=',$item_array["contract_serial"])->update(['date_latest_visit' =>date('Y-m-d')]);
+			*/
 		}
 		
 		/*
@@ -181,18 +199,51 @@ class AdminController extends Controller
 	public function customer_reception_manage(Request $request)
     {
         $user_serial=$request->target_serial;
-		//$user_serial_strtoupper= ;
-		//Log::alert("user_serial=".$user_serial);
 		if(substr(strtoupper($user_serial), 0, 2)=="SF"){
 			$json=$this::staff_reception_manage(strtoupper($user_serial));
 		}else{
 			$user_inf=User::where("serial_user","=",$user_serial)->first();
+			Log::info($user_inf);
+			
 			$latest_contract_serial=Contract::where("serial_user","=",$user_serial)
 					->orderBy('serial_keiyaku','desc')->first('serial_keiyaku');
+			$latest_point_id=Point::where("serial_user","=",$user_serial)
+					->orderBy('id','desc')->first('id');
+
+			/*
 			$latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$user_serial)
 					->orderBy('visit_history_serial','desc')->first('visit_history_serial');
+			*/
+
 			$target_item_array['user_serial']=$user_serial;
-			log::alert('empty='.empty($user_inf));
+			if(empty($user_inf)){
+				Log::alert("empty=".empty($user_inf));
+				$target_item_array['msg']='お客様のご登録が見つかりません。';
+				$target_item_array['res']='no serial';
+				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+				//echo $json;
+			}else{
+				Log::alert("no empty=".empty($user_inf));
+				$ck_jyufuku=Point::where("serial_user","=",$user_serial)
+					->where("visit_date","=",date('Y-m-d'))->count();
+				if($ck_jyufuku>0){
+					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の本日の受付は済んでいます。';
+					$target_item_array['res']='double registration';
+				}else{
+					//$target_item_array['contract_serial']=$latest_contract_serial->serial_keiyaku;
+					/*
+					if(empty($latest_point_id->id)){
+						$target_item_array['latest_point_id']="";	
+					}else{
+						$target_item_array['latest_point_id']=$latest_VisitHistory_serial->visit_history_serial;
+					}
+					*/
+					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様のご来店を受け付けました。';
+					$target_item_array['res']='true';
+				}
+				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+			}
+			/*
 			if(empty($user_inf)){
 				$target_item_array['msg']='お客様のご登録が見つかりません。';
 				$target_item_array['res']='no serial';
@@ -219,6 +270,7 @@ class AdminController extends Controller
 				}
 				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
 			}
+			*/
 		}
 		echo $json;
     }
