@@ -396,6 +396,7 @@ class AdminController extends Controller
 		//$header="";$slot="";
 		$selectedManth=array();$selectedManth=array();
 		$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
+		$referee=Point::where('referred_serial','=', $request->input('syusei_Btn'))->first();
 		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list($target_user->birth_year);
 		//$mnt="m".sprintf('%02d', $target_user->birth_month);
 		$selectedManth[(int)$target_user->birth_month]="Selected";
@@ -410,7 +411,8 @@ class AdminController extends Controller
 			//$GoBackPlace="/customers/ShowCustomersList";
 			$GoBackPlace="/customers/CustomersList";
 			//$GoBackPlace="/customers/ShowCustomersList";
-			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
+			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$referee->serial_user);
+			//$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
 
 		}else if(isset($request->fromMenu)){
 			//$GoBackPlace="/customers/ShowCustomersList_livewire";

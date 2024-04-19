@@ -11,41 +11,44 @@
 	}
 }
 
-function SerchRefereeInf(){
-	TargetSerial=document.getElementById("syokaisya_txt").value;;
-	//console.log("obj="+obj);
-	//console.log("TargetSerial="+TargetSerial);
-	$.ajax({
-		url: 'getCustomerInf',
-		type: 'post', // getかpostを指定(デフォルトは前者)
-		dataType: 'json', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
-		scriptCharset: 'utf-8',
-		frequency: 10,
-		cache: false,
-		async : false,
-		data: {'TargetSerial': TargetSerial},
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	}).done(function (data) {
-		var json = JSON.stringify(data);
-		var dt = JSON.parse(json);
-		if(dt['count'] == 0){
-			alert("登録されていません。");
-		}else{
-			alert("紹介者は "+dt["name_sei"]+" "+dt["name_mei"]+"さんです。");
-		}
-		//document.getElementById("selling_price").value=dt['SellingPrice'];
-	}) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
-		alert(XMLHttpRequest.status);
-		alert(textStatus);
-		alert(errorThrown);	
-		alert('エラー');
-	});
+function SerchRefereeInf(obj){
+	//console.log("value="+obj.value);
+	//console.log("length="+obj.value.length);
+	if(obj.value.length==6){
+		$.ajax({
+			url: 'getCustomerInf',
+			type: 'post', // getかpostを指定(デフォルトは前者)
+			dataType: 'json', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
+			scriptCharset: 'utf-8',
+			frequency: 10,
+			cache: false,
+			async : false,
+			data: {'TargetSerial': obj.value},
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+		}).done(function (data) {
+			var json = JSON.stringify(data);
+			var dt = JSON.parse(json);
+			if(dt['count'] == 0){
+				alert("登録されていません。");
+			}else{
+				alert("紹介者は "+dt["name_sei"]+" "+dt["name_mei"]+"さんです。");
+			}
+			//document.getElementById("selling_price").value=dt['SellingPrice'];
+		}) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+			alert(XMLHttpRequest.status);
+			alert(textStatus);
+			alert(errorThrown);	
+			alert('エラー');
+		});
+	}else if(obj.value.length>6){
+		alert("登録されていません。");
+	}
 }
 
 function reason_coming_sonota_manage(){
-	console.log('reason_coming_sonota_manage');
+	//console.log('reason_coming_sonota_manage');
 	if(document.getElementById("reason_coming_cbx_sonota").checked==true){
 		document.getElementById("reason_coming_txt").disabled=false;
 	}else{
@@ -156,80 +159,4 @@ jQuery(document).ready(function($){
 	$.validator.addMethod('phone_vdt', function(value, element) {
 		return this.optional(element) || /^[0-9\-]+$/.test(value);
  	},  $.validator.format("正しい電話番号を入力してください。<br>"));
-	/*	
-	$.validator.addMethod('presentation_title_vdt', function(value, element) {
-		//alert(value.length);
-		var target=$('[name="presentation_rbtn"]:checked').val();
-		var flg=true;
-		if(target=="Yes"){
-			if(value.length>200 || value==""){
-				flg=false;
-			}
-		}
-		return flg;
-		
- 	},  $.validator.format("This field is required. And please enter no more than 200 characters."));
-	
-	$.validator.addMethod('abstract_tarea_vdt', function(value, element) {
-		
-		var target=$('[name="presentation_rbtn"]:checked').val();
-		
-		var flg=true;
-		if(target=="Yes"){
-			if(value.length>500 || value==""){
-				flg=false;
-			}
-		}
-		return flg;
-		
- 	},  $.validator.format("This field is required. And please enter no more than 500 characters."));
-	
-	$.validator.addMethod('invitation_letter_vdt', function(value, element) {
-		var tgt = document.getElementsByName( "invitation_letter_rbtn" ) ;
-		var str="";
-		for (let i = 0; i < tgt.length; i++){
-			if(tgt[i].checked){ //(color1[i].checked === true)と同じ
-				str = tgt[i].value;
-				break;
-			}
-		}
-		var target_1=$('[name="pi_ci_rbtn"]:checked').val();
-		var target_2=$('[name="invitation_letter_rbtn"]:checked').val();
-		var flg=true;
-		if(target_1!="Other"){
-			if(str==""){
-				flg=false;
-			}else{
-				flg=true;
-			}
-		}
-		return flg;
- 	},  $.validator.format("This field is required.<BR>"));
-	
-	$.validator.addMethod("tel", function(value, element){
-		return this.optional(element) || /^[0-9+-]+$/.test(value);
-	},"This field is Phone Number.");
-  
-	$.validator.addMethod("maxwords", function(value, element, params) { 
-		var words_array=value.split(/[" ",",","."]/);
-		var words_cnt=words_array.length;
-		
-		return this.optional(element) || params+1>words_cnt; 
-	}, $.validator.format("Please enter no more than {0} words."));
-	
-	
-	$.validator.addMethod("one_byte", function(value, element) {
-    	return this.optional(element) || /^[0-9A-Za-z@! \s\-\#$\%&\'()\*\+\,\-\.\/\:\;\<\=\>\?\{\}\"]+$/.test(value);
-	}, "one-byte character only");
-	
-	
-	$.validator.addMethod("valueNotEquals", function(value, element, arg){
- 		 return arg != value;
- 	}, "Value must not equal arg.");
-
-	$.validator.addMethod("alphabet", function(value, element) {
-		//alert(value);
-    	return this.optional(element) || /^[a-zA-Z0-9!#$%&()*+,.:;=?@\[\]^_{}-]+$/.test(value);
-	}, "Alphabet only");
-	*/
 });

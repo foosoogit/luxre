@@ -82,7 +82,7 @@ class initConsts{
 	}
 
 	public static function TargetPageInf($target){
-		$inits_array=Configration::table('configrations')->where('subject','=','PageInf')->first();
+		$inits_array=Configration::where('subject','=','PageInf')->first();
 		//$inits_array=DB::table('configrations')->where('subject','=','PageInf')->first();
 		$page_inf_array=explode(";",$inits_array->value1);
 		foreach($page_inf_array as $page_inf){
