@@ -411,7 +411,12 @@ class AdminController extends Controller
 			//$GoBackPlace="/customers/ShowCustomersList";
 			$GoBackPlace="/customers/CustomersList";
 			//$GoBackPlace="/customers/ShowCustomersList";
-			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$referee->serial_user);
+			if(empty($referee->serial_user)){
+				$referee_serial="";
+			}else{
+				$referee_serial=$referee->serial_user;
+			}
+			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$referee_serial);
 			//$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
 
 		}else if(isset($request->fromMenu)){
