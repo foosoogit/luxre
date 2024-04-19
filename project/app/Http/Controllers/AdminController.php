@@ -82,7 +82,7 @@ class AdminController extends Controller
 				$new_visit_history_serial=$item_array["contract_serial"]."-01";
 			}
 			*/
-			Log::alert("user_serial=".$item_array["user_serial"]);
+			//Log::alert("user_serial=".$item_array["user_serial"]);
 			Point::insert([
 				'serial_user' => $item_array["user_serial"],
 				'method' => "来店",
@@ -1488,6 +1488,49 @@ class AdminController extends Controller
 			'referee'=>trim($request->syokaisya_txt)
 		];
 		User::upsert($targetData,['serial_user']);
+		$ck_cnt=Point::where('referred_serial','=',$targetSerial)->count();
+		$target_rec_sql=Point::where('referred_serial','=',$targetSerial);
+		if($target_rec_sql->count()==1){
+			$target_rec_sql->update(
+				[
+					'serial_user' =>trim($request->syokaisya_txt)
+				]
+			);
+		}else{
+			$target_rec_sql->insert(
+				[
+					'serial_user' =>trim($request->syokaisya_txt),
+					'method' => '紹介',
+					'date_get' => date('Y-m-d'),
+					'point' => initConsts::UserPointReferral(),
+					'referred_serial' => $targetSerial,
+					'validity_flg' => 'true',
+					'digestion_flg'=> 'false',
+					'created_at'=> date('Y-m-d H:i:s'),
+					'updated_at'=> date('Y-m-d H:i:s'),
+				]
+			);
+		}
+		/*
+		$targetDataPoint=[
+			'serial_user' =>trim($request->syokaisya_txt),
+			'method' => '紹介',
+			'date_get' => date('Y-m-d'),
+			'point' => initConsts::UserPointReferral(),
+			'referred_serial' => $targetSerial,
+			'validity_flg' => 'true',
+			'digestion_flg'=> 'false'
+			//'created_at'=> date('Y-m-d H:i:s'),
+			//'updated_at'=> date('Y-m-d H:i:s'),
+		];
+		Log::info($targetDataPoint);
+		Point::upsert(
+			$targetDataPoint,
+			['referred_serial']
+			//['updated_at']
+		);
+		*/
+		/*
 		$target_referee_array=array();$target_referee_array1=array();$target_referee_array2=array();$referee_old_array=array();$referee_new_array=array();
 		$referee_old_array=explode(",",$referee_old);
 		$referee_new_array=explode(",",$request->syokaisya_txt);
@@ -1519,6 +1562,7 @@ class AdminController extends Controller
 		$referee_target_serial_array[]=$targetSerial;
 		$referee_target_serial=implode( ',', $referee_target_serial_array);
 		$userBuilder=User::where('serial_user','=', sprintf('%06d',trim($request->syokaisya_txt)))->update(['referee_target_serial' => $referee_target_serial]);
+		*/
 		setcookie('TorokuMessageFlg','true',time()+60);
 		$header="";$slot="";
 		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");

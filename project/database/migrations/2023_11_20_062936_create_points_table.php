@@ -25,6 +25,11 @@ return new class extends Migration
             $table->string('digestion_flg',10)->comment('消化フラグ');
             $table->text('note')->nullable()->comment('備考');
         });
+        /*
+        Schema::table('points', function (Blueprint $table) {
+            $table->index(['serial_user', 'referred_serial'])->unique();
+        });
+        */
     }
 
     /**

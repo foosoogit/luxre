@@ -41,6 +41,7 @@ Route::get('admin/StaffStandbyDisplay', [AdminController::class,'ShowStaffStandb
 Route::post('admin/receipt_set_manage', [AdminController::class,'receipt_set_manage'])->name("admin.receipt_set_manage.post");
 Route::post('admin/customer_reception_manage', [AdminController::class,'customer_reception_manage'])->name('customer_reception_manage.post');
 Route::get('admin/CustomerStandbyDisplay', [AdminController::class,'ShowCustomerStandbyDisplay'])->name("admin.CustomerStandbyDisplay.get");
+//Route::get('CustomerStandbyDisplay', [AdminController::class,'ShowCustomerStandbyDisplay'])->name("admin.CustomerStandbyDisplay.get");
 // 管理ログイン画面
 Route::get('/admin-login', [AdminLoginController::class, 'create'])->name('admin.login');
 // 管理ログイン

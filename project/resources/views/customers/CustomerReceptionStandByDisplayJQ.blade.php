@@ -36,27 +36,18 @@
 				</div>
     		</div>
 		</div>
-	</div>
+	</div>  
 	<input type="hidden" value="{{$host_url}}" name="HTTP_HOST" id="HTTP_HOST"/>
-	<input type="hidden" value="{{asset('/storage/sounds/in.mp3')}}" name="sound_in_url" id="sound_in_url"/>
-	<input type="hidden" value="{{asset('/storage/sounds/out.mp3')}}" name="sound_out_url" id="sound_out_url"/>
-	<input type="hidden" value="{{asset('/storage/sounds/false.mp3')}}" name="sound_false_url" id="sound_false_url"/>
+	<input type="hidden" value="{{asset('/in.mp3')}}" name="sound_in_url" id="sound_in_url"/>
+	<input type="hidden" value="{{asset('/out.mp3')}}" name="sound_out_url" id="sound_out_url"/>
+	<input type="hidden" value="{{asset('/false.mp3')}}" name="sound_false_url" id="sound_false_url"/>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 	<script type="text/javascript">
-		//var audio_out= new Audio("time_out.mp3");
-		var audio_in= new Audio("in.mp3");
-		var audio_false= new Audio("false.mp3");
-		//console.log("sound_in_url="+document.getElementById("sound_in_url").value);
+		var audio_in= new Audio(document.getElementById("sound_in_url").value);
+		var audio_false= new Audio(document.getElementById("sound_false_url").value);
 		let host_url=document.getElementById("HTTP_HOST").value;
-		//var audio_in= new Audio(host_url+"/storage/sounds/in.mp3");
-		//var audio_in= new Audio(document.getElementById("sound_in_url").value);
-		
-		//var audio_out= new Audio(document.getElementById("sound_out_url").value);
-		//var audio_in= new Audio(document.getElementById("sound_in_url").value);
-		//var audio_false= new Audio(document.getElementById("sound_false_url").value);
-		//var audio;
 		$(document).ready( function(){
 			document.getElementById('target_customer_serial_txt').focus();
 		});
@@ -77,7 +68,7 @@
 				}).done(function (data) {
 					const item_json = JSON.parse(data);
 					document.getElementById("name_fadeout_alert").style.display="";
-					console.log("res="+item_json.res);
+					//console.log("res="+item_json.res);
 					if(item_json.res=="no serial"){
 						audio_false.play();
 						document.getElementById("seated_type").style.display="";
@@ -165,9 +156,7 @@
 			var nowMin  = set2fig( today.getMinutes() );
 			var nowSec  = set2fig( today.getSeconds() );
 			var msg = nowYear+"年"+nowMonth+"月"+nowDay+"日("+dayOfWeekStr+")<br>"+nowHour+":"+nowMin+":"+nowSec;
-			//var msg = nowHour + ":" + nowMin + ":" + nowSec;
 			document.getElementById("RealtimeClockArea").innerHTML = msg;
-			//document.getElementById("RealtimeClockArea").innerHTML = "TEST!";
 		}
 	</script>
 </body>

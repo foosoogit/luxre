@@ -216,7 +216,6 @@ input,textarea{
                     <p style="py-2.5">●何を見て当サロンに来られましたか？</p>
 					{!!$html_reason_coming!!}  
 					<button class="btn btn-primary w-100 my-3" type="submit" id="SubmitBtn" value="{{$btnDisp}}" onclick="return validate();">{{$btnDisp}}</button>
-                    {{--<p style="text-align: center"><button class="btn btn-primary" type="submit" id="SubmitBtn" value="{{$btnDisp}}" onclick="return validate();">{{$btnDisp}}</button></p>--}}
 				</form>
 				<div style="py-3.5"><input name="TorokuMessageFlg" id="TorokuMessageFlg" type="hidden" value="{{$saveFlg}}"/></div>
         </div>

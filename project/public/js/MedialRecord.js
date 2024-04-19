@@ -21,10 +21,6 @@ var ContractSerial = document.getElementById("contract_serial").value;
 
 const chara = new Image();
 let host_url=document.getElementById("HTTP_HOST").value
-//let tf=ht_type+host_url+'/'+document.getElementById("target_file").value;
-//let tf='/'+document.getElementById("target_file").value;
-//console.log("ht_type="+ht_type);
-//let tf='https://'+host_url+'/'+document.getElementById("target_file").value;
 
 if(document.getElementById("target_file").value!=""){
 	chara.src =host_url+'/'+document.getElementById("target_file").value;
