@@ -157,9 +157,10 @@ class AdminController extends Controller
 			$target_item_array['name']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji;
 			
 			if($rec_cnt==0){
+				$target_item_array['res']='in';
 				$target_item_array['in_out_type']="出勤";
 			}else{
-				//$in_out_inf=$ck_jyufuku->first();
+				$target_item_array['res']='out';
 				$target_item_array['in_out_type']="退勤";
 				$target_item_array['target_id']=$latest_in_out_history_id;
 			}

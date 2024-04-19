@@ -47,6 +47,7 @@
 	<script type="text/javascript">
 		var audio_in= new Audio(document.getElementById("sound_in_url").value);
 		var audio_false= new Audio(document.getElementById("sound_false_url").value);
+		var audio_out= new Audio(document.getElementById("sound_out_url").value);
 		let host_url=document.getElementById("HTTP_HOST").value;
 		$(document).ready( function(){
 			document.getElementById('target_customer_serial_txt').focus();
@@ -68,22 +69,29 @@
 					document.getElementById("name_fadeout_alert").style.display="";
 					if(item_json.res=="no serial"){
 						audio_false.play();
-						document.getElementById("seated_type").style.display="";
-						document.getElementById("seated_type").innerText = item_json.msg;
+						//document.getElementById("seated_type").style.display="";
+						//document.getElementById("seated_type").innerText = item_json.msg;
 					}else if(item_json.res=="no contract"){
 						audio_false.play();
-						document.getElementById("seated_type").style.display="";
-						document.getElementById("seated_type").innerText = item_json.msg;
+						//document.getElementById("seated_type").style.display="";
+						//document.getElementById("seated_type").innerText = item_json.msg;
 					}else if(item_json.res=="double registration"){
 						audio_false.play();
-						document.getElementById("seated_type").style.display="";
-						document.getElementById("seated_type").innerText = item_json.msg;
-					}else{
+						//document.getElementById("seated_type").style.display="";
+						//document.getElementById("seated_type").innerText = item_json.msg;
+					}else if(item_json.res=="in"){
 						audio_in.play();
-						document.getElementById("seated_type").style.display="";
-						document.getElementById("seated_type").innerText = item_json.msg;
+						//document.getElementById("seated_type").style.display="";
+						//document.getElementById("seated_type").innerText = item_json.msg;
+						receipt_set_manage(data);
+					}else if(item_json.res=="out"){
+						audio_out.play();
+						//document.getElementById("seated_type").style.display="";
+						//document.getElementById("seated_type").innerText = item_json.msg;
 						receipt_set_manage(data);
 					}
+					document.getElementById("seated_type").style.display="";
+					document.getElementById("seated_type").innerText = item_json.msg;
 					document.getElementById('target_customer_serial_txt').value="";
 					document.getElementById('target_customer_serial_txt').focus();
 					data=null;
