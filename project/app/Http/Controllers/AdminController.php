@@ -82,7 +82,7 @@ class AdminController extends Controller
 				$new_visit_history_serial=$item_array["contract_serial"]."-01";
 			}
 			*/
-			//Log::alert("user_serial=".$item_array["user_serial"]);
+			Log::alert("user_serial=".$item_array["user_serial"]);
 			Point::insert([
 				'serial_user' => $item_array["user_serial"],
 				'method' => "来店",
@@ -389,16 +389,13 @@ class AdminController extends Controller
             array_shift($_SESSION['access_history']);
         }
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		//log::info('access_history='.$_SESSION['access_history'][0]);
 		session(['fromPage' => 'SyuseiCustomer']);
-		//$userInfo=User::where('serial_user','=',$request->input('syusei_Btn'))->first();
 		session(['CustomerManage' => 'syusei']);
-		//$header="";$slot="";
 		$selectedManth=array();$selectedManth=array();
 		$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
 		$referee=Point::where('referred_serial','=', $request->input('syusei_Btn'))->first();
+		$total_point=Point::where('serial_user','=', $request->input('syusei_Btn'))->sum('point');
 		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list($target_user->birth_year);
-		//$mnt="m".sprintf('%02d', $target_user->birth_month);
 		$selectedManth[(int)$target_user->birth_month]="Selected";
 		$selectedDay[(int)$target_user->birth_day]="Selected";
 		$selectedRegion[$target_user->address_region]="Selected";
@@ -424,7 +421,7 @@ class AdminController extends Controller
 			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
 			$GoBackPlace="../top";
 		}
-		return view('customers.CreateCustomer',compact('target_historyBack_inf_array','html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
+		return view('customers.CreateCustomer',compact('total_point','target_historyBack_inf_array','html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
 
 	public function ShowInputCustomer(Request $request){
@@ -1492,8 +1489,8 @@ class AdminController extends Controller
 			'email' => $request->email,
 
 			'phone' => $request->phone,
-			'reason_coming'=>$reason_coming,
-			'referee'=>trim($request->syokaisya_txt)
+			'reason_coming'=>$reason_coming
+			//'referee'=>trim($request->syokaisya_txt)
 		];
 		User::upsert($targetData,['serial_user']);
 		$ck_cnt=Point::where('referred_serial','=',$targetSerial)->count();

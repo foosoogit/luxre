@@ -64,9 +64,10 @@
                                     <button type="button" wire:click="sort('phone-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
                                 </div>
                             </th>
-                            <th class="border px-4 py-2">紹介人数
+                            <th class="border px-4 py-2">取得ポイント
                                 <div>
-                                    <button type="button" wire:click="sort('refereecnt-Desc')"><img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
+                                    <button type="button" wire:click="sort('total_points-ASC')"><img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" disabled/></button>
+                                    <button type="button" wire:click="sort('total_points-Desc')"><img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" disabled/></button>
                                 </div>
                             </th>
                             <th class="border px-4 py-2">削除</th>
@@ -90,7 +91,7 @@
                                 <td class="border px-4 py-2" style="text-align: right;">{{ number_format($user->zankin)}}</td>
                                 <td class="border px-4 py-2"><div class="text-nowrap">{{ $user->birth_year}}-{{ $user->birth_month}}-{{ $user->birth_day}}&nbsp;({{ $user->User_Age}})</div></td>
                                 <td class="border px-4 py-2">{{ $user->phone}}</td>
-                                <td class="border px-4 py-2">{{ $user->referee_num}}</td>
+                                <td class="border px-4 py-2">{{ $user->TotalPoints}}</td>
                                 <td class="border px-4 py-2">
                                     <form action="/customers/deleteCustomer/{{$user->serial_user}}" method="GET">@csrf
                                         <input name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $user->serial_user}} {{ $user->name_sei}} {{ $user->name_mei}}');" >

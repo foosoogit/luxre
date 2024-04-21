@@ -198,6 +198,9 @@ class CustomersList extends Component
 				}
 			}
 		}
+
+		//$userQuery =$userQuery->orderByRaw('tpoint');
+
 		/*
 		if(session('target_page_for_pager')!==null){
 			$targetPage=session('target_page_for_pager');

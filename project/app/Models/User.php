@@ -10,6 +10,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Point;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
@@ -19,12 +21,18 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use SoftDeletes;
+    //protected $appends = ['TotalPoints'];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
+
+     protected $appends = [
+        'profile_photo_url','TotalPoints',
+    ];
+
     protected $fillable = [
         'name',
         'email',
@@ -43,6 +51,7 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
+        
     /**
      * The attributes that should be cast.
      *
@@ -57,10 +66,29 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $appends = [
-        'profile_photo_url',
-    ];
 
+     public function getTotalPointsAttribute() {
+        $tpoint=Point::where('serial_user','=',$this->serial_user)->sum('point');
+        return $tpoint;
+    }
+
+    /*
+    protected function TotalPoints(): Attribute
+    {
+        return new Attribute(
+            get: function ($value) {
+                $tpoint=Point::where('serial_user','=',$this->serial_user)->sum('point');
+                //return ucfirst($value);
+                return $tpoint;
+            },
+            
+            //set: function ($value) {
+            //    return strtolower($value);
+            //},
+
+        );
+    }
+    */
     public function getUserAgeAttribute($value){
 		$birthday = $this->birth_year.$this->birth_month.$this->birth_day;
 		$today = date('Ymd');
