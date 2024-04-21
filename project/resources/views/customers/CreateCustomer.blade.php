@@ -36,7 +36,7 @@ input,textarea{
 						<p>顧客番号<input type="text" name="serial_user" value="{{$target_user['serial_user']}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" readonly></p>	
 					@endif
 					<div class="col-auto">
-						取得ポイント<input type="text" name="name_sei_kana" id="name_sei_kana" readonly value="{{$total_point}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="3"><span id="name_sei_kana_for_error" class="text-danger fw-bold"></span>
+						取得ポイント<input type="text" name="total_point" id="total_point" readonly value="{{$total_point}}" class="bg-white-500 text-black rounded px-3 py-1">
 					</div>
 					<p><span class="text-danger">*</span><span class="font-semibold text-1xl text-slate-600">: 必須項目</span></p>
 					<p style="py-2.5">●<span class="text-danger">*</span>入会日<input name="AdmissionDate" id="AdmissionDate" type="date" value="{{optional($target_user)->admission_date}}" required autofocus/><span id="AdmissionDate_for_error" class="text-danger fw-bold"></span></p>

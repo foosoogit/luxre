@@ -1617,7 +1617,8 @@ class AdminController extends Controller
 		$TargetUserSerial=++$maxUserSerial;
 		$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
 		$GoBackPlace=$_SESSION['access_history'][0];
-		return view('customers.CreateCustomer',compact('html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
+		$total_point="";
+		return view('customers.CreateCustomer',compact('total_point','html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
 
 	public function deleteStaff($serial_staff){
