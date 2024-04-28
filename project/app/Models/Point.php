@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\User;
 
 class Point extends Model
 {
@@ -21,4 +22,10 @@ class Point extends Model
         'validity_flg',
         'digestion_flg',
 	];
+
+	public function getReferredNameAgeAttribute($value){
+		$Referred=User::where('serial_user','=', $this->serial_user)->first();
+		$ReferredName=$Referred->name_sei.'&nbsp;'.$Referred->name_maei;
+		return $ReferredName;
+    }
 }

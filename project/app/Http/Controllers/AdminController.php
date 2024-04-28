@@ -38,6 +38,37 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 	
+	public function ajax_show_point_list(Request $request){
+		Log::alert("user_serial=".$request->user_serial);
+		$point_array=Point::where("serial_user","=",$request->user_serial)->get();
+		$htm='<table class="table">
+		<thead>
+		  <tr>
+			<th scope="col">取得方法</th>
+			<th scope="col">取得日</th>
+			<th scope="col">取得ポイント</th>
+			<th scope="col">ご紹介いただいたお客様</th>
+		  </tr>
+		</thead>
+		<tbody class="table-group-divider">';
+		foreach($point_inf as $point_array){
+			$refere_array=User::where("serial_user","=",$point_inf->referred_serial)->first();
+			if(empty($refere_array)){
+				$refere_name="--";
+			}else{
+				$refere_name=$refere_array->name_sei."&nbsp;".$refere_array->name_mei;
+			}
+			$htm.='<tr>
+			<td>'.$point_inf->method.'</td>
+			<td>'.$point_inf->date_get.'</td>
+			<td>'.$point_inf->point.'</td>
+			<td>'.$refere_name.'</td>
+		  </tr>';
+		}
+		$htm.='</tbody></table>';
+		echo $htm;
+	}
+
 	private function staff_receipt_set_manage($item_array){
 		//$nyuusya_ck_cnt= InOutHistory::where("target_serial","=",$item_array['staff_serial'])
 		//	->where("target_date","=",date('Y-m-d'))->count();

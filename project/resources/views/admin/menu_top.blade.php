@@ -63,7 +63,7 @@
 							<div class="row">
 								<div class="col-auto">
 									<li>
-										<form method="GET" action="/workers/ShowCampaigns">@csrf
+										<form method="GET" action="{{ route('admin.ListPoints.get') }}">@csrf
 											<button class="btn btn-primary btn-sm" type="submit">ポイント管理</button>
 										</form>
 									</li>

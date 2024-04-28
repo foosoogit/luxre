@@ -75,8 +75,8 @@ Route::middleware('auth:admin')->group(function () {
         */
 
         Route::get('/admin/show_point_list', function () {
-            return view('admin.TreatmentList');
-        })->name('TreatmentList.get');
+            return view('admin.ListPoints');
+        })->name('ListPoints.get');
 
 
         Route::get('/admin/GetEncryption', function () {

@@ -22,16 +22,18 @@
                             <div class="col">
                                 <label>検索： </label>
                             </div>
+                            {{--  
                             <div class="col">
-                                {!!$html_staff_inout_slct!!}
-                                {{--<input name="target_day" id="target_day" type="date" wire:change="search_day(document.getElementById('target_day').value)" value="{{$target_day}}"/>--}}
+                                <input name="target_day" id="target_day" type="date" wire:change="search_day(document.getElementById('target_day').value)" value="{{$target_day}}"/>
                             </div>
+                            --}}
                         </p>
                     </div>
                     <div class="row">
                         <div class="col">
                             <table id="table_responsive">
                                 <tr>
+                                    <th>ポイントID</th>
                                     <th>ポイント取得日&nbsp;<button type="button" class="btn-orderby-border" wire:click="sort_day('target_date-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
                                         <button type="button" class="btn-orderby-border" wire:click="sort_day('target_date-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
                                     </th>
@@ -43,14 +45,15 @@
                                     <th>取得ポイント</th>
                                     <th>備考</th>
                                 </tr>
-                                @foreach ($histories as $history)
+                                @foreach ($points_histories as $history)
                                     <tr>
+                                        <td>{{ $history->id }}</td>
                                         <td>{{ $history->date_get }}</td>
                                         <td>{{ $history->serial_user }}</td>
-                                        <td>{{ $history->target_name }}</td>
+                                        <td>{{ $history->name_sei }}&nbsp;{{ $history->name_mei }}</td>
                                         <td>{{ $history->method }}</td>
                                         <td>{{ $history->visit_date }}</td>
-                                        <td>{{ $history->referred }}</td>
+                                        <td>{{ $history->ReferredName }}</td>
                                         <td>{{ $history->point }}</td>
                                         <td>{{ $history->note }}</td>
                                     </tr>
@@ -58,7 +61,7 @@
                             </table>
                         </div>
                     </div>
-                    {{$histories->appends(request()->query())->links('pagination::bootstrap-4')}}
+                    {{$points_histories->appends(request()->query())->links('pagination::bootstrap-4')}}
                 </div>
             </div>
         </div>
