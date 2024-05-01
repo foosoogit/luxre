@@ -30,7 +30,9 @@ class Point extends Model
 	public function getUserNameAttribute(){
 		$user_inf=User::where('serial_user','=', $this->serial_user)->first();
 		$UserName="エラー";
-		if(!empty($user_inf)){
+		if(!empty($user_inf->deleted_at)){
+			$UserName='退会';
+		}else if(!empty($user_inf)){
 			$UserName=$user_inf->name_sei.' '.$user_inf->name_mei;
 		}
 		return $UserName;
