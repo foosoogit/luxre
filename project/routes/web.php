@@ -59,7 +59,6 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     Route::name('admin.')->group(function() {
         Route::get('/show_staff_in_out_rireki', function () {
-            //session(['serchKey' =>$request->studserial]);
             return view('admin.ListStaffInOutHistories');
         })->name('show_staff_in_out_rireki.get');
         //Route::get('admin/get_imagick_info', [OtherFunc::class,'get_imagick_info'])->name("get_imagick_info.get");

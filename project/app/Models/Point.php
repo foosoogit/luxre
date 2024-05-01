@@ -6,12 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Point extends Model
 {
-    use HasFactory;
+	use HasFactory;
     use SoftDeletes;
-    protected $fillable = [
+	protected $append = ['ReferredName'];
+
+	protected $fillable = [
 		'serial_user',
 		'method',
 		'date_get',
@@ -23,9 +27,17 @@ class Point extends Model
         'digestion_flg',
 	];
 
-	public function getReferredNameAgeAttribute($value){
-		$Referred=User::where('serial_user','=', $this->serial_user)->first();
-		$ReferredName=$Referred->name_sei.'&nbsp;'.$Referred->name_maei;
+	public function getUserNameAttribute(){
+		$user_inf=User::where('serial_user','=', $this->serial_user)->first();
+		return $user_inf->name_sei.' '.$user_inf->name_mei;
+    }
+	
+	public function getReferredNameAttribute(){
+		$Referred=User::where('serial_user','=', $this->referred_serial)->first();
+		$ReferredName="";
+		if(!empty($Referred)){
+			$ReferredName=$Referred->name_sei.' '.$Referred->name_mei;
+		}
 		return $ReferredName;
     }
 }

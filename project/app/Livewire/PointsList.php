@@ -24,9 +24,15 @@ class PointsList extends Component
         */
         $target_day="";
         $pointQuery = Point::query();
-        $pointQuery =$pointQuery->leftJoin('users', 'points.serial_user', '=', 'users.serial_user');
+        /*
+        $pointQuery =$pointQuery->leftJoin('users', 'points.serial_user', '=', 'users.serial_user')
+            //->select("points.id AS points_id","date_get","method","point","visit_date","referred_serial","name_sei","name_mei");
+            ->select("points.id AS points_id")
+            ->select("referred_serial")->select("ReferredName");
         //$pointQuery =$pointQuery->leftJoin('users', 'points.referred_serial', '=', 'users.serial_user');
-        $points_histories=$pointQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
+        */
+        //$points_histories=$pointQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
+        $points_histories=Point::paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
         return view('livewire.points-list',compact('points_histories','target_day'));
     }
 }

@@ -39,7 +39,7 @@ class AdminController extends Controller
 	}
 	
 	public function ajax_show_point_list(Request $request){
-		Log::alert("user_serial=".$request->user_serial);
+		//Log::alert("user_serial=".$request->user_serial);
 		$point_array=Point::where("serial_user","=",$request->user_serial)->get();
 		$htm='<table class="table">
 		<thead>

@@ -43,14 +43,16 @@
                                     <th>来店日</th>
                                     <th>紹介した人</th>
                                     <th>取得ポイント</th>
-                                    <th>備考</th>
+                                    <th>ポイント消滅日</th>
                                 </tr>
                                 @foreach ($points_histories as $history)
                                     <tr>
+                                        {{--<td>{{ $history->points_id }}</td>--}}
                                         <td>{{ $history->id }}</td>
                                         <td>{{ $history->date_get }}</td>
                                         <td>{{ $history->serial_user }}</td>
-                                        <td>{{ $history->name_sei }}&nbsp;{{ $history->name_mei }}</td>
+                                        {{--<td>{{ $history->name_sei }}&nbsp;{{ $history->name_mei }}</td>--}}
+                                        <td>{{ $history->UserName }}</td>
                                         <td>{{ $history->method }}</td>
                                         <td>{{ $history->visit_date }}</td>
                                         <td>{{ $history->ReferredName }}</td>
