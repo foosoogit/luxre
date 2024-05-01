@@ -29,7 +29,11 @@ class Point extends Model
 
 	public function getUserNameAttribute(){
 		$user_inf=User::where('serial_user','=', $this->serial_user)->first();
-		return $user_inf->name_sei.' '.$user_inf->name_mei;
+		$UserName="エラー";
+		if(!empty($user_inf)){
+			$UserName=$user_inf->name_sei.' '.$user_inf->name_mei;
+		}
+		return $UserName;
     }
 
 	public function getReferredNameAttribute(){
