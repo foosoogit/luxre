@@ -13,7 +13,7 @@ class Point extends Model
 {
 	use HasFactory;
     use SoftDeletes;
-	protected $append = ['ReferredName'];
+	//protected $append = ['ReferredName'];
 
 	protected $fillable = [
 		'serial_user',
@@ -31,7 +31,7 @@ class Point extends Model
 		$user_inf=User::where('serial_user','=', $this->serial_user)->first();
 		return $user_inf->name_sei.' '.$user_inf->name_mei;
     }
-	
+
 	public function getReferredNameAttribute(){
 		$Referred=User::where('serial_user','=', $this->referred_serial)->first();
 		$ReferredName="";
