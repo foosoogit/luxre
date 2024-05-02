@@ -244,6 +244,11 @@ class DatabaseSeeder extends Seeder
 				'value1' => "20",
 				'setumei' => "紹介時ポイント",
 			],
+			[
+				'subject'=> "PointValidityTerm",
+				'value1' => "1",
+				'setumei' => "ポイント有効期間(年数)",
+			],
         ];
 
 		foreach($configrations as $configration){

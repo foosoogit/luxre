@@ -496,10 +496,10 @@ class OtherFunc extends Controller
 			$reason_id++;
 		}
 		$htm_reason_coming_cbox.='<input name="reason_coming_txt" id="reason_coming_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$sonotaReason.'" /></div>';
-		$htm_reason_coming_cbox.='<div class="row" style="py-3.5"><div class="col-auto">';
-		$htm_reason_coming_cbox.='●紹介者(顧客番号を入力してください。)</div><div class="col-auto"><input name="syokaisya_txt" id="syokaisya_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$referee.'" placeholder="001001" onkeyup="SerchRefereeInf(this)"/></div>';
+		//$htm_reason_coming_cbox.='<div class="row" style="py-3.5"><div class="col-auto">';
+		//$htm_reason_coming_cbox.='●紹介者(顧客番号を入力してください。)</div><div class="col-auto"><input name="syokaisya_txt" id="syokaisya_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$referee.'" onkeyup="SerchRefereeInf(this)"/></div>';
 		//$htm_reason_coming_cbox.='<div class="col-auto"><button class="btn btn-success btn-sm" type="button" onclick="SerchRefereeInf();">紹介者検索</button></div></div>';
-		$htm_reason_coming_cbox.='<div class="col-auto"><a href="/customers/CustomersList" class="btn btn-success btn-sm" target="_blank">紹介者検索</a></div></div>';
+		//$htm_reason_coming_cbox.='<div class="col-auto"><a href="/customers/CustomersList" class="btn btn-success btn-sm" target="_blank">紹介者検索</a></div></div>';
 		return $htm_reason_coming_cbox;
 	}
 

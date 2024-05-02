@@ -7,6 +7,11 @@ use App\Models\Configration;
 
 // usersで使う定数
 class initConsts{
+	public static function PointValidityTerm(){
+		$inits_array=Configration::where('subject','=','PointValidityTerm')->first();
+		//$inits_array=DB::table('configrations')->where('subject','=','UserPointReferral')->first();
+		return $inits_array->value1;
+	}
 	public static function UserPointReferral(){
 		$inits_array=Configration::where('subject','=','UserPointReferral')->first();
 		//$inits_array=DB::table('configrations')->where('subject','=','UserPointReferral')->first();

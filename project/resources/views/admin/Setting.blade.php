@@ -29,12 +29,13 @@
                             <input id="UserPointReferral" name="UserPointReferral" type="text" class="form-control" value="{{ $configration_array["UserPointReferral"] }}" required autofocus />
                         </div>
                     </div>
-                            {{--  
-                            <div class="col-4">
-                                    <label for="name_mei" class="form-label">名</label>
-                                    <input id="name_mei" name="name_mei" type="text" class="form-control" value="{{old('name_mei',optional($StaffInf)->first_name_kanji)}}" required autofocus />
-                                </div>
-                            --}}
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="PointValidityTerm" class="form-label">ポイント有効期間（年数）</label>
+                            <input id="PointValidityTerm" name="PointValidityTerm" type="text" class="form-control" value="{{$configration_array['PointValidityTerm']}}" required autofocus />
+                        </div>
+                    </div>
+
                         {{-- 
                         </div><br>
                             

@@ -24,6 +24,7 @@ use App\Http\Controllers\OtherFunc;
 use App\Consts\initConsts;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Point;
+//use DateTime;
 //use App\Consts\get_imagick_info;
 
 use Intervention\Image\Facades\Image;
@@ -37,7 +38,89 @@ class AdminController extends Controller
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
 	}
-	
+
+	function recordVisitPaymentHistory(Request $request){
+		$PaymentHistorySerial=session('ContractSerial')."-01";
+		$PaymentHistorySerial=str_replace('K','P',$PaymentHistorySerial);
+		DB::table('payment_histories')->where('serial_keiyaku','=', session('ContractSerial'))->delete();
+			for($i=0;$i<=11;$i++){
+				if(!isset($request->PaymentDate[$i]) and !isset($request->PaymentAmount[$i]) and !isset($request->HowToPay[$i])){break;}
+				$PaymentDateArra[$i]="";
+				if(isset($request->PaymentDate[$i])){
+					$PaymentDateArra[$i]=$request->PaymentDate[$i];
+				}
+				$PaymentAmountArra[$i]="";
+				if(isset($request->PaymentAmount[$i])){
+					$PaymentAmountArra[$i]=$request->PaymentAmount[$i];
+				}
+				$PaymentHowToPayArray[$i]="";
+				if(isset($request->HowToPay[$i])){
+					$PaymentHowToPayArray[$i]=$request->HowToPay[$i];
+				}
+				
+				$targetlData=[
+					'serial_keiyaku'=>session('ContractSerial'),
+					'serial_user'=>session('UserSerial'),
+					'payment_history_serial'=>$PaymentHistorySerial,
+					'serial_staff'=>Auth::user()->serial_admin,
+					'date_payment'=>$PaymentDateArra[$i],
+					'amount_payment'=>str_replace(',','',$PaymentAmountArra[$i]),
+					'how_to_pay'=>$PaymentHowToPayArray[$i],
+					'deleted_at'=>null
+				];
+				$targetDataArray[]=$targetlData;
+				$PaymentHistorySerial++;
+				PaymentHistory::upsert($targetDataArray,['payment_history_serial']);
+			}
+		
+		/*
+			$ck_coming_cnt=VisitHistory::where('serial_user','=', session('UserSerial'))->count();
+		Log::alert("ck_coming_cntmessage=".$ck_coming_cnt);
+		if($ck_coming_cnt==0){
+			$tdate = new DateTime('now');
+			$tdate->modify('+1 year');
+			Point::where('referred_serial','=', session('UserSerial'))
+				->update([
+                	'point_expiration_date' => $tdate->format('Y-m-d'),
+            	]);
+		}
+		*/
+		VisitHistory::where('serial_keiyaku','=', session('ContractSerial'))->delete();
+		
+		$targetDataArray=array();
+		$VisitHistorySerial=session('ContractSerial')."-01";
+		$VisitHistorySerial=str_replace('K','V',$VisitHistorySerial);
+		$date_latest_visit="";
+		if(isset($request->visitDate)){
+			$i=0;
+			foreach($request->visitDate as $visitDateValue){
+				if($visitDateValue<>""){$date_latest_visit=$visitDateValue;}
+				if($visitDateValue==""){break;}
+				$targetlData=array();
+				$targetlData=[
+					'serial_keiyaku'=>session('ContractSerial'),
+					'serial_user'=>session('UserSerial'),
+					'visit_history_serial'=>$VisitHistorySerial,
+					'serial_staff'=>Auth::user()->serial_staff,
+					'date_visit'=>$visitDateValue,
+					'treatment_dtails'=>$request->TreatmentDetailsSelect[$i],
+					//'point'=>$request->point[$i],
+					'deleted_at'=>null
+				];
+				VisitHistory::where('visit_history_serial','=', $VisitHistorySerial)->restore();
+				VisitHistory::upsert($targetlData,['visit_history_serial']);
+				$targetDataArray[]=$targetlData;
+				$VisitHistorySerial++;
+				$i++;
+			}
+		}
+		Contract::where('serial_keiyaku','=',session('ContractSerial'))->update(['date_latest_visit' =>$date_latest_visit]);
+		session()->flash('success', '登録しました。');
+		session(['InpRecordVisitPaymentFlg' => true]);
+		$this::save_recorder("recordVisitPaymentHistory");
+		return redirect('/customers/ShowInpRecordVisitPayment/'.session("ContractSerial").'/'.session("UserSerial"));
+	}
+
 	public function ajax_show_point_list(Request $request){
 		//Log::alert("user_serial=".$request->user_serial);
 		$point_array=Point::where("serial_user","=",$request->user_serial)->get();
@@ -70,8 +153,6 @@ class AdminController extends Controller
 	}
 
 	private function staff_receipt_set_manage($item_array){
-		//$nyuusya_ck_cnt= InOutHistory::where("target_serial","=",$item_array['staff_serial'])
-		//	->where("target_date","=",date('Y-m-d'))->count();
 		if($item_array['in_out_type']=='出勤'){
 			InOutHistory::insert([
 				'target_serial' => $item_array["user_serial"],
@@ -113,7 +194,12 @@ class AdminController extends Controller
 				$new_visit_history_serial=$item_array["contract_serial"]."-01";
 			}
 			*/
-			Log::alert("user_serial=".$item_array["user_serial"]);
+			//Log::alert("user_serial=".$item_array["user_serial"]);
+			//echo date("Y-m-d", strtotime("YYYY-mm-dd 1 year"));
+			/*
+			$tdate = new DateTime('now');
+			$tdate->modify('+1 year');
+			*/
 			Point::insert([
 				'serial_user' => $item_array["user_serial"],
 				'method' => "来店",
@@ -125,6 +211,7 @@ class AdminController extends Controller
 				'digestion_flg' => "false",
 				'created_at'=> date('Y-m-d H:i:s'),
 				'updated_at'=> date('Y-m-d H:i:s'),
+				//'point_expiration_date'=> $tdate->format('Y-m-d'),
 			]);
 			/*
 			VisitHistory::insert([
@@ -1050,77 +1137,6 @@ class AdminController extends Controller
 		}
 		$GoBackPlace=$_SESSION['access_history'][0];
 		return view('customers.CreateContract',compact("contract_type_checked","html_staff_slct",'newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
-	}
-
-	function recordVisitPaymentHistory(Request $request){
-		$PaymentHistorySerial=session('ContractSerial')."-01";
-		$PaymentHistorySerial=str_replace('K','P',$PaymentHistorySerial);
-		DB::table('payment_histories')->where('serial_keiyaku','=', session('ContractSerial'))->delete();
-			for($i=0;$i<=11;$i++){
-				if(!isset($request->PaymentDate[$i]) and !isset($request->PaymentAmount[$i]) and !isset($request->HowToPay[$i])){break;}
-				$PaymentDateArra[$i]="";
-				if(isset($request->PaymentDate[$i])){
-					$PaymentDateArra[$i]=$request->PaymentDate[$i];
-				}
-				$PaymentAmountArra[$i]="";
-				if(isset($request->PaymentAmount[$i])){
-					$PaymentAmountArra[$i]=$request->PaymentAmount[$i];
-				}
-				$PaymentHowToPayArray[$i]="";
-				//$htp="";
-				if(isset($request->HowToPay[$i])){
-					$PaymentHowToPayArray[$i]=$request->HowToPay[$i];
-				}
-				
-				$targetlData=[
-					'serial_keiyaku'=>session('ContractSerial'),
-					'serial_user'=>session('UserSerial'),
-					'payment_history_serial'=>$PaymentHistorySerial,
-					'serial_staff'=>Auth::user()->serial_admin,
-					'date_payment'=>$PaymentDateArra[$i],
-					'amount_payment'=>str_replace(',','',$PaymentAmountArra[$i]),
-					'how_to_pay'=>$PaymentHowToPayArray[$i],
-					'deleted_at'=>null
-				];
-				$targetDataArray[]=$targetlData;
-				$PaymentHistorySerial++;
-				PaymentHistory::upsert($targetDataArray,['payment_history_serial']);
-			}
-		
-		VisitHistory::where('serial_keiyaku','=', session('ContractSerial'))->delete();
-		
-		$targetDataArray=array();
-		$VisitHistorySerial=session('ContractSerial')."-01";
-		$VisitHistorySerial=str_replace('K','V',$VisitHistorySerial);
-		$date_latest_visit="";
-		if(isset($request->visitDate)){
-			$i=0;
-			foreach($request->visitDate as $visitDateValue){
-				if($visitDateValue<>""){$date_latest_visit=$visitDateValue;}
-				if($visitDateValue==""){break;}
-				$targetlData=array();
-				$targetlData=[
-					'serial_keiyaku'=>session('ContractSerial'),
-					'serial_user'=>session('UserSerial'),
-					'visit_history_serial'=>$VisitHistorySerial,
-					'serial_staff'=>Auth::user()->serial_staff,
-					'date_visit'=>$visitDateValue,
-					'treatment_dtails'=>$request->TreatmentDetailsSelect[$i],
-					//'point'=>$request->point[$i],
-					'deleted_at'=>null
-				];
-				VisitHistory::where('visit_history_serial','=', $VisitHistorySerial)->restore();
-				VisitHistory::upsert($targetlData,['visit_history_serial']);
-				$targetDataArray[]=$targetlData;
-				$VisitHistorySerial++;
-				$i++;
-			}
-		}
-		Contract::where('serial_keiyaku','=',session('ContractSerial'))->update(['date_latest_visit' =>$date_latest_visit]);
-		session()->flash('success', '登録しました。');
-		session(['InpRecordVisitPaymentFlg' => true]);
-		$this::save_recorder("recordVisitPaymentHistory");
-		return redirect('/customers/ShowInpRecordVisitPayment/'.session("ContractSerial").'/'.session("UserSerial"));
 	}
 
 	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
