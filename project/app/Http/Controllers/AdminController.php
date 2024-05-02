@@ -526,12 +526,16 @@ class AdminController extends Controller
 			//$GoBackPlace="/customers/ShowCustomersList";
 			$GoBackPlace="/customers/CustomersList";
 			//$GoBackPlace="/customers/ShowCustomersList";
+			/*
 			if(empty($referee->serial_user)){
 				$referee_serial="";
 			}else{
 				$referee_serial=$referee->serial_user;
 			}
-			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$referee_serial);
+			*/
+			Log::alert("referee_name-1=".$target_user->referee_name);
+			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee_name);
+			//$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$referee_serial);
 			//$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
 
 		}else if(isset($request->fromMenu)){
@@ -1536,10 +1540,11 @@ class AdminController extends Controller
 			'email' => $request->email,
 
 			'phone' => $request->phone,
-			'reason_coming'=>$reason_coming
-			//'referee'=>trim($request->syokaisya_txt)
+			'reason_coming'=>$reason_coming,
+			'referee_name'=>trim($request->syokaisya_txt)
 		];
 		User::upsert($targetData,['serial_user']);
+		/*
 		$ck_cnt=Point::where('referred_serial','=',$targetSerial)->count();
 		$target_rec_sql=Point::where('referred_serial','=',$targetSerial);
 		if($target_rec_sql->count()==1){
@@ -1563,6 +1568,7 @@ class AdminController extends Controller
 				]
 			);
 		}
+		*/
 		/*
 		$targetDataPoint=[
 			'serial_user' =>trim($request->syokaisya_txt),

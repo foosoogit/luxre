@@ -25,6 +25,44 @@ class OtherFunc extends Controller
 		return encrypt($target_string);
 	}
 
+	public static function make_html_reason_coming_cbox($targetSbj,$referee){
+		Log::alert("referee2=".$referee);
+		$reason_coming_array=explode(",", initConsts::ReasonsComing());
+		$targetSbjArray=explode(",", $targetSbj);
+		$htm_reason_coming_cbox='';$sonotaReason="";$reason_id="ri_1";
+		foreach($reason_coming_array as $reason){
+			$cked="";
+			$htm_reason_coming_cbox.='<div class="form-check">';
+			if(strstr($targetSbj, $reason)<>false){	$cked='checked';}
+			if($reason<>"その他"){
+				$htm_reason_coming_cbox.='<input class="form-check-input" type="checkbox" name="reason_coming_cbx[]" id="'.$reason_id.'" value="'.$reason.'" '.$cked.' />';
+				$htm_reason_coming_cbox.='<label class="form-check-label" for="'.$reason_id.'">'.$reason.'</label></div>';
+				//$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" type="checkbox" value="'.$reason.'" '.$cked.' />'.$reason.'</label>';
+			}else{
+				$htm_reason_coming_cbox.='<input class="form-check-input" type="checkbox" name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" value="その他" onchange="reason_coming_sonota_manage();"'.$cked.' />';
+				$htm_reason_coming_cbox.='<label class="form-check-label" for="reason_coming_cbx_sonota">その他</label>';
+				//$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" type="checkbox" value="その他" onchange="reason_coming_sonota_manage();" '.$cked.' />その他</label>';
+				if($cked=='checked'){
+					$sonotaArray=array();
+					$sonotaArray=explode("(", $targetSbj);
+					if(count($sonotaArray)>1){
+						$sonotaReason=str_replace(')', '', $sonotaArray[1]);
+					}
+				}
+			}
+			$reason_id++;
+		}
+		
+		$htm_reason_coming_cbox.='<input name="reason_coming_txt" id="reason_coming_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$sonotaReason.'" /></div>';
+		$htm_reason_coming_cbox.='<div class="row" style="py-3.5"><div class="col-auto">';
+		//$htm_reason_coming_cbox.='●紹介者(顧客番号を入力してください。)</div><div class="col-auto"><input name="syokaisya_txt" id="syokaisya_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$referee.'" onkeyup="SerchRefereeInf(this)"/></div>';
+		//$htm_reason_coming_cbox.='●紹介者(氏名を入力してください。自動でポイントは付きません。)</div><div class="col-auto"><input name="syokaisya_txt" id="syokaisya_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$referee.'" onkeyup="SerchRefereeInf(this)"/></div>';
+		$htm_reason_coming_cbox.='●紹介者(氏名を入力してください。自動でポイントは付きません。)</div><div class="col-auto"><input name="syokaisya_txt" id="syokaisya_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$referee.'"/></div>';
+		//$htm_reason_coming_cbox.='<div class="col-auto"><button class="btn btn-success btn-sm" type="button" onclick="SerchRefereeInf();">紹介者検索</button></div></div>';
+		//$htm_reason_coming_cbox.='<div class="col-auto"><a href="/customers/CustomersList" class="btn btn-success btn-sm" target="_blank">紹介者検索</a></div></div>';
+		return $htm_reason_coming_cbox;
+	}
+
 	public static function make_html_yearly_Report_table($targetYear,$startMonth){
 		$target_contract_money_array=explode( ',',initConsts::TargetContractMoney());
 		$sbj_array=array();
@@ -468,41 +506,7 @@ class OtherFunc extends Controller
 		$htm_TreatmentsTimes_slct.='</select>';
 		return $htm_TreatmentsTimes_slct;
 	}
-
-	public static function make_html_reason_coming_cbox($targetSbj,$referee){
-		$reason_coming_array=explode(",", initConsts::ReasonsComing());
-		$targetSbjArray=explode(",", $targetSbj);
-		$htm_reason_coming_cbox='';$sonotaReason="";$reason_id="ri_1";
-		foreach($reason_coming_array as $reason){
-			$cked="";
-			$htm_reason_coming_cbox.='<div class="form-check">';
-			if(strstr($targetSbj, $reason)<>false){	$cked='checked';}
-			if($reason<>"その他"){
-				$htm_reason_coming_cbox.='<input class="form-check-input" type="checkbox" name="reason_coming_cbx[]" id="'.$reason_id.'" value="'.$reason.'" '.$cked.' />';
-				$htm_reason_coming_cbox.='<label class="form-check-label" for="'.$reason_id.'">'.$reason.'</label></div>';
-				//$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" type="checkbox" value="'.$reason.'" '.$cked.' />'.$reason.'</label>';
-			}else{
-				$htm_reason_coming_cbox.='<input class="form-check-input" type="checkbox" name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" value="その他" onchange="reason_coming_sonota_manage();"'.$cked.' />';
-				$htm_reason_coming_cbox.='<label class="form-check-label" for="reason_coming_cbx_sonota">その他</label>';
-				//$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" type="checkbox" value="その他" onchange="reason_coming_sonota_manage();" '.$cked.' />その他</label>';
-				if($cked=='checked'){
-					$sonotaArray=array();
-					$sonotaArray=explode("(", $targetSbj);
-					if(count($sonotaArray)>1){
-						$sonotaReason=str_replace(')', '', $sonotaArray[1]);
-					}
-				}
-			}
-			$reason_id++;
-		}
-		$htm_reason_coming_cbox.='<input name="reason_coming_txt" id="reason_coming_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$sonotaReason.'" /></div>';
-		//$htm_reason_coming_cbox.='<div class="row" style="py-3.5"><div class="col-auto">';
-		//$htm_reason_coming_cbox.='●紹介者(顧客番号を入力してください。)</div><div class="col-auto"><input name="syokaisya_txt" id="syokaisya_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$referee.'" onkeyup="SerchRefereeInf(this)"/></div>';
-		//$htm_reason_coming_cbox.='<div class="col-auto"><button class="btn btn-success btn-sm" type="button" onclick="SerchRefereeInf();">紹介者検索</button></div></div>';
-		//$htm_reason_coming_cbox.='<div class="col-auto"><a href="/customers/CustomersList" class="btn btn-success btn-sm" target="_blank">紹介者検索</a></div></div>';
-		return $htm_reason_coming_cbox;
-	}
-
+	
 	public static function get_prefecture_name_by_region($targetRegion){
 		$pref_codes = array("1" => "北海道", "2" => "青森県", "3" => "岩手県", "4" => "宮城県", "5" => "秋田県", "6" => "山形県", "7" => "福島県", "8" => "茨城県", "9" => "栃木県", "10" => "群馬県", "11" => "埼玉県", "12" => "千葉県", "13" => "東京都", "14" => "神奈川県", "15" => "新潟県", "16" => "富山県", "17" => "石川県", "18" => "福井県", "19" => "山梨県", "20" => "長野県", "21" => "岐阜県", "22" => "静岡県", "23" => "愛知県", "24" => "三重県", "25" => "滋賀県", "26" => "京都府", "27" => "大阪府", "28" => "兵庫県", "29" => "奈良県", "30" => "和歌山県", "31" => "鳥取県", "32" => "島根県", "33" => "岡山県", "34" => "広島県", "35" => "山口県", "36" => "徳島県", "37" => "香川県", "38" => "愛媛県", "39" => "高知県", "40" => "福岡県", "41" => "佐賀県", "42" => "長崎県", "43" => "熊本県", "44" => "大分県", "45" => "宮崎県", "46" => "鹿児島県", "47" => "沖縄県");
 		return $pref_codes[$targetRegion];
