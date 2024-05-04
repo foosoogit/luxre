@@ -122,10 +122,10 @@
 				//console.log(data.res);
 				data=null;
 			}).fail(function (XMLHttpRequest, textStatus, errorThrown) {
-				alert(XMLHttpRequest.status);
-				alert(textStatus);
-				alert(errorThrown);	
-				alert('エラー2');
+				//alert(XMLHttpRequest.status);
+				//alert(textStatus);
+				//alert(errorThrown);	
+				alert('保存できませんでした。');
 			});
 			//$('#name_fadeout_alert').show();		
 		}

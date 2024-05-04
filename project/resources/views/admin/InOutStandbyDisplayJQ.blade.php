@@ -110,10 +110,10 @@
 					window.setTimeout(dispNone, 3000);
 					//name_fadeOut();
 				}).fail(function (XMLHttpRequest, textStatus, errorThrown) {
-					alert(XMLHttpRequest.status);
-					alert(textStatus);
-					alert(errorThrown);	
-					alert('エラー');
+					//alert(XMLHttpRequest.status);
+					//alert(textStatus);
+					//alert(errorThrown);	
+					alert('保存できませんでした。');
 				});
 			}else{
 				//alert("TEST");

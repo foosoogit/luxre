@@ -62,6 +62,7 @@ Route::middleware('auth:admin')->group(function () {
     
     
     Route::name('admin.')->group(function() {
+        Route::post('admin/ajax_digestion_point',[AdminController::class,'ajax_digestion_point'])->name('ajax_digestion_point');
         Route::post('admin/ajax_change_point',[AdminController::class,'ajax_change_point'])->name('ajax_change_point');
         Route::get('/show_staff_in_out_rireki', function () {
             return view('admin.ListStaffInOutHistories');

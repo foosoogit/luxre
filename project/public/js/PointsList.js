@@ -1,4 +1,49 @@
-﻿function change_point(target_id){
+﻿function point_digestion(target_id){
+    //var points=prompt("ポイント数を入力してください。");
+	const el_digestion_btn=document.getElementById('point_digestion_btn_'+target_id);
+	const el_point_btn=document.getElementById('change_point_btn_'+target_id);
+    if(window.confirm("ポイントを"+el_digestion_btn.value+"します。よろしいですか？")){
+        $.ajax({
+			url: 'ajax_digestion_point',
+			type: 'post', // getかpostを指定(デフォルトは前者)
+			dataType: 'text', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
+			scriptCharset: 'utf-8',
+			frequency: 10,
+			cache: false,
+			async : false,
+			data: {'target_id': target_id},
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+		}).done(function (set_flg) {
+			//msg="復元";
+			console.log("set_flg="+set_flg)
+			if(set_flg=="false"){
+				msg="復元しました。";
+				vl="消化";
+				el_digestion_btn.className = 'btn btn-warning  btn-sm';
+				el_point_btn.readOnly = false;
+				el_point_btn.className = 'btn btn-info btn-sm';
+				
+			}else if(set_flg=="true"){
+				msg="消化しました。";
+				vl="復元";
+				el_digestion_btn.className = 'btn btn-outline-warning btn-sm';
+				el_point_btn.readOnly = true;
+				el_point_btn.className = 'btn btn-light btn-sm';
+			}
+            el_digestion_btn.value=vl;
+			alert(msg);
+		}) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+			alert(XMLHttpRequest.status);
+			alert(textStatus);
+			alert(errorThrown);	
+			alert('エラー');
+		});
+	}
+}
+
+function change_point(target_id){
     var points=prompt("ポイント数を入力してください。");
     if(points!==null){
         $.ajax({

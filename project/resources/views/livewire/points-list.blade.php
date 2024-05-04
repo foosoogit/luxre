@@ -58,19 +58,21 @@
                                         <td>{{ $history->visit_date }}</td>
                                         {{--<td>{{ $history->ReferredName }}</td>wire:click="change_point('{{ $history->id }}')"--}}
                                         <td>
-                                            <input type="button" class="btn btn-link" onclick="change_point('{{ $history->id }}')" name="change_point_btn_{{ $history->id }}" id="change_point_btn_{{ $history->id }}" value="{{ $history->point }}"/>
-                                            {{--<button type="button" wire:confirm.prompt="ポイント数を入力してください。|{{ $history->point }}">
-                                                {{ $history->point }}
-                                            </button>
-                                            <button type="button" wire:confirm="ポイント数を入力してください。">
-                                                {{ $history->point }}
-                                            </button>
-                                            --}}
+                                            
+                                            @if($history->digestion_flg=='true')
+                                                <input type="button" class="btn btn-light btn-sm" name="change_point_btn_{{ $history->id }}" id="change_point_btn_{{ $history->id }}" value="{{ $history->point }}" readonly/>
+                                            @else
+                                                <input type="button" class="btn btn-info btn-sm" onclick="change_point('{{ $history->id }}')" name="change_point_btn_{{ $history->id }}" id="change_point_btn_{{ $history->id }}" value="{{ $history->point }}"/>
+                                            @endif
+
                                         </td>
                                         <td>
-                                            <button class="btn btn-link" wire:click="point_digestion('{{ $history->id }}')" name="point_digestion_btn'" value="消化" onClick="change_point(this)"></button>
+                                            @if($history->digestion_flg=='true')
+                                                <input type="button" class="btn btn-outline-warning btn-sm" onclick="point_digestion('{{ $history->id }}')" name="point_digestion_btn_{{ $history->id }}" id="point_digestion_btn_{{ $history->id }}" value="復元"/></button>
+                                            @else
+                                                <input type="button" class="btn btn-warning btn-sm" onclick="point_digestion('{{ $history->id }}')" name="point_digestion_btn_{{ $history->id }}" id="point_digestion_btn_{{ $history->id }}" value="消化"/></button>
+                                            @endif
                                         </td>
-                                        {{--<td>{{ $history->note }}</td>--}}
                                     </tr>
                                 @endforeach
                             </table>

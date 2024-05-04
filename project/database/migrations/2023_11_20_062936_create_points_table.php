@@ -21,9 +21,9 @@ return new class extends Migration
             $table->string('point',6)->comment('取得ポイント');
             $table->string('visit_date',20)->nullable()->comment('来店日');
             $table->string('referred_serial',10)->nullable()->comment('紹介された人');
-            $table->string('validity_flg',10)->comment('有効フラグ');
-            $table->string('digestion_flg',10)->comment('消化フラグ');
-            $table->string('point_expiration_date',10)->comment('ポイント消滅日');
+            $table->string('validity_flg',10)->nullable()->comment('有効フラグ');
+            $table->string('digestion_flg',10)->nullable()->comment('消化フラグ');
+            $table->string('point_expiration_date',10)->nullable()->comment('ポイント消滅日');
             $table->text('note')->nullable()->comment('備考');
         });
         /*

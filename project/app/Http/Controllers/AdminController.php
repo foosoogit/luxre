@@ -39,10 +39,22 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function ajax_digestion_point(Request $request){
+		
+		$flg=Point::where('id','=',$request->target_id)->first("digestion_flg");
+		log::alert("flg=".$flg->digestion_flg);
+		if($flg->digestion_flg=="true"){
+			$set_flg="false";
+		}else if ($flg->digestion_flg=="false"){
+			$set_flg="true";
+		}
+		log::alert("set_flg=".$set_flg);
+		Point::where('id','=',$request->target_id)->update(["digestion_flg" => $set_flg]);
+		print $set_flg;
+	}
+
 	public function ajax_change_point(Request $request){
-		log::alert("target_id=".$request->target_id);
 		Point::where('id','=',$request->target_id)->update(["point" => $request->points]);
-		//echo "ok";
 	}
 
 	function recordVisitPaymentHistory(Request $request){
