@@ -13,6 +13,14 @@ class PointsList extends Component
     public $sort_key_p = '',$asc_desc_p="",$serch_key_p="";
 	public $kensakukey="";
 	public $target_page=null;
+
+    public function change_point($point_id){
+        Point::where('id','=',$point_id)->update([
+            'time_out' => date('Y-m-d H:i:s'),
+            'updated_at'=> date('Y-m-d H:i:s'),
+        ]);
+    }
+
     public function render()
     {
         /*

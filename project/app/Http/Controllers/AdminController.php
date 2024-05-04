@@ -39,6 +39,12 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function ajax_change_point(Request $request){
+		log::alert("target_id=".$request->target_id);
+		Point::where('id','=',$request->target_id)->update(["point" => $request->points]);
+		//echo "ok";
+	}
+
 	function recordVisitPaymentHistory(Request $request){
 		$PaymentHistorySerial=session('ContractSerial')."-01";
 		$PaymentHistorySerial=str_replace('K','P',$PaymentHistorySerial);
@@ -533,7 +539,7 @@ class AdminController extends Controller
 				$referee_serial=$referee->serial_user;
 			}
 			*/
-			Log::alert("referee_name-1=".$target_user->referee_name);
+			//Log::alert("referee_name-1=".$target_user->referee_name);
 			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee_name);
 			//$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$referee_serial);
 			//$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);

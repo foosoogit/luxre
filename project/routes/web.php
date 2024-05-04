@@ -57,7 +57,12 @@ Route::middleware('auth')->group(function () {
 });
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
+    
+    
+    
+    
     Route::name('admin.')->group(function() {
+        Route::post('admin/ajax_change_point',[AdminController::class,'ajax_change_point'])->name('ajax_change_point');
         Route::get('/show_staff_in_out_rireki', function () {
             return view('admin.ListStaffInOutHistories');
         })->name('show_staff_in_out_rireki.get');
@@ -147,7 +152,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::controller(AdminController::class)->name('customers.')->group(function() {
         //Route::get('/customers/CustomerInfFromDayly/{target_user_serial}', [CustomersList::class,'search_from_top_menu'],function($target_user_serial){})->name("CustomerInfFromDayly");
     	//Route::post('/customers/ShowCustomersList_livewire_from_top_menu', CustomerSearch::class,function(Request $request){});
-	    Route::post('/customers/CustomerInfFromDaylyRep', [CustomersList::class,function(Request $request){}])->name("CustomerInfFromDayly.post");
+	    
+        Route::post('/customers/CustomerInfFromDaylyRep', [CustomersList::class,function(Request $request){}])->name("CustomerInfFromDayly.post");
         
         Route::get('/customers/deleteContract/{serial_contract}/{serial_user}',[AdminController::class,'deleteContract'],function($serial_contract,$serial_user){});
         Route::get('/customers/deleteCustomer/{serial_user}',[AdminController::class,'deleteCustomer'],function($serial_user){});

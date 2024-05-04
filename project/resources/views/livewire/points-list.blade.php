@@ -41,9 +41,10 @@
                                     <th>顧客氏名</th>
                                     <th>取得方法</th>
                                     <th>来店日</th>
-                                    <th>紹介した人</th>
-                                    <th>取得ポイント</th>
-                                    <th>ポイント消滅日</th>
+                                    {{--<th>紹介した人</th>--}}
+                                    <th>取得ポイント(タップで修正)</th>
+                                    <th>消化</th>
+                                    {{--<th>ポイント消滅日</th>--}}
                                 </tr>
                                 @foreach ($points_histories as $history)
                                     <tr>
@@ -55,9 +56,21 @@
                                         <td>{{ $history->UserName }}</td>
                                         <td>{{ $history->method }}</td>
                                         <td>{{ $history->visit_date }}</td>
-                                        <td>{{ $history->ReferredName }}</td>
-                                        <td>{{ $history->point }}</td>
-                                        <td>{{ $history->note }}</td>
+                                        {{--<td>{{ $history->ReferredName }}</td>wire:click="change_point('{{ $history->id }}')"--}}
+                                        <td>
+                                            <input type="button" class="btn btn-link" onclick="change_point('{{ $history->id }}')" name="change_point_btn_{{ $history->id }}" id="change_point_btn_{{ $history->id }}" value="{{ $history->point }}"/>
+                                            {{--<button type="button" wire:confirm.prompt="ポイント数を入力してください。|{{ $history->point }}">
+                                                {{ $history->point }}
+                                            </button>
+                                            <button type="button" wire:confirm="ポイント数を入力してください。">
+                                                {{ $history->point }}
+                                            </button>
+                                            --}}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-link" wire:click="point_digestion('{{ $history->id }}')" name="point_digestion_btn'" value="消化" onClick="change_point(this)"></button>
+                                        </td>
+                                        {{--<td>{{ $history->note }}</td>--}}
                                     </tr>
                                 @endforeach
                             </table>

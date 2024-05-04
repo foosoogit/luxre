@@ -23,6 +23,7 @@
                             <input id="UserPointVisit" name="UserPointVisit" type="text" class="form-control" value="{{ $configration_array["UserPointVisit"] }}" required autofocus />
                         </div>
                     </div>
+                    {{--
                     <div class="row"> 
                         <div class="col-4">
                             <label for="UserPointReferral" class="form-label">紹介付加ポイント</label>
@@ -35,7 +36,7 @@
                             <input id="PointValidityTerm" name="PointValidityTerm" type="text" class="form-control" value="{{$configration_array['PointValidityTerm']}}" required autofocus />
                         </div>
                     </div>
-
+                    --}}
                         {{-- 
                         </div><br>
                             
