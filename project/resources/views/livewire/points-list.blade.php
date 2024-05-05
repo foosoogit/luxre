@@ -6,6 +6,19 @@
                     @include('layouts.header')
                 </div>
                 <div class="mb-2 bg-secondary text-white">ポイント管理</div>
+                <div class="container text-center">
+
+                <div class="row justify-content-md-center">
+                    <div class="col-auto form-check form-check-inline">
+                        <input type="checkbox" name="state_cbx" id="state_cbx_validity" wire:click="state_validity()" class="form-check-input" {{session('state_validity')}}>
+                        <label class="form-check-label" for="state_cbx_validity">&nbsp;有効</label>
+                    </div>
+                    <div class="col-auto form-check form-check-inline">
+                        <input type="checkbox" name="state_cbx" id="state_cbx_used" wire:click="state_used()" class="form-check-input" {{session('state_used')}}>
+                        <label class="form-check-label" for="unregistered_cbx_used">&nbsp;消化済み</label>
+                    </div>
+                </div>
+                </div>
                 <div class="col-auto">
                     <div class="row lh-lg">
                         <p class="lh-lg">

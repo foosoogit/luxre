@@ -1162,6 +1162,8 @@ class AdminController extends Controller
 	}
 
 	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
+		//Log::alert("recordVisitPaymentHistory");
+		
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$fromURLArray=parse_url($_SERVER['HTTP_REFERER']);
 		if(!session('InpRecordVisitPaymentFlg')){
@@ -1171,11 +1173,13 @@ class AdminController extends Controller
 			session(['InpRecordVisitPaymentFlg' => false]);
 		}
 		session(['fromPage' => parse_url($_SERVER['HTTP_REFERER'])]);
+		//Log::alert('fromPage='.session('fromPage'));
 		session(['UserSerial' => $UserSerial]);
 		session(['ContractSerial' => $ContractSerial]);
 		$RecordUrl = route('customers.recordVisitPaymentHistory');
 		$header="";$slot="";$selectedManth=array();$selectedManth=array();
 		$targetVisitHistoryArray=VisitHistory::where('serial_keiyaku','=', $ContractSerial)->get();
+		//Log::info($targetVisitHistoryArray);
 		$targetPaymentHistoryArray=PaymentHistory::where('serial_keiyaku','=', $ContractSerial)->get();
 
 		$targetUser=User::where('serial_user','=', $UserSerial)->first();
@@ -1310,7 +1314,8 @@ class AdminController extends Controller
 		}
 		$GoBackToPlace=session('ShowInpRecordVisitPaymentfromPage');
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		return view('customers.PaymentRegistration',compact("PointArray","target_historyBack_inf_array","only_treatment_color_array","GoBackToPlace","header","slot",'VisitSerialArray','VisitDateArray','PaymentDateArray','targetUser','targetContract','KeiyakuNaiyou','PaymentAmountArray','HowToPayCheckedArray','visit_disabeled','sejyutukaisu','set_gray_array','payment_disabeled','set_gray_pay_array','set_background_gray_pay_array','paymentCount','TreatmentDetailsArray','TreatmentDetailsSelectArray'));
+		log::info($target_historyBack_inf_array);
+		return view('customers.PaymentRegistration',compact("UserSerial","PointArray","target_historyBack_inf_array","only_treatment_color_array","GoBackToPlace","header","slot",'VisitSerialArray','VisitDateArray','PaymentDateArray','targetUser','targetContract','KeiyakuNaiyou','PaymentAmountArray','HowToPayCheckedArray','visit_disabeled','sejyutukaisu','set_gray_array','payment_disabeled','set_gray_pay_array','set_background_gray_pay_array','paymentCount','TreatmentDetailsArray','TreatmentDetailsSelectArray'));
 	}
 
 	function insertContract(Request $request){
