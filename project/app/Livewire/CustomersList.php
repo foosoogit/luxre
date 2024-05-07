@@ -20,12 +20,6 @@ class CustomersList extends Component
 	public $kensakukey="";
 	public $target_page=null;
 
-	/*
-    public $count = 0;
- 	public function increment(){
-		$this->count++;
-	}
-    */
     public function searchClear(){
 		$this->serch_key_p="";
 		$this->kensakukey="";
@@ -64,7 +58,7 @@ class CustomersList extends Component
 			$targetPage=intval($REQUEST_URI_array[1]);
 		}
 		*/
-		//log::alert('kensakukey='.$this->kensakukey);
+
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		if(!isset($sort_key_p) and session('sort_key')==null){
@@ -76,13 +70,6 @@ class CustomersList extends Component
 			session(['asc_desc' =>'ASC']);
 		}
 		$this->asc_desc_p=session('asc_desc');
-		/*
-		if($this->sort_key_p=="refereecnt"){
-			$userQuery = User::query();
-		}else{
-			$userQuery = User::query();
-		}
-		*/
 		$from_place="";$target_day="";$backdayly=false;
 		foreach($_SESSION['access_history'] as $targeturl){
 			if(strpos( $targeturl, 'ShowDailyReport') !== false){

@@ -1,4 +1,8 @@
-﻿function point_digestion(target_id){
+﻿function clear_serch(){
+	document.getElementById('search_key').value='';
+	document.getElementById('target_day').value='';
+}
+function point_digestion(target_id){
     //var points=prompt("ポイント数を入力してください。");
 	const el_digestion_btn=document.getElementById('point_digestion_btn_'+target_id);
 	const el_point_btn=document.getElementById('change_point_btn_'+target_id);
