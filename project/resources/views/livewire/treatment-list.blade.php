@@ -92,7 +92,7 @@
                                         <td class="border px-4 py-2" style="text-align: left;">{{ $treatment_content->treatment_details }}</td>
                                         <td class="border px-4 py-2" style="text-align: left;">{{ $treatment_content->memo}}</td>
                                         <td class="border px-4 py-2" style="text-align: left;">
-                                            <form action="/workers/deleteTreatmentContent/{{$treatment_content->serial_treatment_contents}}" method="GET">@csrf
+                                            <form action="/admin/deleteTreatmentContent/{{$treatment_content->serial_treatment_contents}}" method="GET">@csrf
                                                 <input name="delete_btn" type="submit" value="削除" onclick="return delArert('施術番号：{{$treatment_content->serial_treatment_contents}} 施術名:{{$treatment_content->name_treatment_contents}}');">
                                             </form>
                                         </td>

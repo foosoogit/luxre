@@ -39,6 +39,12 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function deleteTreatmentContent($TreatmentContentSerial){
+		$deleTreatmentContent=TreatmentContent::where('serial_treatment_contents','=',$TreatmentContentSerial)->delete();
+		$this::save_recorder("deleteTreatmentContent");
+		return redirect('/admin/TreatmentList');
+	}
+
 	public function ajax_digestion_point(Request $request){
 		
 		$flg=Point::where('id','=',$request->target_id)->first("digestion_flg");
@@ -1875,12 +1881,6 @@ class AdminController extends Controller
 		echo 'success';
 	}
 	
-	public function deleteTreatmentContent($TreatmentContentSerial){
-		$deleTreatmentContent=TreatmentContents::where('serial_treatment_contents','=',$TreatmentContentSerial)->delete();
-		$this::save_recorder("deleteTreatmentContent");
-		return redirect('/workers/ShowTreatmentContents');
-	}
-
 	public function SaveTreatment(Request $request){
 		$targetData=[
 			'created_at' => date('Y-m-d H:i:s'),

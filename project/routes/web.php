@@ -103,6 +103,8 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('admin/InOutStandbyDisplay', [AdminController::class,'ShowInOutStandbyDisplay'])->name("InOutStandbyDisplay.get");
         Route::post('/admin/saveTreatment/', [AdminController::class,'saveTreatment',function(Request $request){}])->name('saveTreatment.post');
 
+        Route::get('/admin/deleteTreatmentContent/{serial_TreatmentContent}',[AdminController::class,'deleteTreatmentContent'],function($serial_TreatmentContent){});
+        
         Route::get('/admin/InpTreatment/{TreatmentContentSerial}', [AdminController::class,'InpTreatment',function($TreatmentSerial){}])->name('InpTreatment.get');
 
         Route::get('/admin/TreatmentList', function () {
