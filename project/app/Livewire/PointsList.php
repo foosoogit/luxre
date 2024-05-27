@@ -69,8 +69,8 @@ class PointsList extends Component
 
     public function render()
     {
-        Log::alert("serch_key=".$this->serch_key);
-        Log::alert("serch_key_point=".session('serch_key_point'));
+        //Log::alert("serch_key=".$this->serch_key);
+        //Log::alert("serch_key_point=".session('serch_key_point'));
         /*
         OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
         $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);

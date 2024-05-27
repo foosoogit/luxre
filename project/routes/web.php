@@ -83,6 +83,8 @@ Route::middleware('auth:admin')->group(function () {
             return view('admin.ListPoints');
         })->name('ListPoints.get');
 
+        //Route::get('/admin/show_point_list',[AdminController::class,'show_points_list'])->name('ListPoints.get');
+
 
         Route::get('/admin/GetEncryption', function () {
             return view('admin.GetEncryption');
@@ -180,7 +182,11 @@ Route::middleware('auth:admin')->group(function () {
         })->name('CustomersList.show.post');
 
         Route::get('livewire/update', function () {
-            if(str_contains($_SESSION['access_history'][0],"ContractList")){
+            //Log::alert("REQUEST_URI".$_SERVER['REQUEST_URI']);
+            //log::info($_SESSION['access_history']);
+            if(str_contains($_SESSION['access_history'][1],"show_point_list")){
+                return view('admin.ListPoints');
+            }else if(str_contains($_SESSION['access_history'][0],"ContractList")){
                return view('customers.ListContract');
             }else{
                 return view('customers.ListCustomers');

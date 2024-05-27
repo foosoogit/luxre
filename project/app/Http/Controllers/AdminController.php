@@ -38,7 +38,11 @@ class AdminController extends Controller
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
 	}
-
+	/*
+	public function show_points_list(){
+		return view('admin.ListPoints');
+    }
+	*/
 	public function deleteTreatmentContent($TreatmentContentSerial){
 		$deleTreatmentContent=TreatmentContent::where('serial_treatment_contents','=',$TreatmentContentSerial)->delete();
 		$this::save_recorder("deleteTreatmentContent");
@@ -48,13 +52,13 @@ class AdminController extends Controller
 	public function ajax_digestion_point(Request $request){
 		
 		$flg=Point::where('id','=',$request->target_id)->first("digestion_flg");
-		log::alert("flg=".$flg->digestion_flg);
+		//log::alert("flg=".$flg->digestion_flg);
 		if($flg->digestion_flg=="true"){
 			$set_flg="false";
 		}else if ($flg->digestion_flg=="false"){
 			$set_flg="true";
 		}
-		log::alert("set_flg=".$set_flg);
+		//log::alert("set_flg=".$set_flg);
 		Point::where('id','=',$request->target_id)->update(["digestion_flg" => $set_flg]);
 		print $set_flg;
 	}
@@ -1320,7 +1324,7 @@ class AdminController extends Controller
 		}
 		$GoBackToPlace=session('ShowInpRecordVisitPaymentfromPage');
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		log::info($target_historyBack_inf_array);
+		//log::info($target_historyBack_inf_array);
 		return view('customers.PaymentRegistration',compact("UserSerial","PointArray","target_historyBack_inf_array","only_treatment_color_array","GoBackToPlace","header","slot",'VisitSerialArray','VisitDateArray','PaymentDateArray','targetUser','targetContract','KeiyakuNaiyou','PaymentAmountArray','HowToPayCheckedArray','visit_disabeled','sejyutukaisu','set_gray_array','payment_disabeled','set_gray_pay_array','set_background_gray_pay_array','paymentCount','TreatmentDetailsArray','TreatmentDetailsSelectArray'));
 	}
 
