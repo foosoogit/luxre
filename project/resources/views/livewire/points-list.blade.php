@@ -64,7 +64,7 @@
                                 @foreach ($points_histories as $history)
                                     <tr>
                                         {{--<td>{{ $history->points_id }}</td>--}}
-                                        <td>{{ $history->id }}</td>
+                                        <td>{{ $history->points_id }}</td>
                                         <td>{{ $history->date_get }}</td>
                                         <td>{{ $history->serial_user }}</td>
                                         {{--<td>{{ $history->name_sei }}&nbsp;{{ $history->name_mei }}</td>--}}
@@ -75,17 +75,17 @@
                                         <td>
                                             
                                             @if($history->digestion_flg=='true')
-                                                <input type="button" class="btn btn-light btn-sm text-muted" name="change_point_btn_{{ $history->id }}" id="change_point_btn_{{ $history->id }}" value="{{ $history->point }}" readonly/>
+                                                <input type="button" class="btn btn-light btn-sm text-muted" name="change_point_btn_{{ $history->points_id }}" id="change_point_btn_{{ $history->points_id }}" value="{{ $history->point }}" readonly/>
                                             @else
-                                                <input type="button" class="btn btn-info btn-sm" onclick="change_point('{{ $history->id }}')" name="change_point_btn_{{ $history->id }}" id="change_point_btn_{{ $history->id }}" value="{{ $history->point }}"/>
+                                                <input type="button" class="btn btn-info btn-sm" onclick="change_point('{{ $history->points_id }}')" name="change_point_btn_{{ $history->points_id }}" id="change_point_btn_{{ $history->points_id }}" value="{{ $history->point }}"/>
                                             @endif
 
                                         </td>
                                         <td>
                                             @if($history->digestion_flg=='true')
-                                                <input type="button" class="btn btn-outline-warning btn-sm" onclick="point_digestion('{{ $history->id }}')" name="point_digestion_btn_{{ $history->id }}" id="point_digestion_btn_{{ $history->id }}" value="復元"/></button>
+                                                <input type="button" class="btn btn-outline-warning btn-sm" onclick="point_digestion('{{ $history->points_id }}')" name="point_digestion_btn_{{ $history->points_id }}" id="point_digestion_btn_{{ $history->ipoints_id }}" value="復元"/></button>
                                             @else
-                                                <input type="button" class="btn btn-warning btn-sm" onclick="point_digestion('{{ $history->id }}')" name="point_digestion_btn_{{ $history->id }}" id="point_digestion_btn_{{ $history->id }}" value="消化"/></button>
+                                                <input type="button" class="btn btn-warning btn-sm" onclick="point_digestion('{{ $history->points_id }}')" name="point_digestion_btn_{{ $history->points_id }}" id="point_digestion_btn_{{ $history->points_id }}" value="消化"/></button>
                                             @endif
                                         </td>
                                     </tr>

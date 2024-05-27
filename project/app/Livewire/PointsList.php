@@ -83,7 +83,8 @@ class PointsList extends Component
         $target_day = null;
 
         $points_histories = Point::query();
-        $points_histories = $points_histories->join('users', 'points.serial_user', '=', 'users.serial_user');
+       // $points_histories = $points_histories->select("points.id AS points_id")->select("*")->join('users', 'points.serial_user', '=', 'users.serial_user');
+        $points_histories = $points_histories->select('*', 'points.id as points_id')->join('users', 'points.serial_user', '=', 'users.serial_user');
         
         
         if(session('state_validity_checked')!==null && session('state_used_checked')==null){

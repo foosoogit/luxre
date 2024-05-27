@@ -64,7 +64,9 @@ class AdminController extends Controller
 	}
 
 	public function ajax_change_point(Request $request){
-		Point::where('id','=',$request->target_id)->update(["point" => $request->points]);
+		//Log::alert("target_id=".$request->target_id);
+		//Log::alert("points=".$request->points);
+		Point::where('id','=',trim($request->target_id))->update(["point" => $request->points]);
 	}
 
 	function recordVisitPaymentHistory(Request $request){
