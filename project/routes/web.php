@@ -182,8 +182,8 @@ Route::middleware('auth:admin')->group(function () {
         })->name('CustomersList.show.post');
 
         Route::get('livewire/update', function () {
-            //Log::alert("REQUEST_URI".$_SERVER['REQUEST_URI']);
-            //log::info($_SESSION['access_history']);
+            Log::alert("REQUEST_URI".$_SERVER['REQUEST_URI']);
+            log::info($_SESSION['access_history']);
             if(str_contains($_SESSION['access_history'][1],"show_point_list")){
                 return view('admin.ListPoints');
             }else if(str_contains($_SESSION['access_history'][0],"ContractList")){
