@@ -43,6 +43,28 @@ class AdminController extends Controller
 		return view('admin.ListPoints');
     }
 	*/
+
+	public function send_attendance_card($serial_staff){
+		$qr_image=QrCode::format('png')
+			->merge("storage/".$serial_staff.".png")
+			->style('square')
+			->backgroundColor(255,255,255)
+			->size(300)
+			->errorCorrection("H")
+			->generate($serial_staff);
+
+		Storage::put('qr_image.png', base64_encode($qr_image));
+		$$qr_image = imagecreatefrompng("https://www.example.com/qr_img.php?d=".$d."&e=M&t=J&s=2");
+		$fp = fopen("MedicalRecord/".$serial_staff.".png",'w');
+		$upload_data=$_POST['upload_data'];
+		fwrite($fp,base64_decode($upload_data));
+		fclose($fp);
+
+
+		//$deleStaff=Staff::where('serial_staff','=',$serial_staff)->delete();
+		//return view("admin.ListStaffs");
+	}
+
 	public function deleteTreatmentContent($TreatmentContentSerial){
 		$deleTreatmentContent=TreatmentContent::where('serial_treatment_contents','=',$TreatmentContentSerial)->delete();
 		$this::save_recorder("deleteTreatmentContent");

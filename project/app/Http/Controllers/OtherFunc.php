@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\TreatmentContent;
 use DateInterval;
 use DatePeriod;
+use App\Models\Staff;
+
 if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
@@ -26,7 +28,7 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_html_reason_coming_cbox($targetSbj,$referee){
-		Log::alert("referee2=".$referee);
+		//Log::alert("referee2=".$referee);
 		$reason_coming_array=explode(",", initConsts::ReasonsComing());
 		$targetSbjArray=explode(",", $targetSbj);
 		$htm_reason_coming_cbox='';$sonotaReason="";$reason_id="ri_1";
@@ -318,14 +320,15 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_html_staff_slct($targetStaffSerial){
+		Log::alert("targetStaffSerial=".$targetStaffSerial);
 		$htm_staff_slct="";
 		$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm">';
 		$htm_staff_slct.='<option value="">-- 選択してください --</option>';
 		//$staff_array=Staff::all();
-		$staff_array=DB::table('staff')->get();
+		$staff_array=Staff::get();
 		foreach($staff_array as $staff) {
 			$sct='';
-			if($staff->serial_staff==$targetStaffSerial){$sct='Selected';}
+			if($staff->serial_staff==$targetStaffSerial){$sct='Selected="Selected"';}
 			$htm_staff_slct.='<option value="'.$staff->serial_staff.'" '.$sct.'>'.$staff->last_name_kanji.' '.$staff->first_name_kanji.'</option>';
 		}
 		$htm_staff_slct.='</select>';

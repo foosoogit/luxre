@@ -57,10 +57,6 @@ Route::middleware('auth')->group(function () {
 });
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
-    
-    
-    
-    
     Route::name('admin.')->group(function() {
         Route::post('admin/ajax_digestion_point',[AdminController::class,'ajax_digestion_point'])->name('ajax_digestion_point');
         Route::post('admin/ajax_change_point',[AdminController::class,'ajax_change_point'])->name('ajax_change_point');
@@ -208,6 +204,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/customers/ShowInputCustomer', [AdminController::class,'ShowInputCustomer',function(Request $request){}])->name('ShowInpCustomer');
     });
 
+    Route::get('/send_attendance_card/{TargetStaffSerial}',[AdminController::class,'send_attendance_card'],function($TargetStaffSerial){});
     Route::get('/deleteStaff/{TargetStaffSerial}',[AdminController::class,'deleteStaff'],function($TargetStaffSerial){});
     Route::post('/saveStaff', [AdminController::class,'SaveStaff',function(Request $request){}])->name("saveStaff.post");
     Route::get('ShowInputStaff/{TargetStaffSerial}', [AdminController::class,'ShowInpStaff',function($TargetStaffSerial){}])->name('ShowInpStaff');
