@@ -58,6 +58,9 @@ Route::middleware('auth')->group(function () {
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
     Route::name('admin.')->group(function() {
+        
+        Route::get('admin/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
+        
         Route::post('admin/ajax_digestion_point',[AdminController::class,'ajax_digestion_point'])->name('ajax_digestion_point');
         Route::post('admin/ajax_change_point',[AdminController::class,'ajax_change_point'])->name('ajax_change_point');
         Route::get('/show_staff_in_out_rireki', function () {
@@ -154,6 +157,9 @@ Route::middleware('auth:admin')->group(function () {
         //Route::get('/customers/CustomerInfFromDayly/{target_user_serial}', [CustomersList::class,'search_from_top_menu'],function($target_user_serial){})->name("CustomerInfFromDayly");
     	//Route::post('/customers/ShowCustomersList_livewire_from_top_menu', CustomerSearch::class,function(Request $request){});
 	    
+        Route::get('/customers/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
+        Route::post('/customers/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
+
         Route::post('/customers/CustomerInfFromDaylyRep', [CustomersList::class,function(Request $request){}])->name("CustomerInfFromDayly.post");
         
         Route::get('/customers/deleteContract/{serial_contract}/{serial_user}',[AdminController::class,'deleteContract'],function($serial_contract,$serial_user){});

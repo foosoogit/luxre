@@ -43,6 +43,16 @@ class AdminController extends Controller
 		return view('admin.ListPoints');
     }
 	*/
+	public function ContractCancellation($serial_Contract,$UserSerial,Request $request){
+		$kaiyakuFlg=Contract::where('serial_keiyaku','=', $serial_Contract)->first('cancel');
+		if($kaiyakuFlg->cancel==null){
+			$dt=$request->KaiyakuDate;
+		}else{
+			$dt=null;
+		}
+		Contract::where('serial_keiyaku','=', $serial_Contract)->update(['cancel' => $dt]);
+		return redirect('/customers/ShowSyuseiContract/'.$serial_Contract.'/'.$UserSerial);
+	}
 
 	public function send_attendance_card($serial_staff){
 		$qr_image=QrCode::format('png')
@@ -1925,17 +1935,6 @@ class AdminController extends Controller
 		return redirect('/admin/TreatmentList');
 	}
 
-	public function ContractCancellation($serial_Contract,$UserSerial,Request $request){
-		$kaiyakuFlg=Contract::where('serial_keiyaku','=', $serial_Contract)->first('cancel');
-		if($kaiyakuFlg->cancel==null){
-			$dt=$request->KaiyakuDate;
-		}else{
-			$dt=null;
-		}
-		Contract::where('serial_keiyaku','=', $serial_Contract)->update(['cancel' => $dt]);
-		return redirect('/customers/ShowSyuseiContract/'.$serial_Contract.'/'.$UserSerial);
-	}
-	
 	public function MakeContractPDF($serial_Contract){
 		$keiyaku_inf=Contract::where('serial_keiyaku','=',$serial_Contract)->first();
 		$User_inf=User::where('serial_user','=',$keiyaku_inf->serial_user)->first();

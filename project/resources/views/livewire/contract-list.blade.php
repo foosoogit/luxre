@@ -96,6 +96,9 @@
                                 <td class="border px-4 py-2">
                                     <form action="/customers/ShowSyuseiContract/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
                                         <input name="syusei_Btn" type="submit" value="{{$dContracts->serial_keiyaku}}">
+                                        @if($dContracts->cancel<>null)
+                                            <span class="text-danger">解約済み</span>
+                                        @endif
                                     </form>
                                 </td>
                                 <td class="border px-4 py-2">

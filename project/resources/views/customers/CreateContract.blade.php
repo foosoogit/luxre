@@ -45,9 +45,9 @@ input,textarea{border: 1px solid #aaa;}
 								<div class="col-auto">
 									{{--<form action="/workers/ContractCancellation/{{optional($targetContract)->serial_keiyaku}}/{{$targetUser->serial_user}}" method="POST" name="KaiyakuFm"  id="KaiyakuFm">@csrf--}}
 										@if(optional($targetContract)->cancel===null)
-											解約日<input name="KaiyakuDate" id="KaiyakuDate" type="date" value="{{optional($targetContract)->cancel}}"/><input name="KaiyakuBtn" type="submit" value="解約" class="btn btn-warning ml-2 btn-sm" onclick="return cancel_validate();" formaction="/workers/ContractCancellation/{{optional($targetContract)->serial_keiyaku}}/{{$targetUser->serial_user}}"/>
+											解約日<input name="KaiyakuDate" id="KaiyakuDate" type="date" value="{{optional($targetContract)->cancel}}"/><input name="KaiyakuBtn" type="submit" value="解約" class="btn btn-warning ml-2 btn-sm" onclick="return cancel_validate();" formaction="/customers/ContractCancellation/{{optional($targetContract)->serial_keiyaku}}/{{$targetUser->serial_user}}"/>
 										@else
-											解約日：{{optional($targetContract)->cancel}}<input name="KaiyakuModosuBtn" type="submit" value="契約を復活"  class="btn btn-warning ml-2 btn-sm" onclick="return modosu_cancel();" formaction="/workers/ContractCancellation/{{optional($targetContract)->serial_keiyaku}}/{{$targetUser->serial_user}}"/>
+											解約日：{{optional($targetContract)->cancel}}<input name="KaiyakuModosuBtn" type="submit" value="契約を復活"  class="btn btn-warning ml-2 btn-sm" onclick="return modosu_cancel();" formaction="/customers/ContractCancellation/{{optional($targetContract)->serial_keiyaku}}/{{$targetUser->serial_user}}"/>
 										@endif
 									{{--</form>--}}
 								</div>
