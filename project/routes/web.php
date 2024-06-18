@@ -80,6 +80,12 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::get('/admin/show_point_list', function () {
             session(['target_livewire_page' => "ListPoints"]);
+            if(empty(session('state_validity_checked'))){
+                session(['state_validity_checked'=> "checked"]);
+            }
+            if(empty(session('state_used_checked'))){
+                session(['state_used_checked'=> "checked"]);
+            }
             return view('admin.ListPoints');
         })->name('ListPoints.get');
 
@@ -187,9 +193,9 @@ Route::middleware('auth:admin')->group(function () {
         })->name('CustomersList.show.post');
 
         Route::get('livewire/update', function () {
-            Log::alert("REQUEST_URI=".$_SERVER['REQUEST_URI']);
-            Log::alert("HTTP_REFERER=".$_SERVER['HTTP_REFERER']);
-            log::info($_SESSION['access_history']);
+            //Log::alert("REQUEST_URI=".$_SERVER['REQUEST_URI']);
+            //Log::alert("HTTP_REFERER=".$_SERVER['HTTP_REFERER']);
+            //log::info($_SESSION['access_history']);
             if(session('target_livewire_page')=="ListPoints"){
                 return view('admin.ListPoints');
             }else if(session('target_livewire_page')=="ListContract"){
