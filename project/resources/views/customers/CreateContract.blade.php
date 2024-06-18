@@ -1,7 +1,7 @@
 @extends('layouts.appCustomer')
 @section('content')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-<script type="text/javascript" src="{{ asset('/js/CreateContract.js?20230128') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/CreateContract.js?20230130') }}"></script>
 
 <style type="text/css">
 .auto-style1 {margin-left: 40px;}
@@ -223,7 +223,14 @@ input,textarea{border: 1px solid #aaa;}
 								</td>
 							</tr>
 						</table>
-						<p class="cyclic"><span class="auto-style2">*</span>お支払い方法・期間：</p>                      
+						<p class="cyclic"><span class="auto-style2">*</span>お支払い方法・期間：</p> 
+						
+						<p class="cyclic">
+							<label>
+								<input name="HowPayRdio" id="HowPayRdio_paypay" type="radio" onchange="HowPayRdioManage()" value="Paypay" {!!optional($HowToPay)['paypay']!!} class="cyclic"/>Paypay
+							</label>
+						</p>
+
 						<p class="cyclic"><label><input name="HowPayRdio" id="HowPayRdio_genkin" type="radio" onchange="HowPayRdioManage()" value="現金" {!!optional($HowToPay)['cash']!!} class="cyclic"/>現金支払い</label>
 							<select name="HowManyPaySlct" id="HowManyPaySlct" class="cyclic">
 								{!!optional($HowManyPay)['CashSlct']!!}

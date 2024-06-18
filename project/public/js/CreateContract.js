@@ -1,7 +1,15 @@
-﻿window.onload = function(){
+﻿
+window.onload = function(){
 	contract_type_manage();
+	HowPayRdioManage();
+	//console.log("onload");
 }
 
+/*
+window.addEventListener("load", (event) => {
+	console.log("ページが完全に読み込まれました");
+  });
+*/
 //window.confirm("これが確認ダイアログです。");
 
 function contract_type_manage(){
@@ -184,7 +192,7 @@ function getTodayForTypeDate() {
 }
 
 function cancel_validate(){
-	console.log(document.getElementById("KaiyakuDate").value);
+	//console.log(document.getElementById("KaiyakuDate").value);
 	if(document.getElementById("KaiyakuDate").value==""){
 		alert("解約日を入力してください。");
 		return false;
@@ -201,7 +209,6 @@ function cancel_validate(){
 }
 
 function modosu_cancel(){
-	//console.log(document.getElementById("KaiyakuDate").value);
 	let pass = window.prompt('パスワードの入力');
 	if(pass=='0927'){
 		return true;
@@ -218,6 +225,7 @@ function canceled_message(){
 }
 
 function HowPayRdioManage(){
+	//console.log("value="+document.getElementById("HowPayRdio_genkin").value);
 	var today = new Date();
 	var HowPay=document.getElementsByName("HowPayRdio").value;
 	console.log(document.getElementById("HowPayRdio_genkin").checked);
@@ -227,6 +235,28 @@ function HowPayRdioManage(){
 		document.getElementById("DateFirstPay").value=getTodayForTypeDate();
 		document.getElementById("DateSecondtPay").disabled=false;
 
+		document.getElementById("CardCompanyNameSlct").selectedIndex=0;
+		document.getElementById("CardCompanyNameSlct").disabled=true;
+
+		document.getElementById("HowmanyCard_OneTime").checked=false;
+		document.getElementById("HowmanyCard_OneTime").disabled=true;
+
+		document.getElementById("DatePayCardOneDay").disabled=true;
+		document.getElementById("DatePayCardOneDay").value="yyyy/mm/dd";
+		
+		document.getElementById("HowmanyCard_Bunkatsu").checked=false;
+		document.getElementById("HowmanyCard_Bunkatsu").disabled=true;
+		document.getElementById("HowManyPayCardSlct").selectedIndex=0;
+		document.getElementById("HowManyPayCardSlct").disabled=true;
+	}else if(document.getElementById("HowPayRdio_paypay").checked==true){
+		document.getElementById("HowManyPaySlct").selectedIndex=0;
+		document.getElementById("HowManyPaySlct").disabled=true;
+
+		document.getElementById("DateFirstPay").disabled=true;
+		document.getElementById("DateFirstPay").value="yyyy/mm/dd";
+		document.getElementById("AmountPaidFirst").value="";
+		document.getElementById("AmountPaidSecond").value="";
+		document.getElementById("DateSecondtPay").disabled=true;
 		document.getElementById("CardCompanyNameSlct").selectedIndex=0;
 		document.getElementById("CardCompanyNameSlct").disabled=true;
 

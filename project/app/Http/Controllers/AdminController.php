@@ -1122,11 +1122,13 @@ class AdminController extends Controller
 			}
 			$HowToPay['cash']='';
 			$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct("",20,1);			
-		}else{
+		}else if($targetContract->how_to_pay=="現金"){
 			$HowToPay['cash']='checked';
 			$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_genkin,20,1);
 			$HowManyPay['bunkatu']="";
 			$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct("",20,2);
+		}else if($targetContract->how_to_pay=="Paypay"){
+			$HowToPay['paypay']='checked';
 		}
 		$CardCompanySelect=OtherFunc::make_html_card_company_slct($CardCompany);
 
