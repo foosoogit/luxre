@@ -79,6 +79,7 @@ Route::middleware('auth:admin')->group(function () {
         */
 
         Route::get('/admin/show_point_list', function () {
+            session(['target_livewire_page' => "ListPoints"]);
             return view('admin.ListPoints');
         })->name('ListPoints.get');
 
@@ -176,23 +177,39 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
 	    
         Route::get('/customers/CustomersList', function () {
+            session(['target_livewire_page' => "ListCustomers"]);
             return view('customers.ListCustomers');
         })->name('CustomersList.show');
 
         Route::post('/customers/CustomersList', function () {
+            session(['target_livewire_page' => "ListCustomers"]);
             return view('customers.ListCustomers');
         })->name('CustomersList.show.post');
 
         Route::get('livewire/update', function () {
-            Log::alert("REQUEST_URI".$_SERVER['REQUEST_URI']);
+            Log::alert("REQUEST_URI=".$_SERVER['REQUEST_URI']);
+            Log::alert("HTTP_REFERER=".$_SERVER['HTTP_REFERER']);
             log::info($_SESSION['access_history']);
-            if(str_contains($_SESSION['access_history'][1],"show_point_list")){
+            if(session('target_livewire_page')=="ListPoints"){
+                return view('admin.ListPoints');
+            }else if(session('target_livewire_page')=="ListContract"){
+                return view('customers.ListContract');
+             }else if(session('target_livewire_page')=="ListCustomers"){
+                 return view('customers.ListCustomers');
+             }
+             /*
+            if(str_contains($_SERVER['HTTP_REFERER'],"show_point_list")){
                 return view('admin.ListPoints');
             }else if(str_contains($_SESSION['access_history'][0],"ContractList")){
-               return view('customers.ListContract');
-            }else{
-                return view('customers.ListCustomers');
-            }
+                return view('customers.ListContract');
+             }else{
+                 return view('customers.ListCustomers');
+             }
+            */
+            /*           
+            else if(str_contains($_SESSION['access_history'][1],"show_point_list")){
+                return view('admin.ListPoints');
+            */            
         });
 
         Route::get('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");

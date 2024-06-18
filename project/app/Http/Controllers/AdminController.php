@@ -1029,6 +1029,7 @@ class AdminController extends Controller
 	}
 
 	public function ShowContractList($UserSerial,Request $request){
+		session(['target_livewire_page' => "ListContract"]);
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		session(['fromPage' => 'ContractList']);
 		session(['targetUserSerial' => $UserSerial]);
