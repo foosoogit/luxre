@@ -115,6 +115,13 @@
 										</form>
 									</li>
 								</div>
+								<div class="col-auto">
+									<li>
+										<form method="POST" action="{{route('admin.YearlyReport.post')}}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">入金チェック</button>&emsp;<select name="year">{!!$html_year_slct!!}</select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option  value="0" >選択</option>{!!$htm_kesanMonth!!}</select>&emsp;契約達成率、前年度比等
+										</form>
+									</li>
+								</div>
 							</div>
 							{{--
 							<li>

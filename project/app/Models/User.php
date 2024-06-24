@@ -101,10 +101,10 @@ class User extends Authenticatable
 			->where('cancel','=',null)
 			->selectRaw('SUM(keiyaku_kingaku) as total')
 			->first(['total']);
-		$PaidAmount=PaymentHistory::leftJoin('keiyakus', 'payment_histories.serial_keiyaku', '=', 'keiyakus.serial_keiyaku')
+		$PaidAmount=PaymentHistory::leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
 				->where('payment_histories.serial_user','=',$this->serial_user)
 				->where('payment_histories.date_payment','<>',"")
-				->where('keiyakus.cancel','=',null)
+				->where('contracts.cancel','=',null)
 				->selectRaw('SUM(amount_payment) as paid')->first(['paid']);
 
 		$zankin = $TotalAmount->total-$PaidAmount->paid;

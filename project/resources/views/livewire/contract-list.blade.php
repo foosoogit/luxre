@@ -59,8 +59,8 @@
                             @if($UserSerial==="all")
                                 <th class="border px-4 py-2">顧客番号（新規作成)
                                     <div class="text-nowrap">
-                                        <button type="button" wire:click="sort('keiyakus.serial_user-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                        <button type="button" wire:click="sort('keiyakus.serial_user-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                        <button type="button" wire:click="sort('contracts.serial_user-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
+                                        <button type="button" wire:click="sort('contracts.serial_user-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
                                     </div>
                                 </th>
                                 <th class="border px-4 py-2">氏名

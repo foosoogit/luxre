@@ -43,6 +43,43 @@ class AdminController extends Controller
 		return view('admin.ListPoints');
     }
 	*/
+
+	public function ShowInpStaff($TargetStaffSerial){
+		//$header="";$slot="";$saveFlg="";
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		$GoBackPlace="/ShowStaffList";
+		$html_birth_select=array();
+		if($TargetStaffSerial=="new"){
+			$StaffInf=array();
+			//$maxStaffSerial =Staff::max('serial_staff');
+			$maxStaffSerial =DB::table('staff')->max('serial_staff');
+			$TargetStaffSerial=++$maxStaffSerial;
+			$html_year_slct=OtherFunc::make_html_birth_year_slct('');
+			$html_day_slct=OtherFunc::make_html_birth_day_slct('');
+			$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
+			$btnDisp="登録";
+		}else{
+			$StaffInf=Staff::where('serial_staff','=',$TargetStaffSerial)->first();
+			$btnDisp="修正";
+			if(empty($StaffInf->birth_date)){
+				$html_year_slct=OtherFunc::make_html_birth_year_slct('');
+				$html_day_slct=OtherFunc::make_html_birth_day_slct('');
+				$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
+			}else{
+				$html_year_slct=OtherFunc::make_html_birth_year_slct(date('Y', strtotime($StaffInf->birth_date)));
+				$html_day_slct=OtherFunc::make_html_birth_day_slct(date('d', strtotime($StaffInf->birth_date)));
+				$html_Month_slct=OtherFunc::make_html_birth_month_slct(date('m', strtotime($StaffInf->birth_date)));
+			}
+			//return view('teacher.inp_Staff',compact("header","slot",'TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","saveFlg"));
+		}
+		//$btnDisp="登録";
+		$html_birth_select['year']=$html_year_slct;
+		$html_birth_select['day']=$html_day_slct;
+		$html_birth_select['month']=$html_Month_slct;
+		session(['targetStaffSerial' => $TargetStaffSerial]);
+		return view('admin.inp_Staff',compact('TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","html_birth_select"));
+	}
+
 	public function ContractCancellation($serial_Contract,$UserSerial,Request $request){
 		$kaiyakuFlg=Contract::where('serial_keiyaku','=', $serial_Contract)->first('cancel');
 		if($kaiyakuFlg->cancel==null){
@@ -1766,42 +1803,6 @@ class AdminController extends Controller
 		$this::save_recorder("SaveStaff");
 		//return redirect('/workers/saveStaff');
 		return view("admin.ListStaffs");
-	}
-
-	public function ShowInpStaff($TargetStaffSerial){
-		//$header="";$slot="";$saveFlg="";
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		$GoBackPlace="/ShowStaffList";
-		$html_birth_select=array();
-		if($TargetStaffSerial=="new"){
-			$StaffInf=array();
-			//$maxStaffSerial =Staff::max('serial_staff');
-			$maxStaffSerial =DB::table('Staff')->max('serial_staff');
-			$TargetStaffSerial=++$maxStaffSerial;
-			$html_year_slct=OtherFunc::make_html_birth_year_slct('');
-			$html_day_slct=OtherFunc::make_html_birth_day_slct('');
-			$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
-			$btnDisp="登録";
-		}else{
-			$StaffInf=Staff::where('serial_staff','=',$TargetStaffSerial)->first();
-			$btnDisp="修正";
-			if(empty($StaffInf->birth_date)){
-				$html_year_slct=OtherFunc::make_html_birth_year_slct('');
-				$html_day_slct=OtherFunc::make_html_birth_day_slct('');
-				$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
-			}else{
-				$html_year_slct=OtherFunc::make_html_birth_year_slct(date('Y', strtotime($StaffInf->birth_date)));
-				$html_day_slct=OtherFunc::make_html_birth_day_slct(date('d', strtotime($StaffInf->birth_date)));
-				$html_Month_slct=OtherFunc::make_html_birth_month_slct(date('m', strtotime($StaffInf->birth_date)));
-			}
-			//return view('teacher.inp_Staff',compact("header","slot",'TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","saveFlg"));
-		}
-		//$btnDisp="登録";
-		$html_birth_select['year']=$html_year_slct;
-		$html_birth_select['day']=$html_day_slct;
-		$html_birth_select['month']=$html_Month_slct;
-		session(['targetStaffSerial' => $TargetStaffSerial]);
-		return view('admin.inp_Staff',compact('TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","html_birth_select"));
 	}
 
 		/*

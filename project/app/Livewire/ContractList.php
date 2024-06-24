@@ -144,7 +144,8 @@ class ContractList extends Component
 				});
 		}
 		
-		//log::alert("sort_key_contract 2=".$this->sort_key_contract);
+		log::alert("sort_key_contract=".$this->sort_key_contract);
+
 		if($this->sort_key_contract<>''){
 			if($this->sort_key_contract=="name_sei"){
 				if($this->sort_type_contract=="ASC"){
@@ -171,6 +172,7 @@ class ContractList extends Component
 		if(session('targetUserSerial')!="all"){
 			$this->targetPage=null;
 		}
+		//Log::alert("contractQuery=".$contractQuery);
 		$contractQuery=$contractQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->targetPage);
     	$GoBackPlaceName="";
 		foreach($_SESSION['access_history'] as $targetHistory){
