@@ -88,8 +88,9 @@ $headers = [['Content-Type' => $mimeType]];
         */
     }
     public function search_month($target_year,$target_month){
-		$this->$target_year=$target_year;
-        $this->$target_month=$target_month;
+		$this->target_year=$target_year;
+        $this->target_month=$target_month;
+        $this->target_day="";
 		Log::alert("target_year=".$target_year);
         Log::alert("target_month=".$target_month);
 		//session(['serchKey' => $this->kensakukey]);
@@ -99,8 +100,8 @@ $headers = [['Content-Type' => $mimeType]];
 		$this->kensakukey="";
         $this->target_staff_serial="";
 		$this->target_page=null;
-        $this->$target_year="";
-        $this->$target_month="";
+        $this->target_year="";
+        $this->target_month="";
         $this->target_day="";
 		session(['serchKey' => '']);
 	}
@@ -119,6 +120,8 @@ $headers = [['Content-Type' => $mimeType]];
 	}
 
     public function render(){
+        //Log::alert("target_year=".$this->$target_year);
+        //Log::alert("target_month=".$target_month);
         $this->search_staff();
         //$html_working_list_year_slct=OtherFunc::make_html_working_list_year_slct();
         //Log::alert("html_working_list_year_slct=".$html_working_list_year_slct);
@@ -140,6 +143,8 @@ $headers = [['Content-Type' => $mimeType]];
     }
     public function search_day($target){
         //log::alert("target=".$target);
+        $this->target_year="";
+        $this->target_month="";
         $this->target_day=$target;
     }
 
