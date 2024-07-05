@@ -20,6 +20,39 @@ if(!isset($_SESSION)){session_start();}
 class OtherFunc extends Controller
 {
 
+	public static function make_html_working_list_month_slct(){
+		$month_now=date('m');
+		//Log::alert("month_now=".$month_now);
+		$htm_month_slct='<select name="month_slct" id="month_slct" class="form-select">';
+		$htm_month_slct.='<option  value="" Selected>--Select--</option>';
+		for ($i=1; $i <= 12; $i++) {
+			$sct="";
+			if($i==$month_now){
+				$sct='Selected';
+			}
+			$htm_month_slct .= '<option value="'.sprintf('%02d', $i).'" '.$sct.'>'.$i.'月</option>';
+		}
+
+		$htm_month_slct.='</select>';
+		return $htm_month_slct;
+	}
+
+	public static function make_html_working_list_year_slct(){
+		$htm_year_slct='<select name="year_slct" id="year_slct" class="form-select">';
+		$htm_year_slct.='<option  value="" Selected>--Select--</option>';
+		$start_year='2024';$year_now=date('Y');
+		for($i = $start_year; $i<= $year_now; $i++){
+			//Log::alert("i=".$i);
+			$sct='';
+			if($i==$year_now){
+				$sct='Selected';
+			}
+			$htm_year_slct.='<option  value="'.$i.'" '.$sct.'>'.$i.'年</option>';
+		}
+		$htm_year_slct.='</select>';
+		return $htm_year_slct;
+	}
+
 	public static function complex($target_string){
 		return decrypt($target_string);
 	}
@@ -306,16 +339,17 @@ class OtherFunc extends Controller
 
 	public static function make_html_staff_inout_slct($targetStaffSerial){
 		$htm_staff_slct="";
-		$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm">';
-		$htm_staff_slct.='<option value="">すべて</option>';
-		//$staff_array=Staff::all();
-		$staff_array=DB::table('staff')->get();
+		//$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm" wire:change="search_day(document.getElementsByName('staff_slct').value)">';
+		$htm_staff_slct='<option value="">すべて</option>';
+		$staff_array=Staff::all();
+		//$staff_array=DB::table('staff')->get();
+		//$staff_array=Staff->get();
 		foreach($staff_array as $staff) {
 			$sct='';
 			if($staff->serial_staff==$targetStaffSerial){$sct='Selected';}
 			$htm_staff_slct.='<option value="'.$staff->serial_staff.'" '.$sct.'>'.$staff->last_name_kanji.' '.$staff->first_name_kanji.'</option>';
 		}
-		$htm_staff_slct.='</select>';
+		//$htm_staff_slct.='</select>';
 		return $htm_staff_slct;
 	}
 

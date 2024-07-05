@@ -24,6 +24,30 @@ use App\Http\Controllers\OtherFunc;
 use App\Consts\initConsts;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Point;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+/*
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
+*/
+
+/*
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+//use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\ErrorCorrectionLevel;
+//use Endroid\QrCode\src\ErrorCorrectionLevelLow;
+use Endroid\QrCode\QrCode;
+//use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
+*/
 //use DateTime;
 //use App\Consts\get_imagick_info;
 
@@ -46,6 +70,38 @@ class AdminController extends Controller
 
 	public function ShowInpStaff($TargetStaffSerial){
 		//$header="";$slot="";$saveFlg="";
+		
+		/*
+		$qrCode = QrCode::create($TargetStaffSerial)
+            ->setEncoding(new Encoding('UTF-8'))
+            ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
+            ->setSize(150)
+            ->setMargin(25)
+            ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
+            ->setForegroundColor(new Color(0, 0, 0));
+		$writer = new PngWriter();
+		$result = $writer->write($qrCode);
+		*/
+		/*
+		$qrCode = QrCode::create($TargetStaffSerial)
+		->setEncoding(new Encoding('UTF-8'))
+		->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
+		->setSize(300)
+		->setMargin(10)
+		->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
+		->setForegroundColor(new Color(0, 0, 0))
+		->setBackgroundColor(new Color(255, 255, 255));
+		*/
+
+		$qr_image=QrCode::format('png')
+			//->merge("/storage/".$TargetStaffSerial.".png")
+			//->merge("/public/images/".$TargetStaffSerial.".png")
+			->style('square')
+			->backgroundColor(255,255,255)
+			->size(300)
+			->errorCorrection("H")
+			->generate($TargetStaffSerial);
+
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$GoBackPlace="/ShowStaffList";
 		$html_birth_select=array();
@@ -106,10 +162,6 @@ class AdminController extends Controller
 		$upload_data=$_POST['upload_data'];
 		fwrite($fp,base64_decode($upload_data));
 		fclose($fp);
-
-
-		//$deleStaff=Staff::where('serial_staff','=',$serial_staff)->delete();
-		//return view("admin.ListStaffs");
 	}
 
 	public function deleteTreatmentContent($TreatmentContentSerial){
@@ -171,19 +223,6 @@ class AdminController extends Controller
 				$PaymentHistorySerial++;
 				PaymentHistory::upsert($targetDataArray,['payment_history_serial']);
 			}
-		
-		/*
-			$ck_coming_cnt=VisitHistory::where('serial_user','=', session('UserSerial'))->count();
-		Log::alert("ck_coming_cntmessage=".$ck_coming_cnt);
-		if($ck_coming_cnt==0){
-			$tdate = new DateTime('now');
-			$tdate->modify('+1 year');
-			Point::where('referred_serial','=', session('UserSerial'))
-				->update([
-                	'point_expiration_date' => $tdate->format('Y-m-d'),
-            	]);
-		}
-		*/
 		VisitHistory::where('serial_keiyaku','=', session('ContractSerial'))->delete();
 		
 		$targetDataArray=array();

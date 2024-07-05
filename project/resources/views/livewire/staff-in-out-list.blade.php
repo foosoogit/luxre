@@ -6,25 +6,27 @@
                     @include('layouts.header')
                 </div>
                 <div class="mb-2 bg-secondary text-white">出退勤履歴</div>
+                <div class="col">
+                    {{-- <input type="button" name="show_calender" id="tshow_calender" value='カレンダー表示'> --}}
+                    <input type="button" name="csv_download" id="csv_download" value='csvファイルでダウンロード' wire:click="csv_download()">
+                </div>
                 <div class="col-auto">
                     <div class="row lh-lg">
                         <p class="lh-lg">
                             <div class="col">
-                                <label>日付検索： </label>
+                                <label>日付検索： <input name="target_day" id="target_day" type="date" wire:change="search_day(document.getElementById('target_day').value)" value="{{$target_day}}"/></label>
                             </div>
                             <div class="col">
-                                <input name="target_day" id="target_day" type="date" wire:change="search_day(document.getElementById('target_day').value)" value="{{$target_day}}"/>
+                                <label><button wire:click="search_month(document.getElementById('year_slct').value,document.getElementById('month_slct').value)" class='btn btn-primary btn-sm rounded'>月検索</button>： {!!$html_working_list_year_slct!!} {!!$html_working_list_month_slct!!}</label>
                             </div>
                             <div class="col">
                                 <button wire:click="search_day('')" class='btn btn-primary btn-sm rounded'>検索解除</button>    
                                 {{--<x-primary-button wire:click="search_day('')" class='btn btn-primary btn-sm rounded'>検索解除</x-primary-button>--}}
                             </div>
                             <div class="col">
-                                <label>スタッフ検索： </label>
-                            </div>
-                            <div class="col">
-                                {!!$html_staff_inout_slct!!}
-                                {{--<input name="target_day" id="target_day" type="date" wire:change="search_day(document.getElementById('target_day').value)" value="{{$target_day}}"/>--}}
+                                <label>スタッフ検索： <select name="staff_slct" id="staff_slct" class="form-select form-select-sm" wire:change="set_staff(document.getElementById('staff_slct').value)">
+                                    {!!$html_staff_inout_slct!!}
+                                    </select></label>
                             </div>
                         </p>
                     </div>
@@ -39,6 +41,7 @@
                                     <th>スタッフ氏名</th>
                                     <th>出勤時間</th>
                                     <th>退勤時間</th>
+                                    <th>勤務時間(分)</th>
                                 </tr>
                                 @foreach ($histories as $history)
                                     <tr>
@@ -47,6 +50,7 @@
                                         <td>{{ $history->target_name }}</td>
                                         <td>{{ $history->time_in }}</td>
                                         <td>{{ $history->time_out }}</td>
+                                        <td>{{ $history->StaffDiff }}</td>
                                     </tr>
                                 @endforeach
                             </table>
