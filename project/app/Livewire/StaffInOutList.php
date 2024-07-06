@@ -59,9 +59,7 @@ class StaffInOutList extends Component
         $sheet->setCellValue('D2', '労働時間(分)');
         $sheet->getStyle( 'D2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
         $cnt=3;
-        Log::info(session('work_records'));
-        //session(['work_records' => OtherFunc::sortByKey('id', SORT_ASC, session('work_records'))]);
-        //$work_records_array=array();
+        //Log::info(session('work_records'));
         $work_records_array=session('work_records');
         // array_multisort(ソートの軸となる配列(1), ソートの軸となる配列(2), ソートしたい配列)
         //$work_records_array=array_multisort(array_column($work_records_array, 'ID'), $work_records_array);
