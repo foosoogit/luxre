@@ -19,6 +19,14 @@ if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function sortByKey($key_name, $sort_order, $array) {
+		$standard_key_array=array();
+		foreach ($array as $key => $value) {
+			$standard_key_array[$key] = $value[$key_name];
+		}
+		array_multisort($standard_key_array, SORT_ASC, SORT_NUMERIC,$array);
+		return $array;
+	}
 
 	public static function make_html_working_list_month_slct(){
 		$month_now=date('m');
@@ -32,7 +40,6 @@ class OtherFunc extends Controller
 			}
 			$htm_month_slct .= '<option value="'.sprintf('%02d', $i).'" '.$sct.'>'.$i.'月</option>';
 		}
-
 		$htm_month_slct.='</select>';
 		return $htm_month_slct;
 	}
@@ -354,7 +361,7 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_html_staff_slct($targetStaffSerial){
-		Log::alert("targetStaffSerial=".$targetStaffSerial);
+		//Log::alert("targetStaffSerial=".$targetStaffSerial);
 		$htm_staff_slct="";
 		$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm">';
 		$htm_staff_slct.='<option value="">-- 選択してください --</option>';
