@@ -85,14 +85,12 @@ class StaffInOutList extends Component
                 if($work_record->target_serial==$TargetStaffSerial){
                     $sheet->setCellValue('A'.$cnt, $work_record->target_date);
                     $sheet->getStyle( 'A'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
-                    //$sheet->setCellValue('B'.$cnt, self::getTime($work_record->time_in));
                     $sheet->setCellValue('B'.$cnt, $work_record->time_in);
                     $sheet->getStyle( 'B'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
                     if(!empty($work_record->time_out)){
                         //$sheet->setCellValue('C'.$cnt, self::getTime($work_record->time_out));
                         $sheet->setCellValue('C'.$cnt, $work_record->time_out);
                         $sheet->getStyle( 'C'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
-                        ;
                         $sheet->setCellValue('D'.$cnt, OtherFunc::getStaffDiffAttribute($work_record->time_in,$work_record->time_out));
                         //$sheet->setCellValue('D'.$cnt, $work_record->StaffDiff);
                         $sheet->getStyle( 'D'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ

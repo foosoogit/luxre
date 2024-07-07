@@ -28,19 +28,4 @@ class InOutHistory extends Model
         */
         return $diff_m;
     }
-
-    /*
-    protected function StaffDif(): Attribute{
-        $in = strtotime(date($this->time_in));
-        log::alert("in=".$in);
-        $out = strtotime(date($this->time_out));
-        log::alert("out=".$out);
-        $diff = $out - $in;
-        log::alert("diff=".$diff);
-		$diff_m = $diff / 60;
-        return Attribute::make(
-            get: fn ($diff_m) => $diff_m;
-        );
-    }
-    */
 }
