@@ -8,7 +8,7 @@
                 <div class="mb-2 bg-secondary text-white">出退勤履歴</div>
                 <div class="col">
                     {{-- <input type="button" name="show_calender" id="tshow_calender" value='カレンダー表示'> --}}
-                    <input type="button" name="csv_download" id="csv_download" value='csvファイルでダウンロード' wire:click="csv_download()">
+                    <input type="button" name="csv_download" id="csv_download" value='ファイルのダウンロード' wire:click="csv_download()">
                 </div>
                 <div class="col-auto">
                     <div class="row lh-lg">

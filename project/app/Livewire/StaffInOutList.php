@@ -39,59 +39,84 @@ class StaffInOutList extends Component
         return $minute_array[0].":".$minute_array[1];
     }
     public function csv_download(){
-        //Log::alert("message");
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $staff_inf=Staff::where("serial_staff","=",$this->target_staff_serial)->first();
-        //Log::info(session('work_records'));
-        //Log::info($staff_inf);
-        //$sorted_array = sortByKey('release_date', SORT_ASC, $clothes);
-        $sheet->setCellValue('A1', '氏名');
-        $sheet->setCellValue('B1', $staff_inf->last_name_kanji." ".$staff_inf->first_name_kanji);
-        $sheet->setCellValue('C1', 'Staff No.');
-        $sheet->setCellValue('D1', $this->target_staff_serial);
-        $sheet->setCellValue('A2', '日付');
-        $sheet->getStyle( 'A2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
-        $sheet->setCellValue('B2', '入勤時間');
-        $sheet->getStyle( 'B2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
-        $sheet->setCellValue('C2', '退勤時間');
-        $sheet->getStyle( 'C2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
-        $sheet->setCellValue('D2', '労働時間(分)');
-        $sheet->getStyle( 'D2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
-        $cnt=3;
-        //Log::info(session('work_records'));
-        $work_records_array=session('work_records');
-        // array_multisort(ソートの軸となる配列(1), ソートの軸となる配列(2), ソートしたい配列)
-        //$work_records_array=array_multisort(array_column($work_records_array, 'ID'), $work_records_array);
-        //$idArray = array_column($work_records_array, 'id');
-        //array_multisort($idArray, SORT_DESC,  $work_records_array);
-        //$work_records_array=OtherFunc::sortByKey('id', SORT_ASC, $work_records_array);
-        foreach ($work_records_array as $work_record) {
-            $sheet->setCellValue('A'.$cnt, $work_record->target_date);
-            $sheet->getStyle( 'A'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
-            $sheet->setCellValue('B'.$cnt, self::getTime($work_record->time_in));
-            $sheet->getStyle( 'B'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
-            if(!empty($work_record->time_out)){
-                $sheet->setCellValue('C'.$cnt, self::getTime($work_record->time_out));
-                $sheet->getStyle( 'C'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
-                
-                $sheet->setCellValue('D'.$cnt, $work_record->StaffDiff);
-                $sheet->getStyle( 'D'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
+        $TargetStaffSerialArray=array();
+        if($this->target_staff_serial==""){
+            $staff_array=Staff::get();
+            foreach ($staff_array as $staff) {
+                $TargetStaffSerialArray[]= $staff->serial_staff;
             }
-            $cnt++;
+        }else{
+            $TargetStaffSerialArray[]=$this->target_staff_serial;
         }
-        
-        $sheet->getStyle( 'B1' )->getAlignment()->setHorizontal('center');  // 中央寄せ
-        $sheet->getStyle( 'C1' )->getAlignment()->setHorizontal('center');  // 中央寄せ
-        $sheet->getStyle( 'D1' )->getAlignment()->setHorizontal('center');  // 中央寄せ
-        $sheet->getColumnDimension( 'A' )->setWidth( 13 );
-        $sheet->getColumnDimension( 'B' )->setWidth( 12 );
-        $sheet->getColumnDimension( 'C' )->setWidth( 12 );
-        $sheet->getColumnDimension( 'D' )->setWidth( 6 );
+        $cnt=1;
+        foreach($TargetStaffSerialArray as $TargetStaffSerial){
+            //$staff_inf=Staff::where("serial_staff","=",$this->target_staff_serial)->first();
+            $staff_inf=Staff::where("serial_staff","=",$TargetStaffSerial)->first();
+            if($cnt==1){
+                $sheet = $spreadsheet->getActiveSheet();
+            }else{
+                $spreadsheet->createSheet();
+                $sheet = $spreadsheet->getSheet(1);
+                $sheet->setTitle('2枚目のシート');
+            }
+            $sheet->setTitle($staff_inf->last_name_kanji.$staff_inf->first_name_kanji);
+            $sheet->setCellValue('A1', '氏名');
+            $sheet->setCellValue('B1', $staff_inf->last_name_kanji." ".$staff_inf->first_name_kanji);
+            $sheet->setCellValue('C1', 'Staff No.');
+            $sheet->setCellValue('D1', $staff_inf->serial_staff);
+            $sheet->setCellValue('A2', '日付');
+            $sheet->getStyle( 'A2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->setCellValue('B2', '入勤時間');
+            $sheet->getStyle( 'B2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->setCellValue('C2', '退勤時間');
+            $sheet->getStyle( 'C2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->setCellValue('D2', '労働時間(分)');
+            $sheet->getStyle( 'D2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $cnt=3;
+            //Log::info(session('work_records'));
+            $work_records_array=session('work_records');
+            // array_multisort(ソートの軸となる配列(1), ソートの軸となる配列(2), ソートしたい配列)
+            //$work_records_array=array_multisort(array_column($work_records_array, 'ID'), $work_records_array);
+            //$idArray = array_column($work_records_array, 'id');
+            //array_multisort($idArray, SORT_DESC,  $work_records_array);
+            //$work_records_array=OtherFunc::sortByKey('id', SORT_ASC, $work_records_array);
+            foreach ($work_records_array as $work_record) {
+                if($work_record->target_serial==$TargetStaffSerial){
+                    $sheet->setCellValue('A'.$cnt, $work_record->target_date);
+                    $sheet->getStyle( 'A'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
+                    //$sheet->setCellValue('B'.$cnt, self::getTime($work_record->time_in));
+                    $sheet->setCellValue('B'.$cnt, $work_record->time_in);
+                    $sheet->getStyle( 'B'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
+                    if(!empty($work_record->time_out)){
+                        //$sheet->setCellValue('C'.$cnt, self::getTime($work_record->time_out));
+                        $sheet->setCellValue('C'.$cnt, $work_record->time_out);
+                        $sheet->getStyle( 'C'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
+                        ;
+                        $sheet->setCellValue('D'.$cnt, OtherFunc::getStaffDiffAttribute($work_record->time_in,$work_record->time_out));
+                        //$sheet->setCellValue('D'.$cnt, $work_record->StaffDiff);
+                        $sheet->getStyle( 'D'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
+                    }
+                    $cnt++;
+                }
+            }
+            
+            $sheet->getStyle( 'B1' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->getStyle( 'C1' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->getStyle( 'D1' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->getColumnDimension( 'A' )->setWidth( 13 );
+            $sheet->getColumnDimension( 'B' )->setWidth( 20 );
+            $sheet->getColumnDimension( 'C' )->setWidth( 20 );
+            $sheet->getColumnDimension( 'D' )->setWidth( 10 );
+        }
         //$sheet->setColumnWidth(1, 17.5);
         $writer = new Xlsx($spreadsheet);
-        date("Y-m-d"); 
-        $fileName = 'WorkingTimeList_'.date("Y_m_d").'.xlsx';
+        date("Y-m-d");
+        if(count($TargetStaffSerialArray)==1){
+            $fileName = 'WorkingTimeList_'.$staff_inf->last_name_kanji.$staff_inf->first_name_kanji.'_'.date("Y_m_d").'.xlsx';
+        }else{
+            $fileName = 'WorkingTimeList_all_'.date("Y_m_d").'.xlsx';
+        }
         //Log::alert("fileName=".$fileName);
         $writer->save($fileName);
         //File::copy($fileName, "t-".$fileName);

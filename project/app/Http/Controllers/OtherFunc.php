@@ -14,11 +14,34 @@ use App\Models\TreatmentContent;
 use DateInterval;
 use DatePeriod;
 use App\Models\Staff;
+use Carbon\Carbon;
 
 if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function getStaffDiffAttribute($time_in,$time_out){
+		
+		$in=strtotime(date($time_in));
+		if(substr($time_in, -2)<>'00'){
+			$roundUp = 1;
+			$dateRoundUp_in = new Carbon($time_in);
+			$dateRoundUp_in = $dateRoundUp_in->addMinutes($roundUp - $dateRoundUp_in->minute % $roundUp)->format('Y-m-d H:i:00');
+			$in = strtotime(date($dateRoundUp_in));
+		}
+        $out=strtotime(date($time_out));
+		if(substr($time_out, -2)<>'00'){
+			$roundDown = 1;
+			$dateRoundDown_out = new Carbon($time_out);
+			$dateRoundDown_out = $dateRoundDown_out->subMinutes($dateRoundDown_out->minute % $roundDown)->format('Y-m-d H:i:00');
+			$out = strtotime(date($dateRoundDown_out));
+		}
+        $diff = $out - $in;
+		$diff_m = $diff / 60;
+        if($diff_m<0){$diff_m=0;}
+        return $diff_m;
+    }
+	/*
 	public static function sortByKey($key_name, $sort_order, $array) {
 		$standard_key_array=array();
 		foreach ($array as $key => $value) {
@@ -27,7 +50,7 @@ class OtherFunc extends Controller
 		array_multisort($standard_key_array, SORT_ASC, SORT_NUMERIC,$array);
 		return $array;
 	}
-
+	*/
 	public static function make_html_working_list_month_slct(){
 		$month_now=date('m');
 		//Log::alert("month_now=".$month_now);
