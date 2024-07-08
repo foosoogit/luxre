@@ -67,7 +67,16 @@ class AdminController extends Controller
 		return view('admin.ListPoints');
     }
 	*/
-
+	/*
+	public function show_staff_in_out_rireki(){
+		session(['target_livewire_page' => "ListStaffInOut"]);
+        $target_day='';
+        $html_staff_inout_slct=OtherFunc::make_html_staff_inout_slct("");
+        $html_working_list_year_slct=OtherFunc::make_html_working_list_year_slct();
+        $html_working_list_month_slct=OtherFunc::make_html_working_list_month_slct();
+        return view('admin.ListStaffInOutHistories',compact("target_day","html_staff_inout_slct","html_working_list_year_slct","html_working_list_month_slct"));
+	}
+	*/
 	public function ShowInpStaff($TargetStaffSerial){
 		//$header="";$slot="";$saveFlg="";
 		

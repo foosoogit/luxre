@@ -51,14 +51,6 @@ class CustomersList extends Component
 	}
     public function render()
     {
-		/*
-		if(empty($REQUEST_URI_array[1])){
-			$targetPage=1;
-		}else{
-			$targetPage=intval($REQUEST_URI_array[1]);
-		}
-		*/
-
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		if(!isset($sort_key_p) and session('sort_key')==null){
@@ -95,7 +87,6 @@ class CustomersList extends Component
 				$target_day=$_SESSION['backmonthday'];
 			}
 		}
-		//Log::alert("target_day=".$_POST['target_day']);
 		$userQuery = User::query();
 		if($this->kensakukey=='zankin'){
 			$userQuery =$userQuery->where('zankin','>','0');
@@ -185,9 +176,6 @@ class CustomersList extends Component
 				}
 			}
 		}
-
-		//$userQuery =$userQuery->orderByRaw('tpoint');
-
 		/*
 		if(session('target_page_for_pager')!==null){
 			$targetPage=session('target_page_for_pager');
@@ -196,9 +184,6 @@ class CustomersList extends Component
 			$targetPage=null;
 		}
 		*/
-		//log::alert("targetPage=".$targetPage);
-
-		//log::alert('page_history_CustomersList='.session('page_history_CustomersList'));
 		if(empty($this->target_page)){
 			$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
 		}else{

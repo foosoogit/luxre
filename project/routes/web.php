@@ -58,14 +58,26 @@ Route::middleware('auth')->group(function () {
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
     Route::name('admin.')->group(function() {
-        
         Route::get('admin/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
-        
         Route::post('admin/ajax_digestion_point',[AdminController::class,'ajax_digestion_point'])->name('ajax_digestion_point');
         Route::post('admin/ajax_change_point',[AdminController::class,'ajax_change_point'])->name('ajax_change_point');
+        //Route::get('/show_staff_in_out_rireki', [AdminController::class,'show_staff_in_out_rireki'])->name('show_staff_in_out_rireki.get');
+
         Route::get('/show_staff_in_out_rireki', function () {
+            session(['target_livewire_page' => "ListStaffInOut"]);
             return view('admin.ListStaffInOutHistories');
         })->name('show_staff_in_out_rireki.get');
+
+        /*
+        Route::get('/show_staff_in_out_rireki', function () {
+            session(['target_livewire_page' => "ListStaffInOut"]);
+            $target_day='';
+            $html_staff_inout_slct=OtherFunc::make_html_staff_inout_slct('');
+            $html_working_list_year_slct=OtherFunc::make_html_working_list_year_slct();
+            $html_working_list_month_slct=OtherFunc::make_html_working_list_month_slct();
+            return view('admin.ListStaffInOutHistories',compact("target_day","html_staff_inout_slct","html_working_list_year_slct","html_working_list_month_slct"));
+        })->name('show_staff_in_out_rireki.get');
+        */
         //Route::get('admin/get_imagick_info', [OtherFunc::class,'get_imagick_info'])->name("get_imagick_info.get");
         /*
         Route::get('qr-code', function() {
@@ -202,7 +214,9 @@ Route::middleware('auth:admin')->group(function () {
                 return view('customers.ListContract');
              }else if(session('target_livewire_page')=="ListCustomers"){
                  return view('customers.ListCustomers');
-             }
+             }else if(session('target_livewire_page')=="ListStaffInOut"){
+                return view('admin.ListStaffInOutHistories');
+             } 
              /*
             if(str_contains($_SERVER['HTTP_REFERER'],"show_point_list")){
                 return view('admin.ListPoints');
