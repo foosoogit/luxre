@@ -370,8 +370,6 @@ class OtherFunc extends Controller
 	public static function make_html_staff_inout_slct($targetStaffSerial){
 		$htm_staff_slct="";
 		//$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm" wire:change="search_day(document.getElementsByName('staff_slct').value)">';
-		Log::alert("targetStaffSerial-1=".$targetStaffSerial);
-		Log::alert("session=".session('target_staff_serial'));
 		$htm_staff_slct='<option value="">すべて</option>';
 		$staff_array=Staff::all();
 		//$staff_array=DB::table('staff')->get();

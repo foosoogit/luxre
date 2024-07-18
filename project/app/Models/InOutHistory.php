@@ -11,21 +11,25 @@ use App\Http\Controllers\OtherFunc;
 class InOutHistory extends Model
 {
     use HasFactory;
+
+    public function getWeekAttribute($value){
+        $date = date('w', strtotime($this->target_date));
+        return OtherFunc::youbi($date);
+    }
+
     public function getStaffDiffAttribute($value){
 		$diff_m=OtherFunc::getStaffDiffAttribute($this->time_in,$this->time_out);
-        /*
-        $roundUp = 1;
-        $dateRoundUp_in = new Carbon($this->time_in);
-        $dateRoundUp_in = $dateRoundUp_in->addMinutes($roundUp - $dateRoundUp_in->minute % $roundUp)->format('Y-m-d H:i:00');
-        $in = strtotime(date($dateRoundUp_in));
-        $roundDown = 1;
-        $dateRoundDown_out = new Carbon($this->time_out);
-        $dateRoundDown_out = $dateRoundDown_out->subMinutes($dateRoundDown_out->minute % $roundDown)->format('Y-m-d H:i:00');
-        $out = strtotime(date($dateRoundDown_out));
-        $diff = $out - $in;
-		$diff_m = $diff / 60;
-        if($diff_m<0){$diff_m=0;}
-        */
         return $diff_m;
+    }
+    public function getTimeOnlyInAttribute($value){
+		$TimeOnlyIn_array=explode(" ", $this->time_in);
+        return $TimeOnlyIn_array[1];
+    }
+
+    public function getTimeOnlyOutAttribute($value){
+		if(!empty($this->time_out)){
+           $TimeOnlyOut_array=explode(" ", $this->time_out);
+            return $TimeOnlyOut_array[1];
+        }
     }
 }

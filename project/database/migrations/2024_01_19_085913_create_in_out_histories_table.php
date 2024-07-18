@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('staff_name_kana',50)->nullable()->comment('しめい');
             $table->string('to_mail_address',200)->nullable()->comment('送り先メールアドレス');
             $table->string('from_mail_address',50)->nullable()->comment('送り元メールアドレス');
+            $table->text('reason_late')->nullable()->comment('遅刻理由');
+            $table->text('remarks')->nullable()->comment('備考');
         });
     }
 

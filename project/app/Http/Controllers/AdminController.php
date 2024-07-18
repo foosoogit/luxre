@@ -25,7 +25,12 @@ use App\Consts\initConsts;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Point;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-
+/*
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use Endroid\QrCode\Writer\PngWriter;
+*/
 /*
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Builder\Builder;
@@ -35,6 +40,7 @@ use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\Label\Font\NotoSans;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Bacon\ErrorCorrectionLevelConverter;
 */
 
 /*
@@ -77,6 +83,72 @@ class AdminController extends Controller
         return view('admin.ListStaffInOutHistories',compact("target_day","html_staff_inout_slct","html_working_list_year_slct","html_working_list_month_slct"));
 	}
 	*/
+
+	public function ajax_staff_change_time_card(Request $request){
+		$TargetObjArray=explode("_", $request->TargetObj);
+		if(count($TargetObjArray)>=3){
+			$id=$TargetObjArray[2];
+			$subj=$TargetObjArray[0]."_".$TargetObjArray[1];
+		}else{
+			$id=$TargetObjArray[1];
+			$subj=$TargetObjArray[0];
+		}
+		//log::alert("subj=".$subj);
+		//log::alert("Value=".$request->Value);
+		if($subj=="target_date"){
+			$cnt=InOutHistory::where($subj,"=",$request->Value)
+							->where("id","=",$id)->count();
+			if($cnt>0){
+				print "Unchanged";
+			}else{
+				$target_inf_array=InOutHistory::where('id', $id)->first();
+				$time_in_array=explode(" ", $target_inf_array->time_in);
+				$time_in_cng=$request->Value." ".$time_in_array[1];
+				$time_out_array=explode(" ", $target_inf_array->time_out);
+				$time_out_cng=$request->Value." ".$time_out_array[1];
+				InOutHistory::where('id', $id)->update([$subj => $request->Value,"time_in"=>$time_in_cng,"time_out"=>$time_out_cng]);
+				print "changed";
+			}
+		}else if($subj=="time_in"){
+			$target_inf_array=InOutHistory::where('id', $id)->first();
+			$tgt=$target_inf_array->target_date." ".$request->Value;
+			$cnt=InOutHistory::where($subj,"=",$tgt)
+							->where("id","=",$id)->count();
+			if($cnt>0){
+				print "Unchanged";
+			}else{
+				$target_inf_array=InOutHistory::where('id', $id)->first();
+				$time_array=explode(" ", $target_inf_array->time_in);
+				$time_cng=$time_array[0]." ".$request->Value;
+				InOutHistory::where('id', $id)->update([$subj => $time_cng]);
+				print "changed";
+			}
+		}else if($subj=="time_out"){
+			$target_inf_array=InOutHistory::where('id', $id)->first();
+			$tgt=$target_inf_array->target_date." ".$request->Value;
+			$cnt=InOutHistory::where($subj,"=",$tgt)
+							->where("id","=",$id)->count();
+			if($cnt>0){
+				print "Unchanged";
+			}else{
+				$target_inf_array=InOutHistory::where('id', $id)->first();
+				$time_array=explode(" ", $target_inf_array->time_out);
+				$time_cng=$time_array[0]." ".$request->Value;
+				InOutHistory::where('id', $id)->update([$subj => $time_cng]);
+				print "changed";
+			}
+		}else{
+			$cnt=InOutHistory::where('id',"=", $id)->
+				where($subj,"=",$request->Value)->count();
+			if($cnt>0){
+				print "Unchanged";
+			}else{
+				InOutHistory::where('id', $id)->update([$subj => $request->Value]);
+				print "changed";
+			}
+		}
+	}
+
 	public function ShowInpStaff($TargetStaffSerial){
 		//$header="";$slot="";$saveFlg="";
 		
@@ -101,7 +173,7 @@ class AdminController extends Controller
 		->setForegroundColor(new Color(0, 0, 0))
 		->setBackgroundColor(new Color(255, 255, 255));
 		*/
-
+		
 		$qr_image=QrCode::format('png')
 			//->merge("/storage/".$TargetStaffSerial.".png")
 			//->merge("/public/images/".$TargetStaffSerial.".png")
@@ -156,7 +228,8 @@ class AdminController extends Controller
 		return redirect('/customers/ShowSyuseiContract/'.$serial_Contract.'/'.$UserSerial);
 	}
 
-	public function send_attendance_card($serial_staff){
+	public function send_attendance_card($TargetStaffSerial){
+		
 		$qr_image=QrCode::format('png')
 			->merge("storage/".$serial_staff.".png")
 			->style('square')
@@ -164,13 +237,40 @@ class AdminController extends Controller
 			->size(300)
 			->errorCorrection("H")
 			->generate($serial_staff);
-
-		Storage::put('qr_image.png', base64_encode($qr_image));
-		$$qr_image = imagecreatefrompng("https://www.example.com/qr_img.php?d=".$d."&e=M&t=J&s=2");
+		
+			/*
+		//$url = 'https://www.qrcode-test.com/'
+		$url = 'https://example.com';
+$logoPath = 'myLogoFile.png';$qrCode = Builder::create()
+              ->writer(new PngWriter())
+              ->writerOptions([])
+              ->data($url)
+              ->logoPath($logoPath)
+              ->logoResizeToWidth(100)
+              ->encoding(new Encoding('ISO-8859-1'))
+// Here's the sneaky bit that makes the QR Code work with the image
+              ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+              ->build();// Either ...
+$qrCodeDataUri = $qrCode->getDataUri();
+// or ...
+$qrCode->saveToFile('myQRCode.png');
+*/
+/*
+		$qrCode = QrCode::create($TargetStaffSerial)
+            ->setEncoding(new Encoding('UTF-8'))
+            //->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
+            ->setSize(150)
+            ->setMargin(25);
+            //->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
+            //->setForegroundColor(new Color(0, 0, 0));
+		//Storage::put('qr_image.png', base64_encode($qr_image));$serial_staff
+		$qr_image = imagecreatefrompng("qr_img.php?d=".$d."&e=M&t=J&s=2");
+		//$qr_image = imagecreatefrompng("https://www.example.com/qr_img.php?d=".$d."&e=M&t=J&s=2");
 		$fp = fopen("MedicalRecord/".$serial_staff.".png",'w');
 		$upload_data=$_POST['upload_data'];
 		fwrite($fp,base64_decode($upload_data));
 		fclose($fp);
+		*/
 	}
 
 	public function deleteTreatmentContent($TreatmentContentSerial){

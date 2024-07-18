@@ -72,6 +72,10 @@ class StaffInOutList extends Component
             $sheet->getStyle( 'C2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
             $sheet->setCellValue('D2', '労働時間(分)');
             $sheet->getStyle( 'D2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->setCellValue('E2', '遅刻理由');
+            $sheet->getStyle( 'E2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->setCellValue('F2', '備考');
+            $sheet->getStyle( 'F2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
             $cnt=3;
             $work_records_array=session('work_records');
             foreach ($work_records_array as $work_record) {
@@ -86,6 +90,8 @@ class StaffInOutList extends Component
                         $sheet->setCellValue('D'.$cnt, OtherFunc::getStaffDiffAttribute($work_record->time_in,$work_record->time_out));
                         $sheet->getStyle( 'D'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
                     }
+                    $sheet->setCellValue('E'.$cnt, $work_record->reason_late);
+                    $sheet->setCellValue('F'.$cnt, $work_record->remarks);
                     $cnt++;
                 }
             }
