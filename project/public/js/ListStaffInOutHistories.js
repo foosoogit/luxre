@@ -1,26 +1,27 @@
-﻿function delArert(msg){
-	msg=msg.replace(/__/g, '\n');
-	var res=window.confirm( msg+'\n上記データを削除します。よろしいですか？');
-	if(res){
-		return true;
-	}else{
-		return false;
-	}
-}
-/*
-time_in.addEventListener('keydown', (e) => {
-	if(e.keyCode === 13) {
-	  //message.innerText = '確定'
-	  console.log('確定');
-	}
+﻿/*
+$(function() {
+	$('[data-toggle="tooltip"]').tooltip()
 })
 */
+function delArert(msg){
+	//return false;
+	//console.log("delArert");
+	if(ck_pass()){
+		var res=window.confirm( "データID: "+msg+'\n上記データを削除します。よろしいですか？');
+		if(res){
+			//console.log("true");
+			return true;
+		}else{
+			//console.log("false");
+			return false;
+		}
+	}
+
+}
+
 $('.target_date').keypress(function(e) {
-	//console.log("keyCode="+e.keyCode);
 	if(e.keyCode === 13) {
-		//alert("key=Enter");
 		var focused = document.activeElement;
-		//console.log("Id="+focused.id);
 		$.ajax({
 			url: 'admin/ajax_staff_change_time_card',
 			type: 'post', // getかpostを指定(デフォルトは前者)
@@ -47,62 +48,58 @@ $('.target_date').keypress(function(e) {
 	focused.readOnly=true;
 });
 
-/*
-function ChangeDat(obj){
-	//alert("Change");
-	console.log('ObjId4='+obj.id)
+function DelRec(objid){
 	$.ajax({
-		url: 'admin/ajax_staff_change_time_card',
+		url: 'admin/ajax_staff_dell_time_card',
 		type: 'post', // getかpostを指定(デフォルトは前者)
 		dataType: 'text', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
 		scriptCharset: 'utf-8',
 		frequency: 10,
 		cache: false,
 		async : false,
-		data: {"SerialInOut": obj.value,"ObjId":obj.id},
+		data: {"ObjId":objid},
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
 	}).done(function (data) {
-		//var json = JSON.stringify(data);
-		//var dt = JSON.parse(json);
-		//alert(dt["SellingPrice"]);
-		document.getElementById("selling_price").value=dt['SellingPrice'];
+		alert("削除しました。");
+		reload();
 	}) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
 		alert(XMLHttpRequest.status);
 		alert(textStatus);
 		alert(errorThrown);	
 		alert('エラー');
 	});
-	obj.readOnly=true;
 }
-*/
+
 function ReleaseReadOnly(obj){
-	//var targetid = document.getElementById(obj.Id);
-	//console.log("Name="+obj.name);
-	//var typ = obj.type;
-	console.log("type="+obj.type);
 	if(obj.type=="text"){
 		obj.readOnly=false;
 		obj.focus();
 	}else{
-		if(obj.readOnly==true){
-			if(obj.getElementsByTagName())
-			var res = prompt("パスワードを入力してください。");
-			if(res!==""){
-				var today = new Date();
-				dy = ('0' + today.getDate()).slice(-2);
-				mt=Number(today.getMonth())+1;
-				mt=('0' + mt).slice(-2);
-				//alert(dy+mt);
-				ps=dy+mt;
-				if(ps!==res){
-					alert('パスワードが違います。');
-				}else{
-					obj.readOnly=false;
-					obj.focus();
-				}
+		if(obj.readOnly==true || obj.type=="button") {
+			//if(obj.getElementsByTagName())
+			if(ck_pass()){
+				obj.readOnly=false;
+				obj.focus();	
 			}
+		}
+	}
+}
+
+function ck_pass(){
+	var res = prompt("パスワードを入力してください。");
+	if(res!==""){
+		var today = new Date();
+		dy = ('0' + today.getDate()).slice(-2);
+		mt=Number(today.getMonth())+1;
+		mt=('0' + mt).slice(-2);
+		ps=dy+mt;
+		if(ps!==res){
+			alert('パスワードが違います。');
+			return false;
+		}else{
+			return true;
 		}
 	}
 }
@@ -121,7 +118,6 @@ $(function() {
 $(function() {
 	// 入力ダイアログを表示
 	$(".modification").click(function() {
-	  //console.log('test');
 		$("#input").dialog("open");
 	  return false;
 	});
@@ -149,8 +145,6 @@ $(function() {
 	
 
 function SetSellingPrice(obj){
-	//alert("test");
-	//alert(obj.value);
 	if(!obj.value==0){
 		$.ajax({
 			url: '/ajax_get_good_inf',
@@ -179,6 +173,5 @@ function SetSellingPrice(obj){
 }
 
 function getTargetdata(obj){
-	//alert('TEST');
 	document.getElementById("getTargetDate_fm").submit();
 }

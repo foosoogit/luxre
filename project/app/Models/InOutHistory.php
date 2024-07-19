@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\OtherFunc;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class InOutHistory extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     public function getWeekAttribute($value){
         $date = date('w', strtotime($this->target_date));

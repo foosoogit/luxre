@@ -83,7 +83,18 @@ class AdminController extends Controller
         return view('admin.ListStaffInOutHistories',compact("target_day","html_staff_inout_slct","html_working_list_year_slct","html_working_list_month_slct"));
 	}
 	*/
-
+	
+	/*
+	public function ajax_staff_dell_time_card(Request $request){
+		//Log::alert("ObjId=".$request->ObjId);
+		$todo = InOutHistory::find($request->ObjId);
+		$todo->delete();
+		print true;
+		//return redirect()->route('show_staff_in_out_rireki.get');
+		//return redirect('/admin/show_staff_in_out_rireki');
+	}
+	*/
+	
 	public function ajax_staff_change_time_card(Request $request){
 		$TargetObjArray=explode("_", $request->TargetObj);
 		if(count($TargetObjArray)>=3){
@@ -93,8 +104,6 @@ class AdminController extends Controller
 			$id=$TargetObjArray[1];
 			$subj=$TargetObjArray[0];
 		}
-		//log::alert("subj=".$subj);
-		//log::alert("Value=".$request->Value);
 		if($subj=="target_date"){
 			$cnt=InOutHistory::where($subj,"=",$request->Value)
 							->where("id","=",$id)->count();

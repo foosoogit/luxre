@@ -33,6 +33,11 @@ class StaffInOutList extends Component
     protected $histories,
         $download_sql;
 
+    public function del_rec($id){
+        $todo = InOutHistory::find($id);
+		$todo->delete();
+    }
+    
     static function getTime($DtTime){
         $time_array=explode(" ", $DtTime);
         $minute_array=explode(":", $time_array[1]);
@@ -192,7 +197,6 @@ $headers = [['Content-Type' => $mimeType]];
             $this->target_day="";
         }
          
-        //if($this->target_staff_serial<>""){
         if(!empty(session('target_staff_serial'))){
             $this->target_staff_serial=session('target_staff_serial');
             $HistoriesQuery = $HistoriesQuery->where('target_serial','=',$this->target_staff_serial);
@@ -213,11 +217,8 @@ $headers = [['Content-Type' => $mimeType]];
             $HistoriesQuery = $HistoriesQuery->orderBy('time_in','desc');
         }
         $workListQuery = $workListQuery->orderBy('time_in','asc');
-        //$this->download_sql=$HistoriesQuery;
         $list_res=$workListQuery->get();
         session(['work_records' => $list_res]);
-        //$HistoriesQuery->dump();
-        //$this->histories=$HistoriesQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'],'page',1);
         $this->histories=$HistoriesQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'],'page');
         return view('livewire.staff-in-out-list',[
             'histories'=>$this->histories,
