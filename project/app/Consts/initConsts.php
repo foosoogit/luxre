@@ -4,6 +4,8 @@ namespace App\Consts;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Configration;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\OtherFunc;
 
 // usersで使う定数
 class initConsts{
@@ -88,14 +90,25 @@ class initConsts{
 
 	public static function TargetPageInf($target){
 		$inits_array=Configration::where('subject','=','PageInf')->first();
-		//$inits_array=DB::table('configrations')->where('subject','=','PageInf')->first();
+		$page_inf_array=array();
 		$page_inf_array=explode(";",$inits_array->value1);
+		$tname=OtherFunc::get_page_name($target);
+		$pn=1;
+		$tgt_page_inf_array=array();
 		foreach($page_inf_array as $page_inf){
-			$tgt_page_inf_array=explode(",",$page_inf);
-			if(str_contains($target, $tgt_page_inf_array[0])){
-				return array($tgt_page_inf_array[1], $tgt_page_inf_array[2]);
+			if(str_contains($page_inf,$tname)){
+				$tgt_page_inf_array=explode(",",$page_inf);
+				$page_num_key_array=['page=','page_num='];
+				foreach($page_num_key_array as $page_num_key){
+					$page_num_array=explode($page_num_key,($target));
+					if(isset($page_num_array[1])){
+						$pn=$page_num_array[1];
+					}
+				}
+				break;
 			}
 		}
-		return array('メニュー','admin.top');
+		array_push($tgt_page_inf_array,$pn);
+		return $tgt_page_inf_array;
 	}
 }

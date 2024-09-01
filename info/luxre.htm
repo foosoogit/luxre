@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="csrf-token" content="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9">
+		<script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+		<script>
+			window.setTimeout(() => {
+				$(".error").slideUp();
+				$(".success").slideUp();
+			}, 1500);
+		</script>
+		<title>luxre</title>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		<style>
+			li {
+			  line-height: 3.5em;
+			}
+		</style>
+
+	</head>
+	<body class="font-sans antialiased mt-3">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+					<div class="card-header">
+						<div class="container">
+							<div class="row">
+								<div class="col-10">
+									Beauty Salon Menu
+								</div>
+								<div class="col-2">
+									<form method="POST" action="">
+										<input type="hidden" name="_method" value="DELETE">										<input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">										<button type="submit" class="btn btn-outline-dark btn-sm">ログアウト</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+                    <div class="card-body">
+                        <ul>
+                        	<li>
+								<form method="POST" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">									<button class="btn btn-primary btn-sm" type="submit">顧客一覧</button>&nbsp;修正・新規登録・契約
+								</form>
+								支払い不履行者
+								<p><span style="color:red;">
+									</span></p><form method="POST" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">										
+									</form>
+								<p></p>
+								最終支払いから一ヶ月以上支払いしていない顧客（現金契約者のみ・契約支払い未完了）<br>
+								<p></p><form method="GET"><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">									
+								</form><p></p>
+							</li>
+							<li>
+								<form method="GET" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">									<p><button class="btn btn-primary btn-sm" type="submit" value="new" name="CreateCustomer">顧客新規登録</button></p>
+								</form>
+							</li>
+                			<li>
+								<form method="GET" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off"><button class="btn btn-primary btn-sm" type="submit">契約一覧</button>&nbsp;修正・新規登録・契約</form>
+							</li>
+							<li>
+								<form method="GET" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">									<button class="btn btn-primary btn-sm" type="submit">顧客受付待ち受け</button>
+								</form>
+							</li>
+							<div class="row">
+								<div class="col-auto">
+									<li>
+										<form method="GET" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">											<button class="btn btn-primary btn-sm" type="submit">ポイント管理</button>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="GET" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">											<button class="btn btn-primary btn-sm" type="submit" disabled="disabled">キャンペーン</button>
+										</form>
+									</li>
+								</div>
+							<li>
+								<a href="" class="btn btn-primary btn-sm">環境設定</a>
+								
+							</li>
+							<div class="row">
+								<div class="col-auto">
+									<li>
+										<form method="GET" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">											<button class="btn btn-primary btn-sm" type="submit">日報</button>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="POST" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">											<button class="btn btn-primary btn-sm" type="submit">月報</button> <select name="year"><option value="2015">2015年</option><option value="2016">2016年</option><option value="2017">2017年</option><option value="2018">2018年</option><option value="2019">2019年</option><option value="2020">2020年</option><option value="2021">2021年</option><option value="2022">2022年</option><option value="2023">2023年</option><option value="2024" selected="selected">2024年</option></select> <select name="month"><option value="0">選択</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7" selected="selected">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="POST" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">											<button class="btn btn-primary btn-sm" type="submit">契約金額集計</button> <select name="year"><option value="2015">2015年</option><option value="2016">2016年</option><option value="2017">2017年</option><option value="2018">2018年</option><option value="2019">2019年</option><option value="2020">2020年</option><option value="2021">2021年</option><option value="2022">2022年</option><option value="2023">2023年</option><option value="2024" selected="selected">2024年</option></select> <select name="month"><option value="0">選択</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7" selected="selected">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="POST" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">											<button class="btn btn-primary btn-sm" type="submit">年報</button> <select name="year"><option value="2015">2015年</option><option value="2016">2016年</option><option value="2017">2017年</option><option value="2018">2018年</option><option value="2019">2019年</option><option value="2020">2020年</option><option value="2021">2021年</option><option value="2022">2022年</option><option value="2023">2023年</option><option value="2024" selected="selected">2024年</option></select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option value="0">選択</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8" selected="selected">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select> 契約達成率、前年度比等
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="POST" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">											<button class="btn btn-primary btn-sm" type="submit">入金チェック</button> <select name="year"><option value="2015">2015年</option><option value="2016">2016年</option><option value="2017">2017年</option><option value="2018">2018年</option><option value="2019">2019年</option><option value="2020">2020年</option><option value="2021">2021年</option><option value="2022">2022年</option><option value="2023">2023年</option><option value="2024" selected="selected">2024年</option></select> &nbsp;決算月<select name="kesan_month" onchange="save_kessan_month(this);"><option value="0">選択</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8" selected="selected">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select> 契約達成率、前年度比等
+										</form>
+									</li>
+								</div>
+							</div>
+							<li>
+								<form method="POST" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">									<button class="btn btn-primary btn-sm" type="submit">施術登録</button>
+								</form>
+							</li>
+							<div class="row">
+								<div class="col-auto">
+									<li> 
+										
+										<form method="GET" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">											<button class="btn btn-primary btn-sm" type="submit">スタッフ入出勤受付待ち受け</button>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="GET" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">											<button class="btn btn-primary btn-sm" type="submit">スタッフ入出勤履歴</button>
+										</form>
+									</li>
+								</div>
+								<div class="col-auto">
+									<li>
+										<form method="GET" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">											<button class="btn btn-primary btn-sm" type="submit">スタッフ登録</button>
+										</form>
+									</li>
+								</div>
+							</div>
+							<li>
+								<form method="GET" action=""><input type="hidden" name="_token" value="OFWKQlSbsoPJhNUpCajTzeMolLBZZ34CIIsThAb9" autocomplete="off">									<button class="btn btn-primary btn-sm" type="submit" disabled="disabled">商品登録</button>
+								</form>
+							</li>
+                        </div></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+			<main>
+
+			</main>
+		<!--</div> -->
+	        		
+		<!--<script src="luxre_files/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+	
+	</body></html>

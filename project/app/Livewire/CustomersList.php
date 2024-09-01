@@ -51,7 +51,12 @@ class CustomersList extends Component
 	}
     public function render()
     {
+		if(!empty(session('livewire_page_num_for_back'))){
+			$this->target_page=session('livewire_page_num_for_back');
+			session(['livewire_page_num_for_back' =>null]);
+		}
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		//log::info($_SESSION['access_history']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		if(!isset($sort_key_p) and session('sort_key')==null){
 			session(['sort_key' =>'']);
@@ -72,13 +77,13 @@ class CustomersList extends Component
 				break;
 			}
 		}
-		
+		/*
 		if(isset($_POST['btn_serial'])){
 			session(['serchKey' => $_POST['btn_serial']]);
-			
 		}else if(session('serchKey')==""){
 			session(['serchKey' => $this->serch_key_p]);
 		}
+		*/
 		if((isset($_POST['target_day']) and $_POST['target_day']<>"") or $backdayly==true){
 			$from_place="dayly_rep";
 			if(isset($_POST['target_day'])){
@@ -86,6 +91,10 @@ class CustomersList extends Component
 			}else{
 				$target_day=$_SESSION['backmonthday'];
 			}
+		}
+		if(session('serchKey')<>""){
+			$this->kensakukey=session('serchKey');
+			//session(['serchKey' => '']);
 		}
 		$userQuery = User::query();
 		if($this->kensakukey=='zankin'){
@@ -209,6 +218,8 @@ class CustomersList extends Component
 		//$from_place2=OtherFunc::get_goback_url($_SERVER['REQUEST_URI']);
 		//$from_place2="";
 		$from_place2=$_SESSION['access_history'][0];
+		//log::info($target_historyBack_inf_array);
         return view('livewire.customers-list',compact('target_historyBack_inf_array','users','totalZankin','from_place','target_day','from_place','from_place2'));
+		//log::alert('HTTP_HOST='.$_SERVER['HTTP_HOST']);
     }
 }

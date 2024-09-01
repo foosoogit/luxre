@@ -56,11 +56,19 @@ class ContractList extends Component
     public function render()
     {
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		//log::info($_SESSION['access_history']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		//log::alert("target_historyBack_inf_array");
+		//log::info($target_historyBack_inf_array);
+		session(['livewire_page_num_for_back' => $target_historyBack_inf_array[3]]);
+		log::alert('livewire_page_num_for_back='.session('livewire_page_num_for_back'));
 		if($this->sort_key_contract<>session('sort_key_contract')){
 			//session(['sort_key_contract' =>$this->sort_key_contract]);
 			$this->sort_key_contract=session('sort_key_contract');
 		}
+
+		//Log::info($_SESSION['access_history']);
+		
 		//$this->sort_key_p=session('sort_key_contract');
 
 		if($this->sort_type_contract<>session('sort_type_contract')){
@@ -100,10 +108,6 @@ class ContractList extends Component
 			$key="%%";
 			self::$statickey="%%";
 		}
-		//$ist=isset($session["targetUserSerial"]);
-		//log::alert("sort_key_contract 2=".$ist);
-		//log::alart(session()->has('targetUserSerial'));
-		//log::alert("targetUserSerial=".$session('targetUserSerial'));
 		if(session('targetUserSerial')=="all"){
 			$contractQuery=$contractQuery->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
 				->where('contracts.serial_keiyaku','like',$key)
@@ -144,8 +148,6 @@ class ContractList extends Component
 				});
 		}
 		
-		log::alert("sort_key_contract=".$this->sort_key_contract);
-
 		if($this->sort_key_contract<>''){
 			if($this->sort_key_contract=="name_sei"){
 				if($this->sort_type_contract=="ASC"){
@@ -172,7 +174,6 @@ class ContractList extends Component
 		if(session('targetUserSerial')!="all"){
 			$this->targetPage=null;
 		}
-		//Log::alert("contractQuery=".$contractQuery);
 		$contractQuery=$contractQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->targetPage);
     	$GoBackPlaceName="";
 		foreach($_SESSION['access_history'] as $targetHistory){
@@ -188,6 +189,7 @@ class ContractList extends Component
 		$GoBackPlace="/ShowMenuCustomerManagement/";
 		//$serchKey_contract=session('serchKey_contract');serch_key_contract
 		$serchKey_contract=$this->serch_key_contract;
-        return view('livewire.contract-list',compact("GoBackPlaceName","GoBackPlace","userinf","contractQuery","UserSerial","serchKey_contract"));
+        //return view('livewire.contract-list',compact("target_historyBack_inf_array","GoBackPlaceName","GoBackPlace","userinf","contractQuery","UserSerial","serchKey_contract"));
+		return view('livewire.contract-list',compact("target_historyBack_inf_array","userinf","contractQuery","UserSerial","serchKey_contract"));
     }
 }

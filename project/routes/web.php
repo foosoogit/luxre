@@ -204,13 +204,11 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::post('/customers/CustomersList', function () {
             session(['target_livewire_page' => "ListCustomers"]);
+            //session(['target_livewire_page' => $_POST["target_date"]]);
             return view('customers.ListCustomers');
         })->name('CustomersList.show.post');
 
         Route::get('livewire/update', function () {
-            //Log::alert("REQUEST_URI=".$_SERVER['REQUEST_URI']);
-            //Log::alert("HTTP_REFERER=".$_SERVER['HTTP_REFERER']);
-            //log::info($_SESSION['access_history']);
             if(session('target_livewire_page')=="ListPoints"){
                 return view('admin.ListPoints');
             }else if(session('target_livewire_page')=="ListContract"){

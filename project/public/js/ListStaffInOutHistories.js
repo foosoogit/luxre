@@ -3,6 +3,7 @@ $(function() {
 	$('[data-toggle="tooltip"]').tooltip()
 })
 */
+
 function delArert(msg){
 	//return false;
 	//console.log("delArert");
@@ -19,7 +20,12 @@ function delArert(msg){
 
 }
 
+function set_read_only(obj){
+	obj.readOnly=true;
+}
+
 $('.target_date').keypress(function(e) {
+	console.log("keyCodee="+e.keyCode);
 	if(e.keyCode === 13) {
 		var focused = document.activeElement;
 		$.ajax({
@@ -44,6 +50,9 @@ $('.target_date').keypress(function(e) {
 			alert(errorThrown);	
 			alert('エラー');
 		});
+	}else if (e.key === "Escape"){
+		console.log('Escape');
+		focused.readOnly=true;	
 	}
 	focused.readOnly=true;
 });
@@ -79,7 +88,7 @@ function ReleaseReadOnly(obj){
 	}else{
 		if(obj.readOnly==true || obj.type=="button") {
 			//if(obj.getElementsByTagName())
-			if(ck_pass()){
+			if(ck_pass(obj)){
 				obj.readOnly=false;
 				obj.focus();	
 			}
@@ -87,7 +96,7 @@ function ReleaseReadOnly(obj){
 	}
 }
 
-function ck_pass(){
+function ck_pass(obj){
 	var res = prompt("パスワードを入力してください。");
 	if(res!==""){
 		var today = new Date();
@@ -99,6 +108,8 @@ function ck_pass(){
 			alert('パスワードが違います。');
 			return false;
 		}else{
+			//obj.focus();
+			//obj.readOnly=false;
 			return true;
 		}
 	}

@@ -53,7 +53,6 @@ class OtherFunc extends Controller
 	*/
 	public static function make_html_working_list_month_slct(){
 		$month_now=date('m');
-		//Log::alert("month_now=".$month_now);
 		$htm_month_slct='<select name="month_slct" id="month_slct" class="form-select">';
 		$htm_month_slct.='<option  value="" Selected>--Select--</option>';
 		for ($i=1; $i <= 12; $i++) {
@@ -72,7 +71,6 @@ class OtherFunc extends Controller
 		$htm_year_slct.='<option  value="" Selected>--Select--</option>';
 		$start_year='2024';$year_now=date('Y');
 		for($i = $start_year; $i<= $year_now; $i++){
-			//Log::alert("i=".$i);
 			$sct='';
 			if($i==$year_now){
 				$sct='Selected';
@@ -91,7 +89,6 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_html_reason_coming_cbox($targetSbj,$referee){
-		//Log::alert("referee2=".$referee);
 		$reason_coming_array=explode(",", initConsts::ReasonsComing());
 		$targetSbjArray=explode(",", $targetSbj);
 		$htm_reason_coming_cbox='';$sonotaReason="";$reason_id="ri_1";
@@ -102,11 +99,9 @@ class OtherFunc extends Controller
 			if($reason<>"その他"){
 				$htm_reason_coming_cbox.='<input class="form-check-input" type="checkbox" name="reason_coming_cbx[]" id="'.$reason_id.'" value="'.$reason.'" '.$cked.' />';
 				$htm_reason_coming_cbox.='<label class="form-check-label" for="'.$reason_id.'">'.$reason.'</label></div>';
-				//$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" type="checkbox" value="'.$reason.'" '.$cked.' />'.$reason.'</label>';
 			}else{
 				$htm_reason_coming_cbox.='<input class="form-check-input" type="checkbox" name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" value="その他" onchange="reason_coming_sonota_manage();"'.$cked.' />';
 				$htm_reason_coming_cbox.='<label class="form-check-label" for="reason_coming_cbx_sonota">その他</label>';
-				//$htm_reason_coming_cbox.='<label><input name="reason_coming_cbx[]" id="reason_coming_cbx_sonota" type="checkbox" value="その他" onchange="reason_coming_sonota_manage();" '.$cked.' />その他</label>';
 				if($cked=='checked'){
 					$sonotaArray=array();
 					$sonotaArray=explode("(", $targetSbj);
@@ -369,29 +364,22 @@ class OtherFunc extends Controller
 
 	public static function make_html_staff_inout_slct($targetStaffSerial){
 		$htm_staff_slct="";
-		//$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm" wire:change="search_day(document.getElementsByName('staff_slct').value)">';
 		$htm_staff_slct='<option value="">すべて</option>';
 		$staff_array=Staff::all();
-		//$staff_array=DB::table('staff')->get();
-		//$staff_array=Staff->get();
 		foreach($staff_array as $staff) {
 			$sct='';
 			if($staff->serial_staff==$targetStaffSerial){
 					$sct='selected';
-					Log::alert("targetStaffSerial=".$targetStaffSerial);
 			}
 			$htm_staff_slct.='<option value="'.$staff->serial_staff.'" '.$sct.'>'.$staff->last_name_kanji.' '.$staff->first_name_kanji.'</option>';
 		}
-		//$htm_staff_slct.='</select>';
 		return $htm_staff_slct;
 	}
 
 	public static function make_html_staff_slct($targetStaffSerial){
-		//Log::alert("targetStaffSerial=".$targetStaffSerial);
 		$htm_staff_slct="";
 		$htm_staff_slct='<select name="staff_slct" id="staff_slct" class="form-select form-select-sm">';
 		$htm_staff_slct.='<option value="">-- 選択してください --</option>';
-		//$staff_array=Staff::all();
 		$staff_array=Staff::get();
 		foreach($staff_array as $staff) {
 			$sct='';
@@ -445,20 +433,15 @@ class OtherFunc extends Controller
 					if($tgtGrp<>$index){
 						$htm_TreatmentsName_slct.='<optgroup label="'.$index.'">';
 						$tgtGrp=$index;
-
 						if($cnt>1){$htm_TreatmentsName_slct.='</optgroup>';}
 					};
 					if(empty($TargetTreatmentName)){
 						$sct='';
 					}else{
-
 						if($TargetTreatmentName==$value->name_treatment_contents){
-							//print "TargetTreatmentName=".$TargetTreatmentName."<br>";
 							$sct='Selected';
-							//print "sct=".$sct."<br>";
 						}
 					}
-					//$htm_TreatmentsName_slct.='<option value="'.$value->name_treatment_contents.'" '.$sct.'>'.$value->name_treatment_contents.'('.$value->treatment_details.')</option>';
 					$htm_TreatmentsName_slct.='<option value="'.$value->name_treatment_contents.'" '.$sct.'>'.$value->name_treatment_contents.'</option>';
 					break;
 				}
@@ -467,56 +450,113 @@ class OtherFunc extends Controller
 		}		
 		return $htm_TreatmentsName_slct;
 	}
+	
+	public static function get_page_num($target_url){
+		$pn=1;
+		$page_num_key_array=['page=','page_num='];
+		foreach($page_num_key_array as $page_num_key){
+			$page_num_array=explode($page_num_key,$target_url);
+			if(isset($page_num_array[1])){
+				$pn=$page_num_array[1];
+				break;
+			}
+		}
+		/*
+		$page_num_array=explode("page=",$target_url);
+			if(isset($page_num_array[1])){
+				$pn=$page_num_array[1];
+			}
+		*/
+		return $pn;
+	}
+
+	public static function get_page_name($target_url){
+		$target_url_array_1=explode("?", $target_url);
+		//Log::info($target_url_array_1);
+		$target_url_array_2=explode("/", $target_url_array_1[0]);
+		//Log::info($target_url_array_2);
+		$target_url_array_2_cnt=count($target_url_array_2);
+		//Log::alert("target_url_array_2_cnt=".$target_url_array_2_cnt);
+		$target_name=$target_url_array_2[$target_url_array_2_cnt-1];
+		if(is_numeric($target_name)){
+			$target_name=$target_url_array_2[$target_url_array_2_cnt-2];
+		}
+		//Log::alert("target_name=".$target_name);
+		return $target_name;
+	}
 
 	public static function set_access_history($REFERER){
-		/*
-		if(isset($_POST['back_flg'])){
-            array_shift($_SESSION['access_history']);
-            array_shift($_SESSION['access_history']);
-        }
-		*/
-		/*
-		$REQUEST_URI_array=explode("?", $_SERVER['REQUEST_URI']);
-		if(empty($REQUEST_URI_array[1])){
-			$targetPage=1;
-		}else{
-			$targetPage=intval($REQUEST_URI_array[1]);
-			if(str_contains($_SERVER['REQUEST_URI'], "CustomersList")){
-				session(['page_history_CustomersList' => $targetPage]);
-			}
-		}
-		*/
+		log::alert('HTTP_REFERER name='.OtherFunc::get_page_name($_SERVER['HTTP_REFERER']));
+		log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
+		log::alert('REFERER='.$REFERER);
+		//log::alert('REFERER'.$REFERER);
 		$targetPage=1;
-		//log::alert('REQUEST_URI of1 ='.$_SERVER['REQUEST_URI']);
-		if(str_contains($_SERVER['REQUEST_URI'], "?")){
-			$REQUEST_URI_array=explode("?", $_SERVER['REQUEST_URI']);
-			//log::info($REQUEST_URI_array);
-			if(str_contains($REQUEST_URI_array[1], "page")){
-				$targetPage=intval($REQUEST_URI_array[1]);
-			}
+		
+		if(isset($_SESSION['access_history'][0])){
+			$access_history_0_name=self::get_page_name($_SESSION['access_history'][0]);
+			//log::alert('access_history Name='.OtherFunc::get_page_name($_SESSION['access_history'][0]));
+		}else{
+			$access_history_0_name="";
+			//log::alert('access_history Name=none');
 		}
-		if(str_contains($_SERVER['REQUEST_URI'], "CustomersList")){
-			session(['page_history_CustomersList' => $targetPage]);
+		//$url_name_from='none';
+		$url_name_from=OtherFunc::get_page_name($REFERER);
+		/*
+		if(isset($_SESSION['access_history'][0])){
+			$url_name_from=OtherFunc::get_page_name($_SESSION['access_history'][0]);
 		}
-		if(isset($_SESSION['access_history'])){
-			if(is_array($_SESSION['access_history'])){
-				array_unshift($_SESSION['access_history'],$REFERER);
-			}else{
-				$_SESSION['access_history']=array();
-				$_SESSION['access_history'][]=$REFERER;
+		*/
+		$url_name_now=OtherFunc::get_page_name($_SERVER['REQUEST_URI']);
+		log::alert('url_name_from='.$url_name_from);
+		log::alert('url_name_now='.$url_name_now);
+		if($url_name_now==$url_name_from){
+			if(str_contains($_SESSION['access_history'][0],$url_name_now)){
+				array_splice($_SESSION['access_history'], 0,1);
 			}
 		}else{
-			$_SESSION['access_history']=array();
-			$_SESSION['access_history'][]=$REFERER;
+			$target_referer="";
+			if(!str_contains($REFERER,'update')){
+				$target_referer=session('target_livewire_page');
+				//$target_referer=$REFERER;
+			}else if(!str_contains($_SERVER['REQUEST_URI'],'update')){
+				$target_referer=$_SERVER['REQUEST_URI'];
+			}
+			//$REFERER_name=self::get_page_name($_SERVER['HTTP_REFERER']);
+			$REFERER_name=self::get_page_name($target_referer);
+			$URI_name=self::get_page_name($_SERVER['REQUEST_URI']);
+			
+			
+			log::alert('target_referer ='.$target_referer);
+			if($url_name_now==$access_history_0_name){
+				array_splice($_SESSION['access_history'], 0,1);
+			}else{
+			//log::alert('REQUEST_URI ='.$_SERVER['REQUEST_URI']);
+			//log::alert('HTTP_REFERER ='.$_SERVER['HTTP_REFERER']);
+			//if(!str_contains($_SERVER['REQUEST_URI'],'/livewire/update') and !str_contains($REFERER,'/livewire/update')){
+			//Log::alert("REQUEST_URI=".$_SERVER['REQUEST_URI']);
+			//if(!str_contains($_SERVER['REQUEST_URI'],'/livewire/update')){
+			//if(!str_contains($_SERVER['REQUEST_URI'],'update')){
+			//if(!str_contains($REFERER,'update') or !str_contains($_SERVER['REQUEST_URI'],'update')){
+				if($target_referer<>""){
+					//log::alert('access_history 0 ='.$_SESSION['access_history'][0]);
+					log::alert('REFERER_name ='.$REFERER_name);
+					log::alert('URI_name ='.$URI_name);
+					if(isset($_SESSION['access_history'][0]) && $URI_name<>$REFERER_name && !str_contains($URI_name, "update")){
+						array_unshift($_SESSION['access_history'],$REFERER);
+					}else if(empty($_SESSION['access_history'])){
+						$_SESSION['access_history'][]=$REFERER;
+					}
+					if(str_contains($_SERVER['REQUEST_URI'], "?")){
+						$REQUEST_URI_array=explode("?", $_SERVER['REQUEST_URI']);
+						if(str_contains($REQUEST_URI_array[1], "page")){
+							$targetPage=intval($REQUEST_URI_array[1]);
+						}
+					}
+				}
+			}
 		}
-		$REF=explode("?", $_SESSION['access_history'][0]);
-		$nw=explode("?", $_SERVER['REQUEST_URI']);
-		if(str_contains($REF[0], $nw[0])){
-			array_shift($_SESSION['access_history']);
-		}
-		//log::info($_SESSION['access_history']);
-		//log::alert('PHP_SELF='.$_SERVER['PHP_SELF']);
-		//log::alert('REQUEST_URI of='.$_SERVER['REQUEST_URI']);
+		log::info($_SESSION['access_history']);
+		//$_SESSION[OtherFunc::get_page_name($_SESSION['access_history'][0])]=OtherFunc::get_page_num($_SESSION['access_history'][0]);
 	}
 	
 	public static function make_htm_get_default_user(){
@@ -528,9 +568,7 @@ class OtherFunc extends Controller
 			->distinct()->select('name_sei','name_mei','payment_histories.serial_user')->get();
 		$targetNameHtm="";$targetNameHtm_array=array();
 		foreach($DefaultUsersInf as $value){
-			//print $value->serial_user;
 			$targetNameHtm_array[]='<button type="submit" name="btn_serial" class="btn btn-outline-danger mx-sm-2" value="'.$value->serial_user.'">'.$value->name_sei.' '.$value->name_mei.'&nbsp;</button>';
-			//$targetNameHtm.='・<button type="submit" name="btn_serial" class="btn btn-outline-danger mx-sm-2" value="'.$value->serial_user.'">'.$value->name_sei.' '.$value->name_mei.'&nbsp;</button>';
 		}
 		$targetNameHtm=implode( "・", $targetNameHtm_array);
 		return $targetNameHtm;
@@ -538,7 +576,6 @@ class OtherFunc extends Controller
 
 	public static function make_htm_get_not_coming_customer(){
 		$today = new DateTime('now');
-		//$keyakukaisu=DB::table('contracts')
 		$keyakukaisu=Contract::where('cancel','=',null)
 			->where('how_to_pay','=','現金')
 			->get();
@@ -554,10 +591,8 @@ class OtherFunc extends Controller
 				if($interval_day>30){
 					$terget_user=DB::table('users')->where('serial_user','=', $value->serial_user)->first();
 					$targetNameHtm_array[]='<input type="submit" class="btn btn btn-outline-dark mx-sm-2" formaction="/customers/ShowInpRecordVisitPayment/'.$value->serial_keiyaku.'/'.$value->serial_user.'" name="btn_serial" value="'.$terget_user->name_sei.' '.$terget_user->name_mei.'">';
-					//$targetNameHtm.='・<input type="submit" class="btn btn btn-outline-dark" formaction="/customers/ShowInpRecordVisitPayment/'.$value->serial_keiyaku.'/'.$value->serial_user.'" name="btn_serial" value="'.$terget_user->name_sei.' '.$terget_user->name_mei.'">&nbsp';
 				}
 			}
-			
 		}
 		$targetNameHtm=implode( "・", $targetNameHtm_array);
 		return $targetNameHtm;
@@ -585,7 +620,6 @@ class OtherFunc extends Controller
 	public static function make_html_contract_report_table($targetYear,$targetMonth){
 		$sbj_array=array();
 		$sbj_array=['日','契約金額合計','累計契約金額','解約損金合計','累計解約損金','合計','累計合計','契約人数','累計契約数','契約率'];
-		//$htm_month_table='<table class="table-auto" border-solid>';
 		$htm_month_table='<table class="table-auto" border-solid><thead><tr>';
 		foreach($sbj_array as $value){
 			$htm_month_table.='<th class="border px-4 py-2">'.$value.
@@ -602,7 +636,6 @@ class OtherFunc extends Controller
 		session(['TotalSalesRuikei' =>0]);session(['KeiyakukinRuikei' =>0]);$ruikei_keiyaku_amount=0;$ruikei_contract_cnt=0;$ruikei_sonkin=0;
 		foreach($daterange as $date){
 			session(['TotalSales' => 0]);
-			//list($new_visiters_cnt, $member_visiters_cnt,$all_visiters_cnt) = self::get_raijyosyasu_cnt($date->format("Y-m-d"));
 			$contract_cnt=self::get_contract_cnt($date->format("Y-m-d"));
 			$contract_amount=self::get_keiyaku_amount($date->format("Y-m-d"));
 			$sonkin=self::get_kaiyaku_sonkin_amount($date->format("Y-m-d"));
@@ -640,12 +673,9 @@ class OtherFunc extends Controller
 	}
 	
 	static function get_kaiyaku_sonkin_amount($targetDay){
-		//$TargetQuery=DB::table('contracts');
 		$keiyakuKingaku=DB::table('contracts')
 			->where('deleted_at','=',NULL)
 			->where('cancel','=',$targetDay)->get();
-
-			//->where('how_to_pay','=','現金')->get();
 		$sonkinTotal=0;
 		foreach($keiyakuKingaku as $value){
 			$paied_kingaku=DB::table('payment_histories')->where('serial_keiyaku','=',$value->serial_keiyaku)
@@ -676,7 +706,6 @@ class OtherFunc extends Controller
 		$htm_month_table="";
 		$sbj_array=['日','ｸﾚｼﾞｯﾄ・ﾛｰﾝ','PayPay','月額','現金','合計売上','累計売上','新規<br>来店数','会員<br>来店数','来店<br>合計','累計<br>来店数','契約<br>人数','累計<br>契約数','契約率'];
 		$htm_month_table='<table class="table-auto" border-solid>';
-		//$htm_month_table.='<table class="table-auto" border-solid><thead><tr>';
 		foreach($sbj_array as $value){
 			$htm_month_table.='<th class="border px-4 py-2">'.$value.
 			'<!--<button type="button" wire:click="sort(\'serial_user-ASC\')"><img src="{{ asset(\'storage/images/sort_A_Z.png\') }}" width="15px" /></button>
@@ -770,7 +799,6 @@ class OtherFunc extends Controller
 	
 	public static function get_raitenReason($targetYear,$targetMonth){
 		$key=$targetYear."-".sprintf('%02d', $targetMonth);
-		//print "key=".$key;
 		$reason_coming_array=explode(",", initConsts::ReasonsComing());
 		$htm_raitenReason_array=array();
 		foreach($reason_coming_array as $value){
@@ -863,14 +891,11 @@ class OtherFunc extends Controller
 
 	public static function make_html_month_slct($targetMonth){
 		$htm_month_slct='';
-		//$htm_month_slct='<select name="month">';
-		//$htm_month_slct.='<option  value="0" >選択</option>';
 		for($i = 1; $i<= 12; $i++){
 			$sct='';
 			if($i==$targetMonth){$sct='Selected';}
 			$htm_month_slct.='<option value="'.$i.'" '.$sct.'>'.$i.'月</option>';
 		}
-		//$htm_month_slct.='</select>';
 		return $htm_month_slct;
 	}
 
@@ -881,7 +906,6 @@ class OtherFunc extends Controller
 			if($i==$targetYear){$sct='Selected';}
 			$htm_year_slct.='<option  value="'.$i.'" '.$sct.'>'.$i.'年</option>';
 		}
-		//$htm_year_slct.='</select>';
 		return $htm_year_slct;
 	}
 
@@ -901,10 +925,8 @@ class OtherFunc extends Controller
 		);
 		$html_customer_list_slct=array();
 		$customers=DB::table('users')->where('deleted_at','=',NULL)->orderBy('name_sei_kana')->orderBy('name_mei_kana')->get();
-		//$html_customer_list_slct='<select name="customers_slct">';
 		$html_customer_list_slct='<option value=0>-- 選択してください --</option>';
 		$tgtGrp="";
-		//$html_customer_list_slct.='<optgroup label="'.$tgtGrp.'>';
 		foreach($customers as $value){
 			$match = false;$flg=false;$cnt=0;$k=0;
 			foreach ($kana as $index => $pattern) {
@@ -1027,16 +1049,6 @@ class OtherFunc extends Controller
 
 	public static function get_teacher_schedule_for_btnStyle($teacherSerial,$studentSerial){
 		$MinimumLessonTimeInterval=initConsts::MinimumLessonTimeInterval();
-		/*
-		$target_tercher_schedules_array=Schedule::
-			where('endUNIXTimeStamp','>',time())
-			->where('deleted_at','=',null)
-			->where(function($query) use($teacherSerial,$studentSerial){
-					$query->where('idPerson', $teacherSerial)
-					->orwhere('idPerson', '<>', $studentSerial);
-			})->orderBy('startUNIXTimeStamp')->get();
-		*/
-		
 		$target_tercher_schedules_array=DB::table('Schedules')->
 			where('endUNIXTimeStamp','>',time())
 			->where('deleted_at','=',null)
@@ -1065,7 +1077,6 @@ class OtherFunc extends Controller
 				if($tget !== null){
 					if($tget->LessonRequestResult=="seiritu"){
 						$clr='blue';
-						//$clr='red';
 					}else if($tget->LessonRequestResult=="ukenai"){
 						$clr='gray';
 					}
@@ -1075,12 +1086,10 @@ class OtherFunc extends Controller
 				$open_schedule_array[$cnt]["end"]=date('Y-m-d H:i:s',$end_time_unix);
 				$open_schedule_array[$cnt]["endUnix"]=$end_time_unix;
 				$open_schedule_array[$cnt]["editable"] = true;
-				//$open_schedule_array[$cnt]["editable"] = false;
 				$open_schedule_array[$cnt]["color"] = $clr;
 				$open_schedule_array[$cnt]["id"] =  $target_tercher_schedules->event_id;
 				$open_schedule_array[$cnt]["title"] =$target_tercher_schedules->title;
 				$open_schedule_array[$cnt]["eventDurationEditable"] =false; //移動不可
-				//$open_schedule_array[$cnt]["parent_event_id"] =$parent_event_id;
 				$cnt++;
 			}
 		}
@@ -1090,8 +1099,6 @@ class OtherFunc extends Controller
 	public static function get_teacher_schedule_without_reserved($teacherSerial,$studentSerial){
 		$MinimumLessonTimeInterval=initConsts::MinimumLessonTimeInterval();
 		$target_tercher_schedules_array=DB::table('Schedules')->where('endUNIXTimeStamp','>',time())
-		//$target_tercher_schedules_array=Schedule::where('endUNIXTimeStamp','>',time())
-			//->where('deleted_at','=',null)
 			->where(function($query) use($teacherSerial,$studentSerial){
 					$query->where('idPerson', $teacherSerial)
 					->orwhere('idPerson', '<>', $studentSerial);
@@ -1119,7 +1126,6 @@ class OtherFunc extends Controller
 			$open_schedule_array[$cnt]["editable"] = false;
 			$open_schedule_array[$cnt]["color"] = 'green';
 			$open_schedule_array[$cnt]["id"] =  $target_tercher_schedules->event_id;
-			//$open_schedule_array[$cnt]["title"] =$target_tercher_schedules->title;
 			$cnt++;
 		}
 		$open_schedule_array[$cnt-1]["end"]=date('Y-m-d H:i:s',  strtotime($last_end));
@@ -1143,34 +1149,20 @@ class OtherFunc extends Controller
 		foreach($target_student_schedules_array as $target_student_schedules){
 			$startOriginal = str_replace(' (日本標準時)', '', $target_student_schedules->startOriginal);
 			$endOriginal= str_replace(' (日本標準時)', '', $target_student_schedules->endOriginal);
-			/*
-			$open_schedule_array[$cnt]["start"]=date('Y-m-d H:i:s',  strtotime($startOriginal));
-			$open_schedule_array[$cnt]["end"]=date('Y-m-d H:i:s',  strtotime($endOriginal));
-			$open_schedule_array[$cnt]["editable"] = true;
-			$open_schedule_array[$cnt]["color"] = 'blue';
-			$open_schedule_array[$cnt]["id"] =  $target_student_schedules->event_id;
-			$titlePlus="";
-			$open_schedule_array[$cnt]["title"] =$target_student_schedules->title.$titlePlus;
-			*/
 			$close_schedule_user_array[$cnt]["startUnix"]=$target_student_schedules->startUNIXTimeStamp;
 			$close_schedule_user_array[$cnt]["endUnix"]=$target_student_schedules->endUNIXTimeStamp;
 			$close_schedule_user_array[$cnt]["start"]=date('Y-m-d H:i:s',  strtotime($startOriginal));
 			$close_schedule_user_array[$cnt]["end"]=date('Y-m-d H:i:s',  strtotime($endOriginal));
 			$close_schedule_user_array[$cnt]["editable"] = true;
 			$close_schedule_user_array[$cnt]["color"] = 'blue';
-			//$close_schedule_user_array[$cnt]["color"] = 'red';
-			
-			//$close_schedule_user_array[$cnt]["color"] = 'red';
 			$close_schedule_user_array[$cnt]["id"] =  $target_student_schedules->event_id;
 			$reservation_number=$target_student_schedules->reservation_number;
 			$close_schedule_user_array[$cnt]["title"] =$target_student_schedules->title.$reservation_number;
 			$cnt++;
 		}
 		session(['close_schedule_user_array' => $close_schedule_user_array]);
-		//$open_schedule_array_test = array_merge($open_schedule_array,$close_schedule_user_array);	
 		$open_schedule_array_all=array();
 		$open_schedule_array_all = array_merge($open_schedule_array,$close_schedule_user_array);		
-		//print_r($open_schedule_array_all);
 		return $open_schedule_array_all;
 	}
 
