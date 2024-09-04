@@ -516,11 +516,20 @@ class OtherFunc extends Controller
 		}else{
 			$target_referer="";
 			if(!str_contains($REFERER,'update')){
-				$target_referer=session('target_livewire_page');
+				if(empty(session('target_livewire_page'))){
+					$target_referer=$_SERVER['HTTP_REFERER'];
+				}else{
+					$target_referer=session('target_livewire_page');
+				}
 				//$target_referer=$REFERER;
 			}else if(!str_contains($_SERVER['REQUEST_URI'],'update')){
 				$target_referer=$_SERVER['REQUEST_URI'];
 			}
+			/*
+			else{
+				$target_referer=$_SERVER['HTTP_REFERER'];
+			}
+			*/
 			//$REFERER_name=self::get_page_name($_SERVER['HTTP_REFERER']);
 			$REFERER_name=self::get_page_name($target_referer);
 			$URI_name=self::get_page_name($_SERVER['REQUEST_URI']);
