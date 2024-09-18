@@ -88,6 +88,30 @@ class initConsts{
 		return $inits_array->value1;
 	}
 
+	public static function TargetUserSerial($target){
+		$inits_array=Configration::where('subject','=','PageInf')->first();
+		$page_inf_array=array();
+		$page_inf_array=explode(";",$inits_array->value1);
+		$tname=OtherFunc::get_page_name($target);
+		$pn=1;
+		$tgt_page_inf_array=array();
+		foreach($page_inf_array as $page_inf){
+			if(str_contains($page_inf,$tname)){
+				$tgt_page_inf_array=explode(",",$page_inf);
+				$page_num_key_array=['page=','page_num='];
+				foreach($page_num_key_array as $page_num_key){
+					$page_num_array=explode($page_num_key,($target));
+					if(isset($page_num_array[1])){
+						$pn=$page_num_array[1];
+					}
+				}
+				break;
+			}
+		}
+		array_push($tgt_page_inf_array,$pn);
+		return $tgt_page_inf_array;
+	}
+
 	public static function TargetPageInf($target){
 		$inits_array=Configration::where('subject','=','PageInf')->first();
 		$page_inf_array=array();

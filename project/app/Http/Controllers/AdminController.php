@@ -1209,9 +1209,11 @@ $qrCode->saveToFile('myQRCode.png');
 
 	public function ShowContractList($UserSerial,Request $request){
 		//$_POST["kensakukey_txt"];
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		//OtherFunc::get_page_num($_SESSION[$_SESSION['access_history'][0]]);
-		session(['livewire_page_num_for_back' => OtherFunc::get_page_num($_SESSION['access_history'][0])]);
-		Log::alert("livewire_page_num_for_back=".session('livewire_page_num_for_back'));
+		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		//session(['livewire_page_num_for_back' => OtherFunc::get_page_num($_SESSION['access_history'][0])]);
+		//Log::alert("livewire_page_num_for_back=".session('livewire_page_num_for_back'));
 		//OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		/*
 		session(['fromPage' => 'ContractList']);
@@ -1230,6 +1232,7 @@ $qrCode->saveToFile('myQRCode.png');
 		}else{
 			session(['targetUserSerial' => $UserSerial]);
 			session(['target_page_for_pager'=>'']);
+			$_SESSION['access_history'][0]=$_SESSION['access_history'][0]."/".$UserSerial;
 			$GoBackPlace="/customers/CustomersList";				
 			$userinf=User::where('serial_user','=',$UserSerial)->first();
 			$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
@@ -1237,7 +1240,7 @@ $qrCode->saveToFile('myQRCode.png');
 				->select('contracts.*', 'users.*')
 				->paginate(initConsts::DdisplayLineNumContractList());
 		}
-		return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace"));
+		return view('customers.ListContract',compact("target_historyBack_inf_array","Contracts","UserSerial","userinf","GoBackPlace"));
 
 		/*
 		if(Auth::user()->serial_admin=="A_0001"){
@@ -1393,6 +1396,7 @@ $qrCode->saveToFile('myQRCode.png');
 
 	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		//Log::alert("ShowInpRecordVisitPayment-1");
 		$fromURLArray=parse_url($_SERVER['HTTP_REFERER']);
 		if(!session('InpRecordVisitPaymentFlg')){
 			session(['ShowInpRecordVisitPaymentfromPage' => $fromURLArray['path']]);
@@ -1540,6 +1544,11 @@ $qrCode->saveToFile('myQRCode.png');
 		}
 		$GoBackToPlace=session('ShowInpRecordVisitPaymentfromPage');
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		array_push($target_historyBack_inf_array,$UserSerial);
+		log::alert("ShowInpRecordVisitPayment=");
+		log::info($_SESSION['access_history']);
+		log::info($target_historyBack_inf_array);
+
 		return view('customers.PaymentRegistration',compact("UserSerial","PointArray","target_historyBack_inf_array","only_treatment_color_array","GoBackToPlace","header","slot",'VisitSerialArray','VisitDateArray','PaymentDateArray','targetUser','targetContract','KeiyakuNaiyou','PaymentAmountArray','HowToPayCheckedArray','visit_disabeled','sejyutukaisu','set_gray_array','payment_disabeled','set_gray_pay_array','set_background_gray_pay_array','paymentCount','TreatmentDetailsArray','TreatmentDetailsSelectArray'));
 	}
 

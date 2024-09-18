@@ -20,6 +20,132 @@ if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function get_page_name($target_url){
+		$target_url_array_1=explode("?", $target_url);
+		$target_url_array_2=explode("/", $target_url_array_1[0]);
+		$target_url_array_2_cnt=count($target_url_array_2);
+		$target_name=$target_url_array_2[$target_url_array_2_cnt-1];
+		if(str_contains($target_url,'customers')){
+			$nameNum=array_search('customers', $target_url_array_2);
+			$target_name=$target_url_array_2[$nameNum+1];
+		}else if(is_numeric($target_name)){
+			$target_name=$target_url_array_2[$target_url_array_2_cnt-2];
+		}
+		return $target_name;
+	}
+
+	public static function set_access_history($REFERER){
+		$prevurl = url()->previous();
+		log::alert('prevurl='.$prevurl);
+		log::alert('PHP_SELF='.$_SERVER['PHP_SELF']);
+		log::alert('REQUEST_METHOD='.$_SERVER['REQUEST_METHOD']);
+		log::alert('HTTP_REFERER='.$_SERVER['HTTP_REFERER']);
+		log::alert('SCRIPT_FILENAME='.$_SERVER['SCRIPT_FILENAME']);
+		log::alert('SCRIPT_NAME='.$_SERVER['SCRIPT_NAME']);
+		log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
+		log::alert('PATH_INFO='.$_SERVER['PATH_INFO']);
+				
+		log::alert('HTTP_REFERER name='.OtherFunc::get_page_name($_SERVER['HTTP_REFERER']));
+		log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
+		log::alert('REFERER='.$REFERER);
+		$targetPage=1;
+		
+		if(isset($_SESSION['access_history'][0])){
+			$access_history_0_name=self::get_page_name($_SESSION['access_history'][0]);
+		}else{
+			$access_history_0_name="";
+		}
+		$url_name_from=OtherFunc::get_page_name($REFERER);
+		$url_name_now=OtherFunc::get_page_name($_SERVER['REQUEST_URI']);
+		log::alert('url_name_from='.$url_name_from);
+		log::alert('url_name_now='.$url_name_now);
+		if($url_name_now==$url_name_from){
+			if(str_contains($_SESSION['access_history'][0],$url_name_now)){
+				array_splice($_SESSION['access_history'], 0,1);
+			}
+		}else{
+			$target_referer="";
+			if(!str_contains($REFERER,'update')){
+				if(empty(session('target_livewire_page'))){
+					$target_referer=$_SERVER['HTTP_REFERER'];
+				}else{
+					$target_referer=session('target_livewire_page');
+				}
+			}else if(!str_contains($_SERVER['REQUEST_URI'],'update')){
+				$target_referer=$_SERVER['REQUEST_URI'];
+			}
+			/*
+			else{
+				$target_referer=$_SERVER['HTTP_REFERER'];
+			}
+			*/
+			//$REFERER_name=self::get_page_name($_SERVER['HTTP_REFERER']);
+			$REFERER_name=self::get_page_name($target_referer);
+			$URI_name=self::get_page_name($_SERVER['REQUEST_URI']);
+			
+			log::alert('target_referer ='.$target_referer);
+			if($url_name_now==$access_history_0_name){
+				array_splice($_SESSION['access_history'], 0,1);
+			}else{
+				if($target_referer<>""){
+					log::alert('REFERER_name ='.$REFERER_name);
+					log::alert('URI_name ='.$URI_name);
+					if(isset($_SESSION['access_history'][0]) && $URI_name<>$REFERER_name && !str_contains($URI_name, "update")){
+						array_unshift($_SESSION['access_history'],$REFERER);
+					}else if(empty($_SESSION['access_history'])){
+						$_SESSION['access_history'][]=$REFERER;
+					}
+					if(str_contains($_SERVER['REQUEST_URI'], "?")){
+						$REQUEST_URI_array=explode("?", $_SERVER['REQUEST_URI']);
+						if(str_contains($REQUEST_URI_array[1], "page")){
+							$targetPage=intval($REQUEST_URI_array[1]);
+						}
+					}
+					/*
+					log::alert('REFERER_name last='.OtherFunc::get_page_name($_SERVER['HTTP_REFERER']));
+					log::alert('access_histor 0 last='.$_SESSION['access_history'][0]);
+					if(str_contains($_SESSION['access_history'][0], OtherFunc::get_page_name($_SERVER['HTTP_REFERER'])) && isset($_SESSION['access_history'][0])){
+						array_splice($_SESSION['access_history'], 0, 1);
+					}
+					*/
+				}
+			}
+		}
+		if(isset($_SESSION['access_history'][1]) && $_SESSION['access_history'][0]==$_SESSION['access_history'][1]){
+			array_splice($_SESSION['access_history'], 1, 1);
+		}
+		//Livewireから違う画面にアクセスしたとき
+		if(isset($_SESSION['access_history'][1])){
+			$url_ck_array0=explode("/",$_SESSION['access_history'][0]);
+			$url_ck_array1=explode("/",$_SESSION['access_history'][1]);
+			$cnt=0;$flg=true;
+			foreach($url_ck_array0 as $key){
+				if($key<>$url_ck_array1[$cnt]){
+					$flg=false;
+					break;
+				}
+				$cnt++;
+			}
+			if($flg){
+				array_splice($_SESSION['access_history'], 1, 1);
+			}
+			if(str_contains($_SESSION['access_history'][1], $url_name_from)){
+				array_splice($_SESSION['access_history'], 0, 2);
+			}
+			/*
+			log::alert('REFERER_name last='.OtherFunc::get_page_name($_SERVER['HTTP_REFERER']));
+			log::alert('access_histor 0 last='.$_SESSION['access_history'][0]);
+			if(str_contains($_SESSION['access_history'][0], OtherFunc::get_page_name($_SERVER['HTTP_REFERER']))){
+				array_splice($_SESSION['access_history'], 0, 1);
+			}
+			*/
+		}
+		log::alert('access_history last');
+		log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
+		log::info($_SESSION['access_history']);
+		//$_SESSION[OtherFunc::get_page_name($_SESSION['access_history'][0])]=OtherFunc::get_page_num($_SESSION['access_history'][0]);
+	}
+	
 	public static function getStaffDiffAttribute($time_in,$time_out){
 		
 		$in=strtotime(date($time_in));
@@ -115,11 +241,7 @@ class OtherFunc extends Controller
 		
 		$htm_reason_coming_cbox.='<input name="reason_coming_txt" id="reason_coming_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$sonotaReason.'" /></div>';
 		$htm_reason_coming_cbox.='<div class="row" style="py-3.5"><div class="col-auto">';
-		//$htm_reason_coming_cbox.='●紹介者(顧客番号を入力してください。)</div><div class="col-auto"><input name="syokaisya_txt" id="syokaisya_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$referee.'" onkeyup="SerchRefereeInf(this)"/></div>';
-		//$htm_reason_coming_cbox.='●紹介者(氏名を入力してください。自動でポイントは付きません。)</div><div class="col-auto"><input name="syokaisya_txt" id="syokaisya_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$referee.'" onkeyup="SerchRefereeInf(this)"/></div>';
 		$htm_reason_coming_cbox.='●紹介者(氏名を入力してください。自動でポイントは付きません。)</div><div class="col-auto"><input name="syokaisya_txt" id="syokaisya_txt" type="text" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" value="'.$referee.'"/></div>';
-		//$htm_reason_coming_cbox.='<div class="col-auto"><button class="btn btn-success btn-sm" type="button" onclick="SerchRefereeInf();">紹介者検索</button></div></div>';
-		//$htm_reason_coming_cbox.='<div class="col-auto"><a href="/customers/CustomersList" class="btn btn-success btn-sm" target="_blank">紹介者検索</a></div></div>';
 		return $htm_reason_coming_cbox;
 	}
 
@@ -470,104 +592,6 @@ class OtherFunc extends Controller
 		return $pn;
 	}
 
-	public static function get_page_name($target_url){
-		$target_url_array_1=explode("?", $target_url);
-		//Log::info($target_url_array_1);
-		$target_url_array_2=explode("/", $target_url_array_1[0]);
-		//Log::info($target_url_array_2);
-		$target_url_array_2_cnt=count($target_url_array_2);
-		//Log::alert("target_url_array_2_cnt=".$target_url_array_2_cnt);
-		$target_name=$target_url_array_2[$target_url_array_2_cnt-1];
-		if(is_numeric($target_name)){
-			$target_name=$target_url_array_2[$target_url_array_2_cnt-2];
-		}
-		//Log::alert("target_name=".$target_name);
-		return $target_name;
-	}
-
-	public static function set_access_history($REFERER){
-		log::alert('HTTP_REFERER name='.OtherFunc::get_page_name($_SERVER['HTTP_REFERER']));
-		log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
-		log::alert('REFERER='.$REFERER);
-		//log::alert('REFERER'.$REFERER);
-		$targetPage=1;
-		
-		if(isset($_SESSION['access_history'][0])){
-			$access_history_0_name=self::get_page_name($_SESSION['access_history'][0]);
-			//log::alert('access_history Name='.OtherFunc::get_page_name($_SESSION['access_history'][0]));
-		}else{
-			$access_history_0_name="";
-			//log::alert('access_history Name=none');
-		}
-		//$url_name_from='none';
-		$url_name_from=OtherFunc::get_page_name($REFERER);
-		/*
-		if(isset($_SESSION['access_history'][0])){
-			$url_name_from=OtherFunc::get_page_name($_SESSION['access_history'][0]);
-		}
-		*/
-		$url_name_now=OtherFunc::get_page_name($_SERVER['REQUEST_URI']);
-		log::alert('url_name_from='.$url_name_from);
-		log::alert('url_name_now='.$url_name_now);
-		if($url_name_now==$url_name_from){
-			if(str_contains($_SESSION['access_history'][0],$url_name_now)){
-				array_splice($_SESSION['access_history'], 0,1);
-			}
-		}else{
-			$target_referer="";
-			if(!str_contains($REFERER,'update')){
-				if(empty(session('target_livewire_page'))){
-					$target_referer=$_SERVER['HTTP_REFERER'];
-				}else{
-					$target_referer=session('target_livewire_page');
-				}
-				//$target_referer=$REFERER;
-			}else if(!str_contains($_SERVER['REQUEST_URI'],'update')){
-				$target_referer=$_SERVER['REQUEST_URI'];
-			}
-			/*
-			else{
-				$target_referer=$_SERVER['HTTP_REFERER'];
-			}
-			*/
-			//$REFERER_name=self::get_page_name($_SERVER['HTTP_REFERER']);
-			$REFERER_name=self::get_page_name($target_referer);
-			$URI_name=self::get_page_name($_SERVER['REQUEST_URI']);
-			
-			
-			log::alert('target_referer ='.$target_referer);
-			if($url_name_now==$access_history_0_name){
-				array_splice($_SESSION['access_history'], 0,1);
-			}else{
-			//log::alert('REQUEST_URI ='.$_SERVER['REQUEST_URI']);
-			//log::alert('HTTP_REFERER ='.$_SERVER['HTTP_REFERER']);
-			//if(!str_contains($_SERVER['REQUEST_URI'],'/livewire/update') and !str_contains($REFERER,'/livewire/update')){
-			//Log::alert("REQUEST_URI=".$_SERVER['REQUEST_URI']);
-			//if(!str_contains($_SERVER['REQUEST_URI'],'/livewire/update')){
-			//if(!str_contains($_SERVER['REQUEST_URI'],'update')){
-			//if(!str_contains($REFERER,'update') or !str_contains($_SERVER['REQUEST_URI'],'update')){
-				if($target_referer<>""){
-					//log::alert('access_history 0 ='.$_SESSION['access_history'][0]);
-					log::alert('REFERER_name ='.$REFERER_name);
-					log::alert('URI_name ='.$URI_name);
-					if(isset($_SESSION['access_history'][0]) && $URI_name<>$REFERER_name && !str_contains($URI_name, "update")){
-						array_unshift($_SESSION['access_history'],$REFERER);
-					}else if(empty($_SESSION['access_history'])){
-						$_SESSION['access_history'][]=$REFERER;
-					}
-					if(str_contains($_SERVER['REQUEST_URI'], "?")){
-						$REQUEST_URI_array=explode("?", $_SERVER['REQUEST_URI']);
-						if(str_contains($REQUEST_URI_array[1], "page")){
-							$targetPage=intval($REQUEST_URI_array[1]);
-						}
-					}
-				}
-			}
-		}
-		log::info($_SESSION['access_history']);
-		//$_SESSION[OtherFunc::get_page_name($_SESSION['access_history'][0])]=OtherFunc::get_page_num($_SESSION['access_history'][0]);
-	}
-	
 	public static function make_htm_get_default_user(){
 		$DefaultUsersInf=PaymentHistory::leftJoin('users', 'payment_histories.serial_user', '=', 'users.serial_user')
 			->where('payment_histories.how_to_pay','=', 'default')
