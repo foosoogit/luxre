@@ -58,7 +58,7 @@ class ContractList extends Component
 	*/
     public function render()
     {
-		log::alert('render ConstractList-1');
+		//log::alert('render ConstractList-1');
 		//session(['livewire_cnt'=>0]);
 		/*
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
@@ -67,7 +67,7 @@ class ContractList extends Component
 			session(['livewire_page_num_for_back' => $target_historyBack_inf_array[3]]);
 		}
 		*/
-		log::alert('livewire_page_num_for_back='.session('livewire_page_num_for_back'));
+		//log::alert('livewire_page_num_for_back='.session('livewire_page_num_for_back'));
 		if($this->sort_key_contract<>session('sort_key_contract')){
 			//session(['sort_key_contract' =>$this->sort_key_contract]);
 			$this->sort_key_contract=session('sort_key_contract');
@@ -183,7 +183,7 @@ class ContractList extends Component
 		//$serchKey_contract=session('serchKey_contract');serch_key_contract
 		//$serchKey_contract=$this->serch_key_contract;
 		$this->search_Contract();
-		log::alert('render ConstractList2');
+		//log::alert('render ConstractList2');
         //return view('livewire.contract-list',compact("target_historyBack_inf_array","GoBackPlaceName","GoBackPlace","userinf","contractQuery","UserSerial","serchKey_contract"));
 		//return view('livewire.contract-list',compact("target_historyBack_inf_array","userinf","contractQuery","UserSerial","serchKey_contract"));
 		return view('livewire.contract-list',["target_historyBack_inf_array"=>$this->target_historyBack_inf_array,"userinf"=>$userinf,"contractQuery"=>$this->search_Contract,"UserSerial"=>$UserSerial,"serchKey_contract"=>$this->serch_key_contract]);
@@ -198,9 +198,9 @@ class ContractList extends Component
 */
 
 	public function search_Contract(){
-        log::alert('render ConstractList-2');
-		log::alert('search_Contract');
-		log::alert('livewire_cnt-1='.session('livewire_cnt'));
+        //log::alert('render ConstractList-2');
+		//log::alert('search_Contract');
+		//log::alert('livewire_cnt-1='.session('livewire_cnt'));
 		//session(['livewire_page_num_for_back' => $target_historyBack_inf_array[3]]);
 		//session(['livewire_cnt'=>0]);
 		//if($this->livewire_cnt==0){
@@ -212,7 +212,7 @@ class ContractList extends Component
 		}else{
 			session(['livewire_cnt'=>1]);
 		}
-		log::alert('livewire_cnt-2='.session('livewire_cnt'));
+		//log::alert('livewire_cnt-2='.session('livewire_cnt'));
 		$this->target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		if(isset($target_historyBack_inf_array[3])){
 			session(['livewire_page_num_for_back' => $target_historyBack_inf_array[3]]);
