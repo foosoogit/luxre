@@ -43,7 +43,7 @@ class OtherFunc extends Controller
 		log::alert('SCRIPT_FILENAME='.$_SERVER['SCRIPT_FILENAME']);
 		log::alert('SCRIPT_NAME='.$_SERVER['SCRIPT_NAME']);
 		log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
-		log::alert('PATH_INFO='.$_SERVER['PATH_INFO']);
+		//log::alert('PATH_INFO='.$_SERVER['PATH_INFO']);
 				
 		log::alert('HTTP_REFERER name='.OtherFunc::get_page_name($_SERVER['HTTP_REFERER']));
 		log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
