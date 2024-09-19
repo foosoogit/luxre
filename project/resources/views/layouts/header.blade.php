@@ -2,7 +2,7 @@
     <a class="btn mb-2 btn-primary btn-sm" href="{{route('admin.top')}}">メニューに戻る</a>
 </div>
 {{--@if(isset($target_historyBack_inf_array[1]))--}}
-{{$target_historyBack_inf_array[0]}}
+{{--{{$target_historyBack_inf_array[0]}}--}}
 {{--$target_historyBack_inf_array[1]--}}
 @if(isset($target_historyBack_inf_array) && $target_historyBack_inf_array[0]<>'top')
     @if($target_historyBack_inf_array[0]!=='admin')

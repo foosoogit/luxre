@@ -70,6 +70,12 @@
                                     <button type="button" wire:click="sort('total_points-Desc')"><img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" disabled/></button>
                                 </div>
                             </th>
+                            <th class="border px-4 py-2">予約日入力
+                                <div>
+                                    <button type="button" wire:click="sort('yoyaku-ASC')"><img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" disabled/></button>
+                                    <button type="button" wire:click="sort('yoyaku-Desc')"><img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" disabled/></button>
+                                </div>
+                            </th>
                             <th class="border px-4 py-2">削除</th>
                         </tr>
                     </thead>
@@ -92,6 +98,7 @@
                                 <td class="border px-4 py-2"><div class="text-nowrap">{{ $user->birth_year}}-{{ $user->birth_month}}-{{ $user->birth_day}}&nbsp;({{ $user->User_Age}})</div></td>
                                 <td class="border px-4 py-2">{{ $user->phone}}</td>
                                 <td class="border px-4 py-2">{{ $user->TotalPoints}}</td>
+                                <td class="border px-4 py-2"><input name="yoyaku_Btn" type="submit" value="予約日"></td>
                                 <td class="border px-4 py-2">
                                     <form action="/customers/deleteCustomer/{{$user->serial_user}}" method="GET">@csrf
                                         <input name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $user->serial_user}} {{ $user->name_sei}} {{ $user->name_mei}}');" >
@@ -104,6 +111,24 @@
                         @endforeach
                     </tbody>
                 </table>
+                <!-- モーダル・ダイアログ -->
+<div class="modal" id="sampleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+          <h4 class="modal-title">タイトル</h4>
+        </div>
+        <div class="modal-body">
+          <label><span id="morau"></span>の好きな食べ物:<input type="text" id="food"></label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+          <button type="button" id="btn1" class="btn btn-primary">ボタン1</button>
+        </div>
+      </div>
+    </div>
+  </div>
                 {{$users->appends(request()->query())->links('pagination::bootstrap-4')}}
             </div>
         </div>

@@ -95,6 +95,35 @@ class AdminController extends Controller
 	}
 	*/
 	
+	public function ShowInputNewCustomer(Request $request){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		session(['fromPage' => 'InputCustomer']);
+		session(['CustomerManage' => 'new']);
+		//$header="";$slot="";
+		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
+		$html_birth_year_slct=trim($html_birth_year_slct);
+		/*
+		$GoBackPlace="../ShowMenuCustomerManagement";
+		if(isset($request->CustomerListCreateBtn)){
+			$GoBackPlace="/customers/ShowCustomersList_livewire";
+		}
+		*/
+		setcookie('TorokuMessageFlg','false',time()+60);
+		$GenderRdo=array();
+		$target_user="";$selectedManth=null;$selectedDay=null;$selectedRegion=null;
+		$saveFlg="false,".session('CustomerManage');$btnDisp="　登　録　";
+		$html_reason_coming="";
+		$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
+		$target_user=array();
+		$maxUserSerial =DB::table('users')->max('serial_user');
+		$TargetUserSerial=++$maxUserSerial;
+		$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
+		$GoBackPlace=$_SESSION['access_history'][0];
+		$total_point="";
+		return view('customers.CreateCustomer',compact('target_historyBack_inf_array','total_point','html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
+	}
+
 	public function ajax_staff_change_time_card(Request $request){
 		$TargetObjArray=explode("_", $request->TargetObj);
 		if(count($TargetObjArray)>=3){
@@ -746,7 +775,7 @@ $qrCode->saveToFile('myQRCode.png');
 	public function ShowSyuseiCustomer(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		session(['livewire_page_num_for_back' => OtherFunc::get_page_num($_SESSION['access_history'][0])]);
-		Log::alert("livewire_page_num_for_back SyuseiCustomer=".session('livewire_page_num_for_back'));
+		//Log::alert("livewire_page_num_for_back SyuseiCustomer=".session('livewire_page_num_for_back'));
 		if(isset($_POST['back_flg'])){
             array_shift($_SESSION['access_history']);
             array_shift($_SESSION['access_history']);
@@ -1901,34 +1930,6 @@ $qrCode->saveToFile('myQRCode.png');
 			$msg="氏名: ".$userInf->name_sei." ".$userInf->name_mei."さんのデータを新規登録しました。";
     		return view("layouts.DialogMsg", compact('userInf','msg','targetSerial','header',"slot","GoToBackPlace"));
    		}
-	}
-
-	public function ShowInputNewCustomer(Request $request){
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		session(['fromPage' => 'InputCustomer']);
-		session(['CustomerManage' => 'new']);
-		//$header="";$slot="";
-		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
-		$html_birth_year_slct=trim($html_birth_year_slct);
-		/*
-		$GoBackPlace="../ShowMenuCustomerManagement";
-		if(isset($request->CustomerListCreateBtn)){
-			$GoBackPlace="/customers/ShowCustomersList_livewire";
-		}
-		*/
-		setcookie('TorokuMessageFlg','false',time()+60);
-		$GenderRdo=array();
-		$target_user="";$selectedManth=null;$selectedDay=null;$selectedRegion=null;
-		$saveFlg="false,".session('CustomerManage');$btnDisp="　登　録　";
-		$html_reason_coming="";
-		$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
-		$target_user=array();
-		$maxUserSerial =DB::table('users')->max('serial_user');
-		$TargetUserSerial=++$maxUserSerial;
-		$target_user['serial_user']=sprintf('%06d', $TargetUserSerial);
-		$GoBackPlace=$_SESSION['access_history'][0];
-		$total_point="";
-		return view('customers.CreateCustomer',compact('total_point','html_birth_year_slct',"target_user","selectedManth","selectedDay","selectedRegion","GoBackPlace","saveFlg","btnDisp","GenderRdo","html_reason_coming"));
 	}
 
 	public function deleteStaff($serial_staff){
