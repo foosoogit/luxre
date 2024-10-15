@@ -37,6 +37,7 @@ return new class extends Migration
 			$table->string('password')->nullable();
             $table->string('reason_coming',200)->nullable();
             $table->string('total_points',6)->nullable(); 
+            $table->dateTime('reservation',6)->nullable()->comment('予約日時'); 
             $table->string('referee_num',18)->nullable();
             $table->string('referee_name',50)->nullable();
             $table->string('zankin',10)->nullable()->comment('支払い残金');

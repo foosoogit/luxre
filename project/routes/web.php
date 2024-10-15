@@ -58,7 +58,6 @@ Route::middleware('auth')->group(function () {
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
     Route::name('admin.')->group(function() {
-        
         Route::post('admin/ajax_staff_dell_time_card',[AdminController::class,'ajax_staff_dell_time_card'])->name('ajax_staff_dell_time_card');
         Route::post('admin/ajax_staff_change_time_card',[AdminController::class,'ajax_staff_change_time_card'])->name('ajax_staff_change_time_card');
         Route::get('admin/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
@@ -178,7 +177,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::controller(AdminController::class)->name('customers.')->group(function() {
         //Route::get('/customers/CustomerInfFromDayly/{target_user_serial}', [CustomersList::class,'search_from_top_menu'],function($target_user_serial){})->name("CustomerInfFromDayly");
     	//Route::post('/customers/ShowCustomersList_livewire_from_top_menu', CustomerSearch::class,function(Request $request){});
-	    
+	    Route::post('/customers/CustomersList/ajax_save_yoyaku_time',[AdminController::class,'ajax_save_yoyaku_time'])->name('ajax_save_yoyaku_time');
         Route::get('/customers/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
         Route::post('/customers/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
 
@@ -257,6 +256,7 @@ Route::middleware('auth:admin')->group(function () {
         return view('admin.ListStaffs');
     })->name('StaffsList.show');
     Route::get('/top', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top');
+    Route::post('ajax_get_coming_soon_user',[AdminController::class,'ajax_get_coming_soon_user'])->name('ajax_staff_dell_time_card');
     //Route::get('/', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top.login');
     //Route::get('/', [UserController::class,'ShowMyPage'])->name('admin.top.login');
     /*

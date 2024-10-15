@@ -88,6 +88,18 @@ class initConsts{
 		return $inits_array->value1;
 	}
 
+	public static function BookingDisplayPeriod(){
+		$inits_array=Configration::where('subject','=','BookingDisplayPeriod')->first();
+		//$inits_array=DB::table('configrations')->where('subject','=','TargetContractMoney')->first();
+		return $inits_array->value1;
+	}
+
+	public static function BirthdayDisplayPeriod(){
+		$inits_array=Configration::where('subject','=','BirthdayDisplayPeriod')->first();
+		//$inits_array=DB::table('configrations')->where('subject','=','TargetContractMoney')->first();
+		return $inits_array->value1;
+	}
+
 	public static function TargetUserSerial($target){
 		$inits_array=Configration::where('subject','=','PageInf')->first();
 		$page_inf_array=array();
@@ -113,20 +125,20 @@ class initConsts{
 	}
 
 	public static function TargetPageInf($target){
-		Log::alert("target initConsts= ".$target);
+		//Log::alert("target initConsts= ".$target);
 		$inits_array=Configration::where('subject','=','PageInf')->first();
 		$page_inf_array=array();
 		$page_inf_array=explode(";",$inits_array->value1);
 		$tname=OtherFunc::get_page_name($target);
-		Log::alert("tname= ".$tname);	
+		//Log::alert("tname= ".$tname);	
 		$pn=1;
 		$tgt_page_inf_array=array();
 		foreach($page_inf_array as $page_inf){
-			Log::alert("page_inf= ".$page_inf);
+			//Log::alert("page_inf= ".$page_inf);
 			if(str_contains($page_inf,$tname)){
-				Log::alert("Find!");
+				//Log::alert("Find!");
 				$tgt_page_inf_array=explode(",",$page_inf);
-				Log::info($tgt_page_inf_array);
+				//Log::info($tgt_page_inf_array);
 				$page_num_key_array=['page=','page_num='];
 				foreach($page_num_key_array as $page_num_key){
 					$page_num_array=explode($page_num_key,($target));

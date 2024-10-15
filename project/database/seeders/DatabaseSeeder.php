@@ -164,13 +164,6 @@ class DatabaseSeeder extends Seeder
 
 		$staffs = [
 			[
-				'serial_staff'=> "SF_001",
-				'last_name_kanji' => '根岸',
-				'first_name_kanji'=> 'もえ子',
-				'last_name_kana'=> 'ねぎし',
-				'first_name_kana'=> 'もえこ',
-            ],
-			[
 				'serial_staff'=> "SF_002",
 				'last_name_kanji' => '川島',
 				'first_name_kanji'=> '花乃',
@@ -248,6 +241,16 @@ class DatabaseSeeder extends Seeder
 				'subject'=> "PointValidityTerm",
 				'value1' => "1",
 				'setumei' => "ポイント有効期間(年数)",
+			],
+			[
+				'subject'=> "BookingDisplayPeriod",
+				'value1' => "7",
+				'setumei' => "予約連絡表示期間(日)",
+			],
+			[
+				'subject'=> "BirthdayDisplayPeriod",
+				'value1' => "7",
+				'setumei' => "誕生日表示期間(日)",
 			],
         ];
 

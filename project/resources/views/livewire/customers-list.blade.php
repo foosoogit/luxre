@@ -1,5 +1,5 @@
 <div class="container-fluid ml-5">
-    <script src="{{  asset('/js/ListCustomer.js') }}" defer></script>
+    <script src="{{asset('/js/ListCustomer.js')}}?date=20230204"></script>
     <div class="py-12 row justify-content-center">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="pb-4 align-middle">
@@ -84,7 +84,7 @@
                             <tr>
                                 <td class="border px-4 py-2">
                                     <form action="{{ route('customers.ShowSyuseiCustomer') }}" method="POST">@csrf
-                                        <input name="syusei_Btn" type="submit" value="{{ $user->serial_user}}">
+                                        <input name="syusei_Btn" type="submit" value="{{$user->serial_user}}">
                                     </form>
                                 </td>
                                 <td class="border px-4 py-2">
@@ -98,7 +98,17 @@
                                 <td class="border px-4 py-2"><div class="text-nowrap">{{ $user->birth_year}}-{{ $user->birth_month}}-{{ $user->birth_day}}&nbsp;({{ $user->User_Age}})</div></td>
                                 <td class="border px-4 py-2">{{ $user->phone}}</td>
                                 <td class="border px-4 py-2">{{ $user->TotalPoints}}</td>
-                                <td class="border px-4 py-2"><input name="yoyaku_Btn" type="submit" value="予約日"></td>
+                                <td class="border px-4 py-2">
+                                    {{-- 
+                                    <button type="button" class="btn btn-info modalBtn" data-toggle="modal" data-target="#sampleModal" data-watasu="{{$user->serial_user}}">モーダルにデータ渡す</button>
+                                     --}}
+                                     @if(empty($user->reservation))
+                                        <button type="button" id="yoyaku_btn_{{$user->serial_user}}" class="btn btn-info modalBtn btn-sm" data-toggle="modal" data-target="#YoyakuModal" data-watasu="" data-serial="{{$user->serial_user}}" data-name="{{ $user->name_sei}}&nbsp;{{ $user->name_mei}}">予約日</button>
+                                    @else
+                                        <button type="button" id="yoyaku_btn_{{$user->serial_user}}" class="btn btn-info modalBtn btn-sm" data-toggle="modal" data-target="#YoyakuModal" data-watasu="{{$user->reservation}}" data-serial="{{$user->serial_user}}" data-name="{{ $user->name_sei}}&nbsp;{{ $user->name_mei}}">{{$user->reservation}}</button>
+                                    @endif
+                                    {{--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">--}}
+                                </td>
                                 <td class="border px-4 py-2">
                                     <form action="/customers/deleteCustomer/{{$user->serial_user}}" method="GET">@csrf
                                         <input name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $user->serial_user}} {{ $user->name_sei}} {{ $user->name_mei}}');" >
@@ -111,25 +121,42 @@
                         @endforeach
                     </tbody>
                 </table>
-                <!-- モーダル・ダイアログ -->
-<div class="modal" id="sampleModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
-          <h4 class="modal-title">タイトル</h4>
-        </div>
-        <div class="modal-body">
-          <label><span id="morau"></span>の好きな食べ物:<input type="text" id="food"></label>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-          <button type="button" id="btn1" class="btn btn-primary">ボタン1</button>
-        </div>
-      </div>
-    </div>
-  </div>
                 {{$users->appends(request()->query())->links('pagination::bootstrap-4')}}
+            </div>
+            <!-- モーダル・ダイアログ -->
+            <div class="modal" id="YoyakuModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+                    <h4 class="modal-title">予約日登録</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>顧客番号：<span id="serial"></span>
+                            </div>
+                            <div class="col-auto">
+                                <label>氏名：<span id="name"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>予約日<input type="date" id="YoyakuDate" name="YoyakuDate"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>予約時間<input type="time" step="1800" id="YoyakuTime" name="YoyakuTime"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                        <button type="button" id="btn1" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
     </div>

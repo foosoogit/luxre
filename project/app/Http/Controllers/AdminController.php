@@ -94,21 +94,180 @@ class AdminController extends Controller
 		//return redirect('/admin/show_staff_in_out_rireki');
 	}
 	*/
+
 	
+	public function ajax_get_coming_soon_user(Request $request){
+		if(!(isset($_SESSION['PopupComingSoonFlg']) and $_SESSION['PopupComingSoonFlg']==date("Y-m-d"))){
+			//予約処理
+			$today = date("Y-m-d");$user_inf_array=array();
+			$yesterday= date("Y-m-d",strtotime('+1 day', time()));
+			$BookingDisplayPeriod=InitConsts::BookingDisplayPeriod();
+			$TargetBookingDisplayDate=date('Y-m-d', strtotime('+'.$BookingDisplayPeriod.' day', time()))." 23:59";
+			$add_time=' 00:00';
+			$user_inf_array=User::where('reservation','<=',$TargetBookingDisplayDate)
+				->where('reservation','<>',null)
+				->where('reservation','>=',$today.$add_time)
+				->orderBy('reservation', 'asc')
+				->get();
+			$cnt_day=0;
+			$period_array=array();
+			foreach($user_inf_array as $user){
+				$target_day_array=explode(" ",$user->reservation);
+				$target_day=$target_day_array[0];
+				for($cnt_day=0;$cnt_day<=$BookingDisplayPeriod;$cnt_day++){
+					$td= date("Y-m-d",strtotime('+'.$cnt_day.' day', time()));
+					$kyo="";
+					if($target_day==$td){
+						$period_array[$cnt_day][]="&nbsp;".$user->serial_user." : ".$user->name_sei." ".$user->name_mei." ".$user->reservation;
+						if($cnt_day==0){
+							$kyo="今日 (".date('y年m月d日').")";
+						}else if($cnt_day==1){
+							$kyo="明日 (".date("y年m月d日",strtotime('+1 day', time())).")";
+						}else{
+							$kyo=$cnt_day."日後 (".date("y年m月d日",strtotime('+'.$cnt_day.' day', time())).")";
+						}
+						break;
+					}
+				}
+			}
+			
+			$Reservation_msg="";$all_user_inf_array=array();
+			foreach($period_array as $number =>$day_array){
+				$dy="";
+				if($number==0){
+					$date = date('w');
+					$w=OtherFunc::day_of_the_week_dtcls($d);
+					$dy="<span class='text-primary'>"."・今日 (".date('y年m月d日')."(".$w."))"."</span>";
+				}else if($number==1){
+					$d=date('w', strtotime('+1 day', time()));
+					$w=OtherFunc::day_of_the_week_dtcls($d);
+					$dy="<span class='text-primary'>"."・明日 (".date("y年m月d日",strtotime('+1 day', time()))."(".$w."))"."</span>";
+				}else{
+					$d=date('w', strtotime('+'.$number.' day', time()));
+					$w=OtherFunc::day_of_the_week_dtcls($d);
+					$dy="<span class='text-primary'>"."・".$number."日後 (".date("y年m月d日",strtotime('+'.$number.' day', time()))."(".$w."))"."</span>";
+				}
+				$Reservation_msg=$dy."<br>";
+				$user_inf_array=array();
+				foreach($day_array as $nm){
+					$user_inf_array[]=$nm;
+				}
+				$all_user_inf_array[]=$Reservation_msg.implode("<br>", $user_inf_array);
+			}
+			$all_user_inf['Reservation']=implode("<br>", $all_user_inf_array);
+
+			//誕生日処理
+			$user_inf_array=array();
+			$target_TDY_array=explode("-",$today);
+			$BirthdayDisplayPeriod=InitConsts::BirthdayDisplayPeriod();
+			$birthuser_array=array();
+			$cnt_day=0;
+			$period_array=array();
+			for($i=0;$i<$BirthdayDisplayPeriod;$i++){
+				$TargetBirthdayDisplayDate=date('Y-m-d', strtotime('+'.$i.' day', time()));
+				$target_YMD_array=explode("-", $TargetBirthdayDisplayDate);
+				$key=$target_YMD_array[1].$target_YMD_array[2];
+				$res_serch=User::where(DB::raw('CONCAT(birth_month, birth_day)'), '=', $key)->get();
+				foreach($res_serch as $res_user){
+					$user_inf_array[]=$res_user;
+				}
+			}
+
+			$Birthday_msg="";$user_inf_birth_array=array();$mae="";
+			foreach($user_inf_array as $user){
+				$dy="";
+				for($cnt_day=0;$cnt_day<=$BirthdayDisplayPeriod;$cnt_day++){
+					$td= date("d",strtotime('+'.$cnt_day.' day', time()));
+					$d=date('w', strtotime('+'.$cnt_day.' day', time()));
+					$w=OtherFunc::day_of_the_week_dtcls($d);
+					$dy="";
+					if($user->birth_day==$td){
+						if($cnt_day==0){
+							$dy="<span class='text-primary'>"."・今日 (".date('m月d日')."(".$w."))"."</span>";
+						}else if($cnt_day==1){
+							$dy="<span class='text-primary'>"."・明日 (".date("m月d日",strtotime('+1 day', time()))."(".$w."))"."</span>";
+						}else{
+							$dy="<span class='text-primary'>"."・".$cnt_day."日後 (".date("m月d日",strtotime('+'.$cnt_day.' day', time()))."(".$w."))"."</span>";
+						}
+						break;
+					}
+				}
+				$Birthday_msg="";
+				if($mae<>$dy){
+					$mae=$dy;
+					$Birthday_msg=$mae."<br>";
+				}
+				$user_inf_birth_array[]=$Birthday_msg."&nbsp;".$user->serial_user." ".$user->birth_year."-".$user->birth_month."-".$user->birth_day.":".$user->name_sei." ".$user->name_mei;
+			}
+			$all_user_inf['Birthday']=implode("<br>", $user_inf_birth_array);
+		}
+		print json_encode($all_user_inf);
+	}
+
+	public function ShowMenuCustomerManagement(){
+		session(['fromPage' => 'MenuCustomerManagement']);
+		session(['fromMenu' => 'MenuCustomerManagement']);
+		session(['fromMenu' => 'MenuCustomerManagement']);
+		session(['targetYear' => date('Y')]);
+		$targetYear=session('targetYear');
+		//OtherFunc::set_access_history('');
+		if(isset($_SERVER['HTTP_REFERER'])){
+			$_SESSION['access_history']=array();
+		}
+
+		$DefaultUsersInf=PaymentHistory::leftJoin('users', 'payment_histories.serial_user', '=', 'users.serial_user')
+			->where('payment_histories.how_to_pay','=', 'default')
+			->whereIn('users.serial_user', function ($query) {
+				$query->select('contracts.serial_user')->from('contracts')->where('contracts.cancel','=', null);
+			})
+			->distinct()->select('name_sei','name_mei')->get();
+		$html_year_slct=OtherFunc::make_html_year_slct(date('Y'));
+		$html_month_slct=OtherFunc::make_html_month_slct(date('n'));
+		$default_customers=OtherFunc::make_htm_get_default_user();
+		$not_coming_customers=OtherFunc::make_htm_get_not_coming_customer();
+		$htm_kesanMonth=OtherFunc::make_html_month_slct(InitConsts::KesanMonth());
+		//list($targetNameHtmFront, $targetNameHtmBack) =OtherFunc::make_htm_get_not_coming_customer();
+		$csrf="csrf";
+		session(['GoBackPlace' => '../ShowMenuCustomerManagement']);
+		$_SESSION['access_history']=array();
+		return view('admin.menu_top',compact("html_year_slct","html_month_slct","DefaultUsersInf","not_coming_customers","default_customers",'htm_kesanMonth'));
+	}
+	
+	public function ckScheduleDeletePossible(Request $request){
+		$target_schedules_event_id=$request->input('eventID');
+		$serial_admin = Auth::user()->serial_admin;
+		$flg=true;
+		if(DB::table('Schedules')
+			->where('event_id','=',$target_schedules_event_id)
+			->where('deleted_at','<>',null)
+			->where('idPerson','=',$serial_admin)->exists())
+		{
+			$flg=false;	
+		}
+		echo json_encode($flg);
+		//return ;
+	}
+
+	public function ajax_save_yoyaku_time(Request $request){
+		try {
+			User::where('serial_user','=', trim($request->UserSerial))->update(['reservation' => $request->TargetDate]);
+			print 'changed';
+		} catch (Exception $e) {
+            // トランザクションロールバック
+            User:rollback();
+            throw $e;  // 例外を再スロー
+        }
+	}
+
 	public function ShowInputNewCustomer(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		session(['fromPage' => 'InputCustomer']);
 		session(['CustomerManage' => 'new']);
-		//$header="";$slot="";
+
 		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
 		$html_birth_year_slct=trim($html_birth_year_slct);
-		/*
-		$GoBackPlace="../ShowMenuCustomerManagement";
-		if(isset($request->CustomerListCreateBtn)){
-			$GoBackPlace="/customers/ShowCustomersList_livewire";
-		}
-		*/
+
 		setcookie('TorokuMessageFlg','false',time()+60);
 		$GenderRdo=array();
 		$target_user="";$selectedManth=null;$selectedDay=null;$selectedRegion=null;
@@ -1574,9 +1733,9 @@ $qrCode->saveToFile('myQRCode.png');
 		$GoBackToPlace=session('ShowInpRecordVisitPaymentfromPage');
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		array_push($target_historyBack_inf_array,$UserSerial);
-		log::alert("ShowInpRecordVisitPayment=");
-		log::info($_SESSION['access_history']);
-		log::info($target_historyBack_inf_array);
+		//log::alert("ShowInpRecordVisitPayment=");
+		//log::info($_SESSION['access_history']);
+		//log::info($target_historyBack_inf_array);
 
 		return view('customers.PaymentRegistration',compact("UserSerial","PointArray","target_historyBack_inf_array","only_treatment_color_array","GoBackToPlace","header","slot",'VisitSerialArray','VisitDateArray','PaymentDateArray','targetUser','targetContract','KeiyakuNaiyou','PaymentAmountArray','HowToPayCheckedArray','visit_disabeled','sejyutukaisu','set_gray_array','payment_disabeled','set_gray_pay_array','set_background_gray_pay_array','paymentCount','TreatmentDetailsArray','TreatmentDetailsSelectArray'));
 	}
@@ -2402,51 +2561,7 @@ $qrCode->saveToFile('myQRCode.png');
 	}
 	*/
 	
-	public function ShowMenuCustomerManagement(){
-		session(['fromPage' => 'MenuCustomerManagement']);
-		session(['fromMenu' => 'MenuCustomerManagement']);
-		//$header="";$slot="";
-		session(['fromMenu' => 'MenuCustomerManagement']);
-		session(['targetYear' => date('Y')]);
-		$targetYear=session('targetYear');
-		//OtherFunc::set_access_history('');
-		if(isset($_SERVER['HTTP_REFERER'])){
-			$_SESSION['access_history']=array();
-			//OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		}
-
-		$DefaultUsersInf=PaymentHistory::leftJoin('users', 'payment_histories.serial_user', '=', 'users.serial_user')
-			->where('payment_histories.how_to_pay','=', 'default')
-			->whereIn('users.serial_user', function ($query) {
-				$query->select('contracts.serial_user')->from('contracts')->where('contracts.cancel','=', null);
-			})
-			->distinct()->select('name_sei','name_mei')->get();
-		$html_year_slct=OtherFunc::make_html_year_slct(date('Y'));
-		$html_month_slct=OtherFunc::make_html_month_slct(date('n'));
-		$default_customers=OtherFunc::make_htm_get_default_user();
-		$not_coming_customers=OtherFunc::make_htm_get_not_coming_customer();
-		$htm_kesanMonth=OtherFunc::make_html_month_slct(InitConsts::KesanMonth());
-		//list($targetNameHtmFront, $targetNameHtmBack) =OtherFunc::make_htm_get_not_coming_customer();
-		$csrf="csrf";
-		session(['GoBackPlace' => '../ShowMenuCustomerManagement']);
-		$_SESSION['access_history']=array();
-		return view('admin.menu_top',compact("html_year_slct","html_month_slct","DefaultUsersInf","not_coming_customers","default_customers",'htm_kesanMonth'));
-	}
 	
-	public function ckScheduleDeletePossible(Request $request){
-		$target_schedules_event_id=$request->input('eventID');
-		$serial_admin = Auth::user()->serial_admin;
-		$flg=true;
-		if(DB::table('Schedules')
-			->where('event_id','=',$target_schedules_event_id)
-			->where('deleted_at','<>',null)
-			->where('idPerson','=',$serial_admin)->exists())
-		{
-			$flg=false;	
-		}
-		echo json_encode($flg);
-		//return ;
-	}
 	
 	public function ckDellPossibleTeacher(Request $request){
 		$unixStrt=$request->input('utcStartTime');

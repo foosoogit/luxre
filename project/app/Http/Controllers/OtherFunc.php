@@ -36,20 +36,7 @@ class OtherFunc extends Controller
 
 	public static function set_access_history($REFERER){
 		$prevurl = url()->previous();
-		log::alert('prevurl='.$prevurl);
-		log::alert('PHP_SELF='.$_SERVER['PHP_SELF']);
-		log::alert('REQUEST_METHOD='.$_SERVER['REQUEST_METHOD']);
-		log::alert('HTTP_REFERER='.$_SERVER['HTTP_REFERER']);
-		log::alert('SCRIPT_FILENAME='.$_SERVER['SCRIPT_FILENAME']);
-		log::alert('SCRIPT_NAME='.$_SERVER['SCRIPT_NAME']);
-		log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
-		//log::alert('PATH_INFO='.$_SERVER['PATH_INFO']);
-				
-		log::alert('HTTP_REFERER name='.OtherFunc::get_page_name($_SERVER['HTTP_REFERER']));
-		log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
-		log::alert('REFERER='.$REFERER);
 		$targetPage=1;
-		
 		if(isset($_SESSION['access_history'][0])){
 			$access_history_0_name=self::get_page_name($_SESSION['access_history'][0]);
 		}else{
@@ -57,8 +44,6 @@ class OtherFunc extends Controller
 		}
 		$url_name_from=OtherFunc::get_page_name($REFERER);
 		$url_name_now=OtherFunc::get_page_name($_SERVER['REQUEST_URI']);
-		log::alert('url_name_from='.$url_name_from);
-		log::alert('url_name_now='.$url_name_now);
 		if($url_name_now==$url_name_from){
 			if(str_contains($_SESSION['access_history'][0],$url_name_now)){
 				array_splice($_SESSION['access_history'], 0,1);
@@ -83,13 +68,13 @@ class OtherFunc extends Controller
 			$REFERER_name=self::get_page_name($target_referer);
 			$URI_name=self::get_page_name($_SERVER['REQUEST_URI']);
 			
-			log::alert('target_referer ='.$target_referer);
+			//log::alert('target_referer ='.$target_referer);
 			if($url_name_now==$access_history_0_name){
 				array_splice($_SESSION['access_history'], 0,1);
 			}else{
 				if($target_referer<>""){
-					log::alert('REFERER_name ='.$REFERER_name);
-					log::alert('URI_name ='.$URI_name);
+					//log::alert('REFERER_name ='.$REFERER_name);
+					//log::alert('URI_name ='.$URI_name);
 					if(isset($_SESSION['access_history'][0]) && $URI_name<>$REFERER_name && !str_contains($URI_name, "update")){
 						array_unshift($_SESSION['access_history'],$REFERER);
 					}else if(empty($_SESSION['access_history'])){
@@ -140,9 +125,9 @@ class OtherFunc extends Controller
 			}
 			*/
 		}
-		log::alert('access_history last');
-		log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
-		log::info($_SESSION['access_history']);
+		//log::alert('access_history last');
+		//log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
+		//log::info($_SESSION['access_history']);
 		//$_SESSION[OtherFunc::get_page_name($_SESSION['access_history'][0])]=OtherFunc::get_page_num($_SESSION['access_history'][0]);
 	}
 	
@@ -398,7 +383,6 @@ class OtherFunc extends Controller
 	}
 
 	public static function get_goback_url($now_pageURL){
-		
 		$now_array=explode("?", $now_pageURL);
 		$flg=preg_match('[.*'.$now_array[0].'.*]', $_SESSION['access_history'][1]);
 		if($flg==true){

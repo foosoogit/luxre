@@ -1,6 +1,6 @@
 @extends('layouts.top')
 @section('content')
-<script src="{{  asset('/js/MenuCustomerManagement.js') }}" defer></script>
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -29,15 +29,17 @@
                             </div>
                         @endif
                         <ul>
+							<li>
+								<button type="button" id="ReservationBirthdayModalBtn" class="btn btn-info modalBtn btn-sm" data-toggle="modal" data-target="#ReservationBirthdayModal" >
+									予約・誕生日確認
+								</button>
+							</li>
                         	<li>
-								{{-- <form method="GET" action="{{ route('CustomersList') }}/customers/ShowCustomersList_livewire">@csrf --}}
-								{{--<form method="GET" action="{{ route('customers.CustomersList.show') }}">@csrf--}}
 								<form method="POST" action="{{ route('customers.CustomersList.show.post') }}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit" >顧客一覧</button>&nbsp;修正・新規登録・契約
 								</form>
 								支払い不履行者
 								<p><span style="color:red;">
-									{{--<form method="POST" action="/customers/ShowCustomersList_livewire_from_top_menu">@csrf--}}
 									<form method="POST" action="{{route('customers.CustomersList.show')}}">@csrf
 										{!!$default_customers!!}
 									</form>
@@ -77,17 +79,10 @@
 								</div>
 							<li>
 								<a href="{{ route('admin.show_setting') }}" class="btn btn-primary btn-sm">環境設定</a>
-								{{-- 
-								<form method="GET" action="/workers/ShowCampaigns">@csrf
-									<button class="btn btn-primary btn-sm" type="submit" disabled>環境設定</button>
-								</form>
-								 --}}
 							</li>
 							<div class="row">
 								<div class="col-auto">
 									<li>
-										{{--<form method="GET" action="admin/ShowDailyReport">@csrf--}}
-										{{--<form method="GET" action="{{route('ShowDailyReport')}}">@csrf--}}
 										<form method="GET" action="{{route('admin.DailyReport.get')}}">@csrf
 											<button class="btn btn-primary btn-sm" type="submit">日報</button>
 										</form>
@@ -123,13 +118,6 @@
 									</li>
 								</div>
 							</div>
-							{{--
-							<li>
-								<form method="GET" action="{{route('admin.InOutStandbyDisplay.get')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">スタッフ入退出待ち受け</button>
-								</form>
-							</li>
-							--}}
 							<li>
 								<form method="POST" action="{{route('admin.TreatmentList.post')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">施術登録</button>
@@ -138,7 +126,6 @@
 							<div class="row">
 								<div class="col-auto">
 									<li> 
-										{{--<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf   --}}
 										<form method="GET" action="{{ route('admin.StaffStandbyDisplay.get') }}">@csrf
 											<button class="btn btn-primary btn-sm" type="submit">スタッフ入出勤受付待ち受け</button>
 										</form>
@@ -164,31 +151,47 @@
 									<button class="btn btn-primary btn-sm" type="submit" disabled>商品登録</button>
 								</form>
 							</li>
-							{{--
-							<li>
-								<form method="GET" action="{{route("admin.get_imagick_info.get")}}>@csrf
-									<button class="btn btn-primary btn-sm" type="submit" disabled>get_imagick_info</button>
-								</form>
-							</li>
-							--}}
-							{{--
-							<li>
-								<form method="GET" action="{{route('admin.QRcode')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">QRcode</button>
-								</form>
-							</li>
-							--}}
-							{{--
-							<li>
-								<form method="GET" action="{{route('admin.QRcode')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">暗号化チェック</button>
-								</form>
-							</li>
-							--}}
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+	<div class="modal" id="ReservationBirthdayModal" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+			<button type="button" class="close btn-sm btn-secondary" data-dismiss="modal"><span>×</span>閉じる</button>
+			<h4 class="modal-title">予約・誕生日確認</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-auto bg-info">
+						【予約チェック】
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-auto">
+						<span id="Reservation"></span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-auto bg-info">
+						【誕生日チェック】
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-auto">
+						<span id="Birthday"></span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+			</div>
+		</div>
+		</div>
+	</div>
+
 @endsection

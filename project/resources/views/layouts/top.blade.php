@@ -4,7 +4,13 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="csrf-token" content="{{ csrf_token() }}">
-		<script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+		{{-- <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script> --}}
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+		{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>--}}
+		<script src="{{asset('/js/menu_top.js')}}?date=20230211" defer></script>
 		<script>
 			window.setTimeout(() => {
 				$(".error").slideUp();
@@ -29,30 +35,19 @@
 
 	</head>
 	<body class="font-sans antialiased mt-3">
-		<!--<div class="min-h-screen bg-gray-100">-->
-			{{--@livewire('navigation-dropdown')--}}
-			<!-- Page Heading -->
-			<!--<header class="bg-white shadow">-->
-				<!--<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">-->
-					<!-- フラッシュメッセージ -->
-					@if (session('flash_message'))
-						<div class="flash_message">
-							{{ session('flash_message') }}
-						</div>
-					@endif
-					{{--{{ $header }}--}}
-					@yield('content')
-				<!--</div>-->
-			<!--</header>-->
-			<!-- Page Content -->
+		@if (session('flash_message'))
+			<div class="flash_message">
+				{{ session('flash_message') }}
+			</div>
+		@endif
+		@yield('content')
 			<main>
 				{{--{{ $slot }}--}}
 			</main>
 		<!--</div> -->
-	        @stack('modals')
+	    @stack('modals')
 		{{--@livewireScripts--}}
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+		{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>--}}
 	</body>
 	@if ($errors->any())
 		{{-- エラーメッセージ --}}
