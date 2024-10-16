@@ -136,7 +136,8 @@ class AdminController extends Controller
 				$dy="";
 				if($number==0){
 					$date = date('w');
-					$w=OtherFunc::day_of_the_week_dtcls($d);
+					Log::alert("date= ".$date);
+					$w=OtherFunc::day_of_the_week_dtcls($date);
 					$dy="<span class='text-primary'>"."・今日 (".date('y年m月d日')."(".$w."))"."</span>";
 				}else if($number==1){
 					$d=date('w', strtotime('+1 day', time()));
