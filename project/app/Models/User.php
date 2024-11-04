@@ -69,7 +69,9 @@ class User extends Authenticatable
      */
 
      public function getTotalPointsAttribute() {
-        $tpoint=Point::where('serial_user','=',$this->serial_user)->sum('point');
+        $tpoint=Point::where('serial_user','=',$this->serial_user)
+            ->where('digestion_flg','=','false')    
+            ->sum('point');
         return $tpoint;
     }
 
