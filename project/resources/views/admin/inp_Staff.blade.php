@@ -31,7 +31,7 @@ input,textarea{
                         </div>
                         <div class="col-auto">
                             {{--<button type="submit" class="btn btn-primary btn-sm" value="送信" formaction="{{ route('admin.QRcode.post') }}">出退勤用QRコードの送信</button>--}}
-                            <button type="submit" class="btn btn-primary btn-sm" value="送信" formaction="{{ route('admin.SendQRcodeToStaff.post') }}">出退勤用QRコードの送信</button>
+                            <button type="submit" id="send_QRcode" class="btn btn-primary btn-sm" value="送信" formaction="{{ route('admin.SendQRcodeToStaff.post') }}" onclick="return window.confirm('保存してから送信します。よろしいですか？');">出退勤用QRコードの送信</button>
                         </div>
                      </div>
                      <div class="row"> 

@@ -70,28 +70,6 @@ Route::middleware('auth:admin')->group(function () {
             return view('admin.ListStaffInOutHistories');
         })->name('show_staff_in_out_rireki.get');
 
-        /*
-        Route::get('/show_staff_in_out_rireki', function () {
-            session(['target_livewire_page' => "ListStaffInOut"]);
-            $target_day='';
-            $html_staff_inout_slct=OtherFunc::make_html_staff_inout_slct('');
-            $html_working_list_year_slct=OtherFunc::make_html_working_list_year_slct();
-            $html_working_list_month_slct=OtherFunc::make_html_working_list_month_slct();
-            return view('admin.ListStaffInOutHistories',compact("target_day","html_staff_inout_slct","html_working_list_year_slct","html_working_list_month_slct"));
-        })->name('show_staff_in_out_rireki.get');
-        */
-        //Route::get('admin/get_imagick_info', [OtherFunc::class,'get_imagick_info'])->name("get_imagick_info.get");
-        /*
-        Route::get('qr-code', function() {
-            return response()->streamDownload(function () {
-                \QRCode::url('https://laravel.com/')
-                    ->setSize(10)
-                    ->setMargin(2)
-                    ->png();
-            }, 'qr-code.png');
-        });
-        */
-
         Route::get('/admin/show_point_list', function () {
             session(['target_livewire_page' => "ListPoints"]);
             if(empty(session('state_validity_checked'))){
@@ -102,10 +80,7 @@ Route::middleware('auth:admin')->group(function () {
             }
             return view('admin.ListPoints');
         })->name('ListPoints.get');
-
         //Route::get('/admin/show_point_list',[AdminController::class,'show_points_list'])->name('ListPoints.get');
-
-
         Route::get('/admin/GetEncryption', function () {
             return view('admin.GetEncryption');
         })->name('GetEncryption.get');
@@ -119,7 +94,8 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('QRcode', function () {
             return QrCode::size(300)->generate('A basic example of QR code!');
         })->name("QRcode");
-
+        //Route::get('/customers/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
+        //Route::get('admin/send_QRcode_to_staff/{StaffSerial}', [AdminController::class,'send_QRcode_to_staff'],function($StaffSerial){})->name("SendQRcodeToStaff.post");
         Route::post('admin/send_QRcode_to_staff', [AdminController::class,'send_QRcode_to_staff'])->name("SendQRcodeToStaff.post");
 
         Route::get('admin/InOutStandbyDisplay', [AdminController::class,'ShowInOutStandbyDisplay'])->name("InOutStandbyDisplay.get");
@@ -204,7 +180,6 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::post('/customers/CustomersList', function () {
             session(['target_livewire_page' => "ListCustomers"]);
-            //session(['target_livewire_page' => $_POST["target_date"]]);
             return view('customers.ListCustomers');
         })->name('CustomersList.show.post');
 
@@ -218,19 +193,6 @@ Route::middleware('auth:admin')->group(function () {
              }else if(session('target_livewire_page')=="ListStaffInOut"){
                 return view('admin.ListStaffInOutHistories');
              } 
-             /*
-            if(str_contains($_SERVER['HTTP_REFERER'],"show_point_list")){
-                return view('admin.ListPoints');
-            }else if(str_contains($_SESSION['access_history'][0],"ContractList")){
-                return view('customers.ListContract');
-             }else{
-                 return view('customers.ListCustomers');
-             }
-            */
-            /*           
-            else if(str_contains($_SESSION['access_history'][1],"show_point_list")){
-                return view('admin.ListPoints');
-            */            
         });
 
         Route::get('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
@@ -248,7 +210,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/customers/ShowInputCustomer', [AdminController::class,'ShowInputCustomer',function(Request $request){}])->name('ShowInpCustomer');
     });
 
-    Route::get('/send_attendance_card/{TargetStaffSerial}',[AdminController::class,'send_attendance_card'],function($TargetStaffSerial){});
+    Route::get('/send_attendance_card/{TargetStaffSerial}',[OtherFunc::class,'send_attendance_card'],function($TargetStaffSerial){});
     Route::get('/deleteStaff/{TargetStaffSerial}',[AdminController::class,'deleteStaff'],function($TargetStaffSerial){});
     Route::post('/saveStaff', [AdminController::class,'SaveStaff',function(Request $request){}])->name("saveStaff.post");
     Route::get('ShowInputStaff/{TargetStaffSerial}', [AdminController::class,'ShowInpStaff',function($TargetStaffSerial){}])->name('ShowInpStaff');
@@ -257,14 +219,6 @@ Route::middleware('auth:admin')->group(function () {
     })->name('StaffsList.show');
     Route::get('/top', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top');
     Route::post('ajax_get_coming_soon_user',[AdminController::class,'ajax_get_coming_soon_user'])->name('ajax_staff_dell_time_card');
-    //Route::get('/', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top.login');
-    //Route::get('/', [UserController::class,'ShowMyPage'])->name('admin.top.login');
-    /*
-    Route::get('/admin', function () {
-        return view('admin.menu_top');
-        //return view('admin.top');
-    })->name('admin.top');
-    */
 });
 
 Route::middleware([
@@ -273,10 +227,4 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [UserController::class,'ShowMyPage']);
-    /*
-    Route::get('/dashboard', function () {
-        //Route::get('/user', [UserController::class,'ShowMyPage']);
-        //return view('dashboard');
-    })->name('dashboard');
-    */
 });

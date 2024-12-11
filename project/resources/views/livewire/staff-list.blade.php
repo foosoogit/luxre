@@ -64,11 +64,14 @@
 										<td class="border px-4 py-2">{{ $staff->birth_date}}</td>
 										<td class="border px-4 py-2">{{ $staff->phone}}</td>
 										<td class="border px-4 py-2">{{ $staff->email}}</td>
+										{{-- 
 										<td class="border px-4 py-2">
 											<form action="send_attendance_card/{{$staff->serial_staff}}" method="GET">@csrf
 												<input name="send_attendance_card_btn" type="submit" value="送付" onclick="return window.confirm('{{ $staff->serial_staff}} {{ $staff->last_name_kanji}} {{ $staff->first_name_kanji}}'+'送付します。よろしいですか？');" >
 											</form>
+											<button type="button" wire:click="send_attendance_card('{{$staff->serial_staff}}')" onclick="return window.confirm('{{ $staff->serial_staff}} {{ $staff->last_name_kanji}} {{ $staff->first_name_kanji}}'+'送付します。よろしいですか？');">送付</button>
 										</td>
+										 --}}
 										<td class="border px-4 py-2">
 											<form action="deleteStaff/{{$staff->serial_staff}}" method="GET">@csrf
 												<input name="delete_btn" type="submit" value="削除" onclick="return window.confirm('{{ $staff->serial_staff}} {{ $staff->last_name_kanji}} {{ $staff->first_name_kanji}}'+'削除します。よろしいですか？');" >

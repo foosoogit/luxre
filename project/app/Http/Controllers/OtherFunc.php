@@ -15,11 +15,78 @@ use DateInterval;
 use DatePeriod;
 use App\Models\Staff;
 use Carbon\Carbon;
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendMail;
 
 if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function send_attendance_card($TargetStaffSerial){
+		$staff_inf=Staff::where("serial_staff","=",$TargetStaffSerial)->first();
+		if(empty($staff_inf)){
+			$target_item_array['msg']='スタッフのご登録が見つかりません。';
+			$target_item_array['res']='no serial';
+			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+		}else{
+			OtherFunc::make_QRCode($TargetStaffSerial,storage_path('images/'.$TargetStaffSerial.'.png'));
+			$target_item_array=array();
+			$target_item_array['msg']=$staff_inf->last_name_kanji." ".$staff_inf->first_name_kanji." 様<br>出勤用QRコードをお送りします。<br>Luxer";
+			$target_item_array['to_email']=$staff_inf->email;
+			$target_item_array['subject']='出退記録用QRコード';
+			$target_item_array['from_email']=env('MAIL_FROM_ADDRESS');
+			$target_item_array['QR_file_path']=storage_path('images/'.$TargetStaffSerial.'.png');
+			Mail::send(new SendMail($target_item_array));
+
+		}
+	}
+
+	public static function make_QRCode($target_sentence,$save_path){
+		$writer = new PngWriter();
+		// Create QR code
+		$qrCode = new QrCode(
+			data: $target_sentence,
+			encoding: new Encoding('UTF-8'),
+			errorCorrectionLevel: ErrorCorrectionLevel::Low,
+			size: 300,
+			margin: 10,
+			roundBlockSizeMode: RoundBlockSizeMode::Margin,
+			foregroundColor: new Color(0, 0, 0),
+			backgroundColor: new Color(255, 255, 255)
+		);
+		// Create generic logo
+		$logo = new Logo(
+			path: storage_path('images/Luxer_image.png'),
+			resizeToWidth: 50,
+			punchoutBackground: true
+		);
+		// Create generic label
+		$label = new Label(
+			text: $target_sentence,
+			textColor: new Color(255, 0, 0)
+		);
+		$result = $writer->write($qrCode, $logo, $label);
+		// Validate the result
+		$writer->validateResult($result, $target_sentence);
+		//header('Content-Type: '.$result->getMimeType());
+		//echo $result->getString();
+		// Save it to a file
+		
+		//$result->saveToFile(storage_path('images/'.$TargetStaffSerial.'.png'));
+		$result->saveToFile($save_path);
+
+		// Generate a data URI to include image data inline (i.e. inside an <img> tag)
+		//$dataUri = $result->getDataUri();
+	}
+
 	public static function get_page_name($target_url){
 		$target_url_array_1=explode("?", $target_url);
 		$target_url_array_2=explode("/", $target_url_array_1[0]);

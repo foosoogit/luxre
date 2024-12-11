@@ -55,6 +55,7 @@ class SendMail extends Mailable
     public function attachments(): array
     {
         return [
+            $this->target_item_array['QR_file_path']
             //Attachment::fromPath('/path/to/file'),
         ];
     }

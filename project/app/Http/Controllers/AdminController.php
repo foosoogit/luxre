@@ -22,38 +22,12 @@ use App\Mail\SendMail;
 use App\Http\Requests\InpCustomerRequest;
 use App\Http\Controllers\OtherFunc;
 use App\Consts\initConsts;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+//use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Point;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-/*
-use Endroid\QrCode\Builder\Builder;
-use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use Endroid\QrCode\Writer\PngWriter;
-*/
-/*
-use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Builder\Builder;
-use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
-use Endroid\QrCode\Label\Font\NotoSans;
-use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
-use Endroid\QrCode\Writer\PngWriter;
-use Endroid\QrCode\Bacon\ErrorCorrectionLevelConverter;
-*/
 
-/*
-use Endroid\QrCode\Color\Color;
-use Endroid\QrCode\Encoding\Encoding;
-//use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
-use Endroid\QrCode\ErrorCorrectionLevel;
-//use Endroid\QrCode\src\ErrorCorrectionLevelLow;
-use Endroid\QrCode\QrCode;
-//use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
-use Endroid\QrCode\RoundBlockSizeMode;
-use Endroid\QrCode\Writer\PngWriter;
-*/
+use Endroid\QrCode\Writer\ValidationException;
+
 //use DateTime;
 //use App\Consts\get_imagick_info;
 
@@ -68,34 +42,172 @@ class AdminController extends Controller
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
 	}
-	/*
-	public function show_points_list(){
-		return view('admin.ListPoints');
-    }
-	*/
-	/*
-	public function show_staff_in_out_rireki(){
-		session(['target_livewire_page' => "ListStaffInOut"]);
-        $target_day='';
-        $html_staff_inout_slct=OtherFunc::make_html_staff_inout_slct("");
-        $html_working_list_year_slct=OtherFunc::make_html_working_list_year_slct();
-        $html_working_list_month_slct=OtherFunc::make_html_working_list_month_slct();
-        return view('admin.ListStaffInOutHistories',compact("target_day","html_staff_inout_slct","html_working_list_year_slct","html_working_list_month_slct"));
-	}
-	*/
-	
-	/*
-	public function ajax_staff_dell_time_card(Request $request){
-		//Log::alert("ObjId=".$request->ObjId);
-		$todo = InOutHistory::find($request->ObjId);
-		$todo->delete();
-		print true;
-		//return redirect()->route('show_staff_in_out_rireki.get');
-		//return redirect('/admin/show_staff_in_out_rireki');
-	}
-	*/
 
+	public function ShowInpStaff($TargetStaffSerial){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		OtherFunc::make_QRCode($TargetStaffSerial,storage_path('images/'.$TargetStaffSerial.'.png'));
+		/*
+		$qr_image=QrCode::format('png')
+			//->merge("/storage/".$TargetStaffSerial.".png")
+			//->merge("/public/images/".$TargetStaffSerial.".png")
+			->style('square')
+			->backgroundColor(255,255,255)
+			->size(300)
+			->errorCorrection("H")
+			->generate($TargetStaffSerial);
+		*/
+		$GoBackPlace="/ShowStaffList";
+		$html_birth_select=array();
+		if($TargetStaffSerial=="new"){
+			$StaffInf=array();
+			//$maxStaffSerial =Staff::max('serial_staff');
+			$maxStaffSerial =DB::table('staff')->max('serial_staff');
+			$TargetStaffSerial=++$maxStaffSerial;
+			$html_year_slct=OtherFunc::make_html_birth_year_slct('');
+			$html_day_slct=OtherFunc::make_html_birth_day_slct('');
+			$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
+			$btnDisp="登録";
+		}else{
+			$StaffInf=Staff::where('serial_staff','=',$TargetStaffSerial)->first();
+			$btnDisp="修正";
+			if(empty($StaffInf->birth_date)){
+				$html_year_slct=OtherFunc::make_html_birth_year_slct('');
+				$html_day_slct=OtherFunc::make_html_birth_day_slct('');
+				$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
+			}else{
+				$html_year_slct=OtherFunc::make_html_birth_year_slct(date('Y', strtotime($StaffInf->birth_date)));
+				$html_day_slct=OtherFunc::make_html_birth_day_slct(date('d', strtotime($StaffInf->birth_date)));
+				$html_Month_slct=OtherFunc::make_html_birth_month_slct(date('m', strtotime($StaffInf->birth_date)));
+			}
+			//return view('teacher.inp_Staff',compact("header","slot",'TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","saveFlg"));
+		}
+		//$btnDisp="登録";
+		$html_birth_select['year']=$html_year_slct;
+		$html_birth_select['day']=$html_day_slct;
+		$html_birth_select['month']=$html_Month_slct;
+		session(['targetStaffSerial' => $TargetStaffSerial]);
+		return view('admin.inp_Staff',compact('TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","html_birth_select"));
+	}
+
+	public function send_QRcode_to_staff(Request $request){
+		//OtherFunc::send_attendance_card($TargetStaffSerial);
+		Log::info($request);
+		$targetData=[
+			'serial_staff' => session('targetStaffSerial'),
+			'email' => $request->mail,
+			'phone' => $request->phone,
+			'last_name_kanji' => $request->name_sei,
+			'first_name_kanji' => $request->name_mei,
+			'last_name_kana' =>$request->name_sei_kana,
+			'first_name_kana' =>$request->name_mei_kana,
+			'birth_date'=>$request->year.'-'.$request->month.'-'.$request->day,
+		];
+		Staff::upsert($targetData,['serial_staff']);
+		OtherFunc::send_attendance_card($request->serial_staff);
+		return redirect()->route('ShowInpStaff', ['TargetStaffSerial' => $request->serial_staff]);
+		//ShowInputStaff/{TargetStaffSerial}
+		//return redirect('/customers/ShowSyuseiContract/'.$serial_Contract.'/'.$UserSerial);
+    }
+	public function SaveStaff(Request $request){
+		$targetData=[
+			'serial_staff' => session('targetStaffSerial'),
+			'email' => $request->mail,
+			'phone' => $request->phone,
+			'last_name_kanji' => $request->name_sei,
+			'first_name_kanji' => $request->name_mei,
+			'last_name_kana' =>$request->name_sei_kana,
+			'first_name_kana' =>$request->name_mei_kana,
+			'birth_date'=>$request->year.'-'.$request->month.'-'.$request->day,
+		];
+		Staff::upsert($targetData,['serial_staff']);
+		//session()->flash('success', '登録しました。');
+		$this::save_recorder("SaveStaff");
+		//return redirect('/workers/saveStaff');
+		return view("admin.ListStaffs");
+	}
+	/*
+	public function send_attendance_card($TargetStaffSerial){
+		
+		$staff_inf=Staff::where("serial_staff","=",$TargetStaffSerial)->first();
+		if(empty($staff_inf)){
+			$target_item_array['msg']='スタッフのご登録が見つかりません。';
+			$target_item_array['res']='no serial';
+			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+		}else{
+			OtherFunc::make_QRCode($TargetStaffSerial,storage_path('images/'.$TargetStaffSerial.'.png'));
+			$target_item_array=array();
+			//Mail::send(new ContactMail($target_item_array));
+			$target_item_array['msg']=$staff_inf->last_name_kanji." ".$staff_inf->first_name_kanji." 様<br>出勤用QRコードをお送りします。<br>Luxer";
+			$target_item_array['to_email']=$staff_inf->email;
+			$target_item_array['subject']='出退記録用QRコード';
+			$target_item_array['from_email']=env('MAIL_FROM_ADDRESS');
+			$target_item_array['QR_file_path']=storage_path('images/'.$TargetStaffSerial.'.png');
+			//Log::info($target_item_array);
+			Mail::send(new SendMail($target_item_array));
+
+		}
+	}
+	*/
 	
+	private function staff_reception_manage($staff_serial){
+		$staff_inf=Staff::where("serial_staff","=",$staff_serial)->first();
+		$latest_in_out_history_id=InOutHistory::where("target_serial","=",$staff_serial)
+				->orderBy('id','desc')->first('id');
+		$target_item_array['user_serial']=$staff_serial;
+
+		if(empty($staff_inf)){
+			$target_item_array['msg']='スタッフのご登録が見つかりません。';
+			$target_item_array['res']='no serial';
+			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+		}else{
+			$target_item_array['res']='true';
+			$ck_jyufuku=InOutHistory::where("target_serial","=",$staff_serial)
+				->where("target_date","=",date('Y-m-d'))
+				->orderBy('id','desc');
+			$rec_cnt=$ck_jyufuku->count();
+			$target_item_array['name']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji;
+			
+			if($rec_cnt==0){
+				$target_item_array['res']='in';
+				$target_item_array['in_out_type']="出勤";
+			}else{
+				$target_item_array['res']='out';
+				$target_item_array['in_out_type']="退勤";
+				$target_item_array['target_id']=$latest_in_out_history_id;
+			}
+			/*	
+				if(empty($in_out_inf->time_out)){
+					$target_item_array['in_out_type']="退勤";
+					$target_item_array['target_id']=$latest_in_out_history_id;
+				}else{
+				$in_out_inf=$ck_jyufuku->first();
+				if(empty($in_out_inf->time_out)){
+					$target_item_array['in_out_type']="退勤";
+					$target_item_array['target_id']=$latest_in_out_history_id;
+				}else{
+					$target_item_array['in_out_type']="出勤";
+				}
+			}
+			*/
+			$target_item_array['msg']=$target_item_array['name'].' さんの'.$target_item_array['in_out_type'].'を受け付けました。';
+			/*
+			if($ck_jyufuku>0){
+				$target_item_array['msg']=$target_item_array['name'].' さんの本日の退勤を受け付けました。';
+				//$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの本日の退社を受け付けました。';
+				//$target_item_array['res']='double registration';
+				$target_item_array['res']='true';
+			}else{
+				//$target_item_array['visit_history_serial']=$staff_serial;
+				$target_item_array['msg']=$target_item_array['name'].' さんの本日の出勤を受け付けました。';
+				//$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの出社を受け付けました。';
+				$target_item_array['res']='true';
+			}
+			*/
+			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+		}
+		return $json;
+	}
+
 	public function ajax_get_coming_soon_user(Request $request){
 		if(!(isset($_SESSION['PopupComingSoonFlg']) and $_SESSION['PopupComingSoonFlg']==date("Y-m-d"))){
 			//予約処理
@@ -347,74 +459,6 @@ class AdminController extends Controller
 		}
 	}
 
-	public function ShowInpStaff($TargetStaffSerial){
-		//$header="";$slot="";$saveFlg="";
-		
-		/*
-		$qrCode = QrCode::create($TargetStaffSerial)
-            ->setEncoding(new Encoding('UTF-8'))
-            ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
-            ->setSize(150)
-            ->setMargin(25)
-            ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
-            ->setForegroundColor(new Color(0, 0, 0));
-		$writer = new PngWriter();
-		$result = $writer->write($qrCode);
-		*/
-		/*
-		$qrCode = QrCode::create($TargetStaffSerial)
-		->setEncoding(new Encoding('UTF-8'))
-		->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
-		->setSize(300)
-		->setMargin(10)
-		->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
-		->setForegroundColor(new Color(0, 0, 0))
-		->setBackgroundColor(new Color(255, 255, 255));
-		*/
-		
-		$qr_image=QrCode::format('png')
-			//->merge("/storage/".$TargetStaffSerial.".png")
-			//->merge("/public/images/".$TargetStaffSerial.".png")
-			->style('square')
-			->backgroundColor(255,255,255)
-			->size(300)
-			->errorCorrection("H")
-			->generate($TargetStaffSerial);
-
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		$GoBackPlace="/ShowStaffList";
-		$html_birth_select=array();
-		if($TargetStaffSerial=="new"){
-			$StaffInf=array();
-			//$maxStaffSerial =Staff::max('serial_staff');
-			$maxStaffSerial =DB::table('staff')->max('serial_staff');
-			$TargetStaffSerial=++$maxStaffSerial;
-			$html_year_slct=OtherFunc::make_html_birth_year_slct('');
-			$html_day_slct=OtherFunc::make_html_birth_day_slct('');
-			$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
-			$btnDisp="登録";
-		}else{
-			$StaffInf=Staff::where('serial_staff','=',$TargetStaffSerial)->first();
-			$btnDisp="修正";
-			if(empty($StaffInf->birth_date)){
-				$html_year_slct=OtherFunc::make_html_birth_year_slct('');
-				$html_day_slct=OtherFunc::make_html_birth_day_slct('');
-				$html_Month_slct=OtherFunc::make_html_birth_month_slct('');
-			}else{
-				$html_year_slct=OtherFunc::make_html_birth_year_slct(date('Y', strtotime($StaffInf->birth_date)));
-				$html_day_slct=OtherFunc::make_html_birth_day_slct(date('d', strtotime($StaffInf->birth_date)));
-				$html_Month_slct=OtherFunc::make_html_birth_month_slct(date('m', strtotime($StaffInf->birth_date)));
-			}
-			//return view('teacher.inp_Staff',compact("header","slot",'TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","saveFlg"));
-		}
-		//$btnDisp="登録";
-		$html_birth_select['year']=$html_year_slct;
-		$html_birth_select['day']=$html_day_slct;
-		$html_birth_select['month']=$html_Month_slct;
-		session(['targetStaffSerial' => $TargetStaffSerial]);
-		return view('admin.inp_Staff',compact('TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","html_birth_select"));
-	}
-
 	public function ContractCancellation($serial_Contract,$UserSerial,Request $request){
 		$kaiyakuFlg=Contract::where('serial_keiyaku','=', $serial_Contract)->first('cancel');
 		if($kaiyakuFlg->cancel==null){
@@ -424,51 +468,6 @@ class AdminController extends Controller
 		}
 		Contract::where('serial_keiyaku','=', $serial_Contract)->update(['cancel' => $dt]);
 		return redirect('/customers/ShowSyuseiContract/'.$serial_Contract.'/'.$UserSerial);
-	}
-
-	public function send_attendance_card($TargetStaffSerial){
-		
-		$qr_image=QrCode::format('png')
-			->merge("storage/".$serial_staff.".png")
-			->style('square')
-			->backgroundColor(255,255,255)
-			->size(300)
-			->errorCorrection("H")
-			->generate($serial_staff);
-		
-			/*
-		//$url = 'https://www.qrcode-test.com/'
-		$url = 'https://example.com';
-$logoPath = 'myLogoFile.png';$qrCode = Builder::create()
-              ->writer(new PngWriter())
-              ->writerOptions([])
-              ->data($url)
-              ->logoPath($logoPath)
-              ->logoResizeToWidth(100)
-              ->encoding(new Encoding('ISO-8859-1'))
-// Here's the sneaky bit that makes the QR Code work with the image
-              ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
-              ->build();// Either ...
-$qrCodeDataUri = $qrCode->getDataUri();
-// or ...
-$qrCode->saveToFile('myQRCode.png');
-*/
-/*
-		$qrCode = QrCode::create($TargetStaffSerial)
-            ->setEncoding(new Encoding('UTF-8'))
-            //->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
-            ->setSize(150)
-            ->setMargin(25);
-            //->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
-            //->setForegroundColor(new Color(0, 0, 0));
-		//Storage::put('qr_image.png', base64_encode($qr_image));$serial_staff
-		$qr_image = imagecreatefrompng("qr_img.php?d=".$d."&e=M&t=J&s=2");
-		//$qr_image = imagecreatefrompng("https://www.example.com/qr_img.php?d=".$d."&e=M&t=J&s=2");
-		$fp = fopen("MedicalRecord/".$serial_staff.".png",'w');
-		$upload_data=$_POST['upload_data'];
-		fwrite($fp,base64_decode($upload_data));
-		fclose($fp);
-		*/
 	}
 
 	public function deleteTreatmentContent($TreatmentContentSerial){
@@ -695,65 +694,6 @@ $qrCode->saveToFile('myQRCode.png');
 		echo $json;
     }
 
-	private function staff_reception_manage($staff_serial){
-		$staff_inf=Staff::where("serial_staff","=",$staff_serial)->first();
-		$latest_in_out_history_id=InOutHistory::where("target_serial","=",$staff_serial)
-				->orderBy('id','desc')->first('id');
-		$target_item_array['user_serial']=$staff_serial;
-
-		if(empty($staff_inf)){
-			$target_item_array['msg']='スタッフのご登録が見つかりません。';
-			$target_item_array['res']='no serial';
-			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-		}else{
-			$target_item_array['res']='true';
-			$ck_jyufuku=InOutHistory::where("target_serial","=",$staff_serial)
-				->where("target_date","=",date('Y-m-d'))
-				->orderBy('id','desc');
-			$rec_cnt=$ck_jyufuku->count();
-			$target_item_array['name']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji;
-			
-			if($rec_cnt==0){
-				$target_item_array['res']='in';
-				$target_item_array['in_out_type']="出勤";
-			}else{
-				$target_item_array['res']='out';
-				$target_item_array['in_out_type']="退勤";
-				$target_item_array['target_id']=$latest_in_out_history_id;
-			}
-			/*	
-				if(empty($in_out_inf->time_out)){
-					$target_item_array['in_out_type']="退勤";
-					$target_item_array['target_id']=$latest_in_out_history_id;
-				}else{
-				$in_out_inf=$ck_jyufuku->first();
-				if(empty($in_out_inf->time_out)){
-					$target_item_array['in_out_type']="退勤";
-					$target_item_array['target_id']=$latest_in_out_history_id;
-				}else{
-					$target_item_array['in_out_type']="出勤";
-				}
-			}
-			*/
-			$target_item_array['msg']=$target_item_array['name'].' さんの'.$target_item_array['in_out_type'].'を受け付けました。';
-			/*
-			if($ck_jyufuku>0){
-				$target_item_array['msg']=$target_item_array['name'].' さんの本日の退勤を受け付けました。';
-				//$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの本日の退社を受け付けました。';
-				//$target_item_array['res']='double registration';
-				$target_item_array['res']='true';
-			}else{
-				//$target_item_array['visit_history_serial']=$staff_serial;
-				$target_item_array['msg']=$target_item_array['name'].' さんの本日の出勤を受け付けました。';
-				//$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの出社を受け付けました。';
-				$target_item_array['res']='true';
-			}
-			*/
-			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-		}
-		return $json;
-	}
-
 	public function customer_reception_manage(Request $request)
     {
         $user_serial=$request->target_serial;
@@ -907,30 +847,6 @@ $qrCode->saveToFile('myQRCode.png');
 		//return $src;
 		//return response('<img src="data:image/png;base64, ' . $src . '">');
 	}
-
-	public function send_QRcode_to_staff(Request $request){
-		$target_item_array=array();
-        $staff_inf=Staff::where('serial_staff','=',$request->serial_staff)->first();
-		$qr_image=self::GetQrImage($staff_inf->email);
-		//base64_encode($qr_image);
-		
-		
-		//Storage::disk('local')->put('qr_image.png', base64_encode($qr_image));
-		//$qr_image->store('qr');
-		//$qr_image=self::GetQrImage($enc_target_mail);
-		//$fp = fopen("MedicalRecord/QRTest",'w');
-		//$upload_data=$_POST['upload_data'];
-		//fwrite($fp,$qr_image);
-		//fclose($fp);
-
-		//$target_item_array['qr']=self::GetQrImage($enc_target_mail);
-		//$target_item_array['qr']=$enc_target_mail;
-		$target_item_array['msg']='出退記録用QRコード';
-        $target_item_array['to_email']=$staff_inf->email;
-		$target_item_array['subject']='出退記録用QRコード';
-		$target_item_array['from_email']=env('MAIL_FROM_ADDRESS');
-		Mail::send(new SendMail($target_item_array));
-    }
 
 	public function ShowSyuseiCustomer(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
@@ -2096,27 +2012,7 @@ $qrCode->saveToFile('myQRCode.png');
 		$deleStaff=Staff::where('serial_staff','=',$serial_staff)->delete();
 		return view("admin.ListStaffs");
 	}
-	
-	public function SaveStaff(Request $request){
-	//public function SaveStaff(InpCustomerRequest $request){
-		$targetData=[
-			'serial_staff' => session('targetStaffSerial'),
-			'email' => $request->mail,
-			'phone' => $request->phone,
-			'last_name_kanji' => $request->name_sei,
-			'first_name_kanji' => $request->name_mei,
-			'last_name_kana' =>$request->name_sei_kana,
-			'first_name_kana' =>$request->name_mei_kana,
-			'birth_date'=>$request->year.'-'.$request->month.'-'.$request->day,
-		];
-		Staff::upsert($targetData,['serial_staff']);
-		//session()->flash('success', '登録しました。');
-		$this::save_recorder("SaveStaff");
-		//return redirect('/workers/saveStaff');
-		return view("admin.ListStaffs");
-	}
-
-		/*
+	/*
 	public function ShowMedicalRecord(Request $request){
 		$target_file='storage/MedicalRecord/'.session('ContractSerial')."-".$request->count_btn.".png";
 		Log::alert('count='.$request->count_btn);

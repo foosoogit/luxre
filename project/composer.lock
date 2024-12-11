@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f44f62dd587ab0557d8220d13931cf97",
+    "content-hash": "ead2c534bcc67ee4a86bc777d7cb00cb",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -813,6 +813,103 @@
             "time": "2023-10-12T05:21:21+00:00"
         },
         {
+            "name": "giauphan/laravel-qr-code",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/giauphan/laravel-qr-code.git",
+                "reference": "5199db69ee545e5e5bf855a4fc71c51d133b63d7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/giauphan/laravel-qr-code/zipball/5199db69ee545e5e5bf855a4fc71c51d133b63d7",
+                "reference": "5199db69ee545e5e5bf855a4fc71c51d133b63d7",
+                "shasum": ""
+            },
+            "require": {
+                "giauphan/qr-code": "1.0.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LaravelQRCode\\Providers\\QRCodeServiceProvider"
+                    ],
+                    "aliases": {
+                        "QRCode": "LaravelQRCode\\Facades\\QRCode"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LaravelQRCode\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Phan Nhut Giau",
+                    "email": "giauphan012@gmail.com"
+                }
+            ],
+            "description": "QR Code Generator for PHP wrapper for Laravel",
+            "support": {
+                "issues": "https://github.com/giauphan/laravel-qr-code/issues",
+                "source": "https://github.com/giauphan/laravel-qr-code/tree/1.0.3"
+            },
+            "time": "2024-11-21T13:49:23+00:00"
+        },
+        {
+            "name": "giauphan/qr-code",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/giauphan/qr-code.git",
+                "reference": "c59520b860010e6191415ec271040e4922092b68"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/giauphan/qr-code/zipball/c59520b860010e6191415ec271040e4922092b68",
+                "reference": "c59520b860010e6191415ec271040e4922092b68",
+                "shasum": ""
+            },
+            "require": {
+                "giauphan/laravel-qr-code": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6.18"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/helpers/constants.php",
+                    "src/helpers/functions.php"
+                ],
+                "psr-4": {
+                    "QR_Code\\": "src/QR_Code/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Phan Nhut Giau",
+                    "email": "giauphan012@gmail.com"
+                }
+            ],
+            "description": "QR Code Generator for PHP",
+            "support": {
+                "issues": "https://github.com/giauphan/qr-code/issues",
+                "source": "https://github.com/giauphan/qr-code/tree/1.0.2"
+            },
+            "time": "2024-11-21T13:39:58+00:00"
+        },
+        {
             "name": "graham-campbell/result-type",
             "version": "v1.1.2",
             "source": {
@@ -1420,6 +1517,64 @@
                 }
             ],
             "time": "2024-06-29T07:51:20+00:00"
+        },
+        {
+            "name": "khanamiryan/qrcode-detector-decoder",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/khanamiryan/php-qrcode-detector-decoder.git",
+                "reference": "8d53cbecaa32f1e56a3be58bb3055ac31774ecd0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/khanamiryan/php-qrcode-detector-decoder/zipball/8d53cbecaa32f1e56a3be58bb3055ac31774ecd0",
+                "reference": "8d53cbecaa32f1e56a3be58bb3055ac31774ecd0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.5 | ^8.0 | ^9.0",
+                "rector/rector": "^0.13.6",
+                "symplify/easy-coding-standard": "^11.0",
+                "vimeo/psalm": "^4.24"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/Common/customFunctions.php"
+                ],
+                "psr-4": {
+                    "Zxing\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT",
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Ashot Khanamiryan",
+                    "email": "a.khanamiryan@gmail.com",
+                    "homepage": "https://github.com/khanamiryan",
+                    "role": "Developer"
+                }
+            ],
+            "description": "QR code decoder / reader",
+            "homepage": "https://github.com/khanamiryan/php-qrcode-detector-decoder/",
+            "keywords": [
+                "barcode",
+                "qr",
+                "zxing"
+            ],
+            "support": {
+                "issues": "https://github.com/khanamiryan/php-qrcode-detector-decoder/issues",
+                "source": "https://github.com/khanamiryan/php-qrcode-detector-decoder/tree/2.0.2"
+            },
+            "time": "2022-11-17T10:54:53+00:00"
         },
         {
             "name": "laravel/fortify",
