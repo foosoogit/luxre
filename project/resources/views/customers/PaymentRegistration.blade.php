@@ -1,7 +1,7 @@
 @extends('layouts.appCustomer')
 @section('content')
 <script type="text/javascript" src="{{ asset('/js/PaymentRegistration.js') }}"></script>
-<script type="text/javascript" src="{{ asset('/js/MediaRecord.js?20230128') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/MediaRecord.js?20230129') }}"></script>
 <style type="text/css">
 input{border: 1px solid #aaa;}
 table td {border: 1px solid #aaa;}
