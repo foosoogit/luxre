@@ -1193,12 +1193,12 @@ class AdminController extends Controller
 				["visitDate.13" => "required" ],
 				['visitDate.13.required' => '施術日14回目を先に保存してください。']
 			);
-		}else if($visit_history_num_int==14){
+		}else if($visit_history_num_int==15){
 			$request->validate(
 				["visitDate.14" => "required" ],
 				['visitDate.14.required' => '施術日15回目を先に保存してください。']
 			);
-		}else if($visit_history_num_int==15){
+		}else if($visit_history_num_int==16){
 			$request->validate(
 				["visitDate.15" => "required" ],
 				['visitDate.15.required' => '施術日16回目を先に保存してください。']
