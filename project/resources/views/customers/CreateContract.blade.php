@@ -230,7 +230,11 @@ input,textarea{border: 1px solid #aaa;}
 								<input name="HowPayRdio" id="HowPayRdio_paypay" type="radio" onchange="HowPayRdioManage()" value="Paypay" {!!optional($HowToPay)['paypay']!!} class="cyclic"/>Paypay
 							</label>
 						</p>
-
+						<p class="cyclic">
+							<label>
+								<input name="HowPayRdio" id="HowPayRdio_paypay" type="radio" onchange="HowPayRdioManage()" value="smart" {!!optional($HowToPay)['smart']!!} class="cyclic"/>スマート支払い
+							</label>
+						</p>
 						<p class="cyclic"><label><input name="HowPayRdio" id="HowPayRdio_genkin" type="radio" onchange="HowPayRdioManage()" value="現金" {!!optional($HowToPay)['cash']!!} class="cyclic"/>現金支払い</label>
 							<select name="HowManyPaySlct" id="HowManyPaySlct" class="cyclic">
 								{!!optional($HowManyPay)['CashSlct']!!}

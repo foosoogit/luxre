@@ -77,21 +77,33 @@ class DailyReport extends Component
         $subtotal_good=SalesRecord::where('date_sale','=',$today)->sum('selling_price');
         $total=$subtotal_treatment+$subtotal_good;
         $Sum=array();
+        
+        /*
         $Sum['cash']=PaymentHistory::where('date_payment','=',$today)
                 ->leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
                 ->where('payment_histories.how_to_pay','=','cash')
-                 ->where(function($query) {
+                ->where(function($query) {
                     $query->where('contracts.how_many_pay_genkin','=','1')->orWhere('contracts.how_many_pay_card','=','1');
                 })
             ->sum('amount_payment');
+        */
+        $Sum['cash']=PaymentHistory::where('date_payment','=',$today)
+                //->leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
+                ->where('payment_histories.how_to_pay','=','cash')
+                /*
+                ->where(function($query) {
+                    $query->where('contracts.how_many_pay_genkin','=','1')->orWhere('contracts.how_many_pay_card','=','1');
+                })
+                */
+            ->sum('amount_payment');
     
         $Sum['card']=PaymentHistory::where('date_payment','=',$today)
-                ->where('date_payment','=',$today)
+                //->where('date_payment','=',$today)
                 ->where('how_to_pay','=','card')
             ->sum('amount_payment');
     
         $Sum['paypay']=PaymentHistory::where('date_payment','=',$today)
-                ->where('date_payment','=',$today)
+                //->where('date_payment','=',$today)
                 ->where('how_to_pay','=','paypay')
             ->sum('amount_payment');
     

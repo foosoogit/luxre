@@ -78,6 +78,7 @@ table td {border: 1px solid #aaa;}
 						<td style="{!!$set_gray_pay_array[0]!!}">
 							<label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[0])[0]!!}  {{$payment_disabeled[0]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[0])[1]!!}  {{$payment_disabeled[0]}}/>PayPay</label>
+							<br><label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[0])[1]!!}  {{$payment_disabeled[0]}}/>スマート支払い</label>
 							<br><label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[0])[2]!!} {{$payment_disabeled[0]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[0])[3]!!} {{$payment_disabeled[0]}}/>支払い不履行</label>
 						</td>
