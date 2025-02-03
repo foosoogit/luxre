@@ -27,7 +27,7 @@ class DailyReport extends Component
         $header="";$slot="";
         $today = date("Y-m-d");
         $from_place="";
-        Log::alert("HTTP_REFERER Daily =".$_SERVER['HTTP_REFERER']);
+        //Log::alert("HTTP_REFERER Daily =".$_SERVER['HTTP_REFERER']);
         OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
         /*
         if(isset($_POST['back_flg'])){
@@ -36,7 +36,7 @@ class DailyReport extends Component
             array_shift($_SESSION['access_history']);
         }
         */
-        Log::info($_SESSION['access_history']);
+        //Log::info($_SESSION['access_history']);
         $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
         $backmonthly="";
         foreach($_SESSION['access_history'] as $targeturl){
