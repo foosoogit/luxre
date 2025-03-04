@@ -78,75 +78,86 @@ table td {border: 1px solid #aaa;}
 						<td style="{!!$set_gray_pay_array[0]!!}">
 							<label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[0])[0]!!}  {{$payment_disabeled[0]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[0])[1]!!}  {{$payment_disabeled[0]}}/>PayPay</label>
-							<br><label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="smart" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[0])[1]!!}  {{$payment_disabeled[0]}}/>スマート支払い</label>
 							<br><label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[0])[2]!!} {{$payment_disabeled[0]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[0])[3]!!} {{$payment_disabeled[0]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[0]!!}"><input name="HowToPay[0]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[0])[4]!!}  {{$payment_disabeled[0]}}/>スマート支払い</label>
 						</td>
 						<td style="{!!$set_gray_pay_array[1]!!}">
 							<label style="{!!$set_gray_pay_array[1]!!}"><input name="HowToPay[1]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[1])[0]!!} {{$payment_disabeled[1]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[1]!!}"><input name="HowToPay[1]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[1])[1]!!} {{$payment_disabeled[1]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[1]!!}"><input name="HowToPay[1]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[1])[2]!!} {{$payment_disabeled[1]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[1]!!}"><input name="HowToPay[1]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[1])[3]!!} {{$payment_disabeled[1]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[1]!!}"><input name="HowToPay[1]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[1])[4]!!}  {{$payment_disabeled[1]}}/>スマート支払い</label>
 						</td>
 						<td style="{!!$set_gray_pay_array[2]!!}">
 							<label style="{!!$set_gray_pay_array[2]!!}"><input name="HowToPay[2]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[2])[0]!!} {{$payment_disabeled[2]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[2]!!}"><input name="HowToPay[2]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[2])[1]!!} {{$payment_disabeled[2]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[2]!!}"><input name="HowToPay[2]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[2])[2]!!} {{$payment_disabeled[2]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[2]!!}"><input name="HowToPay[2]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[2])[3]!!} {{$payment_disabeled[2]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[2]!!}"><input name="HowToPay[2]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[2])[4]!!}  {{$payment_disabeled[2]}}/>スマート支払い</label>
 						</td>
 						<td style="{!!$set_gray_pay_array[3]!!}">
 							<label style="{!!$set_gray_pay_array[3]!!}"><input name="HowToPay[3]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[3])[0]!!} {{$payment_disabeled[3]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[3]!!}"><input name="HowToPay[3]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[3])[1]!!} {{$payment_disabeled[3]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[3]!!}"><input name="HowToPay[3]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[3])[2]!!} {{$payment_disabeled[3]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[3]!!}"><input name="HowToPay[3]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[3])[3]!!} {{$payment_disabeled[3]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[3]!!}"><input name="HowToPay[3]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[3])[4]!!}  {{$payment_disabeled[3]}}/>スマート支払い</label>
 						</td>
 						<td style="{!!$set_gray_pay_array[4]!!}">
 							<label style="{!!$set_gray_pay_array[4]!!}"><input name="HowToPay[4]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[4])[0]!!} {{$payment_disabeled[4]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[4]!!}"><input name="HowToPay[4]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[4])[1]!!} {{$payment_disabeled[4]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[4]!!}"><input name="HowToPay[4]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[4])[2]!!} {{$payment_disabeled[4]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[4]!!}"><input name="HowToPay[4]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[4])[3]!!} {{$payment_disabeled[4]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[4]!!}"><input name="HowToPay[4]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[4])[4]!!}  {{$payment_disabeled[4]}}/>スマート支払い</label>
 						</td>
 						<td style="{!!$set_gray_pay_array[5]!!}">
 							<label style="{!!$set_gray_pay_array[5]!!}"><input name="HowToPay[5]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[5])[0]!!} {{$payment_disabeled[5]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[5]!!}"><input name="HowToPay[5]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[5])[1]!!} {{$payment_disabeled[5]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[5]!!}"><input name="HowToPay[5]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[5])[2]!!} {{$payment_disabeled[5]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[5]!!}"><input name="HowToPay[5]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[5])[3]!!} {{$payment_disabeled[5]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[5]!!}"><input name="HowToPay[5]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[5])[4]!!}  {{$payment_disabeled[5]}}/>スマート支払い</label>
 						</td>
 						<td style="{!!$set_gray_pay_array[6]!!}">
 							<label style="{!!$set_gray_pay_array[6]!!}"><input name="HowToPay[6]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[6])[0]!!} {{$payment_disabeled[6]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[6]!!}"><input name="HowToPay[6]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[6])[1]!!} {{$payment_disabeled[6]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[6]!!}"><input name="HowToPay[6]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[6])[2]!!} {{$payment_disabeled[6]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[6]!!}"><input name="HowToPay[6]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[6])[3]!!} {{$payment_disabeled[6]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[6]!!}"><input name="HowToPay[6]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[6])[4]!!}  {{$payment_disabeled[6]}}/>スマート支払い</label>
 						</td>
 						<td style="{!!$set_gray_pay_array[7]!!}">
 							<label style="{!!$set_gray_pay_array[7]!!}"><input name="HowToPay[7]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[7])[0]!!} {{$payment_disabeled[7]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[7]!!}"><input name="HowToPay[7]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[7])[1]!!} {{$payment_disabeled[7]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[7]!!}"><input name="HowToPay[7]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[7])[2]!!} {{$payment_disabeled[7]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[7]!!}"><input name="HowToPay[7]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[7])[3]!!} {{$payment_disabeled[7]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[7]!!}"><input name="HowToPay[7]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[7])[4]!!}  {{$payment_disabeled[7]}}/>スマート支払い</label>
 						</td>
 							<td style="{!!$set_gray_pay_array[8]!!}">
 							<label style="{!!$set_gray_pay_array[8]!!}"><input name="HowToPay[8]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[8])[0]!!} {{$payment_disabeled[8]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[8]!!}"><input name="HowToPay[8]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[8])[1]!!} {{$payment_disabeled[8]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[8]!!}"><input name="HowToPay[8]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[8])[2]!!} {{$payment_disabeled[8]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[8]!!}"><input name="HowToPay[8]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[8])[3]!!} {{$payment_disabeled[8]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[8]!!}"><input name="HowToPay[8]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[8])[4]!!}  {{$payment_disabeled[8]}}/>スマート支払い</label>
 						</td>
 						<td style="{!!$set_gray_pay_array[9]!!}">
 							<label style="{!!$set_gray_pay_array[9]!!}"><input name="HowToPay[9]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[9])[0]!!} {{$payment_disabeled[9]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[9]!!}"><input name="HowToPay[9]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[9])[1]!!} {{$payment_disabeled[9]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[9]!!}"><input name="HowToPay[9]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[9])[2]!!} {{$payment_disabeled[9]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[9]!!}"><input name="HowToPay[9]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[9])[3]!!} {{$payment_disabeled[9]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[9]!!}"><input name="HowToPay[9]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[9])[4]!!}  {{$payment_disabeled[9]}}/>スマート支払い</label>
 						</td>
 						<td style="{!!$set_gray_pay_array[10]!!}">
 							<label style="{!!$set_gray_pay_array[10]!!}"><input name="HowToPay[10]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[10])[0]!!} {{$payment_disabeled[10]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[10]!!}"><input name="HowToPay[10]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[10])[1]!!} {{$payment_disabeled[10]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[10]!!}"><input name="HowToPay[10]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[10])[2]!!} {{$payment_disabeled[10]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[10]!!}"><input name="HowToPay[10]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[10])[3]!!} {{$payment_disabeled[10]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[10]!!}"><input name="HowToPay[10]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[10])[4]!!}  {{$payment_disabeled[10]}}/>スマート支払い</label>
 						</td>
 						<td style="{!!$set_gray_pay_array[11]!!}">
 							<label style="{!!$set_gray_pay_array[11]!!}"><input name="HowToPay[11]" type="radio" value="card" onclick="radioDeselection(this, 1)" {!!optional($HowToPayCheckedArray[11])[0]!!} {{$payment_disabeled[11]}}/>カード</label>
 							<br><label style="{!!$set_gray_pay_array[11]!!}"><input name="HowToPay[11]" type="radio" value="paypay" onclick="radioDeselection(this, 2)" {!!optional($HowToPayCheckedArray[11])[1]!!} {{$payment_disabeled[11]}}/>PayPay</label>
 							<br><label style="{!!$set_gray_pay_array[11]!!}"><input name="HowToPay[11]" type="radio" value="cash" onclick="radioDeselection(this, 3)" {!!optional($HowToPayCheckedArray[11])[2]!!} {{$payment_disabeled[11]}}/>現金</label>
 							<br><label style="{!!$set_gray_pay_array[11]!!}"><input name="HowToPay[11]" type="radio" value="default" onclick="radioDeselection(this, 4)" {!!optional($HowToPayCheckedArray[11])[3]!!} {{$payment_disabeled[11]}}/>支払い不履行</label>
+							<br><label style="{!!$set_gray_pay_array[11]!!}"><input name="HowToPay[11]" type="radio" value="smart" onclick="radioDeselection(this, 5)" {!!optional($HowToPayCheckedArray[11])[4]!!}  {{$payment_disabeled[11]}}/>スマート支払い</label>
 						</td>
 					</tr>
 				</table>

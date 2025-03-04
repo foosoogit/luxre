@@ -43,6 +43,171 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		//Log::alert("ShowInpRecordVisitPayment-1");
+		$fromURLArray=parse_url($_SERVER['HTTP_REFERER']);
+		if(!session('InpRecordVisitPaymentFlg')){
+			session(['ShowInpRecordVisitPaymentfromPage' => $fromURLArray['path']]);
+			session(['InpRecordVisitPaymentFlg' => false]);
+		}else{
+			session(['InpRecordVisitPaymentFlg' => false]);
+		}
+		session(['fromPage' => parse_url($_SERVER['HTTP_REFERER'])]);
+		session(['UserSerial' => $UserSerial]);
+		session(['ContractSerial' => $ContractSerial]);
+		$RecordUrl = route('customers.recordVisitPaymentHistory');
+		$header="";$slot="";$selectedManth=array();$selectedManth=array();
+		$targetVisitHistoryArray=VisitHistory::where('serial_keiyaku','=', $ContractSerial)->get();
+		$targetPaymentHistoryArray=PaymentHistory::where('serial_keiyaku','=', $ContractSerial)->get();
+
+		$targetUser=User::where('serial_user','=', $UserSerial)->first();
+		session(['userneme' => $targetUser->name_sei.$targetUser->name_mei]);
+
+		$targetContract=Contract::where('serial_keiyaku','=', $ContractSerial)->first();
+		$targetContractDetails=ContractDetail::where('serial_keiyaku','=', $ContractSerial)->get();
+		$KeiyakuNaiyouArray=array();$VisitDateArray=array();
+		$KeiyakuNumMax = DB::table('configrations')->select('value1')->where('subject', '=', 'KeiyakuNumMax')->first();
+		$sejyutukaisu=Contract::where('serial_keiyaku','=',$ContractSerial)->first('treatments_num');
+		$ck=Contract::where('serial_keiyaku','=',$ContractSerial);
+		$visit_disabeled=array();$set_gray_array=array();$only_treatment_color_array=array();
+		
+		if($targetContract->keiyaku_type=="subscription"){
+			for($i=0;$i<=$KeiyakuNumMax->value1;$i++){
+				$visit_disabeled[$i]="";
+				$set_gray_array[$i]="";
+				$only_treatment_color_array[$i]="white";
+			}		
+		}else{
+			if(is_null($sejyutukaisu->treatments_num) ){
+				for($i=0;$i<=$KeiyakuNumMax->value1;$i++){
+					$visit_disabeled[$i]='disabled'; $set_gray_array[$i]='style="color:#DDDDDD"';$only_treatment_color_array[$i]='#DDDDDD';
+				}
+			}else{
+				for($i=0;$i<=$KeiyakuNumMax->value1;$i++){
+					$visit_disabeled[$i]='disabled'; $set_gray_array[$i]='style="color:#DDDDDD"';$only_treatment_color_array[$i]='#DDDDDD';
+					if($i<$sejyutukaisu->treatments_num){
+						$visit_disabeled[$i]="";
+						$set_gray_array[$i]="";
+						$only_treatment_color_array[$i]="white";
+					}		
+				}
+			}
+		}
+		$i=0;$TreatmentDetailsArray=array();$TreatmentDetailsSelectArray=array();$VisitSerialArray=array();$PointArray=array();
+		foreach($targetVisitHistoryArray as $targetVisitHistory){
+			//$VisitSerialArray[]=$targetVisitHistory->visit_history_serial;
+			$VisitSerialArray[]=sprintf('%02d', $i+1);
+			$_SESSION['VisitSerialSessionArray'][]=$targetVisitHistory->visit_history_serial;
+			$VisitDateArray[]=$targetVisitHistory->date_visit;
+			$PointArray[]=$targetVisitHistory->point;
+			$TreatmentDetailsArray[]=$targetVisitHistory->treatment_dtails;
+			$TreatmentDetailsSelectArray[]=OtherFunc::make_htm_get_treatment_slct($targetVisitHistory->treatment_dtails);
+			$set_gray_array[$i]='style="background-color:#e0ffff"';
+			if(empty($targetVisitHistory->treatment_dtails)){
+				$only_treatment_color_array[$i]='red';
+			}else{
+				$only_treatment_color_array[$i]='#e0ffff';
+			}
+			$i++;
+		}
+
+		for($k=$i;$k<24;$k++){
+			$TreatmentDetailsSelectArray[$k]=OtherFunc::make_htm_get_treatment_slct('');
+			$VisitSerialArray[]=sprintf('%02d', $k+1);
+		}
+
+		if($targetContract->how_to_pay=='現金'){
+			$paymentCount=$targetContract->how_many_pay_genkin;
+		}else{
+			$paymentCount=$targetContract->how_many_pay_card;
+		}
+		for($i=0;$i<initConsts::PaymentNumMax();$i++){
+			if($targetContract->keiyaku_type=="subscription"){
+				$payment_disabeled[$i]="";$set_gray_pay_array[$i]="";$set_background_gray_pay_array[$i]='';
+			}else{
+				$payment_disabeled[$i]='disabled'; $set_gray_pay_array[$i]='color:#DDDDDD';$set_background_gray_pay_array[$i]='background-color:#EEEEEE';
+				if($i<$paymentCount){
+					$payment_disabeled[$i]="";$set_gray_pay_array[$i]="";$set_background_gray_pay_array[$i]='';
+				}	
+			}	
+		}
+		
+		$payCnt=$targetContract->how_many_pay_genkin;
+		if($targetContract->how_to_pay=="Credit Card"){
+			$payCnt=$targetContract->how_many_pay_card;
+		}
+
+		$PaymentDateArray=array();$PaymentAmountArray=array();$HowToPayCheckedArray=array();
+		
+		for($i=0;$i<12;$i++){
+			$HowToPayCheckedArray[$i][0]="";
+			$HowToPayCheckedArray[$i][1]="";
+		}
+		$i=0;
+		foreach($targetPaymentHistoryArray as $targetPaymentHistory){
+			$HowToPayCheckedCard="";$HowToPayCheckedCash="";$HowToPayCheckedDefault="";
+			if($targetPaymentHistory->how_to_pay=="card"){
+				$HowToPayCheckedCard="checked";
+				$HowToPayCheckedPaypay="";
+				$HowToPayCheckedCash="";
+				$HowToPayCheckedDefault="";
+				$HowToPayCheckedSmart="";
+			}else if($targetPaymentHistory->how_to_pay=="paypay"){
+				$HowToPayCheckedCard="";
+				$HowToPayCheckedPaypay="checked";
+				$HowToPayCheckedCash="";
+				$HowToPayCheckedDefault="";
+				$HowToPayCheckedSmart="";
+			}else if($targetPaymentHistory->how_to_pay=="cash"){
+				$HowToPayCheckedCard="";
+				$HowToPayCheckedPaypay="";
+				$HowToPayCheckedCash="checked";
+				$HowToPayCheckedDefault="";
+				$HowToPayCheckedSmart="";
+			}else if($targetPaymentHistory->how_to_pay=="default"){
+				$HowToPayCheckedCard="";
+				$HowToPayCheckedPaypay="";
+				$HowToPayCheckedCash="";
+				$HowToPayCheckedDefault="checked";
+				$HowToPayCheckedSmart="";
+			}else if($targetPaymentHistory->how_to_pay=="smart"){
+				$HowToPayCheckedCard="";
+				$HowToPayCheckedPaypay="";
+				$HowToPayCheckedCash="";
+				$HowToPayCheckedDefault="";
+				$HowToPayCheckedSmart="checked";
+			}
+			$HowToPayCheckedArray[$i][0]=$HowToPayCheckedCard;
+			$HowToPayCheckedArray[$i][1]=$HowToPayCheckedPaypay;
+			$HowToPayCheckedArray[$i][2]=$HowToPayCheckedCash;
+			$HowToPayCheckedArray[$i][3]=$HowToPayCheckedDefault;
+			$HowToPayCheckedArray[$i][4]=$HowToPayCheckedSmart;
+
+			$PaymentDateArray[]=$targetPaymentHistory->date_payment;
+			$PaymentAmountArray[]=$targetPaymentHistory->amount_payment;
+			
+			$set_background_gray_pay_array[$i]='background-color:#e0ffff';
+			$set_gray_pay_array[$i]='background-color:#e0ffff';
+			$i++;
+		}
+
+		foreach($targetContractDetails as $targetContractDetail){
+			$KeiyakuNaiyouArray[]=$targetContractDetail->keiyaku_naiyo;
+		}
+		$KeiyakuNaiyou=implode("/", $KeiyakuNaiyouArray);
+		$HowToPayChecked[0][0]="";$GoBackToPlace='';
+		if(session('fromMenu')=='MenuCustomerManagement'){
+			$GoBackToPlace="/ShowMenuCustomerManagement";
+		}else if(session('fromMenu')=='CustomersList'){
+			$GoBackToPlace="/customers/ShowCustomersList_livewire";
+		}
+		$GoBackToPlace=session('ShowInpRecordVisitPaymentfromPage');
+		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		array_push($target_historyBack_inf_array,$UserSerial);
+		return view('customers.PaymentRegistration',compact("UserSerial","PointArray","target_historyBack_inf_array","only_treatment_color_array","GoBackToPlace","header","slot",'VisitSerialArray','VisitDateArray','PaymentDateArray','targetUser','targetContract','KeiyakuNaiyou','PaymentAmountArray','HowToPayCheckedArray','visit_disabeled','sejyutukaisu','set_gray_array','payment_disabeled','set_gray_pay_array','set_background_gray_pay_array','paymentCount','TreatmentDetailsArray','TreatmentDetailsSelectArray'));
+	}
+
 	public function ShowMedicalRecordFromIframe(Request $request){
 		$visit_history_serial=$request->count_btn;
 		$visit_history_serial_array=explode('-', $visit_history_serial);
@@ -1475,160 +1640,6 @@ class AdminController extends Controller
 		}
 		$GoBackPlace=$_SESSION['access_history'][0];
 		return view('customers.CreateContract',compact("contract_type_checked","html_staff_slct",'newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
-	}
-
-	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::alert("ShowInpRecordVisitPayment-1");
-		$fromURLArray=parse_url($_SERVER['HTTP_REFERER']);
-		if(!session('InpRecordVisitPaymentFlg')){
-			session(['ShowInpRecordVisitPaymentfromPage' => $fromURLArray['path']]);
-			session(['InpRecordVisitPaymentFlg' => false]);
-		}else{
-			session(['InpRecordVisitPaymentFlg' => false]);
-		}
-		session(['fromPage' => parse_url($_SERVER['HTTP_REFERER'])]);
-		session(['UserSerial' => $UserSerial]);
-		session(['ContractSerial' => $ContractSerial]);
-		$RecordUrl = route('customers.recordVisitPaymentHistory');
-		$header="";$slot="";$selectedManth=array();$selectedManth=array();
-		$targetVisitHistoryArray=VisitHistory::where('serial_keiyaku','=', $ContractSerial)->get();
-		$targetPaymentHistoryArray=PaymentHistory::where('serial_keiyaku','=', $ContractSerial)->get();
-
-		$targetUser=User::where('serial_user','=', $UserSerial)->first();
-		session(['userneme' => $targetUser->name_sei.$targetUser->name_mei]);
-
-		$targetContract=Contract::where('serial_keiyaku','=', $ContractSerial)->first();
-		$targetContractDetails=ContractDetail::where('serial_keiyaku','=', $ContractSerial)->get();
-		$KeiyakuNaiyouArray=array();$VisitDateArray=array();
-		$KeiyakuNumMax = DB::table('configrations')->select('value1')->where('subject', '=', 'KeiyakuNumMax')->first();
-		$sejyutukaisu=Contract::where('serial_keiyaku','=',$ContractSerial)->first('treatments_num');
-		$ck=Contract::where('serial_keiyaku','=',$ContractSerial);
-		$visit_disabeled=array();$set_gray_array=array();$only_treatment_color_array=array();
-		
-		if($targetContract->keiyaku_type=="subscription"){
-			for($i=0;$i<=$KeiyakuNumMax->value1;$i++){
-				$visit_disabeled[$i]="";
-				$set_gray_array[$i]="";
-				$only_treatment_color_array[$i]="white";
-			}		
-		}else{
-			if(is_null($sejyutukaisu->treatments_num) ){
-				for($i=0;$i<=$KeiyakuNumMax->value1;$i++){
-					$visit_disabeled[$i]='disabled'; $set_gray_array[$i]='style="color:#DDDDDD"';$only_treatment_color_array[$i]='#DDDDDD';
-				}
-			}else{
-				for($i=0;$i<=$KeiyakuNumMax->value1;$i++){
-					$visit_disabeled[$i]='disabled'; $set_gray_array[$i]='style="color:#DDDDDD"';$only_treatment_color_array[$i]='#DDDDDD';
-					if($i<$sejyutukaisu->treatments_num){
-						$visit_disabeled[$i]="";
-						$set_gray_array[$i]="";
-						$only_treatment_color_array[$i]="white";
-					}		
-				}
-			}
-		}
-		$i=0;$TreatmentDetailsArray=array();$TreatmentDetailsSelectArray=array();$VisitSerialArray=array();$PointArray=array();
-		foreach($targetVisitHistoryArray as $targetVisitHistory){
-			//$VisitSerialArray[]=$targetVisitHistory->visit_history_serial;
-			$VisitSerialArray[]=sprintf('%02d', $i+1);
-			$_SESSION['VisitSerialSessionArray'][]=$targetVisitHistory->visit_history_serial;
-			$VisitDateArray[]=$targetVisitHistory->date_visit;
-			$PointArray[]=$targetVisitHistory->point;
-			$TreatmentDetailsArray[]=$targetVisitHistory->treatment_dtails;
-			$TreatmentDetailsSelectArray[]=OtherFunc::make_htm_get_treatment_slct($targetVisitHistory->treatment_dtails);
-			$set_gray_array[$i]='style="background-color:#e0ffff"';
-			if(empty($targetVisitHistory->treatment_dtails)){
-				$only_treatment_color_array[$i]='red';
-			}else{
-				$only_treatment_color_array[$i]='#e0ffff';
-			}
-			$i++;
-		}
-
-		for($k=$i;$k<24;$k++){
-			$TreatmentDetailsSelectArray[$k]=OtherFunc::make_htm_get_treatment_slct('');
-			$VisitSerialArray[]=sprintf('%02d', $k+1);
-		}
-
-		if($targetContract->how_to_pay=='現金'){
-			$paymentCount=$targetContract->how_many_pay_genkin;
-		}else{
-			$paymentCount=$targetContract->how_many_pay_card;
-		}
-		for($i=0;$i<initConsts::PaymentNumMax();$i++){
-			if($targetContract->keiyaku_type=="subscription"){
-				$payment_disabeled[$i]="";$set_gray_pay_array[$i]="";$set_background_gray_pay_array[$i]='';
-			}else{
-				$payment_disabeled[$i]='disabled'; $set_gray_pay_array[$i]='color:#DDDDDD';$set_background_gray_pay_array[$i]='background-color:#EEEEEE';
-				if($i<$paymentCount){
-					$payment_disabeled[$i]="";$set_gray_pay_array[$i]="";$set_background_gray_pay_array[$i]='';
-				}	
-			}	
-		}
-		
-		$payCnt=$targetContract->how_many_pay_genkin;
-		if($targetContract->how_to_pay=="Credit Card"){
-			$payCnt=$targetContract->how_many_pay_card;
-		}
-
-		$PaymentDateArray=array();$PaymentAmountArray=array();$HowToPayCheckedArray=array();
-		
-		for($i=0;$i<12;$i++){
-			$HowToPayCheckedArray[$i][0]="";
-			$HowToPayCheckedArray[$i][1]="";
-		}
-		$i=0;
-		foreach($targetPaymentHistoryArray as $targetPaymentHistory){
-			$HowToPayCheckedCard="";$HowToPayCheckedCash="";$HowToPayCheckedDefault="";
-			if($targetPaymentHistory->how_to_pay=="card"){
-				$HowToPayCheckedCard="checked";
-				$HowToPayCheckedPaypay="";
-				$HowToPayCheckedCash="";
-				$HowToPayCheckedDefault="";
-			}else if($targetPaymentHistory->how_to_pay=="paypay"){
-				$HowToPayCheckedCard="";
-				$HowToPayCheckedPaypay="checked";
-				$HowToPayCheckedCash="";
-				$HowToPayCheckedDefault="";
-			}else if($targetPaymentHistory->how_to_pay=="cash"){
-				$HowToPayCheckedCard="";
-				$HowToPayCheckedPaypay="";
-				$HowToPayCheckedCash="checked";
-				$HowToPayCheckedDefault="";
-			}else if($targetPaymentHistory->how_to_pay=="default"){
-				$HowToPayCheckedCard="";
-				$HowToPayCheckedPaypay="";
-				$HowToPayCheckedCash="";
-				$HowToPayCheckedDefault="checked";
-			}
-			$HowToPayCheckedArray[$i][0]=$HowToPayCheckedCard;
-			$HowToPayCheckedArray[$i][1]=$HowToPayCheckedPaypay;
-			$HowToPayCheckedArray[$i][2]=$HowToPayCheckedCash;
-			$HowToPayCheckedArray[$i][3]=$HowToPayCheckedDefault;
-
-			$PaymentDateArray[]=$targetPaymentHistory->date_payment;
-			$PaymentAmountArray[]=$targetPaymentHistory->amount_payment;
-			
-			$set_background_gray_pay_array[$i]='background-color:#e0ffff';
-			$set_gray_pay_array[$i]='background-color:#e0ffff';
-			$i++;
-		}
-
-		foreach($targetContractDetails as $targetContractDetail){
-			$KeiyakuNaiyouArray[]=$targetContractDetail->keiyaku_naiyo;
-		}
-		$KeiyakuNaiyou=implode("/", $KeiyakuNaiyouArray);
-		$HowToPayChecked[0][0]="";$GoBackToPlace='';
-		if(session('fromMenu')=='MenuCustomerManagement'){
-			$GoBackToPlace="/ShowMenuCustomerManagement";
-		}else if(session('fromMenu')=='CustomersList'){
-			$GoBackToPlace="/customers/ShowCustomersList_livewire";
-		}
-		$GoBackToPlace=session('ShowInpRecordVisitPaymentfromPage');
-		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		array_push($target_historyBack_inf_array,$UserSerial);
-		return view('customers.PaymentRegistration',compact("UserSerial","PointArray","target_historyBack_inf_array","only_treatment_color_array","GoBackToPlace","header","slot",'VisitSerialArray','VisitDateArray','PaymentDateArray','targetUser','targetContract','KeiyakuNaiyou','PaymentAmountArray','HowToPayCheckedArray','visit_disabeled','sejyutukaisu','set_gray_array','payment_disabeled','set_gray_pay_array','set_background_gray_pay_array','paymentCount','TreatmentDetailsArray','TreatmentDetailsSelectArray'));
 	}
 
 	function insertContract(Request $request){
