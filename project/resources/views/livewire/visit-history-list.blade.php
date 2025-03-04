@@ -49,12 +49,14 @@
                                 <button type="button" wire:click="Vsort('last_name_kana-Desc')" disabled><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>
                         </th>
+                        {{-- 
                         <th class="border px-4 py-2">取得ポイント
                             <div class="text-nowrap">
                                 <button type="button" wire:click="Vsort('point-ASC')" disabled><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
                                 <button type="button" wire:click="Vsort('point-Desc')" disabled><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>
                         </th>
+                         --}}
                         <th class="border px-4 py-2">削除</th>
                     </tr>
                 </thead>
@@ -72,8 +74,9 @@
                                     data-name="{{$User_name}}"
                                     data-visit_date="{{$dVisitHistory->date_visit}}"
                                     data-sejyutusya="{{$dVisitHistory->last_name_kanji}}&nbsp;{{$dVisitHistory->first_name_kanji}}"
-                                    data-point="{{$dVisitHistory->point}}">
-                                    {{$dVisitHistory->VisitNum}}
+                                > 
+                                    {{--data-point="{{$dVisitHistory->point}}" --}}
+                                {{$dVisitHistory->VisitNum}}
                                 </button>
                             </td>
                             <td class="border px-4 py-2">
@@ -87,9 +90,11 @@
                             <td class="border px-4 py-2">
                                 {{$dVisitHistory->last_name_kanji}}&nbsp;{{$dVisitHistory->first_name_kanji}}
                             </td>
+                            {{--
                             <td class="border px-4 py-2">
                                 {{$dVisitHistory->point}}
                             </td>
+                            --}}
                             <td class="border px-4 py-2">
                                 <form action="/customers/deleteContract/{{$dVisitHistory->serial_keiyaku}}/{{$dVisitHistory->serial_user}}" method="GET">@csrf
                                     <input name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $dVisitHistory->serial_user}} {{ $dVisitHistory->name_sei}} {{ $dVisitHistory->name_mei}}');" >
@@ -147,11 +152,13 @@
                         <div class="row">
                             &nbsp;&nbsp;※施術者を修正するときは、カルテを修正してください。
                         </div>
+                        {{-- 
                         <div class="row">
                             <div class="col-auto">
                                 <label>取得ポイント：<input type="text" id="point"></label>
                             </div>
                         </div>
+                         --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">キャンセル</button>

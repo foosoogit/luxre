@@ -86,13 +86,13 @@ class OtherFunc extends Controller
 			['visit_history_serial' =>$request->Tvisit_history_serial,
 			'date_visit' => $request->Tdate,
 			'treatment_dtails' => $request->Ttr_content,
-			'point' =>$request->Tpoint,
+			//'point' =>$request->Tpoint,
 			'serial_keiyaku'=>session('targetKeiyakuSerial'),
 			'serial_user'=>$seriar_user
 			]
 		];
 		$res=VisitHistory::upsert($visits, ['visit_history_serial']);
-		Log::alert("res v =".$res);
+		//Log::alert("res v =".$res);
 		echo $res;
 	}
 

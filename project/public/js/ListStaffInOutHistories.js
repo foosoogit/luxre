@@ -25,7 +25,7 @@ function set_read_only(obj){
 }
 
 $('.target_date').keypress(function(e) {
-	console.log("keyCodee="+e.keyCode);
+	//console.log("keyCodee="+e.keyCode);
 	if(e.keyCode === 13) {
 		var focused = document.activeElement;
 		$.ajax({
@@ -51,7 +51,7 @@ $('.target_date').keypress(function(e) {
 			alert('エラー');
 		});
 	}else if (e.key === "Escape"){
-		console.log('Escape');
+		//console.log('Escape');
 		focused.readOnly=true;	
 	}
 	focused.readOnly=true;
