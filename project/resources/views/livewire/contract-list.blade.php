@@ -102,7 +102,7 @@
                                     </form>
                                 </td>
                                 <td class="border px-4 py-2">
-                                    {{$dContracts->keiyaku_type}}
+                                    {{$dContracts->keiyaku_type}}{{$dContracts->keiyaku_type}}
                                     @if ($dContracts->keiyaku_type=="subscription")
                                         <form action="/customers/ShowPaymentRegistrationIflame/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
                                             <input name="Record_Btn" type="submit" value="{{$dContracts->date_latest_visit}}">
@@ -125,7 +125,6 @@
                                     </td>
                                     <td class="border px-4 py-2">{{$dContracts->name_sei}} &nbsp; {{$dContracts->name_mei}}</td>
                                 @endif
-                                
                                 <td class="border px-4 py-2" {!! $dContracts->closed_color!!}>{{ $dContracts->keiyaku_kikan_start}}-{{ $dContracts->keiyaku_kikan_end}}</td>
                                 <td class="border px-4 py-2">{{ $dContracts->keiyaku_kingaku}}</td>
                                 <td class="border px-4 py-2">{{ $dContracts->how_to_pay}}</td>
