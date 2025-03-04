@@ -68,13 +68,11 @@
                                         </td>
                                         <td>
                                             <input data-format="hh:mm:ss" type="time" step="1" class="btn btn-outline-success btn-sm target_date" name="time_out_{{$history->id}}" id="time_out_{{$history->id}}" value="{{$history->TimeOnlyOut}}" onclick="ReleaseReadOnly(this);" readonly>
-                                            {{--<button type="button" class="btn btn-outline-success btn-sm time_out" name="target_time_out_{{$history->id}}" id="target_time_out_{{$history->id}}">{{ $history->time_out }}</button>--}}
                                         </td>
                                         <td>{{$history->StaffDiff}}</td>
                                         <td><input type="text" name="reason_late_{{$history->id}}" id="reason_late_{{$history->id}}" data-toggle="tooltip" data-placement="top" title="{{$history->reason_late}}" class="form-control form-control-sm text-truncate target_date" onclick="ReleaseReadOnly(this);" readonly value="{{ $history->reason_late }}" /></td>
                                         <td><input type="text" name="remarks_{{$history->id}}" id="remarks_{{$history->id}}" data-toggle="tooltip" data-placement="top" title="{{$history->remarks}}" class="form-control form-control-sm text-truncate target_date" onclick="ReleaseReadOnly(this);" readonly value="{{$history->remarks}}" /></td>
                                         <td>
-                                            {{--<button type="button" wire:click="del_rec('{{$history->id}}')" class="btn btn-outline-warning btn-sm del" name="target_del_{{$history->id}}" id="target_del_{{$history->id}}" onclick="return delArert('{{$history->id}}');">Del</button>--}}
                                             <button type="button" onclick="delArert('{{$history->id}}') || event.stopImmediatePropagation()" wire:click="del_rec('{{$history->id}}')" class="btn btn-outline-warning btn-sm del" name="target_del_{{$history->id}}" id="target_del_{{$history->id}}">Del</button>
                                         </td>
                                     </tr>

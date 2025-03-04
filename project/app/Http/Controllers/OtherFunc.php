@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PaymentHistory;
+use App\Models\VisitHistory;
 use DateTime;
 use App\Models\Contract;
 use Illuminate\Support\Facades\Log;
@@ -25,13 +26,129 @@ use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
-
 if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public function save_payment_history_ajax(Request $request){
+		$keiyaku_array=explode("-", session('targetKeiyakuSerial'));
+		$seriar_user=str_replace('K_', '', $keiyaku_array[0]);
+		$payments = [
+			['payment_history_serial' => $request->payment_history_serial,
+			'date_payment' => $request->payment_date,
+			'amount_payment' => $request->amount,
+			'how_to_pay' => $request->method,
+			'serial_keiyaku'=>session('targetKeiyakuSerial'),
+			'serial_user'=>$seriar_user]
+		];
+		$res=PaymentHistory::upsert($payments, ['payment_history_serial']);
+		//Log::alert("res=".$res);
+		echo $res;
+	}
+
+	public static function make_htm_get_payment_method_slct_ajax(Request $request){
+		$PaymentMethod=initConsts::PaymentMethod();
+		//Log::alert("PaymentMethod=".$PaymentMethod);
+		$PaymentMethodArray=explode(",", $PaymentMethod);
+		//Log::info($PaymentMethodArray);
+		$htm_PaymentMethod_slct="";
+		$htm_PaymentMethod_slct='<select name="month_slct" id="method_slct" class="form-select">';
+		$sct='';
+		if($request->target==''){
+			$sct='Selected';
+		}
+		//Log::info('targe2='.$request->target);
+		$htm_PaymentMethod_slct.='<option value=0 '.$sct.'>-- 選択してください。 --</option>';
+		foreach($PaymentMethodArray as $value){
+			$value_array=explode("_", $value);
+			$sct='';
+			if(str_contains($value, $request->target) && $request->target!=''){
+				$sct='Selected';
+				//Log::alert("value=".$value);
+			}
+			//$htm_PaymentMethod_slct.='<option value="'.$value_array[0].'" '.$sct.'>'.$value_array[1].'</option>';
+			$htm_PaymentMethod_slct.='<option value="'.$value_array[0].'" '.$sct.' >'.$value_array[1].'</option>';
+			$sct='';
+		}
+		$htm_PaymentMethod_slct.='</select>';
+		return $htm_PaymentMethod_slct;
+	}
+
 	public static function make_html_payment_table($targetContract){
 		Contract::where(serial_keiyaku,"=",$targetContract)->get();
+	}
+	
+	public function save_visit_data_ajax(Request $request){
+		$keiyaku_array=explode("-", session('targetKeiyakuSerial'));
+		$seriar_user=str_replace('K_', '', $keiyaku_array[0]);
+
+		$visits = [
+			['visit_history_serial' =>$request->Tvisit_history_serial,
+			'date_visit' => $request->Tdate,
+			'treatment_dtails' => $request->Ttr_content,
+			'point' =>$request->Tpoint,
+			'serial_keiyaku'=>session('targetKeiyakuSerial'),
+			'serial_user'=>$seriar_user
+			]
+		];
+		$res=VisitHistory::upsert($visits, ['visit_history_serial']);
+		Log::alert("res v =".$res);
+		echo $res;
+	}
+
+	public static function make_htm_get_treatment_slct_ajax(Request $request){
+		$TargetTreatmentName=$request->target;
+		//$htm_TreatmentsName_slct='<select name="tr_content_slct" id="tr_content_slct" onchange="return ck_slct(this)">';
+		$htm_TreatmentsName_slct='<select name="tr_content_slct" id="tr_content_slct">';
+		//$htm_TreatmentsName_slct.='<option value=0>-- 選択してください --</option>';
+		$htm_TreatmentsName_slct.=OtherFunc::make_htm_get_treatment_slct($request->target);
+		$htm_TreatmentsName_slct.='</select>';
+		echo $htm_TreatmentsName_slct;
+	}
+
+	public static function make_htm_get_treatment_slct($TargetTreatmentName){
+		//Log::alert("TargetTreatmentName=".$TargetTreatmentName);
+		$kana = array(
+			"ア行" => "[ア-オあ-お]",
+			"カ行" => "[カ-コガ-ゴか-こが-ご]",
+			"サ行" => "[サ-ソザ-ゾさ-そざ-ぞ]",
+			"タ行" => "[タ-トダ-ドた-とだ-ど]",
+			"ナ行" => "[ナ-ノな-の]",
+			"ハ行" => "[ハ-ホバ-ボパ-ポは-ほば-ぼぱ-ぽ]",
+			"マ行" => "[マ-モま-も]",
+			"ヤ行" => "[ヤ-ヨや-よ]",
+			"ラ行" => "[ラ-ロら-ろ]",
+			"ワ行" => "[ワ-ンわ-ん]",
+			"その他" => ".*"
+		);
+		$treatmentInfArray=TreatmentContent::orderBy('name_treatment_contents_kana')->get();
+		$htm_TreatmentsName_slct='<option value=0>-- 選択してください --</option>';
+		$tgtGrp="";
+		foreach($treatmentInfArray as $value){
+			$sct="";
+			$match = false;$flg=false;$cnt=0;$k=0;
+			foreach ($kana as $index => $pattern) {
+				if (preg_match("/^" . $pattern . "/u", $value->name_treatment_contents_kana)) {
+					++$cnt;
+					if($tgtGrp<>$index){
+						$htm_TreatmentsName_slct.='<optgroup label="'.$index.'">';
+						$tgtGrp=$index;
+						if($cnt>1){$htm_TreatmentsName_slct.='</optgroup>';}
+					};
+					if(empty($TargetTreatmentName)){
+						$sct='';
+					}else{
+						if($TargetTreatmentName==$value->name_treatment_contents){
+							$sct='Selected';
+						}
+					}
+					$htm_TreatmentsName_slct.='<option value="'.$value->name_treatment_contents.'" '.$sct.'>'.$value->name_treatment_contents.'</option>';
+					break;
+				}
+				++$k;
+			}
+		}		
+		return $htm_TreatmentsName_slct;
 	}
 
 	public static function get_uriage($targetDay,$HowToPay,$HowMany){
@@ -221,8 +338,9 @@ class OtherFunc extends Controller
 	}
 
 	public static function get_page_name($target_url){
+		//http://127.0.0.1:8000/customers/ContractList/000003?_token=Bq24iKITp8X9Vqd4AngHwghkAPWSI28M90huRSGi&keiyaku_Btn=%E5%B1%A5%E6%AD%B4%E3%83%BB%E6%96%B0%E8%A6%8F&page_num=1  
 		$target_url_array_1=explode("?", $target_url);
-		$target_url_array_2=explode("/", $target_url_array_1[0]);
+		$target_url_array_2=explode("/", $target_url_array_1[0]);//http://127.0.0.1:8000/customers/ContractList/000003
 		$target_url_array_2_cnt=count($target_url_array_2);
 		$target_name=$target_url_array_2[$target_url_array_2_cnt-1];
 		if(str_contains($target_url,'customers')){
@@ -273,8 +391,6 @@ class OtherFunc extends Controller
 				array_splice($_SESSION['access_history'], 0,1);
 			}else{
 				if($target_referer<>""){
-					//log::alert('REFERER_name ='.$REFERER_name);
-					//log::alert('URI_name ='.$URI_name);
 					if(isset($_SESSION['access_history'][0]) && $URI_name<>$REFERER_name && !str_contains($URI_name, "update")){
 						array_unshift($_SESSION['access_history'],$REFERER);
 					}else if(empty($_SESSION['access_history'])){
@@ -286,13 +402,6 @@ class OtherFunc extends Controller
 							$targetPage=intval($REQUEST_URI_array[1]);
 						}
 					}
-					/*
-					log::alert('REFERER_name last='.OtherFunc::get_page_name($_SERVER['HTTP_REFERER']));
-					log::alert('access_histor 0 last='.$_SESSION['access_history'][0]);
-					if(str_contains($_SESSION['access_history'][0], OtherFunc::get_page_name($_SERVER['HTTP_REFERER'])) && isset($_SESSION['access_history'][0])){
-						array_splice($_SESSION['access_history'], 0, 1);
-					}
-					*/
 				}
 			}
 		}
@@ -317,17 +426,7 @@ class OtherFunc extends Controller
 			if(str_contains($_SESSION['access_history'][1], $url_name_from)){
 				array_splice($_SESSION['access_history'], 0, 2);
 			}
-			/*
-			log::alert('REFERER_name last='.OtherFunc::get_page_name($_SERVER['HTTP_REFERER']));
-			log::alert('access_histor 0 last='.$_SESSION['access_history'][0]);
-			if(str_contains($_SESSION['access_history'][0], OtherFunc::get_page_name($_SERVER['HTTP_REFERER']))){
-				array_splice($_SESSION['access_history'], 0, 1);
-			}
-			*/
 		}
-		//log::alert('access_history last');
-		//log::alert('REQUEST_URI='.$_SERVER['REQUEST_URI']);
-		//log::info($_SESSION['access_history']);
 		//$_SESSION[OtherFunc::get_page_name($_SESSION['access_history'][0])]=OtherFunc::get_page_num($_SESSION['access_history'][0]);
 	}
 	
@@ -352,16 +451,7 @@ class OtherFunc extends Controller
         if($diff_m<0){$diff_m=0;}
         return $diff_m;
     }
-	/*
-	public static function sortByKey($key_name, $sort_order, $array) {
-		$standard_key_array=array();
-		foreach ($array as $key => $value) {
-			$standard_key_array[$key] = $value[$key_name];
-		}
-		array_multisort($standard_key_array, SORT_ASC, SORT_NUMERIC,$array);
-		return $array;
-	}
-	*/
+
 	public static function make_html_working_list_month_slct(){
 		$month_now=date('m');
 		$htm_month_slct='<select name="month_slct" id="month_slct" class="form-select">';
@@ -713,50 +803,6 @@ class OtherFunc extends Controller
 		return $TotalAmount->total;
 	}
 
-	public static function make_htm_get_treatment_slct($TargetTreatmentName){
-		$kana = array(
-			"ア行" => "[ア-オあ-お]",
-			"カ行" => "[カ-コガ-ゴか-こが-ご]",
-			"サ行" => "[サ-ソザ-ゾさ-そざ-ぞ]",
-			"タ行" => "[タ-トダ-ドた-とだ-ど]",
-			"ナ行" => "[ナ-ノな-の]",
-			"ハ行" => "[ハ-ホバ-ボパ-ポは-ほば-ぼぱ-ぽ]",
-			"マ行" => "[マ-モま-も]",
-			"ヤ行" => "[ヤ-ヨや-よ]",
-			"ラ行" => "[ラ-ロら-ろ]",
-			"ワ行" => "[ワ-ンわ-ん]",
-			"その他" => ".*"
-		);
-		$treatmentInfArray=TreatmentContent::orderBy('name_treatment_contents_kana')->get();
-		$htm_TreatmentsName_slct='<option value=0>-- 選択してください --</option>';
-		$tgtGrp="";
-		foreach($treatmentInfArray as $value){
-			$sct="";
-			$match = false;$flg=false;$cnt=0;$k=0;
-			foreach ($kana as $index => $pattern) {
-				if (preg_match("/^" . $pattern . "/u", $value->name_treatment_contents_kana)) {
-					++$cnt;
-					if($tgtGrp<>$index){
-						$htm_TreatmentsName_slct.='<optgroup label="'.$index.'">';
-						$tgtGrp=$index;
-						if($cnt>1){$htm_TreatmentsName_slct.='</optgroup>';}
-					};
-					if(empty($TargetTreatmentName)){
-						$sct='';
-					}else{
-						if($TargetTreatmentName==$value->name_treatment_contents){
-							$sct='Selected';
-						}
-					}
-					$htm_TreatmentsName_slct.='<option value="'.$value->name_treatment_contents.'" '.$sct.'>'.$value->name_treatment_contents.'</option>';
-					break;
-				}
-				++$k;
-			}
-		}		
-		return $htm_TreatmentsName_slct;
-	}
-	
 	public static function get_page_num($target_url){
 		$pn=1;
 		$page_num_key_array=['page=','page_num='];
@@ -1020,16 +1066,12 @@ class OtherFunc extends Controller
 		foreach($customers as $value){
 			$match = false;$flg=false;$cnt=0;$k=0;
 			foreach ($kana as $index => $pattern) {
-				//if($tgtGrp<>$index){$html_customer_list_slct.='<optgroup label="'.$index.'">';}
 				if (preg_match("/^" . $pattern . "/u", $value->name_sei_kana)) {
 					++$cnt;
 					if($tgtGrp<>$index){
 						$html_customer_list_slct.='<optgroup label="'.$index.'">';
 						$tgtGrp=$index;
-						//$html_customer_list_slct.='</optgroup>';
-
 						if($cnt>1){$html_customer_list_slct.='</optgroup>';}
-						//$html_customer_list_slct.='<optgroup label="'.$index.'>';
 					};
 					$sct='';
 					if($targetUserSerial==$value->serial_user){$sct='Selected';}

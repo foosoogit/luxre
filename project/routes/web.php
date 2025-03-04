@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function () {
 });
 // 管理ログイン後のみアクセス可
 Route::middleware('auth:admin')->group(function () {
+    
     Route::name('admin.')->group(function() {
         Route::post('admin/ajax_staff_dell_time_card',[AdminController::class,'ajax_staff_dell_time_card'])->name('ajax_staff_dell_time_card');
         Route::post('admin/ajax_staff_change_time_card',[AdminController::class,'ajax_staff_change_time_card'])->name('ajax_staff_change_time_card');
@@ -151,9 +152,26 @@ Route::middleware('auth:admin')->group(function () {
     });
 
     Route::controller(AdminController::class)->name('customers.')->group(function() {
-        //Route::get('/customers/CustomerInfFromDayly/{target_user_serial}', [CustomersList::class,'search_from_top_menu'],function($target_user_serial){})->name("CustomerInfFromDayly");
-    	//Route::post('/customers/ShowCustomersList_livewire_from_top_menu', CustomerSearch::class,function(Request $request){});
-	    Route::post('/customers/CustomersList/ajax_save_yoyaku_time',[AdminController::class,'ajax_save_yoyaku_time'])->name('ajax_save_yoyaku_time');
+
+        Route::get('/customers/ShowPaymentRegistrationIflame/{SerialKeiyaku}/{SerialUser}',[AdminController::class,'ShowPaymentRegistrationIflame',function($SerialKeiyaku,$SerialUser){}])->name('ShowPaymentRegistrationIflame');
+        Route::get('/customers/ShowVisitHistory', function () {
+            //session(['target_livewire_page' => "ListCustomers"]);
+            return view('customers.ListVisit');
+        })->name('VisitHistory.get');
+        Route::post('/customers/ShowVisitHistory', function () {
+            //session(['target_livewire_page' => "ListCustomers"]);
+            return view('customers.ListVisit');
+        })->name('VisitHistory.post');
+        Route::get('/customers/ShowPaymentHistory', function () {
+            //session(['target_livewire_page' => "ListCustomers"]);
+            return view('customers.ListPayment');
+        })->name('PaymentHistory.get');
+        Route::post('/customers/ShowPaymentHistory', function () {
+            //session(['target_livewire_page' => "ListCustomers"]);
+            return view('customers.ListPayment');
+        })->name('PaymentHistory.post');
+
+        Route::post('/customers/CustomersList/ajax_save_yoyaku_time',[AdminController::class,'ajax_save_yoyaku_time'])->name('ajax_save_yoyaku_time');
         Route::get('/customers/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
         Route::post('/customers/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
 
@@ -184,6 +202,7 @@ Route::middleware('auth:admin')->group(function () {
         })->name('CustomersList.show.post');
 
         Route::get('livewire/update', function () {
+            Log::alert("target_livewire_page=".session('target_livewire_page'));
             if(session('target_livewire_page')=="ListPoints"){
                 return view('admin.ListPoints');
             }else if(session('target_livewire_page')=="ListContract"){
@@ -194,6 +213,8 @@ Route::middleware('auth:admin')->group(function () {
                 return view('admin.ListStaffInOutHistories');
              } 
         });
+        
+        Route::post('/customers/MedicalRecordIflame', [AdminController::class,'ShowMedicalRecordFromIframe',function(Request $request){}])->name("ShowMedicalRecordIflame");
 
         Route::get('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
 	    Route::post('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
@@ -209,7 +230,11 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/customers/ShowInputNewCustomer', [AdminController::class,'ShowInputNewCustomer'])->name('ShowInpNewCustomer');
         Route::post('/customers/ShowInputCustomer', [AdminController::class,'ShowInputCustomer',function(Request $request){}])->name('ShowInpCustomer');
     });
-
+    Route::post('/customers/save_payment_history_ajax', [OtherFunc::class,'save_payment_history_ajax'])->name('save_payment_history_ajax');
+    Route::post('/customers/make_htm_get_payment_method_slct_ajax', [OtherFunc::class,'make_htm_get_payment_method_slct_ajax'])->name('make_htm_get_payment_method_slct_ajax');
+    Route::post('/customers/save_visit_data_ajax', [OtherFunc::class,'save_visit_data_ajax'])->name('save_visit_data_ajax');
+    Route::post('/customers/make_htm_get_treatment_slct_ajax', [OtherFunc::class,'make_htm_get_treatment_slct_ajax'])->name('make_htm_get_treatment_slct_ajax');
+    Route::post('make_htm_get_treatment_slct_ajax', [OtherFunc::class,'make_htm_get_treatment_slct_ajax'])->name('make_htm_get_treatment_slct_ajax');
     Route::get('/send_attendance_card/{TargetStaffSerial}',[OtherFunc::class,'send_attendance_card'],function($TargetStaffSerial){});
     Route::get('/deleteStaff/{TargetStaffSerial}',[AdminController::class,'deleteStaff'],function($TargetStaffSerial){});
     Route::post('/saveStaff', [AdminController::class,'SaveStaff',function(Request $request){}])->name("saveStaff.post");

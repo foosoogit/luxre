@@ -6,11 +6,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Contract;
+use App\Consts\initConsts;
+use Illuminate\Support\Facades\Log;
 
 class PaymentHistory extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
+	public function getMethodSCRAttribute($target){
+		$PaymentMethod=initConsts::PaymentMethod();
+		$PaymentMethodArray=explode(",", $PaymentMethod);
+		foreach($PaymentMethodArray as $value){
+			$value_array=array();
+			if(str_contains($value, $this->how_to_pay)){
+				$value_array=explode("_", $value);
+				return $value_array[1];
+			}
+		}
+		return "";
+	}
 
     public function getCardAmountAttribute($value){
 		$CardAmount="";
@@ -61,5 +76,11 @@ class PaymentHistory extends Model
 			}
 		}
 		return $CashSplit;
+	}
+
+	public function getPaiedNumAttribute($value){
+		$Paied_history_serial_array=explode("-", $this->payment_history_serial);
+		$PaiedNum=$Paied_history_serial_array[2];
+		return $PaiedNum;
 	}
 }

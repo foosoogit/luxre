@@ -20,7 +20,6 @@ function point_digestion(target_id){
 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			}
 		}).done(function (set_flg) {
-			//msg="復元";
 			console.log("set_flg="+set_flg)
 			if(set_flg=="false"){
 				msg="復元しました。";

@@ -6,7 +6,7 @@
 	<meta http-equiv="Cache-Control" content="no-cache"/>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous"/>
 	<link rel="stylesheet" href="{{asset('/css/MedicalRecord.css')}}"/>
-	<title>{{session('userneme')}}</title>
+	<title>{{$UserInf->name_sei}} {{$UserInf->name_mei}}</title>
 </head>
 <body>
 	{{--<img src="{{asset('/css/Image_body_w796_h496.png')}}">
@@ -14,8 +14,9 @@
 	<div id="aaa">
 		<div class="container text-center w-75 ml-2">
 			<div class="row text-center">
-				<div class="col">
-					氏名：<span class="text-primary font-weight-bold h4">{{session('userneme')}}</span>
+				<div class="col"> 
+					{{--氏名：<span class="text-primary font-weight-bold h4">{{session('userneme')}}</span> --}}
+					氏名：<span class="text-primary font-weight-bold h4">{{$UserInf->name_sei}} {{$UserInf->name_mei}}</span>
 				</div>
 				<div class="col">
 					契約内容：<span class="text-primary font-weight-bold h4">{{$keiyaku_name}}</span>

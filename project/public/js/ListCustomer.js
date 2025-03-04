@@ -58,7 +58,7 @@ $(function(){
 			if(data=="changed"){
 				window.location.reload();
         //document.location.reload();
-        alert("修正しました。4");
+        alert("修正しました。");
         
         //$('#yoyaku_btn_'+UserSerial).text(TargetDate);
 			}

@@ -56,7 +56,6 @@ class CustomersList extends Component
 			session(['livewire_page_num_for_back' =>null]);
 		}
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//log::info($_SESSION['access_history']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		if(!isset($sort_key_p) and session('sort_key')==null){
 			session(['sort_key' =>'']);
@@ -77,13 +76,7 @@ class CustomersList extends Component
 				break;
 			}
 		}
-		/*
-		if(isset($_POST['btn_serial'])){
-			session(['serchKey' => $_POST['btn_serial']]);
-		}else if(session('serchKey')==""){
-			session(['serchKey' => $this->serch_key_p]);
-		}
-		*/
+
 		if((isset($_POST['target_day']) and $_POST['target_day']<>"") or $backdayly==true){
 			$from_place="dayly_rep";
 			if(isset($_POST['target_day'])){
@@ -94,7 +87,6 @@ class CustomersList extends Component
 		}
 		if(session('serchKey')<>""){
 			$this->kensakukey=session('serchKey');
-			//session(['serchKey' => '']);
 		}
 		$userQuery = User::query();
 		if($this->kensakukey=='zankin'){
@@ -185,27 +177,12 @@ class CustomersList extends Component
 				}
 			}
 		}
-		/*
-		if(session('target_page_for_pager')!==null){
-			$targetPage=session('target_page_for_pager');
-			session(['target_page_for_pager'=>null]);
-		}else{
-			$targetPage=null;
-		}
-		*/
 		if(empty($this->target_page)){
 			$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
 		}else{
 			$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->target_page);
 			$this->target_page=null;
 		}
-		/*
-		if(!str_contains($_SERVER['HTTP_REFERER'], "CustomersList")){
-			$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList());
-		}else{
-			$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',session('page_history_CustomersList'));
-		}
-		*/
 		$cancelPaied=PaymentHistory::whereIn("serial_keiyaku", function($query){
 				$query->from("contracts")
 				->select("serial_keiyaku")
@@ -214,12 +191,7 @@ class CustomersList extends Component
 		$cancelKeiyakuKingaku=Contract::whereNotNull("cancel")->sum('keiyaku_kingaku');
 		$cancelSonkin=$cancelKeiyakuKingaku-$cancelPaied;
 		$totalZankin=Contract::sum('keiyaku_kingaku')-PaymentHistory::sum('amount_payment')-$cancelSonkin;
-
-		//$from_place2=OtherFunc::get_goback_url($_SERVER['REQUEST_URI']);
-		//$from_place2="";
 		$from_place2=$_SESSION['access_history'][0];
-		//log::info($target_historyBack_inf_array);
         return view('livewire.customers-list',compact('target_historyBack_inf_array','users','totalZankin','from_place','target_day','from_place','from_place2'));
-		//log::alert('HTTP_HOST='.$_SERVER['HTTP_HOST']);
     }
 }

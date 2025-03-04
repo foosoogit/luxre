@@ -1,12 +1,8 @@
 <div>
     <div class="container text-center">
-		{{-- <div class="py-12"> --}}
-			{{-- <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"> --}}
-					
 					{{--  <mark class="mb-2 bg-success text-white">スタッフ一覧</mark>--}}
 					<div class="row row-cols-auto" style="line-height:3em">
 						<div class="col-auto">
-							{{--<button class="btn btn-primary" type="button" onclick="location.href='../ShowMenuCustomerManagement'">メニューに戻る</button>--}}
 							<a class="btn btn-primary" href="{{route('admin.top')}}">メニューに戻る</a>
 						</div>
 						<div class="col-auto" style="line-height:3em">
@@ -66,11 +62,6 @@
 										<td class="border px-4 py-2">{{ $staff->email}}</td>
 										 
 										<td class="border px-4 py-2">
-											{{-- 
-											<form action="send_attendance_card/{{$staff->serial_staff}}" method="GET">@csrf
-												<input name="send_attendance_card_btn" type="submit" value="送付" onclick="return window.confirm('{{ $staff->serial_staff}} {{ $staff->last_name_kanji}} {{ $staff->first_name_kanji}}'+'送付します。よろしいですか？');" >
-											</form>
-											 --}}
 											<button type="button" wire:click="send_attendance_card('{{$staff->serial_staff}}')" onclick="return window.confirm('{{ $staff->serial_staff}} {{ $staff->last_name_kanji}} {{ $staff->first_name_kanji}}'+'送付します。よろしいですか？');">送付</button>
 										</td>
 										
@@ -85,7 +76,5 @@
 						</table>
 						{{ $staffs->links() }}
 					</div>
-				{{--</div>--}}
-			{{-- </div> --}}
 	</div>
 </div>

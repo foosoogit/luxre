@@ -102,13 +102,20 @@
                                     </form>
                                 </td>
                                 <td class="border px-4 py-2">
-                                    <form action="/customers/ShowInpRecordVisitPayment/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
-                                        @if($dContracts->date_latest_visit==Null)
-                                            <input name="Record_Btn" type="submit" value="なし">
-                                        @else
+                                    {{$dContracts->keiyaku_type}}
+                                    @if ($dContracts->keiyaku_type=="subscription")
+                                        <form action="/customers/ShowPaymentRegistrationIflame/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
                                             <input name="Record_Btn" type="submit" value="{{$dContracts->date_latest_visit}}">
-                                        @endif
-                                    </form>
+                                        </form>
+                                    @else
+                                        <form action="/customers/ShowInpRecordVisitPayment/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
+                                            @if($dContracts->date_latest_visit==Null)
+                                                <input name="Record_Btn" type="submit" value="なし">
+                                            @else
+                                                <input name="Record_Btn" type="submit" value="{{$dContracts->date_latest_visit}}">
+                                            @endif
+                                        </form>
+                                    @endif
                                 </td>
                                 @if($UserSerial=="all")
                                     <td class="border px-4 py-2">

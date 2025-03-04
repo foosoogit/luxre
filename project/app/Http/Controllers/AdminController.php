@@ -43,19 +43,271 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	public function ShowMedicalRecordFromIframe(Request $request){
+		$visit_history_serial=$request->count_btn;
+		$visit_history_serial_array=explode('-', $visit_history_serial);
+		$visit_history_num=$visit_history_serial_array[2];
+		$visit_history_num_int=(int)$visit_history_num;
+		$tg='"visitDate.'.$visit_history_num_int.'"';
+		$serial_keiyaku=str_replace("V","K",$visit_history_serial_array[0]).'-'.$visit_history_serial_array[1];
+		session(['ContractSerial' => $serial_keiyaku]);
+		$clinical_serial=str_replace( "V","K" , $visit_history_serial);
+		$VisitHistoryInfArray=VisitHistory::where('visit_history_serial','=',$visit_history_serial)->first();
+		$serch_file="MedicalRecord/".$clinical_serial."*.png";
+		$result=array();
+		foreach(glob($serch_file) as $file) {
+			$result[] = $file;
+		}
+		if(count($result)>0){
+			$target_file=$result[0];
+		}else{
+			$target_file="";
+		}
+		$UserSerial=str_replace('V_', '', $visit_history_serial_array[0]);
+		$UserInf=User::where('serial_user','=',$UserSerial)->first();
+		$inf_keiyaku_array=Contract::where('serial_keiyaku','=',$serial_keiyaku)->first();
+		$keiyaku_name=$inf_keiyaku_array->keiyaku_name;
+		if(empty($VisitHistoryInfArray->serial_staff)){
+			$SerialStaff="";
+		}else{
+			$SerialStaff=$VisitHistoryInfArray->serial_staff;
+		}
+		$html_staff_slct=OtherFunc::make_html_staff_slct($SerialStaff);
+		$ContractSerial=session('ContractSerial');
+		if (empty($_SERVER['HTTPS'])) {
+			$ht_type='http://';
+		} else {
+			$ht_type='https://';			
+		}
+		$host_url=$_SERVER['HTTP_ORIGIN'];
+		return view('customers.MedicalRecord',compact('host_url','html_staff_slct','target_file','ContractSerial','visit_history_num','UserInf','keiyaku_name'));
+	}
+	
+	public function ShowContractList($UserSerial,Request $request){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		$key="";
+		$Contracts="";
+		if($UserSerial=="all"){
+			$userinf="";
+			$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
+			$GoBackPlace="/top";
+			session(['targetUserSerial' => 'all']);
+		}else{
+			session(['targetUserSerial' => $UserSerial]);
+			session(['target_page_for_pager'=>'']);
+			$_SESSION['access_history'][0]=$_SESSION['access_history'][0]."/".$UserSerial;
+			$GoBackPlace="/customers/CustomersList";				
+			$userinf=User::where('serial_user','=',$UserSerial)->first();
+			$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
+				->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
+				->select('contracts.*', 'users.*')
+				->paginate(initConsts::DdisplayLineNumContractList());
+		}
+		return view('customers.ListContract',compact("target_historyBack_inf_array","Contracts","UserSerial","userinf","GoBackPlace"));
+	}
+	public function ShowMedicalRecord(Request $request){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		$visit_history_num=$request->count_btn;
+		$visit_history_num_int=(int)$visit_history_num;
+		$visit_history_serial=str_replace( "K","V" , session('ContractSerial')."-".$visit_history_num);
+		$VisitHistoryArray=VisitHistory::where('visit_history_serial','=',$visit_history_serial)->first();
+		$tg='"visitDate.'.$visit_history_num_int.'"';
+		if($visit_history_num_int==1){
+			$request->validate(
+				["visitDate.0" => "required" ],
+				['visitDate.0.required' => '施術日1回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==2){
+			$request->validate(
+				["visitDate.1" => "required" ],
+				['visitDate.1.required' => '施術日2回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==3){
+			$request->validate(
+				["visitDate.2" => "required" ],
+				['visitDate.2.required' => '施術日3回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==4){
+			$request->validate(
+				["visitDate.3" => "required" ],
+				['visitDate.3.required' => '施術日4回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==5){
+			$request->validate(
+				["visitDate.4" => "required" ],
+				['visitDate.4.required' => '施術日5回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==6){
+			$request->validate(
+				["visitDate.5" => "required" ],
+				['visitDate.5.required' => '施術日6回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==7){
+			$request->validate(
+				["visitDate.6" => "required" ],
+				['visitDate.6.required' => '施術日7回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==8){
+			$request->validate(
+				["visitDate.7" => "required" ],
+				['visitDate.7.required' => '施術日8回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==9){
+			$request->validate(
+				["visitDate.8" => "required" ],
+				['visitDate.8.required' => '施術日9回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==10){
+			$request->validate(
+				["visitDate.9" => "required" ],
+				['visitDate.9.required' => '施術日10回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==11){
+			$request->validate(
+				["visitDate.10" => "required" ],
+				['visitDate.10.required' => '施術日11回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==12){
+			$request->validate(
+				["visitDate.11" => "required" ],
+				['visitDate.11.required' => '施術日12回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==13){
+			$request->validate(
+				["visitDate.12" => "required" ],
+				['visitDate.12.required' => '施術日13回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==14){
+			$request->validate(
+				["visitDate.13" => "required" ],
+				['visitDate.13.required' => '施術日14回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==15){
+			$request->validate(
+				["visitDate.14" => "required" ],
+				['visitDate.14.required' => '施術日15回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==16){
+			$request->validate(
+				["visitDate.15" => "required" ],
+				['visitDate.15.required' => '施術日16回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==17){
+			$request->validate(
+				["visitDate.16" => "required" ],
+				['visitDate.16.required' => '施術日17回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==18){
+			$request->validate(
+				["visitDate.17" => "required" ],
+				['visitDate.17.required' => '施術日18回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==19){
+			$request->validate(
+				["visitDate.18" => "required" ],
+				['visitDate.18.required' => '施術日19回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==20){
+			$request->validate(
+				["visitDate.19" => "required" ],
+				['visitDate.19.required' => '施術日20回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==21){
+			$request->validate(
+				["visitDate.20" => "required" ],
+				['visitDate.20.required' => '施術日21回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==22){
+			$request->validate(
+				["visitDate.21" => "required" ],
+				['visitDate.21.required' => '施術日22回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==23){
+			$request->validate(
+				["visitDate.22" => "required" ],
+				['visitDate.22.required' => '施術日23回目を先に保存してください。']
+			);
+		}else if($visit_history_num_int==24){
+			$request->validate(
+				["visitDate.23" => "required" ],
+				['visitDate.23.required' => '施術日24回目を先に保存してください。']
+			);
+		}
+		$serch_file="MedicalRecord/".session('ContractSerial')."-".$request->count_btn."*.png";
+		$result=array();
+		foreach(glob($serch_file) as $file) {
+			$result[] = $file;
+		}
+		if(count($result)>0){
+			$target_file=$result[0];
+		}else{
+			$target_file="";
+		}
+		$array=explode('-', $visit_history_serial);
+		$UserSerial=str_replace('V_', '', $array[0]);
+		$UserInf=User::where('serial_user','=',$UserSerial)->first();
+		
+		$keiyaku_array=Contract::where('serial_keiyaku','=',session('ContractSerial'))->first();
+		$keiyaku_name=$keiyaku_array->keiyaku_name;
+		if(empty($VisitHistoryArray->serial_staff)){
+			$SerialStaff="";
+		}else{
+			$SerialStaff=$VisitHistoryArray->serial_staff;
+		}
+		$html_staff_slct=OtherFunc::make_html_staff_slct($SerialStaff);
+		$ContractSerial=session('ContractSerial');
+		if (empty($_SERVER['HTTPS'])) {
+			$ht_type='http://';
+		} else {
+			$ht_type='https://';			
+		}
+		$host_url=$_SERVER['HTTP_ORIGIN'];
+		return view('customers.MedicalRecord',compact('host_url','html_staff_slct','target_file','ContractSerial','visit_history_num','UserInf','keiyaku_name'));
+	}
+
+	public function ajax_show_point_list(Request $request){
+		$point_array=Point::where("serial_user","=",$request->user_serial)->get();
+		$htm='<table class="table">
+		<thead>
+		  <tr>
+			<th scope="col">取得方法</th>
+			<th scope="col">取得日</th>
+			<th scope="col">取得ポイント</th>
+			<th scope="col">ご紹介いただいたお客様</th>
+		  </tr>
+		</thead>
+		<tbody class="table-group-divider">';
+		foreach($point_inf as $point_array){
+			$refere_array=User::where("serial_user","=",$point_inf->referred_serial)->first();
+			if(empty($refere_array)){
+				$refere_name="--";
+			}else{
+				$refere_name=$refere_array->name_sei."&nbsp;".$refere_array->name_mei;
+			}
+			$htm.='<tr>
+			<td>'.$point_inf->method.'</td>
+			<td>'.$point_inf->date_get.'</td>
+			<td>'.$point_inf->point.'</td>
+			<td>'.$refere_name.'</td>
+		  </tr>';
+		}
+		$htm.='</tbody></table>';
+		echo $htm;
+	}
+
+	public function ShowPaymentRegistrationIflame($SerialKeiyaku,$SerialUser){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		$KeiyakuInf=Contract::where('serial_keiyaku','=',$SerialKeiyaku)->first();
+		$UserInf=User::where('serial_user','=',$SerialUser)->first();
+		session()->put(['targetUserSerial'=> $SerialUser, 'targetKeiyakuSerial'=>$SerialKeiyaku]);
+		return view('customers.PaymentRegistration_ifame',compact('target_historyBack_inf_array','UserInf','KeiyakuInf'));
+	}
+
 	public function ShowInpStaff($TargetStaffSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		OtherFunc::make_QRCode($TargetStaffSerial,storage_path('images/'.$TargetStaffSerial.'.png'));
-		/*
-		$qr_image=QrCode::format('png')
-			//->merge("/storage/".$TargetStaffSerial.".png")
-			//->merge("/public/images/".$TargetStaffSerial.".png")
-			->style('square')
-			->backgroundColor(255,255,255)
-			->size(300)
-			->errorCorrection("H")
-			->generate($TargetStaffSerial);
-		*/
 		$GoBackPlace="/ShowStaffList";
 		$html_birth_select=array();
 		if($TargetStaffSerial=="new"){
@@ -81,7 +333,6 @@ class AdminController extends Controller
 			}
 			//return view('teacher.inp_Staff',compact("header","slot",'TargetStaffSerial','StaffInf',"GoBackPlace","btnDisp","saveFlg"));
 		}
-		//$btnDisp="登録";
 		$html_birth_select['year']=$html_year_slct;
 		$html_birth_select['day']=$html_day_slct;
 		$html_birth_select['month']=$html_Month_slct;
@@ -90,8 +341,6 @@ class AdminController extends Controller
 	}
 
 	public function send_QRcode_to_staff(Request $request){
-		//OtherFunc::send_attendance_card($TargetStaffSerial);
-		Log::info($request);
 		$targetData=[
 			'serial_staff' => session('targetStaffSerial'),
 			'email' => $request->mail,
@@ -105,8 +354,6 @@ class AdminController extends Controller
 		Staff::upsert($targetData,['serial_staff']);
 		OtherFunc::send_attendance_card($request->serial_staff);
 		return redirect()->route('ShowInpStaff', ['TargetStaffSerial' => $request->serial_staff]);
-		//ShowInputStaff/{TargetStaffSerial}
-		//return redirect('/customers/ShowSyuseiContract/'.$serial_Contract.'/'.$UserSerial);
     }
 	public function SaveStaff(Request $request){
 		$targetData=[
@@ -120,9 +367,7 @@ class AdminController extends Controller
 			'birth_date'=>$request->year.'-'.$request->month.'-'.$request->day,
 		];
 		Staff::upsert($targetData,['serial_staff']);
-		//session()->flash('success', '登録しました。');
 		$this::save_recorder("SaveStaff");
-		//return redirect('/workers/saveStaff');
 		return view("admin.ListStaffs");
 	}
 	/*
@@ -248,7 +493,7 @@ class AdminController extends Controller
 				$dy="";
 				if($number==0){
 					$date = date('w');
-					Log::alert("date= ".$date);
+					//Log::alert("date= ".$date);
 					$w=OtherFunc::day_of_the_week_dtcls($date);
 					$dy="<span class='text-primary'>"."・今日 (".date('y年m月d日')."(".$w."))"."</span>";
 				}else if($number==1){
@@ -559,36 +804,6 @@ class AdminController extends Controller
 		session(['InpRecordVisitPaymentFlg' => true]);
 		$this::save_recorder("recordVisitPaymentHistory");
 		return redirect('/customers/ShowInpRecordVisitPayment/'.session("ContractSerial").'/'.session("UserSerial"));
-	}
-
-	public function ajax_show_point_list(Request $request){
-		$point_array=Point::where("serial_user","=",$request->user_serial)->get();
-		$htm='<table class="table">
-		<thead>
-		  <tr>
-			<th scope="col">取得方法</th>
-			<th scope="col">取得日</th>
-			<th scope="col">取得ポイント</th>
-			<th scope="col">ご紹介いただいたお客様</th>
-		  </tr>
-		</thead>
-		<tbody class="table-group-divider">';
-		foreach($point_inf as $point_array){
-			$refere_array=User::where("serial_user","=",$point_inf->referred_serial)->first();
-			if(empty($refere_array)){
-				$refere_name="--";
-			}else{
-				$refere_name=$refere_array->name_sei."&nbsp;".$refere_array->name_mei;
-			}
-			$htm.='<tr>
-			<td>'.$point_inf->method.'</td>
-			<td>'.$point_inf->date_get.'</td>
-			<td>'.$point_inf->point.'</td>
-			<td>'.$refere_name.'</td>
-		  </tr>';
-		}
-		$htm.='</tbody></table>';
-		echo $htm;
 	}
 
 	private function staff_receipt_set_manage($item_array){
@@ -1116,174 +1331,9 @@ class AdminController extends Controller
 		return redirect('/customers/CustomersList');
 	}
 
-	public function ShowMedicalRecord(Request $request){
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		$visit_history_num=$request->count_btn;
-		$visit_history_num_int=(int)$visit_history_num;
-		$visit_history_serial=str_replace( "K","V" , session('ContractSerial')."-".$visit_history_num);
-		$VisitHistoryArray=VisitHistory::where('visit_history_serial','=',$visit_history_serial)->first();
-		$tg='"visitDate.'.$visit_history_num_int.'"';
-		if($visit_history_num_int==1){
-			$request->validate(
-				["visitDate.0" => "required" ],
-				['visitDate.0.required' => '施術日1回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==2){
-			$request->validate(
-				["visitDate.1" => "required" ],
-				['visitDate.1.required' => '施術日2回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==3){
-			$request->validate(
-				["visitDate.2" => "required" ],
-				['visitDate.2.required' => '施術日3回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==4){
-			$request->validate(
-				["visitDate.3" => "required" ],
-				['visitDate.3.required' => '施術日4回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==5){
-			$request->validate(
-				["visitDate.4" => "required" ],
-				['visitDate.4.required' => '施術日5回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==6){
-			$request->validate(
-				["visitDate.5" => "required" ],
-				['visitDate.5.required' => '施術日6回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==7){
-			$request->validate(
-				["visitDate.6" => "required" ],
-				['visitDate.6.required' => '施術日7回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==8){
-			$request->validate(
-				["visitDate.7" => "required" ],
-				['visitDate.7.required' => '施術日8回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==9){
-			$request->validate(
-				["visitDate.8" => "required" ],
-				['visitDate.8.required' => '施術日9回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==10){
-			$request->validate(
-				["visitDate.9" => "required" ],
-				['visitDate.9.required' => '施術日10回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==11){
-			$request->validate(
-				["visitDate.10" => "required" ],
-				['visitDate.10.required' => '施術日11回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==12){
-			$request->validate(
-				["visitDate.11" => "required" ],
-				['visitDate.11.required' => '施術日12回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==13){
-			$request->validate(
-				["visitDate.12" => "required" ],
-				['visitDate.12.required' => '施術日13回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==14){
-			$request->validate(
-				["visitDate.13" => "required" ],
-				['visitDate.13.required' => '施術日14回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==15){
-			$request->validate(
-				["visitDate.14" => "required" ],
-				['visitDate.14.required' => '施術日15回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==16){
-			$request->validate(
-				["visitDate.15" => "required" ],
-				['visitDate.15.required' => '施術日16回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==17){
-			$request->validate(
-				["visitDate.16" => "required" ],
-				['visitDate.16.required' => '施術日17回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==18){
-			$request->validate(
-				["visitDate.17" => "required" ],
-				['visitDate.17.required' => '施術日18回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==19){
-			$request->validate(
-				["visitDate.18" => "required" ],
-				['visitDate.18.required' => '施術日19回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==20){
-			$request->validate(
-				["visitDate.19" => "required" ],
-				['visitDate.19.required' => '施術日20回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==21){
-			$request->validate(
-				["visitDate.20" => "required" ],
-				['visitDate.20.required' => '施術日21回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==22){
-			$request->validate(
-				["visitDate.21" => "required" ],
-				['visitDate.21.required' => '施術日22回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==23){
-			$request->validate(
-				["visitDate.22" => "required" ],
-				['visitDate.22.required' => '施術日23回目を先に保存してください。']
-			);
-		}else if($visit_history_num_int==24){
-			$request->validate(
-				["visitDate.23" => "required" ],
-				['visitDate.23.required' => '施術日24回目を先に保存してください。']
-			);
-		}
-		//$target_file="http://".$host_url."/MedicalRecord/".session('ContractSerial')."-".$request->count_btn."*.png";
-		$serch_file="MedicalRecord/".session('ContractSerial')."-".$request->count_btn."*.png";
-		//$target_file='storage/MedicalRecord/'.session('ContractSerial')."-".$request->count_btn."*.png";
-		$result=array();
-		//foreach(glob($target_file) as $file) {
-		//foreach(glob("http://127.0.0.1:8000/MedicalRecord/K_000001-0001-01*.png") as $file) {
-		//foreach(glob("http://127.0.0.1:8000/MedicalRecord/K_000001-0001-01-03.png") as $file) {
-		//foreach(glob("http://127.0.0.1:8000/MedicalRecord/K_000001-0001-01-03.png") as $file) {
-		//foreach(glob("MedicalRecord/K_000001-0001-01*.png") as $file) {
-		foreach(glob($serch_file) as $file) {
-			$result[] = $file;
-		}
-		if(count($result)>0){
-			$target_file=$result[0];
-		}else{
-			$target_file="";
-		}
-		$array=explode('-', $request->VisitHistorySerial);
-		$UserSerial=str_replace('V_', '', $array[0]);
-		$UserInf=User::where('serial_user','=',$UserSerial)->first();
-		
-		$keiyaku_array=Contract::where('serial_keiyaku','=',session('ContractSerial'))->first();
-		$keiyaku_name=$keiyaku_array->keiyaku_name;
-		if(empty($VisitHistoryArray->serial_staff)){
-			$SerialStaff="";
-		}else{
-			$SerialStaff=$VisitHistoryArray->serial_staff;
-		}
-		$html_staff_slct=OtherFunc::make_html_staff_slct($SerialStaff);
-		$ContractSerial=session('ContractSerial');
-		if (empty($_SERVER['HTTPS'])) {
-			$ht_type='http://';
-		} else {
-			$ht_type='https://';			
-		}
-		$host_url=$_SERVER['HTTP_ORIGIN'];
-		return view('customers.MedicalRecord',compact('host_url','html_staff_slct','target_file','ContractSerial','visit_history_num','UserInf','keiyaku_name'));
-	}
-
 	public function ajax_SaveMedicalRecord(Request $request){
+		//Log::alert("VisitHistorySerial=".$request->VisitHistorySerial);
+		//Log::alert("ContractSerial-1=".session('ContractSerial'));
 		$target_file_name=session('ContractSerial')."-".$request->VisitHistorySerial;
 		$result=array();
 		$hst=$_SERVER['HTTP_HOST'];
@@ -1307,84 +1357,12 @@ class AdminController extends Controller
 		fwrite($fp,base64_decode($upload_data));
 		fclose($fp);
 		$ts=str_replace('K', 'V', session('ContractSerial')."-".$request->VisitHistorySerial);
+		//Log::alert("StaffSerial=".$request->StaffSerial);
+		//Log::alert("ts=".$ts);
+		//Log::alert("ContractSerial-2=".session('ContractSerial'));
 		VisitHistory::where('visit_history_serial', '=', $ts)->update([
 			'serial_staff' => $request->StaffSerial
 		]);
-	}
-
-	public function ShowContractList($UserSerial,Request $request){
-		//$_POST["kensakukey_txt"];
-		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//OtherFunc::get_page_num($_SESSION[$_SESSION['access_history'][0]]);
-		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		//session(['livewire_page_num_for_back' => OtherFunc::get_page_num($_SESSION['access_history'][0])]);
-		//Log::alert("livewire_page_num_for_back=".session('livewire_page_num_for_back'));
-		//OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		/*
-		session(['fromPage' => 'ContractList']);
-		session(['targetUserSerial' => $UserSerial]);
-		if(isset($request->page_num)){
-			session(['target_page_for_pager'=>$request->page_num]);
-		}
-		*/
-		$key="";
-		$Contracts="";
-		if($UserSerial=="all"){
-			$userinf="";
-			$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
-			$GoBackPlace="/top";
-			session(['targetUserSerial' => 'all']);
-		}else{
-			session(['targetUserSerial' => $UserSerial]);
-			session(['target_page_for_pager'=>'']);
-			$_SESSION['access_history'][0]=$_SESSION['access_history'][0]."/".$UserSerial;
-			$GoBackPlace="/customers/CustomersList";				
-			$userinf=User::where('serial_user','=',$UserSerial)->first();
-			$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
-				->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
-				->select('contracts.*', 'users.*')
-				->paginate(initConsts::DdisplayLineNumContractList());
-		}
-		return view('customers.ListContract',compact("target_historyBack_inf_array","Contracts","UserSerial","userinf","GoBackPlace"));
-
-		/*
-		if(Auth::user()->serial_admin=="A_0001"){
-			if($UserSerial=="all"){
-				$userinf="";
-				$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
-				$GoBackPlace="/top";
-				session(['targetUserSerial' => 'all']);
-			}else{
-				session(['targetUserSerial' => $UserSerial]);
-				session(['target_page_for_pager'=>'']);
-				$GoBackPlace="/customers/CustomersList";				
-				$userinf=User::where('serial_user','=',$UserSerial)->first();
-				$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
-					->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
-					->select('contracts.*', 'users.*')
-					->paginate(initConsts::DdisplayLineNumContractList());
-			}
-			return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace"));
-
-		}else{
-			if($UserSerial=="all"){
-				$userinf="";
-				$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
-				session(['targetUserSerial' => 'all']);
-				$GoBackPlace="/top";
-			}else{
-				session(['targetUserSerial' => $UserSerial]);
-				session(['target_page_for_pager'=>'']);
-				$GoBackPlace="/customers/ShowCustomersList_livewire";				
-				$userinf=User::where('serial_user','=',$UserSerial)->first();
-				$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
-					->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
-					->select('contracts.*', 'users.*')
-					->paginate(initConsts::DdisplayLineNumContractList());
-			}
-			return view('customers.ListContract',compact("Contracts","UserSerial","userinf","GoBackPlace"));
-		}
-		*/
 	}
 
 	public function ShowSyuseiContract($ContractSerial,$UserSerial){
@@ -1650,10 +1628,6 @@ class AdminController extends Controller
 		$GoBackToPlace=session('ShowInpRecordVisitPaymentfromPage');
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		array_push($target_historyBack_inf_array,$UserSerial);
-		//log::alert("ShowInpRecordVisitPayment=");
-		//log::info($_SESSION['access_history']);
-		//log::info($target_historyBack_inf_array);
-
 		return view('customers.PaymentRegistration',compact("UserSerial","PointArray","target_historyBack_inf_array","only_treatment_color_array","GoBackToPlace","header","slot",'VisitSerialArray','VisitDateArray','PaymentDateArray','targetUser','targetContract','KeiyakuNaiyou','PaymentAmountArray','HowToPayCheckedArray','visit_disabeled','sejyutukaisu','set_gray_array','payment_disabeled','set_gray_pay_array','set_background_gray_pay_array','paymentCount','TreatmentDetailsArray','TreatmentDetailsSelectArray'));
 	}
 
