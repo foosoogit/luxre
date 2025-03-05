@@ -106,7 +106,7 @@ class DailyReport extends Component
                 //->where('date_payment','=',$today)
                 ->where('how_to_pay','=','paypay')
             ->sum('amount_payment');
-    
+        /*
         $Sum['CashSplit']=PaymentHistory::where('date_payment','=',$today)
                 ->leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
                 ->where('payment_histories.how_to_pay','=','cash')
@@ -114,9 +114,11 @@ class DailyReport extends Component
                     $query->where('contracts.how_many_pay_genkin','>','1')->orWhere('contracts.how_many_pay_card','>','1');
                 })
                 ->sum('amount_payment');
-        
-        $Sum['total_cash']=$Sum['cash']+$Sum['CashSplit'];
-        $Sum['total']=$Sum['cash']+$Sum['card']+$Sum['CashSplit']+$Sum['paypay'];
+        */
+        //$Sum['total_cash']=$Sum['cash']+$Sum['CashSplit'];
+        $Sum['total_cash']=$Sum['cash'];
+        //$Sum['total']=$Sum['cash']+$Sum['card']+$Sum['CashSplit']+$Sum['paypay'];
+        $Sum['total']=$Sum['cash']+$Sum['card']+$Sum['paypay'];
         session(['targetDay' => $today]);
         $_SESSION['backmonthday']=$today;
         //Log::info($_SESSION['access_history']);
