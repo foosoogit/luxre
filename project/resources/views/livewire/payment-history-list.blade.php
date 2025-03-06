@@ -72,7 +72,7 @@
                                 <td class="border px-4 py-2">{{ $dPaymentHistory->MethodSCR}}</td>
                                 <td class="border px-4 py-2">
                                     <form action="/customers/deleteContract/{{$dPaymentHistory->serial_keiyaku}}/{{$dPaymentHistory->serial_user}}" method="GET">@csrf
-                                        <input name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $dPaymentHistory->serial_user}} {{ $dPaymentHistory->name_sei}} {{ $dPaymentHistory->name_mei}}');" >
+                                        <input disabled name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $dPaymentHistory->serial_user}} {{ $dPaymentHistory->name_sei}} {{ $dPaymentHistory->name_mei}}');" >
                                     </form>
                                 </td>
                             </tr>

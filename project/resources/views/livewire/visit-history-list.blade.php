@@ -97,7 +97,7 @@
                             --}}
                             <td class="border px-4 py-2">
                                 <form action="/customers/deleteContract/{{$dVisitHistory->serial_keiyaku}}/{{$dVisitHistory->serial_user}}" method="GET">@csrf
-                                    <input name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $dVisitHistory->serial_user}} {{ $dVisitHistory->name_sei}} {{ $dVisitHistory->name_mei}}');" >
+                                    <input disabled name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $dVisitHistory->serial_user}} {{ $dVisitHistory->name_sei}} {{ $dVisitHistory->name_mei}}');" >
                                 </form>
                             </td>
                         </tr>
