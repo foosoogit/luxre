@@ -12,7 +12,7 @@
                         data-bs-target="#ModifyModal" 
                         data-nserial="{{$newVisitHistorySerial}}"
                         data-name="{{$User_name}}">
-                        新規登録
+                        来店記録新規登録
                     </button>
                 </div>
                 <div class="col-auto">

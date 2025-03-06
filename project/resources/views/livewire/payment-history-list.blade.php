@@ -8,7 +8,7 @@
                             data-bs-target="#ModifyModal" 
                             data-nserial="{{$newPaymentHistorySerial}}"
                             data-name="{{$UserInf->name_sei}}&nbsp;{{$UserInf->name_mei}}">
-                            新規登録
+                            支払い記録新規登録
                         </button>
                     </div>
                     <div class="col-auto">
