@@ -47,7 +47,7 @@
                         <table class="table-auto" border-solid>
                             <thead>
                                 <tr>
-                                    <th class="border px-4 py-2">No.
+                                    <th class="border px-4 py-2">顧客No.
                                                 {{--								
                                                 <button type="button" wire:click="sort('serial_user-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
                                                 <button type="button" wire:click="sort('serial_user-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
@@ -72,6 +72,11 @@
                                                 --}}
                                     </th>
                                     <th class="border px-4 py-2">PayPay</th>
+                                    {{-- 
+                                    <th class="border px-4 py-2">月額（現金分割）<br>契約数・金額(税込）
+                                    </th>
+                                    --}}
+                                    <th class="border px-4 py-2">スマート支払い</th>
                                     {{-- 
                                     <th class="border px-4 py-2">月額（現金分割）<br>契約数・金額(税込）
                                     </th>
@@ -122,13 +127,13 @@
                                                 {{ number_format($PaymentHistory->PayPay_Amount)}}
                                             @endif
                                         </td>
-                                        {{-- 
+                                        
                                         <td class="border px-4 py-2" style="text-align: right;">
-                                            @if($PaymentHistory->Cash_Split!=="")
-                                                {{ number_format($PaymentHistory->Cash_Split)}}
+                                            @if($PaymentHistory->Smart_Amount!=="")
+                                                {{ number_format($PaymentHistory->Smart_Amount)}}
                                             @endif
                                         </td>
-                                        --}} 
+                                        
                                     
                                         <td class="border px-4 py-2" style="text-align: right;">
                                             @if($PaymentHistory->Cash_Amount!=="")
@@ -157,17 +162,15 @@
                                         @endif
                                     </td>
                                     <td class="border px-4 py-2" style="text-align: right;">
-                                        @if($Sum['card']!=="")
+                                        @if($Sum['paypay']!=="")
                                             {{ number_format($Sum['paypay'])}}
                                         @endif
                                     </td>
-                                    {{-- 
                                     <td class="border px-4 py-2" style="text-align: right;">
-                                        @if($Sum['CashSplit']!=="")
-                                            {{ number_format($Sum['CashSplit'])}}
+                                        @if($Sum['smart']!=="")
+                                            {{ number_format($Sum['smart'])}}
                                         @endif
                                     </td>
-                                    --}}
                                     <td class="border px-4 py-2" style="text-align: right;">
                                         @if($Sum['cash']!=="")
                                             {{ number_format($Sum['cash'])}}

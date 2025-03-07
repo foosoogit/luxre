@@ -30,6 +30,162 @@ if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function make_html_monthly_report_table($targetYear,$targetMonth){
+		$sbj_array=array();
+		$htm_month_table="";
+		$sbj_array=['日','ｸﾚｼﾞｯﾄ・ﾛｰﾝ','PayPay','スマート支払い','現金','合計売上','累計売上','新規<br>来店数','会員<br>来店数','来店<br>合計','累計<br>来店数','契約<br>人数','累計<br>契約数','契約率'];
+		$htm_month_table='<table class="table-auto" border-solid>';
+		foreach($sbj_array as $value){
+			$htm_month_table.='<th class="border px-4 py-2">'.$value.
+			'<!--<button type="button" wire:click="sort(\'serial_user-ASC\')"><img src="{{ asset(\'storage/images/sort_A_Z.png\') }}" width="15px" /></button>
+			<button type="button" wire:click="sort(\'serial_user-Desc\')"><img src="{{ asset(\'storage/images/sort_Z_A.png\') }}" width="15px" /></button>-->
+			</th>';
+		}
+		$date = $targetYear.'-'.$targetMonth;
+		$begin = new DateTime(date('Y-m-d', strtotime('first day of '. $date)));
+		$end = new Datetime(date('Y-m-d', strtotime('first day of next month '. $date)));
+		$interval = new DateInterval('P1D');
+		$daterange = new DatePeriod($begin, $interval, $end);
+		$htm_month_table.='<tbody>';
+		$ruikei_visiters_cnt=0;$ruikei_contract_cnt=0;
+		$amount_card=0;$total_amount_card=0;
+		$amount_paypay=0;$total_amount_paypay=0;
+		//$amount_cash_bunkatu=0;$total_mount_cash_bunkatu=0;
+		$amount_cash_uriage=0;$total_amount_cash_uriage=0;
+		$amount_smart=0;$total_amount_smart=0;
+		$total_new_visiters_cnt=0;$total_member_visiters_cnt=0;
+
+		session(['TotalSalesRuikei' =>0]);
+		foreach($daterange as $date){
+			session(['TotalSales' => 0]);
+			list($new_visiters_cnt, $member_visiters_cnt,$all_visiters_cnt) = self::get_raijyosyasu_cnt($date->format("Y-m-d"));
+			
+			$total_new_visiters_cnt=$total_new_visiters_cnt+$new_visiters_cnt;
+			$total_member_visiters_cnt=$total_member_visiters_cnt+$member_visiters_cnt;
+			$contract_cnt=self::get_contract_cnt($date->format("Y-m-d"));
+			$ruikei_visiters_cnt=$ruikei_visiters_cnt+$all_visiters_cnt;
+			$ruikei_contract_cnt=$ruikei_contract_cnt+$contract_cnt;
+			$yobi= self::day_of_the_week_dtcls($date->format('w'));
+			
+			$amount_card=self::get_uriage($date->format("Y-m-d"),'card','');
+			$total_amount_card=$total_amount_card+$amount_card;
+			
+			$amount_paypay=self::get_uriage($date->format("Y-m-d"),'paypay','');
+			$total_amount_paypay=$total_amount_paypay+$amount_paypay;
+			
+			$amount_smart=self::get_uriage($date->format("Y-m-d"),'smart','');
+			$total_amount_smart=$total_amount_smart+$amount_smart;
+			
+			$amount_cash_uriage=self::get_uriage($date->format("Y-m-d"),'cash','');
+			$total_amount_cash_uriage=$total_amount_cash_uriage+$amount_cash_uriage;
+			
+			$colorRed="";
+			if($yobi=='日'){
+				$colorRed='style="color:red"';
+			}else if($yobi=='土'){
+				$colorRed='style="color:blue"';
+			}
+			$keiyakuritu="--";
+			if($all_visiters_cnt>0){
+				$keiyakuritu=number_format(round($new_visiters_cnt/$all_visiters_cnt*100,1), 1);
+			}
+			$htm_month_table.='
+				<tr>
+					<td class="border px-4 py-2" style="text-align: middle;"><button type="submit" name="target_date_from_monthly_rep" value="'.$date->format("Y-m-d").'"><span '.$colorRed.'>'.$date->format("Y-m-d").'('.$yobi.')</span></button>
+</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($amount_card).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($amount_paypay).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($amount_smart).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($amount_cash_uriage).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format(session('TotalSales')).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format(session('TotalSalesRuikei')).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($new_visiters_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($member_visiters_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($all_visiters_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_visiters_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($contract_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_contract_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.$keiyakuritu.'</td>
+				</tr>';
+		}
+		$htm_month_table.='
+				<tr>
+					<td class="border px-4 py-2" style="text-align: middle;">合計</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_amount_card).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_amount_paypay).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_amount_smart).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_amount_cash_uriage).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format(session('TotalSalesRuikei')).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format(session('TotalSalesRuikei')).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_new_visiters_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_member_visiters_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_visiters_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_visiters_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_contract_cnt).'</td>
+					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_contract_cnt).'</td>
+					<td class="border px-4 py-2">&nbsp;</td>
+				</tr>';
+		$htm_month_table.='</tbody>';
+		$htm_month_table.='</tr></thead></table>';
+		return $htm_month_table;
+	}
+
+	public static function get_uriage($targetDay,$HowToPay,$HowMany){
+		if($HowToPay=='cash'){
+			$hwtpay='現金';
+		}else if($HowToPay=='card'){
+			$hwtpay='Credit Card';
+		}else if($HowToPay=='smart'){
+			$hwtpay='スマート支払い';
+		}
+		//$TargetQuery=DB::table('payment_histories');
+		$TargetQuery=PaymentHistory::query();
+		$TargetQuery=$TargetQuery->leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
+			//->where('payment_histories.deleted_at','=',NULL)
+			->where('payment_histories.how_to_pay','=',$HowToPay)
+			->where('payment_histories.date_payment','=',$targetDay);
+		/*
+		if($HowToPay=='cash'){
+			if($HowMany=='bunkatu'){
+				$TargetQuery=$TargetQuery->where(function($query) {
+					$query->where('contracts.how_many_pay_genkin','>','1')->orWhere('contracts.how_many_pay_card','>','1');
+				});
+			}else{
+				$TargetQuery=$TargetQuery->where(function($query) {
+					$query->where('contracts.how_many_pay_genkin','=','1')
+					->orWhere('contracts.how_many_pay_card','=','1')
+					->orWhere('contracts.how_many_pay_genkin','=',null);
+				});
+			}
+		}
+		*/
+		$TargetQuery=$TargetQuery->selectRaw('SUM(amount_payment) as total');
+		$TotalAmount=$TargetQuery->first(['total']);
+		$total=$TotalAmount->total+session('TotalSales');
+		session(['TotalSales' =>$total]);
+		session(['TotalSalesRuikei' =>session('TotalSalesRuikei')+$TotalAmount->total]);
+		return $TotalAmount->total;
+	}
+
+	public static function send_attendance_card($TargetStaffSerial){
+		$staff_inf=Staff::where("serial_staff","=",$TargetStaffSerial)->first();
+		if(empty($staff_inf)){
+			$target_item_array['msg']='スタッフのご登録が見つかりません。';
+			$target_item_array['res']='no serial';
+			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+		}else{
+			OtherFunc::make_QRCode($TargetStaffSerial,storage_path('images/'.$TargetStaffSerial.'.png'));
+			$target_item_array=array();
+			$target_item_array['msg']=$staff_inf->last_name_kanji." ".$staff_inf->first_name_kanji." 様<br>出勤用QRコードをお送りします。<br>Luxer";
+			$target_item_array['to_email']=$staff_inf->email;
+			$target_item_array['subject']='出退記録用QRコード';
+			$target_item_array['from_email']=env('MAIL_FROM_ADDRESS');
+			$target_item_array['QR_file_path']=storage_path('images/'.$TargetStaffSerial.'.png');
+			Mail::send(new SendMail($target_item_array));
+
+		}
+	}
+
 	public function save_payment_history_ajax(Request $request){
 		$keiyaku_array=explode("-", session('targetKeiyakuSerial'));
 		$seriar_user=str_replace('K_', '', $keiyaku_array[0]);
@@ -149,154 +305,6 @@ class OtherFunc extends Controller
 			}
 		}		
 		return $htm_TreatmentsName_slct;
-	}
-
-	public static function get_uriage($targetDay,$HowToPay,$HowMany){
-		if($HowToPay=='cash'){
-			$hwtpay='現金';
-		}else if($HowToPay=='card'){
-			$hwtpay='Credit Card';
-		}
-		$TargetQuery=DB::table('payment_histories');
-		$TargetQuery=$TargetQuery->leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
-			->where('payment_histories.deleted_at','=',NULL)
-			->where('payment_histories.how_to_pay','=',$HowToPay)
-			->where('payment_histories.date_payment','=',$targetDay);
-		if($HowToPay=='cash'){
-			if($HowMany=='bunkatu'){
-				$TargetQuery=$TargetQuery->where(function($query) {
-					$query->where('contracts.how_many_pay_genkin','>','1')->orWhere('contracts.how_many_pay_card','>','1');
-				});
-			}else{
-				$TargetQuery=$TargetQuery->where(function($query) {
-					$query->where('contracts.how_many_pay_genkin','=','1')
-					->orWhere('contracts.how_many_pay_card','=','1')
-					->orWhere('contracts.how_many_pay_genkin','=',null);
-				});
-			}
-		}
-
-		$TargetQuery=$TargetQuery->selectRaw('SUM(amount_payment) as total');
-		$TotalAmount=$TargetQuery->first(['total']);
-		$total=$TotalAmount->total+session('TotalSales');
-		session(['TotalSales' =>$total]);
-		session(['TotalSalesRuikei' =>session('TotalSalesRuikei')+$TotalAmount->total]);
-		return $TotalAmount->total;
-	}
-
-	public static function make_html_monthly_report_table($targetYear,$targetMonth){
-		$sbj_array=array();
-		$htm_month_table="";
-		$sbj_array=['日','ｸﾚｼﾞｯﾄ・ﾛｰﾝ','PayPay','月額','現金','合計売上','累計売上','新規<br>来店数','会員<br>来店数','来店<br>合計','累計<br>来店数','契約<br>人数','累計<br>契約数','契約率'];
-		$htm_month_table='<table class="table-auto" border-solid>';
-		foreach($sbj_array as $value){
-			$htm_month_table.='<th class="border px-4 py-2">'.$value.
-			'<!--<button type="button" wire:click="sort(\'serial_user-ASC\')"><img src="{{ asset(\'storage/images/sort_A_Z.png\') }}" width="15px" /></button>
-			<button type="button" wire:click="sort(\'serial_user-Desc\')"><img src="{{ asset(\'storage/images/sort_Z_A.png\') }}" width="15px" /></button>-->
-			</th>';
-		}
-		$date = $targetYear.'-'.$targetMonth;
-		$begin = new DateTime(date('Y-m-d', strtotime('first day of '. $date)));
-		$end = new Datetime(date('Y-m-d', strtotime('first day of next month '. $date)));
-		$interval = new DateInterval('P1D');
-		$daterange = new DatePeriod($begin, $interval, $end);
-		$htm_month_table.='<tbody>';
-		$ruikei_visiters_cnt=0;$ruikei_contract_cnt=0;
-		$amount_card=0;$amount_paypay=0;$total_amount_card=0;$amount_cash_bunkatu=0;$total_mount_cash_bunkatu=0;
-		$amount_cash_uriage=0;$total_amount_paypay=0;$total_amount_cash_uriage=0;$total_new_visiters_cnt=0;$total_member_visiters_cnt=0;
-
-		session(['TotalSalesRuikei' =>0]);
-		foreach($daterange as $date){
-			session(['TotalSales' => 0]);
-			list($new_visiters_cnt, $member_visiters_cnt,$all_visiters_cnt) = self::get_raijyosyasu_cnt($date->format("Y-m-d"));
-			
-			$total_new_visiters_cnt=$total_new_visiters_cnt+$new_visiters_cnt;
-			$total_member_visiters_cnt=$total_member_visiters_cnt+$member_visiters_cnt;
-			$contract_cnt=self::get_contract_cnt($date->format("Y-m-d"));
-			$ruikei_visiters_cnt=$ruikei_visiters_cnt+$all_visiters_cnt;
-			$ruikei_contract_cnt=$ruikei_contract_cnt+$contract_cnt;
-			$yobi= self::day_of_the_week_dtcls($date->format('w'));
-			
-			$amount_card=self::get_uriage($date->format("Y-m-d"),'card','');
-			$total_amount_card=$total_amount_card+$amount_card;
-			
-			$amount_paypay=self::get_uriage($date->format("Y-m-d"),'paypay','');
-			$total_amount_paypay=$total_amount_paypay+$amount_paypay;
-			
-			$amount_cash_bunkatu=self::get_uriage($date->format("Y-m-d"),'cash','bunkatu');
-			$total_mount_cash_bunkatu=$total_mount_cash_bunkatu+$amount_cash_bunkatu;
-			
-			$amount_cash_uriage=self::get_uriage($date->format("Y-m-d"),'cash','');
-			$total_amount_cash_uriage=$total_amount_cash_uriage+$amount_cash_uriage;
-			
-			$colorRed="";
-			if($yobi=='日'){
-				$colorRed='style="color:red"';
-			}else if($yobi=='土'){
-				$colorRed='style="color:blue"';
-			}
-			$keiyakuritu="--";
-			if($all_visiters_cnt>0){
-				$keiyakuritu=number_format(round($new_visiters_cnt/$all_visiters_cnt*100,1), 1);
-			}
-			$htm_month_table.='
-				<tr>
-					<td class="border px-4 py-2" style="text-align: middle;"><button type="submit" name="target_date_from_monthly_rep" value="'.$date->format("Y-m-d").'"><span '.$colorRed.'>'.$date->format("Y-m-d").'('.$yobi.')</span></button>
-</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($amount_card).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($amount_paypay).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($amount_cash_bunkatu).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($amount_cash_uriage).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format(session('TotalSales')).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format(session('TotalSalesRuikei')).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($new_visiters_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($member_visiters_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($all_visiters_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_visiters_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($contract_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_contract_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.$keiyakuritu.'</td>
-				</tr>';
-		}
-		$htm_month_table.='
-				<tr>
-					<td class="border px-4 py-2" style="text-align: middle;">合計</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_amount_card).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_amount_paypay).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_mount_cash_bunkatu).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_amount_cash_uriage).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format(session('TotalSalesRuikei')).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format(session('TotalSalesRuikei')).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_new_visiters_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($total_member_visiters_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_visiters_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_visiters_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_contract_cnt).'</td>
-					<td class="border px-4 py-2" style="text-align: right;">'.number_format($ruikei_contract_cnt).'</td>
-					<td class="border px-4 py-2">&nbsp;</td>
-				</tr>';
-		$htm_month_table.='</tbody>';
-		$htm_month_table.='</tr></thead></table>';
-		return $htm_month_table;
-	}
-
-	public static function send_attendance_card($TargetStaffSerial){
-		$staff_inf=Staff::where("serial_staff","=",$TargetStaffSerial)->first();
-		if(empty($staff_inf)){
-			$target_item_array['msg']='スタッフのご登録が見つかりません。';
-			$target_item_array['res']='no serial';
-			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-		}else{
-			OtherFunc::make_QRCode($TargetStaffSerial,storage_path('images/'.$TargetStaffSerial.'.png'));
-			$target_item_array=array();
-			$target_item_array['msg']=$staff_inf->last_name_kanji." ".$staff_inf->first_name_kanji." 様<br>出勤用QRコードをお送りします。<br>Luxer";
-			$target_item_array['to_email']=$staff_inf->email;
-			$target_item_array['subject']='出退記録用QRコード';
-			$target_item_array['from_email']=env('MAIL_FROM_ADDRESS');
-			$target_item_array['QR_file_path']=storage_path('images/'.$TargetStaffSerial.'.png');
-			Mail::send(new SendMail($target_item_array));
-
-		}
 	}
 
 	public static function make_QRCode($target_sentence,$save_path){

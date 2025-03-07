@@ -99,12 +99,15 @@ class DailyReport extends Component
     
         $Sum['card']=PaymentHistory::where('date_payment','=',$today)
                 //->where('date_payment','=',$today)
-                ->where('how_to_pay','=','card')
+            ->where('how_to_pay','=','card')
             ->sum('amount_payment');
     
         $Sum['paypay']=PaymentHistory::where('date_payment','=',$today)
-                //->where('date_payment','=',$today)
-                ->where('how_to_pay','=','paypay')
+            ->where('how_to_pay','=','paypay')
+            ->sum('amount_payment');
+
+        $Sum['smart']=PaymentHistory::where('date_payment','=',$today)
+            ->where('how_to_pay','=','smart')
             ->sum('amount_payment');
         /*
         $Sum['CashSplit']=PaymentHistory::where('date_payment','=',$today)
@@ -118,7 +121,7 @@ class DailyReport extends Component
         //$Sum['total_cash']=$Sum['cash']+$Sum['CashSplit'];
         $Sum['total_cash']=$Sum['cash'];
         //$Sum['total']=$Sum['cash']+$Sum['card']+$Sum['CashSplit']+$Sum['paypay'];
-        $Sum['total']=$Sum['cash']+$Sum['card']+$Sum['paypay'];
+        $Sum['total']=$Sum['cash']+$Sum['card']+$Sum['paypay']+$Sum['smart'];
         session(['targetDay' => $today]);
         $_SESSION['backmonthday']=$today;
         //Log::info($_SESSION['access_history']);

@@ -32,6 +32,12 @@ class PaymentHistory extends Model
 		return "";
 	}
 
+	public function getSmartAmountAttribute($value){
+		$SmartAmount="";
+		if($this->how_to_pay=="smart" and $this->amount_payment<>""){$SmartAmount=$this->amount_payment;}
+		return $SmartAmount;
+	}
+
     public function getCardAmountAttribute($value){
 		$CardAmount="";
 		if($this->how_to_pay=="card" and $this->amount_payment<>""){$CardAmount=$this->amount_payment;}
