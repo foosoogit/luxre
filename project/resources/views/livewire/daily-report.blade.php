@@ -99,10 +99,18 @@
                                     <tr>
                                         <td class="border px-4 py-2">{{ $PaymentHistory->serial_user}}<br></td>
                                         <td class="border px-4 py-2">
-                                            <form method="GET" action="{{ route('customers.ShowInpRecordVisitPayment.get',['SerialKeiyaku' => $PaymentHistory->serial_keiyaku,'SerialUser'=>$PaymentHistory->serial_user])}}">@csrf
-                                                <button type="submit" name="btn_serial" value="{{$PaymentHistory->serial_user}}">{{ $PaymentHistory->name_sei}}&nbsp;{{ $PaymentHistory->name_mei}}</button>
-                                                <input name="target_day" type="hidden" value="{{$today}}"/>
-                                            </form>
+                                            {{ $PaymentHistory->ContractType}}
+                                            @if($PaymentHistory->ContractType=='subscription')
+                                                <form action="/customers/ShowPaymentRegistrationIflame/{{$PaymentHistory->serial_keiyaku}}/{{$PaymentHistory->serial_user}}" method="GET">@csrf
+                                                    {{--<input name="Record_Btn" type="submit" value="{{$dContracts->date_latest_visit}}">--}}
+                                                    <button type="submit" name="btn_serial" value="{{$PaymentHistory->serial_user}}">{{ $PaymentHistory->name_sei}}&nbsp;{{ $PaymentHistory->name_mei}}</button>
+                                                </form>    
+                                            @else
+                                                <form method="GET" action="{{ route('customers.ShowInpRecordVisitPayment.get',['SerialKeiyaku' => $PaymentHistory->serial_keiyaku,'SerialUser'=>$PaymentHistory->serial_user])}}">@csrf
+                                                    <button type="submit" name="btn_serial" value="{{$PaymentHistory->serial_user}}">{{ $PaymentHistory->name_sei}}&nbsp;{{ $PaymentHistory->name_mei}}</button>
+                                                    <input name="target_day" type="hidden" value="{{$today}}"/>
+                                                </form>    
+                                            @endif
                                         </td>
                                         <td class="border px-4 py-2">&nbsp;</td>
                                         <td class="border px-4 py-2" style="text-align: right;">

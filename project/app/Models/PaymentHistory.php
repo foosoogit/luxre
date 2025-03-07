@@ -14,6 +14,11 @@ class PaymentHistory extends Model
     use HasFactory;
     use SoftDeletes;
 
+	public function getContractTypeAttribute($value){
+		$ContractArray=Contract::where("serial_keiyaku",$this->serial_keiyaku)->first();
+		return $ContractArray->keiyaku_type;
+	}
+
 	public function getMethodSCRAttribute($target){
 		$PaymentMethod=initConsts::PaymentMethod();
 		$PaymentMethodArray=explode(",", $PaymentMethod);
