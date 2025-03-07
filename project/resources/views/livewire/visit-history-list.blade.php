@@ -1,6 +1,5 @@
-<div class="container-fluid pr-5">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 d-flex justify-content-end">
-        <div class="pb-4 align-middle">
+<div class="container-fluid pl-5">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-2 bg-secondary text-white">来店記録</div>
 		    <div class="row pb-2">
                 <div class="col-auto">
@@ -166,6 +165,5 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>
