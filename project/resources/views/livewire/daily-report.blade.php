@@ -99,7 +99,6 @@
                                     <tr>
                                         <td class="border px-4 py-2">{{ $PaymentHistory->serial_user}}<br></td>
                                         <td class="border px-4 py-2">
-                                            {{ $PaymentHistory->ContractType}}
                                             @if($PaymentHistory->ContractType=='subscription')
                                                 <form action="/customers/ShowPaymentRegistrationIflame/{{$PaymentHistory->serial_keiyaku}}/{{$PaymentHistory->serial_user}}" method="GET">@csrf
                                                     {{--<input name="Record_Btn" type="submit" value="{{$dContracts->date_latest_visit}}">--}}
