@@ -7,7 +7,7 @@
 input{border: 1px solid #aaa;}
 table td {border: 1px solid #aaa;}
 </style>
-<div class="container-fluid fullheight">
+<div class="container-fluid">
 	<div class="row">
 		@include('layouts.header')
 	</div>

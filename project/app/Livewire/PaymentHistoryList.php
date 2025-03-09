@@ -84,8 +84,12 @@ class PaymentHistoryList extends Component
 		$PaymentHistoryQuery=$PaymentHistoryQuery->where('serial_keiyaku','=',session('targetKeiyakuSerial'));
 
 		$newPaymentHistorySerial=PaymentHistory::where('serial_keiyaku','=',session('targetKeiyakuSerial'))->max('payment_history_serial');
-		$newPaymentHistorySerial=++$newPaymentHistorySerial;
-
+		if(empty($newPaymentHistorySerial)){
+			$newPaymentHistorySerial=str_replace('K', 'P', session('targetKeiyakuSerial')).'-01';
+		}else{
+			$newPaymentHistorySerial=++$newPaymentHistorySerial;
+		}
+		Log::alert("newPaymentHistorySerial=".$newPaymentHistorySerial);
 		$visit_history_serial_array=explode('-', session('targetKeiyakuSerial'));
 		$UserSerial=str_replace('K_', '', $visit_history_serial_array[0]);
 		$UserInf=User::where('serial_user','=',$UserSerial)->first();

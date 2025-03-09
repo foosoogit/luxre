@@ -26,8 +26,12 @@ class VisitHistoryList extends Component
 		$this->$Vtarget_treatment=$treatment;
 	}
 
+	public function del_visit_history($target_Vsirial){
+		VisitHistory::where('visit_history_serial',$target_Vsirial)
+			->update(['visit_history_serial' => "del_".$target_Vsirial]);
+		VisitHistory::where('visit_history_serial',"del_".$target_Vsirial)->delete();
+	}
 	public function Vsort($Vsort_key){
-		//Log::alert("sort_key 2=".$Vsort_key);
 		$Vsort_key_array=array();
 		$Vsort_key_array=explode("-", $Vsort_key);
 		$this->Vsort_key=$Vsort_key_array[0];
@@ -88,7 +92,13 @@ class VisitHistoryList extends Component
 		$VisitHistoryQuery=$VisitHistoryQuery->orderBy("visit_history_serial", "desc");
 		
 		$newVisitHistorySerial=VisitHistory::where('serial_keiyaku','=',session('targetKeiyakuSerial'))->max('visit_history_serial');
-		$newVisitHistorySerial=++$newVisitHistorySerial;
+		if(empty($newVisitHistorySerial)){
+			$newVisitHistorySerial=str_replace('K', 'V', session('targetKeiyakuSerial')).'-01';
+		}else{
+			$newVisitHistorySerial=++$newVisitHistorySerial;
+		}
+		//Log::info($newVisitHistorySerial);
+		
 		$visit_history_serial_array=explode('-', session('targetKeiyakuSerial'));
 		$UserSerial=str_replace('K_', '', $visit_history_serial_array[0]);
 		//Log::alert("UserSerial=".$UserSerial);
