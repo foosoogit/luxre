@@ -21,6 +21,13 @@ class PaymentHistoryList extends Component
 	public $livewire_cnt=0;
 	public $kensakukey="";
 	
+	public function del_payment_history($target_Psirial){
+		Log::alert("target_Vsirial=".$target_Psirial);
+		PaymentHistory::where('payment_history_serial',$target_Psirial)
+			->update(['payment_history_serial' => "del_".$target_Psirial]);
+		PaymentHistory::where('payment_history_serial',"del_".$target_Psirial)->delete();
+	}
+
 	public function sort($sort_key){
 		$sort_key_array=array();
 		$sort_key_array=explode("-", $sort_key);
@@ -77,9 +84,6 @@ class PaymentHistoryList extends Component
 					->orWhere('how_to_pay','like',$this->dynamic_key);
 			});
 		}
-		//Log::alert("sort_key=".$this->sort_key);
-		//Log::alert("sort_type=".$this->sort_type);
-		//$PaymentHistoryQuery=$PaymentHistoryQuery->orderBy($this->sort_key, $this->sort_type);
 		$PaymentHistoryQuery=$PaymentHistoryQuery->orderBy("payment_history_serial", "desc");
 		$PaymentHistoryQuery=$PaymentHistoryQuery->where('serial_keiyaku','=',session('targetKeiyakuSerial'));
 
@@ -89,11 +93,9 @@ class PaymentHistoryList extends Component
 		}else{
 			$newPaymentHistorySerial=++$newPaymentHistorySerial;
 		}
-		Log::alert("newPaymentHistorySerial=".$newPaymentHistorySerial);
 		$visit_history_serial_array=explode('-', session('targetKeiyakuSerial'));
 		$UserSerial=str_replace('K_', '', $visit_history_serial_array[0]);
 		$UserInf=User::where('serial_user','=',$UserSerial)->first();
-        //$VisitHistoryQuery=$VisitHistoryQuery->where('contracts.serial_user','=',session('targetUserSerial'));
 		//$VisitHistoryQuery=$VisitHistoryQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->targetPage);
 		$PaymentHistoryQuery=$PaymentHistoryQuery->paginate($perPage = 10,['*'], 'page',$this->targetPage);
         return view('livewire.payment-history-list',compact('PaymentHistoryQuery','UserInf','newPaymentHistorySerial'));

@@ -1,14 +1,7 @@
 ﻿function ClearSerch(){
 	document.getElementById("kensakukey_txt").value="";
 }
-/*
-function ck_slct(obj){
-  console.log("value="+obj.value);
-  if(obj.value==0){
-    return false;
-  }
-}
-*/
+
 function location_href(){
   //location.replace(location.href);
   window.location.reload(false);
@@ -24,6 +17,39 @@ function delArert(targetUser){
 		return false;
 	}
 }
+
+$(function(){
+  $("#del_btn").on('click', function() {
+    //console.log("delConfirmModal-2");
+    $('#delConfirmModal').modal('hide');
+  })
+  $('#delConfirmModal').on('show.bs.modal', function (event) {
+    //モーダルを開いたボタンを取得
+    let button = $(event.relatedTarget);
+    //モーダルを取得
+    let modal_delConfirm = $(this);
+    let visit_history_serial,num,sejyutu_naiyou,visit_date,name;
+    name = button.data('name');
+    
+    num = button.data('num');
+    //console.log("num="+num);
+    sejyutu_naiyou = button.data('sejyutu_naiyou');
+    sejyutusya= button.data('sejyutusya');
+    //console.log("sejyutusya="+sejyutusya);
+    visit_date = button.data('visit_date');
+    visit_history_serial = button.data('visit_history_serial');
+    //console.log("visit_history_serial="+visit_history_serial);
+    document.getElementById("delTargetVisitHistorySerial_hdn").value=visit_history_serial;
+    modal_delConfirm.find('.modal-body span#visit_date_d').text(visit_date);
+    modal_delConfirm.find('.modal-body span#tr_d').text(sejyutu_naiyou);
+    modal_delConfirm.find('.modal-body span#num_d').text(num);
+    modal_delConfirm.find('.modal-body span#visit_date_d').text(visit_date);
+    modal_delConfirm.find('.modal-body span#visit_history_serial_d').text(visit_history_serial);
+    modal_delConfirm.find('.modal-body span#sejyutusya_d').text(sejyutusya);
+    modal_delConfirm.find('.modal-body span#name_d').text(name);
+    //console.log("name-2="+name);
+  });
+});
 
 $(function(){
   // モーダルの中の「ボタン1」を押した時の処理
@@ -101,7 +127,7 @@ $(function(){
     //モーダルを取得
     let modal_Yoyaku = $(this);
     
-    let visit_history_serial,num,sejyutu_naiyou,point,visit_date,newSerial,name;
+    let visit_history_serial,num,sejyutu_naiyou,visit_date,newSerial,name;
     name = button.data('name');
     newSerial=button.data('nserial');
     if(typeof newSerial === 'undefined'){

@@ -9,6 +9,10 @@ function radioDeselection(already, numeric) {
 }
 
 $(function(){
+	$("#del_btn").on('click', function() {
+		//console.log("delConfirmModal-2");
+		$('#delConfirmModal').modal('hide');
+	})
 	// モーダルの中の「ボタン1」を押した時の処理
 	  $("#btn1").on('click', function() {
 
@@ -78,6 +82,30 @@ function getPaymentMethodSlct(target){
 }
 
 $(function(){
+	$('#delConfirmModal').on('show.bs.modal', function (event) {
+		//モーダルを開いたボタンを取得
+		let button = $(event.relatedTarget);
+		//モーダルを取得
+		let modal_payment = $(this);
+		let payment_history_serial,num,payment_date,name,payment_method;
+		name = button.data('name_d');
+		num = button.data('num_d');
+		payment_date = button.data('payment_date_d');
+		payment_history_serial = button.data('payment_history_serial_d');
+		payment_method=button.data('method_d');
+		amount=button.data('amount_d');
+		document.getElementById("delTargetPaymentHistorySerial_hdn").value=payment_history_serial;
+		//method_html=getPaymentMethodSlct(payment_method);
+		modal_payment.find('.modal-body span#payment_date_d').text(payment_date);
+		modal_payment.find('.modal-body span#amount_d').text(amount);
+		modal_payment.find('.modal-body span#num_d').text(num);
+		modal_payment.find('.modal-body span#method_d').text(payment_method);
+		modal_payment.find('.modal-body span#payment_history_serial_d').text(payment_history_serial);
+		  //受け取った値をspanタグのとこに表示some
+		modal_payment.find('.modal-body span#name_d').text(name);
+		console.log("name="+name);
+	  });
+
 	$('#ModifyModal').on('show.bs.modal', function (event) {
 
 	  //モーダルを開いたボタンを取得

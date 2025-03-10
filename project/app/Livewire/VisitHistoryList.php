@@ -20,6 +20,7 @@ class VisitHistoryList extends Component
 	public $targetPage=null;
 	public $Vtarget_treatment="",$Vdynamic_key,$Vserch_key,$Vsort_key,$Vsort_type="desc";
 	public $livewire_cnt=0;
+	public $delTargetVisitHistorySerial;
 	//protected $search;
 	public $Vkensakukey="";
 	public function target_sejyutu($treatment){
@@ -27,9 +28,14 @@ class VisitHistoryList extends Component
 	}
 
 	public function del_visit_history($target_Vsirial){
+		//$this->delTargetVisitHistorySerial;
+		Log::alert("delTargetVisitHistorySerial=".$this->delTargetVisitHistorySerial);
+		Log::alert("target_Vsirial=".$target_Vsirial);
+
 		VisitHistory::where('visit_history_serial',$target_Vsirial)
 			->update(['visit_history_serial' => "del_".$target_Vsirial]);
 		VisitHistory::where('visit_history_serial',"del_".$target_Vsirial)->delete();
+
 	}
 	public function Vsort($Vsort_key){
 		$Vsort_key_array=array();

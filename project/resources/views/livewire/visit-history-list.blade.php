@@ -89,15 +89,19 @@
                             <td class="border px-4 py-2">
                                 {{$dVisitHistory->last_name_kanji}}&nbsp;{{$dVisitHistory->first_name_kanji}}
                             </td>
-                            {{--
                             <td class="border px-4 py-2">
-                                {{$dVisitHistory->point}}
-                            </td>
-                            --}}
-                            <td class="border px-4 py-2">
-                                <form action="/customers/deleteContract/{{$dVisitHistory->serial_keiyaku}}/{{$dVisitHistory->serial_user}}" method="GET">@csrf
-                                    <input disabled name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $dVisitHistory->serial_user}} {{ $dVisitHistory->name_sei}} {{ $dVisitHistory->name_mei}}');" >
-                                </form>
+                                <button type="button" id="delete_btn_{{$dVisitHistory->visit_history_serial}}" class="btn btn-danger modalBtn btn-sm" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#delConfirmModal" 
+                                    data-num="{{$dVisitHistory->VisitNum}}" 
+                                    data-sejyutu_naiyou="{{$dVisitHistory->treatment_dtails}}" 
+                                    data-visit_history_serial="{{$dVisitHistory->visit_history_serial}}" 
+                                    data-name="{{$User_name}}"
+                                    data-visit_date="{{$dVisitHistory->date_visit}}"
+                                    data-sejyutusya="{{$dVisitHistory->last_name_kanji}}&nbsp;{{$dVisitHistory->first_name_kanji}}"
+                                > 
+                                削除
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -123,8 +127,9 @@
                                 </div>
                             </div>
                             <div class="row">
-                            <div class="col-auto">
-                                <label>顧客氏名：<span id="name"></span></label>
+                                <div class="col-auto">
+                                    <label>顧客氏名：<span id="name"></span></label>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -145,23 +150,66 @@
                         <div class="row">
                             <div class="col-auto">
                                 <label>施術者：<span id="sejyutusya"></span></label>
-                                
                             </div>
                         </div>
                         <div class="row">
                             &nbsp;&nbsp;※施術者を修正するときは、カルテを修正してください。
                         </div>
-                        {{-- 
-                        <div class="row">
-                            <div class="col-auto">
-                                <label>取得ポイント：<input type="text" id="point"></label>
-                            </div>
-                        </div>
-                         --}}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">キャンセル</button>
+                        <button type="button" class="btn btn-info" data-bs-dismiss="modal">キャンセル</button>
                         <button type="button" id="btn1" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+            </div>
+            <!--　削除確認 -->
+            <div class="modal fade" id="delConfirmModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <meta http-equiv="Pragma" content="no-cache">
+                            <meta http-equiv="Cache-Control" content="no-cache"> 
+                            <h4 class="modal-title">来店履歴削除確認</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-bs-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>来店シリアル：<span id="visit_history_serial_d"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>顧客氏名：<span id="name_d"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>回数：<span id="num_d"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>来店日：<span id="visit_date_d"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>施術内容：<span id="tr_d"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>施術者：<span id="sejyutusya_d"></span></label>
+                                </div>
+                            </div>
+                            上記データを削除します。よろしいですか？
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="delTargetVisitHistorySerial_hdn">
+                            <button type="button" id="del_btn" wire:click="del_visit_history(document.getElementById('delTargetVisitHistorySerial_hdn').value)" class="btn btn-danger">削除</button>
+                            <button type="button" class="btn btn-info" data-bs-dismiss="modal">キャンセル</button>
+                        </div>
                     </div>
                 </div>
             </div>
