@@ -744,6 +744,7 @@ class AdminController extends Controller
 				$query->select('contracts.serial_user')->from('contracts')->where('contracts.cancel','=', null);
 			})
 			->distinct()->select('name_sei','name_mei')->get();
+		//$UnpaidPerson
 		$html_year_slct=OtherFunc::make_html_year_slct(date('Y'));
 		$html_month_slct=OtherFunc::make_html_month_slct(date('n'));
 		$default_customers=OtherFunc::make_htm_get_default_user();
@@ -1974,13 +1975,6 @@ class AdminController extends Controller
 		$target_user="";$selectedManth=null;$selectedDay=null;$selectedRegion=null;
 		$target_page_array=array("top","Customer");
 		$GoToBackPlace=OtherFunc::serch_http_referer($target_page_array);
-		/*
-		if(session('fromMenu')=='MenuCustomerManagement'){
-			$GoToBackPlace="../ShowMenuCustomerManagement";
-		}else if(session('fromMenu')=='CustomersList'){
-			$GoToBackPlace="/customers/ShowCustomersList_livewire";
-		}
-		*/
 		if(session('CustomerManage')=='syusei'){
 			return redirect("/customers/CustomersList");
 		}else{

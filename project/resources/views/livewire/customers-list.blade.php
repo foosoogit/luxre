@@ -43,6 +43,7 @@
                                     <button type="button" wire:click="sort('name_sei_kana-Desc')"> <img src="{{asset('storage/images/sort_Z_A.png')}}" width="15px" /></button>
                                 </div>
                             </th>
+                            {{-- 
                             <th class="border px-4 py-2">
                                 <div class="text-nowrap">残金
                                     <button type="button" wire:click="sort('zankin-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
@@ -52,6 +53,7 @@
                                     <p>(合計:<button type="button" name="zankinBtn" id="zankinBtn" wire:click="zankin_search()">{{number_format($totalZankin)}}</button>円)</p>
                                 </div>
                             </th>
+                             --}}
                             <th class="border px-4 py-2">
                                 <div class="text-nowrap">生年月日
                                     <button type="button" wire:click="sort('birth_year-ASC')"> <img src="{{asset('storage/images/sort_A_Z.png')}}" width="15px" /></button>
@@ -94,20 +96,18 @@
                                 </td>
                                 <td class="border px-4 py-2" {!! $user->default_color!!}><div class="text-nowrap">{{ $user->name_sei}}&nbsp;{{ $user->name_mei}}</div></td>
                                 <td class="border px-4 py-2"><div class="text-nowrap">{{ $user->name_sei_kana}}&nbsp;{{ $user->name_mei_kana}}</div></td>
+                                {{-- 
                                 <td class="border px-4 py-2" style="text-align: right;">{{ number_format($user->zankin)}}</td>
+                                 --}}
                                 <td class="border px-4 py-2"><div class="text-nowrap">{{ $user->birth_year}}-{{ $user->birth_month}}-{{ $user->birth_day}}&nbsp;({{ $user->User_Age}})</div></td>
                                 <td class="border px-4 py-2">{{ $user->phone}}</td>
                                 <td class="border px-4 py-2">{{ $user->TotalPoints}}</td>
                                 <td class="border px-4 py-2">
-                                    {{-- 
-                                    <button type="button" class="btn btn-info modalBtn" data-toggle="modal" data-target="#sampleModal" data-watasu="{{$user->serial_user}}">モーダルにデータ渡す</button>
-                                     --}}
                                      @if(empty($user->reservation))
                                         <button type="button" id="yoyaku_btn_{{$user->serial_user}}" class="btn btn-info modalBtn btn-sm" data-toggle="modal" data-target="#YoyakuModal" data-watasu="" data-serial="{{$user->serial_user}}" data-name="{{ $user->name_sei}}&nbsp;{{ $user->name_mei}}">予約日</button>
                                     @else
                                         <button type="button" id="yoyaku_btn_{{$user->serial_user}}" class="btn btn-info modalBtn btn-sm" data-toggle="modal" data-target="#YoyakuModal" data-watasu="{{$user->reservation}}" data-serial="{{$user->serial_user}}" data-name="{{ $user->name_sei}}&nbsp;{{ $user->name_mei}}">{{$user->reservation}}</button>
                                     @endif
-                                    {{--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">--}}
                                 </td>
                                 <td class="border px-4 py-2">
                                     <form action="/customers/deleteCustomer/{{$user->serial_user}}" method="GET">@csrf
