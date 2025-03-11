@@ -1497,12 +1497,9 @@ class AdminController extends Controller
 	}
 
 	public function ajax_SaveMedicalRecord(Request $request){
-		//Log::alert("VisitHistorySerial=".$request->VisitHistorySerial);
-		//Log::alert("ContractSerial-1=".session('ContractSerial'));
 		$target_file_name=session('ContractSerial')."-".$request->VisitHistorySerial;
 		$result=array();
 		$hst=$_SERVER['HTTP_HOST'];
-		
 		foreach(glob("MedicalRecord/".$target_file_name."*.png") as $file) {
 			$result[] = $file;
 		}

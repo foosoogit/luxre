@@ -28,14 +28,15 @@ class VisitHistoryList extends Component
 	}
 
 	public function del_visit_history($target_Vsirial){
-		//$this->delTargetVisitHistorySerial;
-		Log::alert("delTargetVisitHistorySerial=".$this->delTargetVisitHistorySerial);
-		Log::alert("target_Vsirial=".$target_Vsirial);
-
 		VisitHistory::where('visit_history_serial',$target_Vsirial)
 			->update(['visit_history_serial' => "del_".$target_Vsirial]);
 		VisitHistory::where('visit_history_serial',"del_".$target_Vsirial)->delete();
-
+		$target_serch_file_name=str_replace('V', 'K', $target_Vsirial)."*.png";
+		//Log::alert("target_serch_file_name=".$target_serch_file_name);
+		foreach (glob(public_path('MedicalRecord/'.$target_serch_file_name)) as $file){
+			//Log::alert("file=".$file);
+			unlink($file);
+		}
 	}
 	public function Vsort($Vsort_key){
 		$Vsort_key_array=array();
