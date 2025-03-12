@@ -23,6 +23,9 @@ $(function(){
     //console.log("delConfirmModal-2");
     $('#delConfirmModal').modal('hide');
   })
+});
+
+$(function(){
   $('#delConfirmModal').on('show.bs.modal', function (event) {
     //モーダルを開いたボタンを取得
     let button = $(event.relatedTarget);
@@ -52,9 +55,10 @@ $(function(){
 });
 
 $(function(){
+  console.log("visit_date1="+document.getElementById("visit_date").value)
   // モーダルの中の「ボタン1」を押した時の処理
     $("#btn1").on('click', function() {
-      //console.log("visit_date="+document.getElementById("visit_date").value)
+      console.log("visit_date2="+document.getElementById("visit_date").value)
       let Tdate=document.getElementById("visit_date").value;
       let Tvisit_history_serial=document.getElementById("visit_history_serial").innerText;
       let Ttr_content=document.getElementById("tr_content_slct").value;
@@ -121,34 +125,36 @@ function gettreatmentslct(target){
 
 $(function(){
   $('#ModifyModal').on('show.bs.modal', function (event) {
+    let visit_history_serial,num,sejyutu_naiyou,visit_date,newSerial,name;
     //モーダルを開いたボタンを取得
     let button = $(event.relatedTarget);
-    
     //モーダルを取得
     let modal_Yoyaku = $(this);
-    
-    let visit_history_serial,num,sejyutu_naiyou,visit_date,newSerial,name;
     name = button.data('name');
     newSerial=button.data('nserial');
+    
     if(typeof newSerial === 'undefined'){
       num = button.data('num');
+      //console.log('num-2='+num);
       sejyutu_naiyou = button.data('sejyutu_naiyou');
       sejyutusya= button.data('sejyutusya');
       //point = button.data('point');
       visit_date = button.data('visit_date');
+      //console.log('visit_date-3='+visit_date);
       visit_history_serial = button.data('visit_history_serial');
       tr_html=gettreatmentslct(sejyutu_naiyou);
-      modal_Yoyaku.find('.modal-body input#visit_date').val(visit_date);
+      
       modal_Yoyaku.find('.modal-body span#num').text(num);
-      modal_Yoyaku.find('.modal-body input#visit_date').val(visit_date);
+      //modal_Yoyaku.find('.modal-body input#visit_date').val(visit_date);
       modal_Yoyaku.find('.modal-body span#visit_history_serial').text(visit_history_serial);
-      //modal_Yoyaku.find('.modal-body input#point').val(point);
       modal_Yoyaku.find('.modal-body span#sejyutusya').text(sejyutusya);
+      modal_Yoyaku.find('.modal-body input#visit_date').val(visit_date);
     }else{
       tr_html=gettreatmentslct('');
       let newSerial_array=newSerial.split('-');
       modal_Yoyaku.find('.modal-body span#num').text(newSerial_array[2]);
       modal_Yoyaku.find('.modal-body span#visit_history_serial').text(newSerial);
+      modal_Yoyaku.find('.modal-body input#visit_date').val("");
     }
       //受け取った値をspanタグのとこに表示some
     modal_Yoyaku.find('.modal-body span#name').text(name);

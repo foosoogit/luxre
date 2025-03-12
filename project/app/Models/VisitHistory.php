@@ -16,7 +16,7 @@ class VisitHistory extends Model
 		'serial_user',
 		'visit_history_serial',
 		'date_visit',
-		'point',
+		//'point',
 		'treatment_dtails',
 	];
 

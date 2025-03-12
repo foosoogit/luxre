@@ -237,7 +237,8 @@ class OtherFunc extends Controller
 	public function save_visit_data_ajax(Request $request){
 		$keiyaku_array=explode("-", session('targetKeiyakuSerial'));
 		$seriar_user=str_replace('K_', '', $keiyaku_array[0]);
-
+		Log::alert("seriar_user=".$seriar_user);
+		Log::alert("request->Tvisit_history_serial=".$request->Tvisit_history_serial);
 		$visits = [
 			['visit_history_serial' =>$request->Tvisit_history_serial,
 			'date_visit' => $request->Tdate,
