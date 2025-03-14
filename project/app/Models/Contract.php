@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 use App\Models\Staff;
+use App\Models\VisitHistory;
 
 class Contract extends Model
 {
@@ -34,7 +35,13 @@ class Contract extends Model
 		'serial_tantosya',
 	];
 
-    public function getTantosyaNameAttribute($value){
+    public function getLatestVisitDateAttribute($value){
+		$max_date=VisitHistory::where('serial_keiyaku','=',$this->serial_keiyaku)->max('date_visit');
+		//Log::info($max_date);
+		return $max_date;
+	}
+
+	public function getTantosyaNameAttribute($value){
 		$StaffArray=Staff::where('serial_tantosya','=',$value)->first();
 		return $StaffArray->last_name_kanji.$StaffArray->first_name_kanji;
 	}

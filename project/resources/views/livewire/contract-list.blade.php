@@ -104,7 +104,7 @@
                                 <td class="border px-4 py-2">
                                     @if ($dContracts->keiyaku_type=="subscription")
                                         <form action="/customers/ShowPaymentRegistrationIflame/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
-                                            <input name="Record_Btn" type="submit" value="{{$dContracts->date_latest_visit}}">
+                                            <input name="Record_Btn" type="submit" value="{{$dContracts->LatestVisitDate}}">
                                         </form>
                                     @else
                                         <form action="/customers/ShowInpRecordVisitPayment/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
