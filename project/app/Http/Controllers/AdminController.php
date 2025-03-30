@@ -53,7 +53,7 @@ class AdminController extends Controller
 				'target_name'=>$item_array["name"],
 				'created_at'=> date('Y-m-d H:i:s'),
 				'updated_at'=> date('Y-m-d H:i:s'),
-				'ip_address'=> $ipadd,
+				'ip_address_in'=> $ipadd,
 			]);
 		}else if($item_array['in_out_type']=='退勤'){
 			InOutHistory::where("target_serial","=",$item_array['staff_serial'])
@@ -61,7 +61,7 @@ class AdminController extends Controller
 				->update([
 					'time_out' => date('Y-m-d H:i:s'),
 					'updated_at'=> date('Y-m-d H:i:s'),
-					'ip_address'=> $ipadd,
+					'ip_address_out'=> $ipadd,
 				]);
 		}
 	}
