@@ -43,6 +43,61 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
+	private function staff_receipt_set_manage($item_array){
+		$ipadd=$_SERVER['REMOTE_ADDR'];
+		if($item_array['in_out_type']=='出勤'){
+			InOutHistory::insert([
+				'target_serial' => $item_array["user_serial"],
+				'target_date' => date('Y-m-d'),
+				'time_in' => date('Y-m-d H:i:s'),
+				'target_name'=>$item_array["name"],
+				'created_at'=> date('Y-m-d H:i:s'),
+				'updated_at'=> date('Y-m-d H:i:s'),
+				'ip_address'=> $ipadd,
+			]);
+		}else if($item_array['in_out_type']=='退勤'){
+			InOutHistory::where("target_serial","=",$item_array['staff_serial'])
+				->where("target_date","=",date('Y-m-d'))
+				->update([
+					'time_out' => date('Y-m-d H:i:s'),
+					'updated_at'=> date('Y-m-d H:i:s'),
+					'ip_address'=> $ipadd,
+				]);
+		}
+	}
+
+	private function staff_reception_manage($staff_serial){
+		$staff_inf=Staff::where("serial_staff","=",$staff_serial)->first();
+		$latest_in_out_history_id=InOutHistory::where("target_serial","=",$staff_serial)
+				->orderBy('id','desc')->first('id');
+		$target_item_array['user_serial']=$staff_serial;
+
+		if(empty($staff_inf)){
+			$target_item_array['msg']='スタッフのご登録が見つかりません。';
+			$target_item_array['res']='no serial';
+			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+		}else{
+			$target_item_array['res']='true';
+			$ck_jyufuku=InOutHistory::where("target_serial","=",$staff_serial)
+				->where("target_date","=",date('Y-m-d'))
+				->orderBy('id','desc');
+			$rec_cnt=$ck_jyufuku->count();
+			$target_item_array['name']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji;
+			
+			if($rec_cnt==0){
+				$target_item_array['res']='in';
+				$target_item_array['in_out_type']="出勤";
+			}else{
+				$target_item_array['res']='out';
+				$target_item_array['in_out_type']="退勤";
+				$target_item_array['target_id']=$latest_in_out_history_id;
+			}
+			$target_item_array['msg']=$target_item_array['name'].' さんの'.$target_item_array['in_out_type'].'を受け付けました。';
+			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+		}
+		return $json;
+	}
+
 	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		//Log::alert("ShowInpRecordVisitPayment-1");
@@ -559,65 +614,6 @@ class AdminController extends Controller
 	}
 	*/
 	
-	private function staff_reception_manage($staff_serial){
-		$staff_inf=Staff::where("serial_staff","=",$staff_serial)->first();
-		$latest_in_out_history_id=InOutHistory::where("target_serial","=",$staff_serial)
-				->orderBy('id','desc')->first('id');
-		$target_item_array['user_serial']=$staff_serial;
-
-		if(empty($staff_inf)){
-			$target_item_array['msg']='スタッフのご登録が見つかりません。';
-			$target_item_array['res']='no serial';
-			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-		}else{
-			$target_item_array['res']='true';
-			$ck_jyufuku=InOutHistory::where("target_serial","=",$staff_serial)
-				->where("target_date","=",date('Y-m-d'))
-				->orderBy('id','desc');
-			$rec_cnt=$ck_jyufuku->count();
-			$target_item_array['name']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji;
-			
-			if($rec_cnt==0){
-				$target_item_array['res']='in';
-				$target_item_array['in_out_type']="出勤";
-			}else{
-				$target_item_array['res']='out';
-				$target_item_array['in_out_type']="退勤";
-				$target_item_array['target_id']=$latest_in_out_history_id;
-			}
-			/*	
-				if(empty($in_out_inf->time_out)){
-					$target_item_array['in_out_type']="退勤";
-					$target_item_array['target_id']=$latest_in_out_history_id;
-				}else{
-				$in_out_inf=$ck_jyufuku->first();
-				if(empty($in_out_inf->time_out)){
-					$target_item_array['in_out_type']="退勤";
-					$target_item_array['target_id']=$latest_in_out_history_id;
-				}else{
-					$target_item_array['in_out_type']="出勤";
-				}
-			}
-			*/
-			$target_item_array['msg']=$target_item_array['name'].' さんの'.$target_item_array['in_out_type'].'を受け付けました。';
-			/*
-			if($ck_jyufuku>0){
-				$target_item_array['msg']=$target_item_array['name'].' さんの本日の退勤を受け付けました。';
-				//$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの本日の退社を受け付けました。';
-				//$target_item_array['res']='double registration';
-				$target_item_array['res']='true';
-			}else{
-				//$target_item_array['visit_history_serial']=$staff_serial;
-				$target_item_array['msg']=$target_item_array['name'].' さんの本日の出勤を受け付けました。';
-				//$target_item_array['msg']=$staff_inf->last_name_kanji.' '.$staff_inf->first_name_kanji.' さんの出社を受け付けました。';
-				$target_item_array['res']='true';
-			}
-			*/
-			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-		}
-		return $json;
-	}
-
 	public function ajax_get_coming_soon_user(Request $request){
 		if(!(isset($_SESSION['PopupComingSoonFlg']) and $_SESSION['PopupComingSoonFlg']==date("Y-m-d"))){
 			//予約処理
@@ -970,26 +966,6 @@ class AdminController extends Controller
 		session(['InpRecordVisitPaymentFlg' => true]);
 		$this::save_recorder("recordVisitPaymentHistory");
 		return redirect('/customers/ShowInpRecordVisitPayment/'.session("ContractSerial").'/'.session("UserSerial"));
-	}
-
-	private function staff_receipt_set_manage($item_array){
-		if($item_array['in_out_type']=='出勤'){
-			InOutHistory::insert([
-				'target_serial' => $item_array["user_serial"],
-				'target_date' => date('Y-m-d'),
-				'time_in' => date('Y-m-d H:i:s'),
-				'target_name'=>$item_array["name"],
-				'created_at'=> date('Y-m-d H:i:s'),
-				'updated_at'=> date('Y-m-d H:i:s'),
-			]);
-		}else if($item_array['in_out_type']=='退勤'){
-			InOutHistory::where("target_serial","=",$item_array['staff_serial'])
-				->where("target_date","=",date('Y-m-d'))
-				->update([
-					'time_out' => date('Y-m-d H:i:s'),
-					'updated_at'=> date('Y-m-d H:i:s'),
-				]);
-		}
 	}
 
 	public function  receipt_set_manage(Request $request){

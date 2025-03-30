@@ -127,26 +127,6 @@
 			document.getElementById("student_serial_txt").focus();
 		}
 		function send_mail(item_json){
-			/*
-			$.ajax({
-				url: 'send_mail_in_out',
-				type: 'post', // getかpostを指定(デフォルトは前者)
-				dataType: 'json', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
-				scriptCharset: 'utf-8',
-				data: {"item_json":item_json},
-				headers: {
-					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-				}
-			}).done(function (data) {
-				console.log("ok");
-				data=null;
-			}).fail(function (XMLHttpRequest, textStatus, errorThrown) {
-				alert(XMLHttpRequest.status);
-				alert(textStatus);
-				alert(errorThrown);	
-				alert('エラー');
-			});
-			*/
 			$('#name_fadeout_alert').show();		
 		}
 

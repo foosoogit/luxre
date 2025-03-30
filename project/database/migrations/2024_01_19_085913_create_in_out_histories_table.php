@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('from_mail_address',50)->nullable()->comment('送り元メールアドレス');
             $table->text('reason_late')->nullable()->comment('遅刻理由');
             $table->text('remarks')->nullable()->comment('備考');
+            $table->text('ip_address',20)->nullable()->comment('IPアドレス');
         });
     }
 
