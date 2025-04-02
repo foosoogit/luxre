@@ -68,8 +68,8 @@
 					const item_json = JSON.parse(data);
 					document.getElementById("name_fadeout_alert").style.display="";
 					//alert("ipadd="+item_json.ipadd);
-					//if(item_json.ipadd!="153.185.58.27" && item_json.ipadd!="172.20.0.1"){
-					if(item_json.ipadd!="172.20.0.1"){
+					if(item_json.ipadd!="153.185.58.27" && item_json.ipadd!="172.20.0.1" && item_json.ipadd!="121.117.50.143"){
+					//if(item_json.ipadd!="153.185.58.27"){
 						alert("正規の場所から読み込んでください。");
 						document.getElementById("seated_type").style.display="";
 						document.getElementById("seated_type").innerText = "";
