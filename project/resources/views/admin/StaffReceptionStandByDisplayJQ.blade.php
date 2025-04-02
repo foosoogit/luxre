@@ -67,27 +67,28 @@
 				}).done(function (data) {
 					const item_json = JSON.parse(data);
 					document.getElementById("name_fadeout_alert").style.display="";
-					if(item_json.res=="no serial"){
+					//alert("ipadd="+item_json.ipadd);
+					//if(item_json.ipadd!="153.185.58.27" && item_json.ipadd!="172.20.0.1"){
+					if(item_json.ipadd!="153.185.58.27"){
+						alert("正規の場所から読み込んでください。");
+						document.getElementById("seated_type").style.display="";
+						document.getElementById("seated_type").innerText = "";
+						document.getElementById('target_customer_serial_txt').value="";
+						document.getElementById('target_customer_serial_txt').focus();
+						data=null;
+						window.setTimeout(dispNone, 4000);
+						return;
+					}else if(item_json.res=="no serial"){
 						audio_false.play();
-						//document.getElementById("seated_type").style.display="";
-						//document.getElementById("seated_type").innerText = item_json.msg;
 					}else if(item_json.res=="no contract"){
 						audio_false.play();
-						//document.getElementById("seated_type").style.display="";
-						//document.getElementById("seated_type").innerText = item_json.msg;
 					}else if(item_json.res=="double registration"){
 						audio_false.play();
-						//document.getElementById("seated_type").style.display="";
-						//document.getElementById("seated_type").innerText = item_json.msg;
 					}else if(item_json.res=="in"){
 						audio_in.play();
-						//document.getElementById("seated_type").style.display="";
-						//document.getElementById("seated_type").innerText = item_json.msg;
 						receipt_set_manage(data);
 					}else if(item_json.res=="out"){
 						audio_out.play();
-						//document.getElementById("seated_type").style.display="";
-						//document.getElementById("seated_type").innerText = item_json.msg;
 						receipt_set_manage(data);
 					}
 					document.getElementById("seated_type").style.display="";

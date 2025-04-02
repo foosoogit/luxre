@@ -43,35 +43,13 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 
-	private function staff_receipt_set_manage($item_array){
-		$ipadd=$_SERVER['REMOTE_ADDR'];
-		if($item_array['in_out_type']=='出勤'){
-			InOutHistory::insert([
-				'target_serial' => $item_array["user_serial"],
-				'target_date' => date('Y-m-d'),
-				'time_in' => date('Y-m-d H:i:s'),
-				'target_name'=>$item_array["name"],
-				'created_at'=> date('Y-m-d H:i:s'),
-				'updated_at'=> date('Y-m-d H:i:s'),
-				'ip_address_in'=> $ipadd,
-			]);
-		}else if($item_array['in_out_type']=='退勤'){
-			InOutHistory::where("target_serial","=",$item_array['staff_serial'])
-				->where("target_date","=",date('Y-m-d'))
-				->update([
-					'time_out' => date('Y-m-d H:i:s'),
-					'updated_at'=> date('Y-m-d H:i:s'),
-					'ip_address_out'=> $ipadd,
-				]);
-		}
-	}
-
 	private function staff_reception_manage($staff_serial){
+		//Log::alert("ipadd=".$_SERVER['REMOTE_ADDR']);
+		$target_item_array['ipadd']=$_SERVER['REMOTE_ADDR'];
 		$staff_inf=Staff::where("serial_staff","=",$staff_serial)->first();
 		$latest_in_out_history_id=InOutHistory::where("target_serial","=",$staff_serial)
 				->orderBy('id','desc')->first('id');
 		$target_item_array['user_serial']=$staff_serial;
-
 		if(empty($staff_inf)){
 			$target_item_array['msg']='スタッフのご登録が見つかりません。';
 			$target_item_array['res']='no serial';
@@ -97,6 +75,65 @@ class AdminController extends Controller
 		}
 		return $json;
 	}
+
+	private function staff_receipt_set_manage($item_array){
+		//$ipadd=$_SERVER['REMOTE_ADDR'];
+		if($item_array['in_out_type']=='出勤'){
+			InOutHistory::insert([
+				'target_serial' => $item_array["user_serial"],
+				'target_date' => date('Y-m-d'),
+				'time_in' => date('Y-m-d H:i:s'),
+				'target_name'=>$item_array["name"],
+				'created_at'=> date('Y-m-d H:i:s'),
+				'updated_at'=> date('Y-m-d H:i:s'),
+				'ip_address_in'=> $ipadd,
+			]);
+		}else if($item_array['in_out_type']=='退勤'){
+			InOutHistory::where("target_serial","=",$item_array['staff_serial'])
+				->where("target_date","=",date('Y-m-d'))
+				->update([
+					'time_out' => date('Y-m-d H:i:s'),
+					'updated_at'=> date('Y-m-d H:i:s'),
+					'ip_address_out'=> $ipadd,
+				]);
+		}
+	}
+
+	public function customer_reception_manage(Request $request)
+    {
+		//$ipadd=$_SERVER['REMOTE_ADDR'];
+		//$target_item_array['ipadd']=$_SERVER['REMOTE_ADDR'];
+		$user_serial=$request->target_serial;
+		if(substr(strtoupper($user_serial), 0, 2)=="SF"){
+			$json=$this::staff_reception_manage(strtoupper($user_serial));
+		}else{
+			$user_inf=User::where("serial_user","=",$user_serial)->first();
+			$latest_contract_serial=Contract::where("serial_user","=",$user_serial)
+					->orderBy('serial_keiyaku','desc')->first('serial_keiyaku');
+			$latest_point_id=Point::where("serial_user","=",$user_serial)
+					->orderBy('id','desc')->first('id');
+			$target_item_array['user_serial']=$user_serial;
+			if(empty($user_inf)){
+				$target_item_array['msg']='お客様のご登録が見つかりません。';
+				$target_item_array['res']='no serial';
+				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+				//echo $json;
+			}else{
+				$ck_jyufuku=Point::where("serial_user","=",$user_serial)
+					->where("visit_date","LIKE",date('Y-m-d')."%")
+					->where("method","=","来店")->count();
+				if($ck_jyufuku>0){
+					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の本日の受付は済んでいます。';
+					$target_item_array['res']='double registration';
+				}else{
+					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様のご来店を受け付けました。';
+					$target_item_array['res']='true';
+				}
+				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
+			}
+		}
+		echo $json;
+    }
 
 	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
@@ -1048,82 +1085,6 @@ class AdminController extends Controller
 		*/
 		$res = ['res'    => 'OK'];
 		$json = json_encode( $res, JSON_PRETTY_PRINT ) ;
-		echo $json;
-    }
-
-	public function customer_reception_manage(Request $request)
-    {
-        $user_serial=$request->target_serial;
-		if(substr(strtoupper($user_serial), 0, 2)=="SF"){
-			$json=$this::staff_reception_manage(strtoupper($user_serial));
-		}else{
-			$user_inf=User::where("serial_user","=",$user_serial)->first();
-			$latest_contract_serial=Contract::where("serial_user","=",$user_serial)
-					->orderBy('serial_keiyaku','desc')->first('serial_keiyaku');
-			$latest_point_id=Point::where("serial_user","=",$user_serial)
-					->orderBy('id','desc')->first('id');
-
-			/*
-			$latest_VisitHistory_serial=VisitHistory::where("serial_user","=",$user_serial)
-					->orderBy('visit_history_serial','desc')->first('visit_history_serial');
-			*/
-
-			$target_item_array['user_serial']=$user_serial;
-			if(empty($user_inf)){
-				$target_item_array['msg']='お客様のご登録が見つかりません。';
-				$target_item_array['res']='no serial';
-				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-				//echo $json;
-			}else{
-				$ck_jyufuku=Point::where("serial_user","=",$user_serial)
-					->where("visit_date","LIKE",date('Y-m-d')."%")
-					->where("method","=","来店")->count();
-				if($ck_jyufuku>0){
-					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の本日の受付は済んでいます。';
-					$target_item_array['res']='double registration';
-				}else{
-					//$target_item_array['contract_serial']=$latest_contract_serial->serial_keiyaku;
-					/*
-					if(empty($latest_point_id->id)){
-						$target_item_array['latest_point_id']="";	
-					}else{
-						$target_item_array['latest_point_id']=$latest_VisitHistory_serial->visit_history_serial;
-					}
-					*/
-					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様のご来店を受け付けました。';
-					$target_item_array['res']='true';
-				}
-				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-			}
-			/*
-			if(empty($user_inf)){
-				$target_item_array['msg']='お客様のご登録が見つかりません。';
-				$target_item_array['res']='no serial';
-				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-				echo $json;
-			}else if(empty($latest_contract_serial['serial_keiyaku'])){
-				$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の契約が見つかりません。';
-				$target_item_array['res']='no contract';
-			}else{
-				$ck_jyufuku=VisitHistory::where("serial_user","=",$user_serial)
-					->where("date_visit","=",date('Y-m-d'))->count();
-				if($ck_jyufuku>0){
-					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様の本日の受付は済んでいます。';
-					$target_item_array['res']='double registration';
-				}else{
-					$target_item_array['contract_serial']=$latest_contract_serial->serial_keiyaku;
-					if(empty($latest_VisitHistory_serial->visit_history_serial)){
-						$target_item_array['visit_history_serial']="";	
-					}else{
-						$target_item_array['visit_history_serial']=$latest_VisitHistory_serial->visit_history_serial;
-					}
-					$target_item_array['msg']=$user_inf->name_sei.' '.$user_inf->name_mei.' 様のご来店を受け付けました。';
-					$target_item_array['res']='true';
-				}
-				$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-			}
-			*/
-		}
 		echo $json;
     }
 
