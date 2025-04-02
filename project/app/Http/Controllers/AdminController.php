@@ -77,7 +77,7 @@ class AdminController extends Controller
 	}
 
 	private function staff_receipt_set_manage($item_array){
-		//$ipadd=$_SERVER['REMOTE_ADDR'];
+		$ipadd=$_SERVER['REMOTE_ADDR'];
 		if($item_array['in_out_type']=='出勤'){
 			InOutHistory::insert([
 				'target_serial' => $item_array["user_serial"],

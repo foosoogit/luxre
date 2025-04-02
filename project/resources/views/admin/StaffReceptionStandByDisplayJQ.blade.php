@@ -69,7 +69,7 @@
 					document.getElementById("name_fadeout_alert").style.display="";
 					//alert("ipadd="+item_json.ipadd);
 					//if(item_json.ipadd!="153.185.58.27" && item_json.ipadd!="172.20.0.1"){
-					if(item_json.ipadd!="153.185.58.27"){
+					if(item_json.ipadd!="172.20.0.1"){
 						alert("正規の場所から読み込んでください。");
 						document.getElementById("seated_type").style.display="";
 						document.getElementById("seated_type").innerText = "";
