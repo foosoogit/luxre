@@ -141,7 +141,7 @@
 								<div class="col-auto">
 									<li>
 										<form method="GET" action="{{ route('admin.show_staff_in_out_rireki.get') }}">@csrf
-											<button class="btn btn-primary btn-sm" type="submit" onclick="return pass_ctrl();">スタッフ入出勤管理</button>
+											<button class="btn btn-primary btn-sm" type="submit" onclick="return pass_ctrl();">管理</button>
 										</form>
 									</li>
 								</div>
