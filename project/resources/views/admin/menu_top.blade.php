@@ -130,13 +130,7 @@
 										</form>
 									</li>
 								</div>
-								<div class="col-auto">
-									<li>
-										<form method="GET" action="{{ route('admin.show_staff_in_out_rireki.get') }}">@csrf
-											<button class="btn btn-primary btn-sm" type="submit">スタッフ入出勤履歴</button>
-										</form>
-									</li>
-								</div>
+								
 								<div class="col-auto">
 									<li>
 										<form method="GET" action="{{ route('StaffsList.show') }}">@csrf
@@ -144,7 +138,21 @@
 										</form>
 									</li>
 								</div>
+								<div class="col-auto">
+									<li>
+										<form method="GET" action="{{ route('admin.show_staff_in_out_rireki.get') }}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit" onclick="return pass_ctrl();">スタッフ入出勤管理</button>
+										</form>
+									</li>
+								</div>
 							</div>
+							{{-- 
+							<li>
+								<form method="POST" action="{{ route('admin.CashBookList.post') }}">@csrf
+									<button class="btn btn-primary btn-sm" type="submit">出納帳</button>
+								</form>
+							</li>
+							 --}}
 							<li>
 								<form method="GET" action="/workers/ShowGoodsList">@csrf
 									<button class="btn btn-primary btn-sm" type="submit" disabled>商品登録</button>
@@ -192,5 +200,4 @@
 		</div>
 		</div>
 	</div>
-
 @endsection

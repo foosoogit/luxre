@@ -36,12 +36,10 @@ Route::get('/login_customer', function () {
 })->name('customer.login');
 */
 // 顧客受付
-//Route::post('admin/CustomerStandbyDisplay', [AdminController::class,'ShowStaffStandbyDisplay'])->name("admin.StaffStandbyDisplay.post");
 Route::get('admin/StaffStandbyDisplay', [AdminController::class,'ShowStaffStandbyDisplay'])->name("admin.StaffStandbyDisplay.get");
 Route::post('admin/receipt_set_manage', [AdminController::class,'receipt_set_manage'])->name("admin.receipt_set_manage.post");
 Route::post('admin/customer_reception_manage', [AdminController::class,'customer_reception_manage'])->name('customer_reception_manage.post');
 Route::get('admin/CustomerStandbyDisplay', [AdminController::class,'ShowCustomerStandbyDisplay'])->name("admin.CustomerStandbyDisplay.get");
-//Route::get('CustomerStandbyDisplay', [AdminController::class,'ShowCustomerStandbyDisplay'])->name("admin.CustomerStandbyDisplay.get");
 // 管理ログイン画面
 Route::get('/admin-login', [AdminLoginController::class, 'create'])->name('admin.login');
 // 管理ログイン
@@ -49,7 +47,6 @@ Route::post('/admin-login', [AdminLoginController::class, 'store'])->name('admin
 // 管理ログアウト
 Route::delete('/admin-login', [AdminLoginController::class, 'destroy'])->name('admin.login.destroy');
 
-//Route::get('/user', [AdminController::class,'ShowMenuCustomers'])->name('customer.MyPage.login');
 Route::get('/user', [UserController::class,'ShowMyPage']);
 Route::middleware('auth')->group(function () {
     Route::get('/', [UserController::class,'ShowMyPage']);
@@ -59,12 +56,19 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     
     Route::name('admin.')->group(function() {
+
+        Route::post('/admin/CashBookList', function () {
+            return view('admin.CashBookList');
+        })->name('CashBookList.post');
+        Route::get('/admin/CashBookList', function () {
+            return view('admin.CashBookList');
+        })->name('CashBookList.post');
+
         Route::post('admin/ajax_staff_dell_time_card',[AdminController::class,'ajax_staff_dell_time_card'])->name('ajax_staff_dell_time_card');
         Route::post('admin/ajax_staff_change_time_card',[AdminController::class,'ajax_staff_change_time_card'])->name('ajax_staff_change_time_card');
         Route::get('admin/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
         Route::post('admin/ajax_digestion_point',[AdminController::class,'ajax_digestion_point'])->name('ajax_digestion_point');
         Route::post('admin/ajax_change_point',[AdminController::class,'ajax_change_point'])->name('ajax_change_point');
-        //Route::get('/show_staff_in_out_rireki', [AdminController::class,'show_staff_in_out_rireki'])->name('show_staff_in_out_rireki.get');
 
         Route::get('/show_staff_in_out_rireki', function () {
             session(['target_livewire_page' => "ListStaffInOut"]);
@@ -81,7 +85,6 @@ Route::middleware('auth:admin')->group(function () {
             }
             return view('admin.ListPoints');
         })->name('ListPoints.get');
-        //Route::get('/admin/show_point_list',[AdminController::class,'show_points_list'])->name('ListPoints.get');
         Route::get('/admin/GetEncryption', function () {
             return view('admin.GetEncryption');
         })->name('GetEncryption.get');
@@ -95,8 +98,6 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('QRcode', function () {
             return QrCode::size(300)->generate('A basic example of QR code!');
         })->name("QRcode");
-        //Route::get('/customers/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
-        //Route::get('admin/send_QRcode_to_staff/{StaffSerial}', [AdminController::class,'send_QRcode_to_staff'],function($StaffSerial){})->name("SendQRcodeToStaff.post");
         Route::post('admin/send_QRcode_to_staff', [AdminController::class,'send_QRcode_to_staff'])->name("SendQRcodeToStaff.post");
 
         Route::get('admin/InOutStandbyDisplay', [AdminController::class,'ShowInOutStandbyDisplay'])->name("InOutStandbyDisplay.get");

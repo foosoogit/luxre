@@ -30,11 +30,23 @@ class DatabaseSeeder extends Seeder
 				'email' => 'moezbeauty.ts@gmail.com',
 				'password' => Hash::make('0101'),
 			],
+			[
+				'name' => 'ksuzuki',
+				'serial_admin' => 'A_002',
+				'email' => 'info@luxre.site',
+				'password' => Hash::make('luxre2025@'),
+			],
+			[
+				'name' => 'nagano',
+				'serial_admin' => 'A_003',
+				'email' => 'nagano',
+				'password' => Hash::make('0123'),
+			],
 		];
 		foreach($admins as $admin){
             Admin::create($admin);
         }
-
+		/*
 		$treatmentcontents = [
 			[
 				'serial_treatment_contents'=> "Tr_00003",
@@ -257,6 +269,6 @@ class DatabaseSeeder extends Seeder
 		foreach($configrations as $configration){
             Configration::create($configration);
         }
-
+			*/
     }
 }

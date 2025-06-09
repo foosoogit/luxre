@@ -55,10 +55,10 @@ $(function(){
 });
 
 $(function(){
-  console.log("visit_date1="+document.getElementById("visit_date").value)
+  //console.log("visit_date1="+document.getElementById("visit_date").value)
   // モーダルの中の「ボタン1」を押した時の処理
     $("#btn1").on('click', function() {
-      console.log("visit_date2="+document.getElementById("visit_date").value)
+      //console.log("visit_date2="+document.getElementById("visit_date").value)
       let Tdate=document.getElementById("visit_date").value;
       let Tvisit_history_serial=document.getElementById("visit_history_serial").innerText;
       let Ttr_content=document.getElementById("tr_content_slct").value;

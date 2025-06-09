@@ -85,7 +85,6 @@
                                 data-num="{{$dVisitHistory->VisitNum}}" 
                                 data-sejyutu_naiyou="{{$dVisitHistory->treatment_dtails}}" 
                                 data-visit_history_serial="{{$dVisitHistory->visit_history_serial}}" 
-                                data-name="{{$User_name}}"
                                 data-visit_date="{{$dVisitHistory->date_visit}}"
                                 data-sejyutusya="{{$dVisitHistory->last_name_kanji}}&nbsp;{{$dVisitHistory->first_name_kanji}}"
                             > 

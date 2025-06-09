@@ -53,47 +53,9 @@ class PaymentHistory extends Model
 	public function getCashAmountAttribute($value){
 		$CashAmount="";
 		if($this->how_to_pay=="cash" and $this->amount_payment<>""){$CashAmount=$this->amount_payment;}
-		/*
-		$kyakuInf=Contract::where('serial_keiyaku','=',$this->serial_keiyaku)->first();
-		//print_r($kyakuInf);
-		if($this->how_to_pay=="cash" and  $this->amount_payment<>""){
-			if($kyakuInf->how_to_pay=='現金' and $kyakuInf->how_many_pay_genkin=='1' ){
-				$CashAmount=$this->amount_payment;
-			}else if($kyakuInf->how_to_pay=='Credit Card' and $kyakuInf->how_many_pay_card=='1' ){
-				$CashAmount=$this->amount_payment;
-			}
-		}
-		*/
 		return $CashAmount;
 	}
-	/*
-	public function getCashSplitAttribute($value){
-		$CashSplit="";
-    		$kyakuInf=Contract::where('serial_keiyaku','=',$this->serial_keiyaku)->first();
-		if($this->how_to_pay=="cash" and  $this->amount_payment<>""){
-			if($kyakuInf->how_to_pay=='現金' and $kyakuInf->how_many_pay_genkin>1 ){
-				$CashSplit=$this->amount_payment;
-			}else if($kyakuInf->how_to_pay=='Credit Card' and $kyakuInf->how_many_pay_card>1 ){
-				$CashSplit=$this->amount_payment;
-			}
-		}
-		return $CashSplit;
-	}
-	*/
-	/*
-	public function getCashTotalAttribute($value){
-		$CashSplit="";
-    		$kyakuInf=Contract::where('serial_keiyaku','=',$this->serial_keiyaku)->first();
-		if($this->how_to_pay=="cash" and  $this->amount_payment<>""){
-			if($kyakuInf->how_to_pay=='現金' and $kyakuInf->how_many_pay_genkin>=1 ){
-				$CashSplit=$this->amount_payment;
-			}else if($kyakuInf->how_to_pay=='Credit Card' and $kyakuInf->how_many_pay_card>=1 ){
-				$CashSplit=$this->amount_payment;
-			}
-		}
-		return $CashSplit;
-	}
-	*/
+
 	public function getPaiedNumAttribute($value){
 		$Paied_history_serial_array=explode("-", $this->payment_history_serial);
 		$PaiedNum=$Paied_history_serial_array[2];
