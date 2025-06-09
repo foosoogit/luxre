@@ -146,13 +146,13 @@
 									</li>
 								</div>
 							</div>
-							{{-- 
+							
 							<li>
 								<form method="POST" action="{{ route('admin.CashBookList.post') }}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">出納帳</button>
 								</form>
 							</li>
-							 --}}
+							
 							<li>
 								<form method="GET" action="/workers/ShowGoodsList">@csrf
 									<button class="btn btn-primary btn-sm" type="submit" disabled>商品登録</button>
