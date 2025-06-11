@@ -26,8 +26,9 @@ input,textarea{
 				</div>
 			</div>
 			 --}}
-				<form name='input_customer_fm' id="input_customer_fm" action="/customers/insertCustomer" method="POST" class="h-adr">@csrf
-				{{--<form action="{{ route('customers.insertCustomer') }}" method="POST" class="h-adr">@csrf--}}
+				{{-- <form name='input_customer_fm' id="input_customer_fm" action="/customers/insertCustomer" method="POST" class="h-adr">@csrf --}}
+				<form name='input_customer_fm' id="input_customer_fm" action="{{ route('customers.insertCustomer')}}" method="POST" class="h-adr">@csrf
+				{{-- <form action="{{ route('customers.insertCustomer') }}" method="POST" class="h-adr">@csrf --}}
 					@if (optional($target_user)->serial_user<>null)
 						<p><div class="mb-2 bg-secondary text-white">顧客データ修正</div></p>
 						<p>顧客番号<input type="text" name="serial_user" value="{{optional($target_user)->serial_user}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" readonly></p>
