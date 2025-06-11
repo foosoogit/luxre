@@ -1,5 +1,5 @@
 ﻿window.onload = function() {
-	console.log("cookie3="+getCookie("ModalOpenFlg"));
+	//console.log("cookie3="+getCookie("ModalOpenFlg"));
 	if(getCookie("ModalOpenFlg")!=="true"){
 		const dt=ShowModal();
 		const ReservationBirthdayModalBtn= document.getElementById('ReservationBirthdayModalBtn');
