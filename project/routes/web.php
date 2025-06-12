@@ -186,9 +186,11 @@ Route::middleware('auth:admin')->group(function () {
 	    Route::post('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminController::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){}]);
 
         //Route::get('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
-        Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
-        Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
-	    
+        
+        Route::domain('https://salon-ge.com/nagano-01/sys/project/public')->group(function () {
+            Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
+            Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
+	    });
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
 	    
@@ -229,10 +231,10 @@ Route::middleware('auth:admin')->group(function () {
         //https://salon-ge.com/nagano-01/sys/project
         //https://salon-ge.com/nagano-01/sys/project/public
         //nagano-01/sys/project/public
-        Route::domain('https://salon-ge.com/nagano-01/sys/project/public')->group(function () {
+        //Route::domain('https://salon-ge.com/nagano-01/sys/project/public')->group(function () {
             Route::get('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
             Route::post('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
-        });
+        //});
         
         Route::get('customers/ShowInputNewCustomer', [AdminController::class,'ShowInputNewCustomer'])->name('ShowInpNewCustomer');
         Route::post('/customers/ShowInputCustomer', [AdminController::class,'ShowInputCustomer',function(Request $request){}])->name('ShowInpCustomer');
