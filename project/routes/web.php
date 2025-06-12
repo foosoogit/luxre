@@ -227,9 +227,11 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/customers/ShowInpContract/{serial_user}', [AdminController::class,'ShowInpKeiyaku'],function($serial_user){})->name('ShowInpKeiyaku');
         Route::post('/customers/getCustomerInf', [OtherFunc::class,'get_customer_inf'],function(Request $request){})->name('getCustomerInf');
         //https://salon-ge.com/nagano-01/sys/project
-        Route::domain('salon-ge.com/nagano-01/sys/project/')->group(function () {
+        //https://salon-ge.com/nagano-01/sys/project/public
+        //nagano-01/sys/project/public
+        Route::domain('/nagano-01/sys/project/public')->group(function () {
             Route::get('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
-            Route::post('customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
+            Route::post('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
         });
         
         Route::get('customers/ShowInputNewCustomer', [AdminController::class,'ShowInputNewCustomer'])->name('ShowInpNewCustomer');
