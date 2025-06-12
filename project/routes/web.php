@@ -229,7 +229,7 @@ Route::middleware('auth:admin')->group(function () {
         //https://salon-ge.com/nagano-01/sys/project
         //https://salon-ge.com/nagano-01/sys/project/public
         //nagano-01/sys/project/public
-        Route::domain('/nagano-01/sys/project/public')->group(function () {
+        Route::domain('https://salon-ge.com/nagano-01/sys/project/public')->group(function () {
             Route::get('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
             Route::post('/customers/insertCustomer', [AdminController::class,'insertCustomer'],function(Request $request){})->name('insertCustomer');
         });
