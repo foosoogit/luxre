@@ -18,6 +18,7 @@ use App\Models\VisitHistory;
 use App\Models\TreatmentContent;
 use App\Models\InOutHistory;
 use App\Models\Configration;
+use App\Models\CashBook;
 use App\Mail\SendMail;
 use App\Http\Requests\InpCustomerRequest;
 use App\Http\Controllers\OtherFunc;
@@ -41,6 +42,36 @@ class AdminController extends Controller
 	
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
+	}
+
+	public function ajax_upsert_CashBook(Request $request){
+		
+		Log::info($request);
+		/*
+		$deposit_amount="";
+        $payment_amount="";
+        if($request->in_out=="deposit"){
+            $deposit_amount=$request->amount;
+        }else{
+			$payment_amount=$request->amount;
+		}
+		*/
+        $rec = [
+            [
+				'id' => $request->id,
+				'target_date' => $request->target_date,
+				'in_out' => $request->in_out,
+				'summary' => $request->summary,
+				'payment'=> $request->payment,
+				'deposit'=> $request->deposit,
+				'inputter'=> Auth::id(),
+				'remarks'=>$request->remarks 
+			],
+        ];
+        //$user_id=Auth::id();
+        CashBook::upsert($rec, ['id']);
+		//echo "保存しました。" ;
+
 	}
 
 	private function staff_reception_manage($staff_serial){

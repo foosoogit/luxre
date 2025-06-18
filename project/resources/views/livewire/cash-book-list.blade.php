@@ -114,11 +114,11 @@
                             <h4 class="modal-title">出納帳 新規登録</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-bs-label="Close"></button>
                         </div>
-                        <form name="submitForm" id="submitForm"> @csrf
+                        <form name="submitForm" id="submitForm">@csrf
                             <div class="modal-body">
                                 <div class="row p-2">
                                     <div class="col-auto">
-                                        <label>シリアル：<span id="id"></span></label>
+                                        <label>シリアル：<input type="text" id="id_txt" name="id_txt" wire:model="id_txt"/></label>
                                     </div>
                                 </div>
                                 <div class="row p-2">
@@ -167,7 +167,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" id="lwtest_btn" class="btn btn-primary" wire:click="submitForm">保存</button>
+                                <button type="submit" id="submit_btn" class="btn btn-primary" wire:click="submitForm">保存</button>
+                                {{-- <button type="button" id="submit_btn" class="btn btn-primary" wire:click="submitForm">保存</button> --}}
                                 <button type="button" class="btn btn-default" data-bs-dismiss="modal">キャンセル</button>
                             </div>
                         </form>

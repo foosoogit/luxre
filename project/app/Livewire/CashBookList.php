@@ -15,15 +15,15 @@ use Validator;
 class CashBookList extends Component
 {
     use WithPagination;
-    public $kensakukey,$target_date,$payment_deposit_rdo,$payment,$deposit,$summary,$amount,$remarks;
+    public $kensakukey,$target_date,$payment_deposit_rdo,$payment,$deposit,$summary,$amount,$remarks,$id_txt;
 
     public function del($id){
-        log::alert('id='.$id);
+        //log::alert('id='.$id);
         $CashBook = CashBook::find($id);
         $CashBook->delete();
     }
     public function submitForm(Request $request){
-        //Log::info($this->all());
+        //Log::info($request->all());
         /*
         $validator = Validator::make($this->all(), [
             $this->payment_deposit_rdo => 'required',
@@ -50,9 +50,10 @@ class CashBookList extends Component
             "amount"=> ['required'],
         ]);
         */
+
         //$validator->fails()
         //Log::info($validated); 
-
+        //log::alert('id='.$this->id_txt);
         //Log::info("validated=". $validated);
         if ($validator->fails()) {
             //Log::alert("fails");
@@ -65,17 +66,19 @@ class CashBookList extends Component
                 $deposit_amount=$this->amount;
             }
             $rec = [
-                ['target_date' => $this->target_date, 'in_out' => $this->payment_deposit_rdo, 'summary' => $this->summary,'payment'=> $payment_amount,'deposit'=> $deposit_amount,'inputter'=> Auth::id(),'remarks'=>$this->remarks ],
+                ['id' => $this->id_txt,'target_date' => $this->target_date, 'in_out' => $this->payment_deposit_rdo, 'summary' => $this->summary,'payment'=> $payment_amount,'deposit'=> $deposit_amount,'inputter'=> Auth::id(),'remarks'=>$this->remarks ],
             ];
-            //Log::info($rec);
+            
             CashBook::upsert($rec, ['id']);
+            //Log::alert("upsert");
+           
         }
+
     }
 
     public function render(Request $request)
     {
-        //if($this->summary<>""){
-        //Log::info($request);
+        //Log::alert("render");
         //Log::info("summary=".$this->summary);
         //Log::info("target_date=".$this->target_date);
         OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);

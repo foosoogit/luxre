@@ -56,8 +56,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     
     Route::name('admin.')->group(function() {
+        Route::post('admin/ajax_upsert_CashBook',[AdminController::class,'ajax_upsert_CashBook'])->name('ajax_upsert_CashBook');
 
-        Route::post('/admin/CashBookList', function () {
+        Route::post('admin/CashBookList', function () {
             return view('admin.CashBookList');
         })->name('CashBookList.post');
         Route::get('/admin/CashBookList', function () {
@@ -187,10 +188,10 @@ Route::middleware('auth:admin')->group(function () {
 
         //Route::get('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
         
-        Route::domain('https://salon-ge.com/nagano-01/sys/project/public')->group(function () {
+        //Route::domain('https://salon-ge.com/nagano-01/sys/project/public')->group(function () {
             Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
             Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
-	    });
+	    //});
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
 	    

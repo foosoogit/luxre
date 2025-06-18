@@ -57,7 +57,7 @@ $(function(){
       remarks=button.data('remarks');
       modal_obj.find('.modal-body textarea#remarks').val(remarks);
       id=button.data('id');
-      modal_obj.find('.modal-body span#id').text(id);
+      modal_obj.find('.modal-body input#id_txt').val(id);
     }else{
       modal_obj.find('.modal-body input#target_date').val('');
       modal_obj.find('.modal-body input#summary').val('');
@@ -73,22 +73,38 @@ $(function(){
 
 $(function(){
    // モーダルの中の「ボタン1」を押した時の処理
-    //$("#save_btn").on('click', function() {
-    //  console.log("create_btn");
-      //let Tdate=document.getElementById("visit_date").value;
-      //let Tvisit_history_serial=document.getElementById("visit_history_serial").innerText;
-      //let Ttr_content=document.getElementById("tr_content_slct").value;
-      //let Tpoint=document.getElementById("point").value;
-      //if(Ttr_content==0){
-      //  alert("施術内容を選択してください。");
-      //  return false;
-      //}
-      //console.log("Ttr_content="+Ttr_content);
-
-      //$('#CreateModal').modal('hide');
+    $("#submit_btn").on('click', function() {
+      //let payment_deposit_rdo=document.getElementsByName("payment_deposit_rdo");
+      let id_txt=document.getElementById("id_txt").value;
+      let target_date=document.getElementById("target_date").value;
+      let summary=document.getElementById("summary").value;
+      let remarks=document.getElementById("remarks").value;
       /*
+      for (let i = 0; i < payment_deposit_rdo.length; i++){
+          if (payment_deposit_rdo.item(i).checked){
+              console.log("value="+ayment_deposit_rdo.item(i).value);
+              payment_deposit = payment_deposit_rdo.item(i).value;
+          }
+      }
+      */
+      let payment_deposit= $('input[name="payment_deposit_rdo"]:checked').val();
+      let deposit_amount="";
+      let payment_amount="";
+      console.log("payment_deposit="+payment_deposit);
+      if(payment_deposit=="payment"){
+            payment_amount=document.getElementById("amount").value;
+      }else{
+            deposit_amount=document.getElementById("amount").value;
+      }
+      //console.log("id_txt="+id_txt);  
+      
+      //console.log("summary="+summary);
+      //console.log("payment_amount="+payment_amount);
+      //console.log("deposit_amount="+deposit_amount);
+      //console.log("remarks 3="+remarks);
+      //$('#CreateModal').modal('hide');
       $.ajax({
-        url: "save_visit_data_ajax",
+        url: "ajax_upsert_CashBook",
         type: 'post', // getかpostを指定(デフォルトは前者)
         dataType: 'text', 
         scriptCharset: 'utf-8',
@@ -96,24 +112,31 @@ $(function(){
         cache: false,
         async : false,
         //data: {"Tdate": Tdate,"Tvisit_history_serial": Tvisit_history_serial,"Ttr_content":Ttr_content,"Tpoint":Tpoint},
-        data: {"Tdate": Tdate,"Tvisit_history_serial": Tvisit_history_serial,"Ttr_content":Ttr_content},
+        //data: {"Tdate": Tdate,"Tvisit_history_serial": Tvisit_history_serial,"Ttr_content":Ttr_content},
+        data: {'id':id_txt,
+					'target_date': target_date,
+					'in_out' : payment_deposit,
+					'summary': summary,
+					'payment': payment_amount,
+					'deposit': deposit_amount,
+					'remarks': remarks
+        },
         headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
+				  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			  }
       }).done(function (data) {
-        location.replace(location.href);
-        $msg= "修正しました。";
+        //location.replace(location.href);
+        //$msg= "修正しました。";
         //console.log("data 2 ="+data);
-        if(data=="1"){
-          $msg= "登録しました。";
-        }
-		  	alert($msg);
+        //if(data=="1"){
+        //  $msg= "登録しました。";
+        //}
+		  	//alert(data);
       }) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
         alert(XMLHttpRequest.status);
         alert(textStatus);
         alert(errorThrown);	
         alert('エラー');
       });
-      */
-    //});
+    });
 });
