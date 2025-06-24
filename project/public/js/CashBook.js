@@ -16,7 +16,7 @@ jQuery(document).ready(function($){
       amount:{required: "金額を入力して下さい。",number:"数値を入力してください。"}
 	  },
 		errorPlacement: function(error, element) {
-			console.log("element.attr name="+element.attr("name"));
+			//console.log("element.attr name="+element.attr("name"));
       if (element.is(':radio, :checkbox')) {
 				if(element.attr("name")=='payment_deposit_rdo'){
 					error.appendTo($('#payment_deposit_rdo_for_error'));
@@ -58,14 +58,18 @@ $(function(){
       modal_obj.find('.modal-body textarea#remarks').val(remarks);
       id=button.data('id');
       modal_obj.find('.modal-body input#id_txt').val(id);
+      document.getElementById('serial_disp_none').style.display='';
+      document.getElementById('modal_title').innerHTML='修正';
     }else{
       modal_obj.find('.modal-body input#target_date').val('');
       modal_obj.find('.modal-body input#summary').val('');
       modal_obj.find('.modal-body input#amount').val('');
       modal_obj.find('.modal-body textarea#remarks').val('');
       modal_obj.find('.modal-body span#id').text('');
+      document.getElementById('serial_disp_none').style.display='none';
       document.getElementById('payment').checked=false;
       document.getElementById('deposit').checked=false;
+      document.getElementById('modal_title').innerHTML='新規';
     }
 	});
   
@@ -74,69 +78,55 @@ $(function(){
 $(function(){
    // モーダルの中の「ボタン1」を押した時の処理
     $("#submit_btn").on('click', function() {
-      //let payment_deposit_rdo=document.getElementsByName("payment_deposit_rdo");
       let id_txt=document.getElementById("id_txt").value;
       let target_date=document.getElementById("target_date").value;
       let summary=document.getElementById("summary").value;
       let remarks=document.getElementById("remarks").value;
-      /*
-      for (let i = 0; i < payment_deposit_rdo.length; i++){
-          if (payment_deposit_rdo.item(i).checked){
-              console.log("value="+ayment_deposit_rdo.item(i).value);
-              payment_deposit = payment_deposit_rdo.item(i).value;
-          }
-      }
-      */
       let payment_deposit= $('input[name="payment_deposit_rdo"]:checked').val();
+      let amount=document.getElementById("amount").value;
       let deposit_amount="";
       let payment_amount="";
-      console.log("payment_deposit="+payment_deposit);
-      if(payment_deposit=="payment"){
-            payment_amount=document.getElementById("amount").value;
-      }else{
-            deposit_amount=document.getElementById("amount").value;
-      }
-      //console.log("id_txt="+id_txt);  
-      
+
+      //console.log("target_date="+target_date);
       //console.log("summary="+summary);
-      //console.log("payment_amount="+payment_amount);
-      //console.log("deposit_amount="+deposit_amount);
-      //console.log("remarks 3="+remarks);
-      //$('#CreateModal').modal('hide');
-      $.ajax({
-        url: "ajax_upsert_CashBook",
-        type: 'post', // getかpostを指定(デフォルトは前者)
-        dataType: 'text', 
-        scriptCharset: 'utf-8',
-        frequency: 10,
-        cache: false,
-        async : false,
-        //data: {"Tdate": Tdate,"Tvisit_history_serial": Tvisit_history_serial,"Ttr_content":Ttr_content,"Tpoint":Tpoint},
-        //data: {"Tdate": Tdate,"Tvisit_history_serial": Tvisit_history_serial,"Ttr_content":Ttr_content},
-        data: {'id':id_txt,
-					'target_date': target_date,
-					'in_out' : payment_deposit,
-					'summary': summary,
-					'payment': payment_amount,
-					'deposit': deposit_amount,
-					'remarks': remarks
-        },
-        headers: {
-				  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-			  }
-      }).done(function (data) {
-        //location.replace(location.href);
-        //$msg= "修正しました。";
-        //console.log("data 2 ="+data);
-        //if(data=="1"){
-        //  $msg= "登録しました。";
-        //}
-		  	//alert(data);
-      }) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
-        alert(XMLHttpRequest.status);
-        alert(textStatus);
-        alert(errorThrown);	
-        alert('エラー');
-      });
+      //console.log("payment_deposit="+payment_deposit);
+      //console.log("amount="+amount);
+      
+      if(payment_deposit=="payment"){
+            payment_amount=amount;
+      }else{
+            deposit_amount=amount;
+      }
+      if(target_date!='' && summary!='' && amount!='' && typeof payment_deposit !== 'undefined'){
+        document.getElementById("CreateModal").close;
+        $.ajax({
+            url: "ajax_upsert_CashBook",
+            type: 'post', // getかpostを指定(デフォルトは前者)
+            dataType: 'text', 
+            scriptCharset: 'utf-8',
+            frequency: 10,
+            cache: false,
+            async : false,
+            data: {'id':id_txt,
+              'target_date': target_date,
+              'in_out' : payment_deposit,
+              'summary': summary,
+              'payment': payment_amount,
+              'deposit': deposit_amount,
+              'remarks': remarks
+            },
+            headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+          }).done(function (data) {
+            document.getElementById("CreateModal").close;
+            alert('保存しました。');
+          }) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(XMLHttpRequest.status);
+            alert(textStatus);
+            alert(errorThrown);	
+            alert('保存に失敗しました。');
+          });
+        }
     });
 });

@@ -1,25 +1,50 @@
 <div class="container text-center">
 	<div class="py-12">
 		<div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-			<div class="pb-4 justify-content-center align-middle">
+			<div class="pb-4">
                 <div class="row">
 					@include('layouts.header')
 				</div>
                 <div class="mb-2 bg-info text-white">出納帳</div>
-
-						    <div class="row pb-2">
-                <div class="col-auto">
-                    <button type="button" name="create_btn" id="create_btn" class="btn btn-primary btn-sm modalBtn" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#CreateModal"
-                        data-manage="create">
-                        新規登録
-                    </button>
+				<div class="row pb-2">
+                    <div class="col-auto">
+                        <button type="button" name="create_btn" id="create_btn" class="btn btn-primary btn-sm modalBtn" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#CreateModal"
+                            data-manage="create">
+                            新規登録
+                        </button>
+                    </div>
+                    <div class="col-auto">
+                        <span class="font-weight-bold h2">残金:  {{number_format($balance)}}  円</span>
+                    </div>
                 </div>
-                <div class="col-auto">
-                    <button type="button" wire:click="searchClear()" onclick="document.getElementById('kensakukey_txt').value=''" disabled>解除</button>
-                    <input type="text" name="kensakukey_txt" id="kensakukey_txt" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model.defer="kensakukey">
-                    <button type="button" name="SerchBtn" id="SerchBtn" wire:click="search()" disabled>検索</button>
+                <div class="row pb-2">
+                    <div class="form-check col-auto">
+                        <input class="form-check-input" type="checkbox" value="payment" name="amount_type[]" id="payment_cbox" {{session('serch_payment_flg')}}  wire:click="serch_payment()">
+                        <label class="form-check-label" for="payment_cbox">出金</label>
+                    </div>
+                    <div class="form-check col-auto">
+                        <input class="form-check-input" type="checkbox" value="deposit" name="amount_type[]" id="deposit_cbox"  {{session('serch_deposit_flg')}} wire:click="serch_deposit()">
+                        <label class="form-check-label" for="deposit_cbox" >入金</label>
+                    </div>
+                </div>
+                <div class="row pb-2">
+                    <div class="col-auto">
+                        <button type="button" wire:click="searchClear()" onclick="document.getElementById('kensakukey_txt').value=''">検索解除</button>
+                    </div>
+                    <div class="col-auto">
+                        <input type="month" id="month" name="month" wire:model="serch_key_month"/><button type="button" name="serch_month_btn" id="serch_month_btn" wire:click="search_month()" >月で検索</button>
+                    </div>
+                    <div class="col-auto">
+                        <input type="date" id="date" name="date" wire:model="serch_key_date"/><button type="button" name="serch_date_btn" id="serch_date_btn" wire:click="search_date()" >日付で検索</button>
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" name="kensakukey_txt" id="kensakukey_txt" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model="serch_key_all">
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" name="SerchBtn" id="SerchBtn" wire:click="search()">全件検索</button>
+                    </div>
                 </div>
             </div>
             <table id="table_responsive container-fluid" class="table-striped table-hover">
@@ -103,7 +128,7 @@
                 </tbody>
             </table>
 	        {{$CashBookQuery->appends(request()->query())->links('pagination::bootstrap-4')}}
-            
+        </div>    
             <!-- モーダル・ダイアログ -->
             <div class="modal fade" id="CreateModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -111,12 +136,12 @@
                         <div class="modal-header">
                             <meta http-equiv="Pragma" content="no-cache">
                             <meta http-equiv="Cache-Control" content="no-cache"> 
-                            <h4 class="modal-title">出納帳 新規登録</h4>
+                            <h4 class="modal-title">出納帳&nbsp;<span id='modal_title'></span></h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-bs-label="Close"></button>
                         </div>
                         <form name="submitForm" id="submitForm">@csrf
                             <div class="modal-body">
-                                <div class="row p-2">
+                                <div class="row p-2" id="serial_disp_none">
                                     <div class="col-auto">
                                         <label>シリアル：<input type="text" id="id_txt" name="id_txt" wire:model="id_txt"/></label>
                                     </div>

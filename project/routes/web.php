@@ -59,9 +59,32 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('admin/ajax_upsert_CashBook',[AdminController::class,'ajax_upsert_CashBook'])->name('ajax_upsert_CashBook');
 
         Route::post('admin/CashBookList', function () {
+            Log::alert("serch_payment_flg web=".session('serch_payment_flg'));
+            Log::alert("serch_deposit_flg web=".session('serch_deposit_flg'));
+            if(null ===session('serch_payment_flg')){
+                session(['serch_payment_flg' => "checked"]);
+            }
+            if (null ===session('serch_deposit_flg')){
+                session(['serch_deposit_flg' => "checked"]);
+            }
+            //session(['serch_payment_flg' => "checked"]);
+            //session(['serch_deposit_flg' => "checked"]);
+            //session(['serch_payment_flg' => ""]);
+            //session(['serch_deposit_flg' => ""]);
             return view('admin.CashBookList');
         })->name('CashBookList.post');
+
         Route::get('/admin/CashBookList', function () {
+            if (null !==session('serch_payment_flg')){
+                session(['serch_payment_flg' => "checked"]);
+            }
+            if (null !==session('serch_deposit_flg')){
+                session(['serch_deposit_flg' => "checked"]);
+            }
+            //session(['serch_payment_flg' => "checked=checked"]);
+            //session(['serch_deposit_flg' => "checked=checked"]);
+            //session(['serch_payment_flg' => ""]);
+            //session(['serch_deposit_flg' => ""]);
             return view('admin.CashBookList');
         })->name('CashBookList.post');
 

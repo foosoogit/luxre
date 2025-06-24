@@ -9,7 +9,7 @@
 						<div class="container">
 							<div class="row">
 								<div class="col-10">
-									{{ config('app.name', 'Laravel') }}Menu
+									メニュー&nbsp;{{ config('app.name', 'Laravel') }}
 								</div>
 								<div class="col-2">
 									<form method="POST" action="{{ route('admin.login.destroy') }}">

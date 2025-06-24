@@ -46,7 +46,15 @@ class AdminController extends Controller
 
 	public function ajax_upsert_CashBook(Request $request){
 		
-		Log::info($request);
+		//Log::info($request);
+		//Log::alert('payment='.$request->payment);
+		//$a=$request->payment ?? '空';
+		//$a = $request->payment ?? "";
+		//$a=is_null($request->payment) ? "" : $input;
+		//Log::alert('payment空='.$a);
+		//Log::alert('deposit='.$request->deposit);
+		//$b=$request->deposit??'空';
+		//Log::alert('deposit空='.$b);
 		/*
 		$deposit_amount="";
         $payment_amount="";
@@ -56,18 +64,20 @@ class AdminController extends Controller
 			$payment_amount=$request->amount;
 		}
 		*/
+
         $rec = [
             [
 				'id' => $request->id,
 				'target_date' => $request->target_date,
 				'in_out' => $request->in_out,
 				'summary' => $request->summary,
-				'payment'=> $request->payment,
-				'deposit'=> $request->deposit,
+				'payment'=> $request->payment ?? '',
+				'deposit'=> $request->deposit ?? '',
 				'inputter'=> Auth::id(),
 				'remarks'=>$request->remarks 
 			],
         ];
+		//Log::info($rec);
         //$user_id=Auth::id();
         CashBook::upsert($rec, ['id']);
 		//echo "保存しました。" ;
