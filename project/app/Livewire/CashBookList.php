@@ -12,35 +12,49 @@ use App\Models\CashBook;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Support\Facades\DB;
+if(!isset($_SESSION)){session_start();}
 
 class CashBookList extends Component
 {
     use WithPagination;
     public $test,$kensakukey,$target_date,$payment_deposit_rdo,$payment,$deposit,$summary,$amount,$remarks,$id_txt,$serch_key_month,$serch_key_date,$serch_key_all,$serch_key_payment,$serch_key_deposit;
 
+    public function search_all(){
+        $this->serch_key_date="";
+        $this->serch_key_month="";
+    }
+
+    public function searchClear(){
+		$this->serch_key_month="";
+		$this->serch_key_all="";
+		$this->serch_key_date="";
+        session(['serch_payment_flg'=>'checked'],['serch_deposit_flg'=>'checked'],['serchKey'=>'']);
+        Log::alert("searchClear");
+	}
+
     public function serch_payment(){
-        Log::alert("serch_payment_flg 1=".session('serch_payment_flg'));
         if(session('serch_payment_flg')=="checked"){
             session(['serch_payment_flg' => ""]);
         }else{
             session(['serch_payment_flg' => "checked"]);
         }
-        Log::alert("serch_payment_flg=".session('serch_payment_flg'));
     }
     
     public function serch_deposit(){
-        Log::alert("serch_deposit_flg 1=".session('serch_deposit_flg'));
         if(session('serch_deposit_flg')=="checked"){
             session(['serch_deposit_flg' => ""]);
         }else{
             session(['serch_deposit_flg' => "checked"]);
         }
-        Log::alert("serch_deposit_flg=".session('serch_deposit_flg'));
     }
 
     public function search_month(){
-        //Log::alert("serch_key_month=".$this->serch_key_month);
         $this->serch_key_date="";
+        $this->serch_key_all="";
+    }
+
+    public function search_date(){
+        $this->serch_key_month="";
         $this->serch_key_all="";
     }
 
@@ -58,31 +72,27 @@ class CashBookList extends Component
         if ($validator->fails()) {
            $this->skipRender();
         }
-        /*
-        else{
-            $deposit_amount="";
-            $payment_amount=$this->amount;
-            if($payment_amount==""){
-                $deposit_amount=$this->amount;
-            }
-            $rec = [
-                ['id' => $this->id_txt,'target_date' => $this->target_date, 'in_out' => $this->payment_deposit_rdo, 'summary' => $this->summary,'payment'=> $payment_amount,'deposit'=> $deposit_amount,'inputter'=> Auth::id(),'remarks'=>$this->remarks ],
-            ];
-        }
-        */
     }
 
     public function render(Request $request)
     {
         OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
         //$checked_payment_cbox='checked="checked"';$checked_deposit_cbox='checked="checked"';
+        
+        //log::alert("serch_key_month=".$this->serch_key_month);
+		//log::alert("serch_key_all=".$this->serch_key_all);
+		//log::alert("serch_key_date=".$this->serch_key_date);
+        //log::alert("serch_payment_flg=".session('serch_payment_flg'));
+        //log::alert("serch_deposit_flg=".session('serch_deposit_flg'));
+		//log::alert("serchKeyh=".session('serchKey'));
+        //log::alert("serch_key_date=".$this->serch_key_date);
         $balance=CashBook::select(DB::raw('SUM(deposit -  payment) as balance'))
             ->value('balance');
         $CashBookQuery=CashBook::query();
         if($this->serch_key_month<>""){
             $key="%".$this->serch_key_month."%";
             $CashBookQuery=$CashBookQuery->where('target_date','like',$key);
-        }else if($this->serch_key_month<>""){
+        }else if($this->serch_key_date<>""){
             $key="%".$this->serch_key_date."%";
             $CashBookQuery=$CashBookQuery->where('target_date','like',$key);
         }else if($this->serch_key_all<>""){
@@ -94,13 +104,24 @@ class CashBookList extends Component
 				->orwhere('deposit','like',$key)
 				->orwhere('remarks','like',$key);
         }
+        //log::alert("serch_payment_flg=".session('serch_payment_flg'));
+        //log::alert("serch_deposit_flg=".session('serch_deposit_flg'));
+        if(session('serch_payment_flg')=="checked" &&  empty(session('serch_deposit_flg'))){
+            $CashBookQuery=$CashBookQuery->where('in_out','=','payment');
+        }else if(empty(session('serch_payment_flg')) && session('serch_deposit_flg')=="checked"){
+            $CashBookQuery=$CashBookQuery->where('in_out','=','deposit');
+        }
         $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
         $newCashBookQuerySerial="";
         $CashBookQuery=$CashBookQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
-        Log::alert("serch_payment_flg render=".session('serch_payment_flg'));
-        Log::alert("serch_deposit_flg render=".session('serch_deposit_flg'));
+        //$serch_payment_sum=$CashBookQuery->select(DB::raw('sum(payment) as sum_payment'))->value('sum_payment');
+        $serch_payment_sum=$CashBookQuery->sum('IntPayment');
+        $serch_deposit_sum=$CashBookQuery->sum('IntDeposit');
+        $serch_balance=$serch_deposit_sum-$serch_payment_sum;
+        //$serch_deposit_sum=$CashBookQuery->selectRaw(DB::raw('SUM(deposit) as serch_deposit_sum'))->value('serch_deposit_sum');
+        //$serch_balance=$CashBookQuery->select(DB::raw('SUM(deposit -  payment) as serch_balance'))->value('serch_balance');
         //$checked_deposit_cbox='checked';
         //$checked_payment_cbox='checked';
-        return view('livewire.cash-book-list',compact('balance','target_historyBack_inf_array','CashBookQuery','newCashBookQuerySerial'));
+        return view('livewire.cash-book-list',compact('serch_balance','serch_deposit_sum','serch_payment_sum','balance','target_historyBack_inf_array','CashBookQuery','newCashBookQuerySerial'));
     }
 }

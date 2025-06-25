@@ -21,17 +21,17 @@
                 </div>
                 <div class="row pb-2">
                     <div class="form-check col-auto">
-                        <input class="form-check-input" type="checkbox" value="payment" name="amount_type[]" id="payment_cbox" {{session('serch_payment_flg')}}  wire:click="serch_payment()">
+                        <input class="form-check-input" type="checkbox" value="payment" name="amount_type[]" id="payment_cbox" onclick="p_d_manage()" {{session('serch_payment_flg')}}  wire:click="serch_payment()">
                         <label class="form-check-label" for="payment_cbox">出金</label>
                     </div>
                     <div class="form-check col-auto">
-                        <input class="form-check-input" type="checkbox" value="deposit" name="amount_type[]" id="deposit_cbox"  {{session('serch_deposit_flg')}} wire:click="serch_deposit()">
+                        <input class="form-check-input" type="checkbox" value="deposit" name="amount_type[]" id="deposit_cbox" onclick="p_d_manage()" {{session('serch_deposit_flg')}} wire:click="serch_deposit()">
                         <label class="form-check-label" for="deposit_cbox" >入金</label>
                     </div>
                 </div>
                 <div class="row pb-2">
                     <div class="col-auto">
-                        <button type="button" wire:click="searchClear()" onclick="document.getElementById('kensakukey_txt').value=''">検索解除</button>
+                        <button type="button" wire:click="searchClear()" onclick="searchClearManage()">検索解除</button>
                     </div>
                     <div class="col-auto">
                         <input type="month" id="month" name="month" wire:model="serch_key_month"/><button type="button" name="serch_month_btn" id="serch_month_btn" wire:click="search_month()" >月で検索</button>
@@ -43,9 +43,23 @@
                         <input type="text" name="kensakukey_txt" id="kensakukey_txt" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model="serch_key_all">
                     </div>
                     <div class="col-auto">
-                        <button type="button" name="SerchBtn" id="SerchBtn" wire:click="search()">全件検索</button>
+                        <button type="button" name="SerchBtn" id="SerchBtn" wire:click="search_all()">全件検索</button>
                     </div>
                 </div>
+
+                <div class="row pb-2">
+                    検索データ
+                    <div class="col-auto">
+                        出金合計: {{number_format($serch_payment_sum)}} 円
+                    </div>
+                    <div class="col-auto">
+                        入金合計: {{number_format($serch_deposit_sum)}} 円
+                    </div>
+                    <div class="col-auto">
+                        残金: {{number_format($serch_balance)}} 円
+                    </div>
+                </div>
+
             </div>
             <table id="table_responsive container-fluid" class="table-striped table-hover">
                 <thead class="table-success">

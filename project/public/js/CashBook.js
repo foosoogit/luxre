@@ -1,6 +1,23 @@
 ﻿function kakunin_msg(){
 
 }
+
+function searchClearManage(){
+    document.getElementById('payment_cbox').checked=true;
+    document.getElementById('deposit_cbox').checked=true;
+    document.getElementById('kensakukey_txt').value='';
+    document.getElementById('month').value='';
+    document.getElementById('date').value='';
+    console.log("searchClearManage");
+}
+
+function p_d_manage(){
+  if(document.getElementById('payment_cbox').checked==false && document.getElementById('deposit_cbox').checked==false){
+    document.getElementById('payment_cbox').checked=true;
+    document.getElementById('deposit_cbox').checked=true;
+  }
+}
+
 jQuery(document).ready(function($){
 	$("#submitForm").validate({
 		rules:{

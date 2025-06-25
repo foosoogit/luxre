@@ -11,6 +11,16 @@ class CashBook extends Model
     use HasFactory;
     use SoftDeletes;
 
+    public function getIntDepositAttribute(){
+        $int_deposit=intval($this->deposit);
+		return $int_deposit;
+	}
+
+    public function getIntPaymentAttribute(){
+        $int_payment=intval($this->payment);
+		return $int_payment;
+	}
+
     public function getPaymentAddYenAttribute(){
 	    $payment="";
 		if($this->payment!=""){
