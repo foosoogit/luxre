@@ -113,7 +113,7 @@ class CashBookList extends Component
         $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
         $newCashBookQuerySerial="";
         //orderByRaw('CAST(book_code as SIGNED) ASC')
-        $CashBookQuery =$CashBookQuery->orderBy(session('sort_key'), session('asc_desc'));
+        //$CashBookQuery =$CashBookQuery->orderBy(session('sort_key'), session('asc_desc'));
         //$CashBookQuery =$CashBookQuery->sortBy(session('sort_key'));
         $CashBookQuery=$CashBookQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
         $serch_payment_sum=$CashBookQuery->sum('IntPayment');
