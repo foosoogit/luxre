@@ -6,6 +6,7 @@
 		ReservationBirthdayModalBtn.click();
 		document.getElementById('Reservation').innerHTML = ModalData_Reservation ;
 		document.getElementById('Birthday').innerHTML = ModalData_Birthday ;
+		document.cookie = 'ModalOpenFlg=true';
 	}
  }
 
