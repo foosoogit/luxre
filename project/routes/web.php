@@ -88,7 +88,7 @@ Route::middleware('auth:admin')->group(function () {
                 session(['asc_desc' => "Desc"]);
             }
             return view('admin.CashBookList');
-        })->name('CashBookList.post');
+        })->name('CashBookList.get');
 
         Route::post('admin/ajax_staff_dell_time_card',[AdminController::class,'ajax_staff_dell_time_card'])->name('ajax_staff_dell_time_card');
         Route::post('admin/ajax_staff_change_time_card',[AdminController::class,'ajax_staff_change_time_card'])->name('ajax_staff_change_time_card');

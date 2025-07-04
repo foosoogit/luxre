@@ -362,6 +362,7 @@ class OtherFunc extends Controller
 	}
 
 	public static function set_access_history($REFERER){
+		//log::alert("REFERER=".$REFERER);
 		$prevurl = url()->previous();
 		$targetPage=1;
 		if(isset($_SESSION['access_history'][0])){
