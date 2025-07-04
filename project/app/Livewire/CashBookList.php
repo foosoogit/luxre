@@ -22,8 +22,8 @@ class CashBookList extends Component
     public function sort($sort_key){
 		$sort_key_array=array();
 		$sort_key_array=explode("-", $sort_key);
-		session(['sort_key' =>$sort_key_array[0]]);
-		session(['asc_desc' =>$sort_key_array[1]]);
+		session(['sort_key_cashbook' =>$sort_key_array[0]]);
+		session(['asc_desc_cashbook' =>$sort_key_array[1]]);
 	}
 
     public function search_all(){
@@ -35,7 +35,7 @@ class CashBookList extends Component
 		$this->serch_key_month="";
 		$this->serch_key_all="";
 		$this->serch_key_date="";
-        session(['serch_payment_flg'=>'checked'],['serch_deposit_flg'=>'checked'],['serchKey'=>''],['serch_payment_flg'=>'target_date'],['asc_desc' =>'Desc']);
+        session(['serch_payment_flg'=>'checked'],['serch_deposit_flg'=>'checked'],['serchKey'=>''],['serch_payment_flg'=>'target_date'],['asc_desc_cashbook' =>'Desc'],['sort_key_cashbook' =>'']);
         //Log::alert("searchClear");
 	}
 

@@ -65,11 +65,11 @@ Route::middleware('auth:admin')->group(function () {
             if (null ===session('serch_deposit_flg')){
                 session(['serch_deposit_flg' => "checked"]);
             }
-            if (null ===session('sort_key')){
-                session(['sort_key' => "target_date"]);
+            if (null ===session('sort_key_cashbook')){
+                session(['sort_key_cashbook' => "target_date"]);
             }
-            if (null ===session('asc_desc')){
-                session(['asc_desc' => "Desc"]);
+            if (null ===session('asc_desc_cashbook')){
+                session(['asc_desc_cashbook' => "Desc"]);
             }
             return view('admin.CashBookList');
         })->name('CashBookList.post');
@@ -182,19 +182,15 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::get('/customers/ShowPaymentRegistrationIflame/{SerialKeiyaku}/{SerialUser}',[AdminController::class,'ShowPaymentRegistrationIflame',function($SerialKeiyaku,$SerialUser){}])->name('ShowPaymentRegistrationIflame');
         Route::get('/customers/ShowVisitHistory', function () {
-            //session(['target_livewire_page' => "ListCustomers"]);
             return view('customers.ListVisit');
         })->name('VisitHistory.get');
         Route::post('/customers/ShowVisitHistory', function () {
-            //session(['target_livewire_page' => "ListCustomers"]);
             return view('customers.ListVisit');
         })->name('VisitHistory.post');
         Route::get('/customers/ShowPaymentHistory', function () {
-            //session(['target_livewire_page' => "ListCustomers"]);
             return view('customers.ListPayment');
         })->name('PaymentHistory.get');
         Route::post('/customers/ShowPaymentHistory', function () {
-            //session(['target_livewire_page' => "ListCustomers"]);
             return view('customers.ListPayment');
         })->name('PaymentHistory.post');
 
@@ -211,22 +207,18 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminController::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){session(['ContractSerial' => $ContractSerial,'UserSerial'=>$UserSerial]);}]);
 	    Route::post('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminController::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){}]);
 
-        //Route::get('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
-        
-        //Route::domain('https://salon-ge.com/nagano-01/sys/project/public')->group(function () {
-            Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
-            Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
-	    //});
+        Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
+        Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
 	    
         Route::get('/customers/CustomersList', function () {
-            session(['target_livewire_page' => "ListCustomers"]);
+            session(['target_livewire_page' => "ListCustomers"],['sort_key'=>'']);
             return view('customers.ListCustomers');
         })->name('CustomersList.show');
 
         Route::post('/customers/CustomersList', function () {
-            session(['target_livewire_page' => "ListCustomers"]);
+            session(['target_livewire_page' => "ListCustomers"],['sort_key'=>'']);
             return view('customers.ListCustomers');
         })->name('CustomersList.show.post');
 
