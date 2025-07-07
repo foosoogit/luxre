@@ -1,5 +1,6 @@
 ﻿window.onload = function() {
 	//console.log("cookie3="+getCookie("ModalOpenFlg"));
+	/*
 	if(getCookie("ModalOpenFlg")!=="true"){
 		const dt=ShowModal();
 		const ReservationBirthdayModalBtn= document.getElementById('ReservationBirthdayModalBtn');
@@ -8,6 +9,7 @@
 		document.getElementById('Birthday').innerHTML = ModalData_Birthday ;
 		document.cookie = 'ModalOpenFlg=true';
 	}
+	*/
  }
 
 function pass_ctrl(){
