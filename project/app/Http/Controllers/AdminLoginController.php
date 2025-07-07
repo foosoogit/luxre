@@ -26,7 +26,8 @@ class AdminLoginController extends Controller
      {
          $request->authenticate();
          $request->session()->regenerate();
-         return redirect()->intended(route('admin.top'));
+         return redirect()->intended(route('admin.select_branch'));
+         //return redirect()->intended(route('admin.top'));
      }
      /**
       * ログアウト
@@ -42,5 +43,6 @@ class AdminLoginController extends Controller
         }
         //session_destroy();
         return to_route('admin.login');
+        //return to_route('admin.login_admin');
      }
 }

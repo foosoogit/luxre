@@ -26,7 +26,6 @@ use App\Consts\initConsts;
 //use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Point;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-
 use Endroid\QrCode\Writer\ValidationException;
 
 //use DateTime;
@@ -43,28 +42,46 @@ class AdminController extends Controller
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
 	}
+	
+	public function ShowMenuCustomerManagement(Request $request){
+		
+		session(['target_branch' => $request->target_branch]);
+		session(['fromPage' => 'MenuCustomerManagement']);
+		session(['fromMenu' => 'MenuCustomerManagement']);
+		session(['fromMenu' => 'MenuCustomerManagement']);
+		session(['targetYear' => date('Y')]);
+		$targetYear=session('targetYear');
+		//OtherFunc::set_access_history('');
+		if(isset($_SERVER['HTTP_REFERER'])){
+			$_SESSION['access_history']=array();
+		}
+
+		$DefaultUsersInf=PaymentHistory::leftJoin('users', 'payment_histories.serial_user', '=', 'users.serial_user')
+			->where('payment_histories.how_to_pay','=', 'default')
+			->whereIn('users.serial_user', function ($query) {
+				$query->select('contracts.serial_user')->from('contracts')->where('contracts.cancel','=', null);
+			})
+			->distinct()->select('name_sei','name_mei')->get();
+		//$UnpaidPerson
+		$html_year_slct=OtherFunc::make_html_year_slct(date('Y'));
+		$html_month_slct=OtherFunc::make_html_month_slct(date('n'));
+		$default_customers=OtherFunc::make_htm_get_default_user();
+		$not_coming_customers=OtherFunc::make_htm_get_not_coming_customer();
+		$htm_kesanMonth=OtherFunc::make_html_month_slct(InitConsts::KesanMonth());
+		//list($targetNameHtmFront, $targetNameHtmBack) =OtherFunc::make_htm_get_not_coming_customer();
+		$csrf="csrf";
+		session(['GoBackPlace' => '../ShowMenuCustomerManagement']);
+		$_SESSION['access_history']=array();
+		return view('admin.menu_top',compact("html_year_slct","html_month_slct","DefaultUsersInf","not_coming_customers","default_customers",'htm_kesanMonth'));
+	}
+
+	public function ShowSelectBranch(){
+		//OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		$select_branch_btn=OtherFunc::make_select_branch_btn();
+		return view('admin.select_branch',compact("select_branch_btn"));
+	}
 
 	public function ajax_upsert_CashBook(Request $request){
-		
-		//Log::info($request);
-		//Log::alert('payment='.$request->payment);
-		//$a=$request->payment ?? '空';
-		//$a = $request->payment ?? "";
-		//$a=is_null($request->payment) ? "" : $input;
-		//Log::alert('payment空='.$a);
-		//Log::alert('deposit='.$request->deposit);
-		//$b=$request->deposit??'空';
-		//Log::alert('deposit空='.$b);
-		/*
-		$deposit_amount="";
-        $payment_amount="";
-        if($request->in_out=="deposit"){
-            $deposit_amount=$request->amount;
-        }else{
-			$payment_amount=$request->amount;
-		}
-		*/
-
         $rec = [
             [
 				'id' => $request->id,
@@ -74,14 +91,11 @@ class AdminController extends Controller
 				'payment'=> $request->payment ?? '',
 				'deposit'=> $request->deposit ?? '',
 				'inputter'=> Auth::id(),
+				'branch'=>session('target_branch'),
 				'remarks'=>$request->remarks 
 			],
         ];
-		//Log::info($rec);
-        //$user_id=Auth::id();
         CashBook::upsert($rec, ['id']);
-		//echo "保存しました。" ;
-
 	}
 
 	private function staff_reception_manage($staff_serial){
@@ -127,6 +141,7 @@ class AdminController extends Controller
 				'target_name'=>$item_array["name"],
 				'created_at'=> date('Y-m-d H:i:s'),
 				'updated_at'=> date('Y-m-d H:i:s'),
+				'branch'=>session('target_branch'),
 				'ip_address_in'=> $ipadd,
 			]);
 		}else if($item_array['in_out_type']=='退勤'){
@@ -647,6 +662,7 @@ class AdminController extends Controller
 			'first_name_kanji' => $request->name_mei,
 			'last_name_kana' =>$request->name_sei_kana,
 			'first_name_kana' =>$request->name_mei_kana,
+			'branch'=>session('target_branch'),
 			'birth_date'=>$request->year.'-'.$request->month.'-'.$request->day,
 		];
 		Staff::upsert($targetData,['serial_staff']);
@@ -662,6 +678,7 @@ class AdminController extends Controller
 			'first_name_kanji' => $request->name_mei,
 			'last_name_kana' =>$request->name_sei_kana,
 			'first_name_kana' =>$request->name_mei_kana,
+			'branch'=>session('target_branch'),
 			'birth_date'=>$request->year.'-'.$request->month.'-'.$request->day,
 		];
 		Staff::upsert($targetData,['serial_staff']);
@@ -801,36 +818,6 @@ class AdminController extends Controller
 		print json_encode($all_user_inf);
 	}
 
-	public function ShowMenuCustomerManagement(){
-		session(['fromPage' => 'MenuCustomerManagement']);
-		session(['fromMenu' => 'MenuCustomerManagement']);
-		session(['fromMenu' => 'MenuCustomerManagement']);
-		session(['targetYear' => date('Y')]);
-		$targetYear=session('targetYear');
-		//OtherFunc::set_access_history('');
-		if(isset($_SERVER['HTTP_REFERER'])){
-			$_SESSION['access_history']=array();
-		}
-
-		$DefaultUsersInf=PaymentHistory::leftJoin('users', 'payment_histories.serial_user', '=', 'users.serial_user')
-			->where('payment_histories.how_to_pay','=', 'default')
-			->whereIn('users.serial_user', function ($query) {
-				$query->select('contracts.serial_user')->from('contracts')->where('contracts.cancel','=', null);
-			})
-			->distinct()->select('name_sei','name_mei')->get();
-		//$UnpaidPerson
-		$html_year_slct=OtherFunc::make_html_year_slct(date('Y'));
-		$html_month_slct=OtherFunc::make_html_month_slct(date('n'));
-		$default_customers=OtherFunc::make_htm_get_default_user();
-		$not_coming_customers=OtherFunc::make_htm_get_not_coming_customer();
-		$htm_kesanMonth=OtherFunc::make_html_month_slct(InitConsts::KesanMonth());
-		//list($targetNameHtmFront, $targetNameHtmBack) =OtherFunc::make_htm_get_not_coming_customer();
-		$csrf="csrf";
-		session(['GoBackPlace' => '../ShowMenuCustomerManagement']);
-		$_SESSION['access_history']=array();
-		return view('admin.menu_top',compact("html_year_slct","html_month_slct","DefaultUsersInf","not_coming_customers","default_customers",'htm_kesanMonth'));
-	}
-	
 	public function ckScheduleDeletePossible(Request $request){
 		$target_schedules_event_id=$request->input('eventID');
 		$serial_admin = Auth::user()->serial_admin;
@@ -1052,78 +1039,20 @@ class AdminController extends Controller
 			$item_array["staff_serial"]=$item_array["user_serial"];
 			$this::staff_receipt_set_manage($item_array);
 		}else{
-			//$contract_array=explode("-", $item_array["contract_serial"]);
-			//$contract_branch=$contract_array[1];
-			/*
-			if(empty($item_array["visit_history_serial"])){
-				$visit_history_branch="";
-			}else{
-				$visit_history_array=explode("-", $item_array["visit_history_serial"]);
-				$visit_history_branch=$visit_history_array[1];
-			}
-			if($contract_branch==$visit_history_branch){
-				$new_visit_history_serial=$item_array["visit_history_serial"];
-				$new_visit_history_serial++;
-			}else{
-				$new_visit_history_serial=$item_array["contract_serial"]."-01";
-			}
-			*/
-			//Log::alert("user_serial=".$item_array["user_serial"]);
-			//echo date("Y-m-d", strtotime("YYYY-mm-dd 1 year"));
-			/*
-			$tdate = new DateTime('now');
-			$tdate->modify('+1 year');
-			*/
 			Point::insert([
 				'serial_user' => $item_array["user_serial"],
 				'method' => "来店",
 				'date_get' => date('Y-m-d'),
 				'point' => initConsts::UserPointVisit(),
 				'visit_date' => date('Y-m-d H:i:s'),
-				//'referred_serial' => date('Y-m-d'),
+				'branch'=>session('target_branch'),
 				'validity_flg' => "true",
 				'digestion_flg' => "false",
 				'created_at'=> date('Y-m-d H:i:s'),
 				'updated_at'=> date('Y-m-d H:i:s'),
 				//'point_expiration_date'=> $tdate->format('Y-m-d'),
 			]);
-			/*
-			VisitHistory::insert([
-				'visit_history_serial' => $new_visit_history_serial,
-				'serial_keiyaku' => $item_array["contract_serial"],
-				'serial_user' => $item_array["user_serial"],
-				'date_visit' => date('Y-m-d'),
-				//'point' => initConsts::UserPointVisit(),
-				'created_at'=> date('Y-m-d H:i:s'),
-				'updated_at'=> date('Y-m-d H:i:s'),
-			]);
-			Contract::where('serial_keiyaku','=',$item_array["contract_serial"])->update(['date_latest_visit' =>date('Y-m-d')]);
-			*/
 		}
-		
-		/*
-		$msg=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $msg);
-        $msg=str_replace('[time]', $item_array['target_time'], $msg);
-        $msg=OtherFunc::ConvertPlaceholder($msg,"body");
-
-        $sbj=str_replace('[name-student]', $item_array['name_sei']." ".$item_array['name_mei'], $sbj);
-        $sbj=str_replace('[time]', $item_array['target_time'], $sbj);
-        $sbj=OtherFunc::ConvertPlaceholder($sbj,"sbj");
-
-        $target_item_array['subject']=$sbj;
-        $to_email_array=explode (",",$item_array['email']);
-        $protector_array=explode (",",$item_array['protector']);
-        $target_item_array['from_email']=$item_array['from_email'];
-        $i=0;
-        foreach($to_email_array as $target_email){
-            $target_item_array['msg']=str_replace('[name-protector]', $protector_array[$i], $msg);
-            $target_item_array['to_email']=$target_email;
-            Mail::send(new ContactMail($target_item_array));
-            $i++;
-        }
-        $send_msd="配信しました。";
-        $json_dat = json_encode( $send_msd , JSON_PRETTY_PRINT ) ;
-		*/
 		$res = ['res'    => 'OK'];
 		$json = json_encode( $res, JSON_PRETTY_PRINT ) ;
 		echo $json;
@@ -1138,16 +1067,7 @@ class AdminController extends Controller
                     ->update(['value1' => $_POST[$configration_array['subject']]]);
             }
         }
-
-		//self::show_setting();
-		//$msg="登録しました。";
-        //return view('admin.Setting',compact("configration_array"))->with('success',$msg);
-		//'flashSuccess', '登録が完了しました'
-		//session()->flash('flashSuccess', '登録が完了しました');
-		
 		return redirect()->route('admin.show_setting')->with('success','登録しました。');
-		//return redirect()->route('admin.show_setting')->with('flashSuccess','登録しました。');
-        //return redirect('show_setting',compact("configration_array"))->with('success',$msg);
     }
 
 	public function show_setting()
@@ -1232,23 +1152,9 @@ class AdminController extends Controller
 		$saveFlg="false,".session('CustomerManage');$btnDisp="修　正";
 		$html_reason_coming="";
 		if(isset($request->syusei_Btn)){
-			//$GoBackPlace="/customers/ShowCustomersList";
 			$GoBackPlace="/customers/CustomersList";
-			//$GoBackPlace="/customers/ShowCustomersList";
-			/*
-			if(empty($referee->serial_user)){
-				$referee_serial="";
-			}else{
-				$referee_serial=$referee->serial_user;
-			}
-			*/
-			//Log::alert("referee_name-1=".$target_user->referee_name);
 			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee_name);
-			//$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$referee_serial);
-			//$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
-
 		}else if(isset($request->fromMenu)){
-			//$GoBackPlace="/customers/ShowCustomersList_livewire";
 			$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
 			$GoBackPlace="../top";
 		}
@@ -1302,10 +1208,8 @@ class AdminController extends Controller
 			$target_user=User::where('serial_user','=', $request->input('syusei_Btn'))->first();
 			$btnDisp="　修　正　";
 		
-			//$header="";$slot="";
 			$selectedManth=array();$selectedManth=array();
 			$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list($target_user->birth_year);
-			//$mnt="m".sprintf('%02d', $target_user->birth_month);
 			$selectedManth[(int)$target_user->birth_month]="Selected";
 			$selectedDay[(int)$target_user->birth_day]="Selected";
 			$selectedRegion[$target_user->address_region]="Selected";
@@ -1315,11 +1219,9 @@ class AdminController extends Controller
 			$saveFlg="false,".session('CustomerManage');
 			$html_reason_coming="";
 			if(isset($request->syusei_Btn)){
-				//$GoBackPlace="/customers/ShowCustomersList";
 				$GoBackPlace="/customers/ShowCustomersList_livewire";
 				$html_reason_coming=OtherFunc::make_html_reason_coming_cbox($target_user->reason_coming,$target_user->referee);
 			}else if(isset($request->fromMenu)){
-				//$GoBackPlace="/customers/ShowCustomersList_livewire";
 				$html_reason_coming=OtherFunc::make_html_reason_coming_cbox("","");
 				$GoBackPlace="../ShowMenuCustomerManagement";
 			}
@@ -1419,6 +1321,7 @@ class AdminController extends Controller
                     'student_name_kana'=>$TargetInf->name_sei_kana.' '.$TargetInf->name_mei_kana,
                     'to_mail_address'=>$TargetInf->email,
                     'from_mail_address'=>$target_item_array['from_email'],
+					'branch'=>session('target_branch'),
                 ]);
             }
          }else{
@@ -1498,9 +1401,6 @@ class AdminController extends Controller
 		fwrite($fp,base64_decode($upload_data));
 		fclose($fp);
 		$ts=str_replace('K', 'V', session('ContractSerial')."-".$request->VisitHistorySerial);
-		//Log::alert("StaffSerial=".$request->StaffSerial);
-		//Log::alert("ts=".$ts);
-		//Log::alert("ContractSerial-2=".session('ContractSerial'));
 		VisitHistory::where('visit_history_serial', '=', $ts)->update([
 			'serial_staff' => $request->StaffSerial
 		]);
@@ -1519,7 +1419,6 @@ class AdminController extends Controller
 		$HowToPay=array();$HowToPay['card']="";$HowToPay['cash']="";
 		$CardCompany="";$HowManyPay=array();
 	
-		//$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct($targetContract->how_many_pay_genkin,20,1);	
 		$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct("",20,2);
 		if($targetContract->how_to_pay=="Credit Card"){
 			$HowToPay['card']='checked';
@@ -1552,11 +1451,9 @@ class AdminController extends Controller
 			$KeiyakuTankaArray[]="";
 		}
 		if(!empty($targetContractdetails)){
-			//$KeiyakuNaiyouArray=array();$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();$KeiyakuNaiyouSelectArray=array();
 			$num=0;
 			foreach($targetContractdetails as $targetContractdetail){
 				$KeiyakuNaiyouArray[$num]=$targetContractdetail->keiyaku_naiyo;
-				//$KeiyakuNaiyouSelectArray[$num]=OtherFunc::make_htm_get_treatment_slct($targetContractdetail->keiyaku_naiyo);
 				$keiyakuCnt=$targetContractdetail->keiyaku_num;
 				$KeiyakuNumSlctArray[$num]=OtherFunc::make_html_keiyaku_num_slct($targetContractdetail->keiyaku_num);
 				$KeiyakuTankaArray[$num]=$targetContractdetail->unit_price;
@@ -1564,28 +1461,6 @@ class AdminController extends Controller
 				$num++;
 			}
 		}
-		/*
-		if(empty($targetContractdetails)){
-			for($i=0;$i<5;$i++){
-				$KeiyakuNaiyouArray[]="";
-				$KeiyakuNaiyouSelectArray[]=OtherFunc::make_htm_get_treatment_slct("");
-				$keiyakuCnt="";
-				$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
-				$KeiyakuTankaArray[]="";
-			}
-		}else{
-			$num=0;
-			foreach($targetContractdetails as $targetContractdetail){
-				$KeiyakuNaiyouArray[]=$targetContractdetail->keiyaku_naiyo;
-				$KeiyakuNaiyouSelectArray[]=OtherFunc::make_htm_get_treatment_slct($targetContractdetail->keiyaku_naiyo);
-				$keiyakuCnt=$targetContractdetail->keiyaku_num;
-				$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct($targetContractdetail->keiyaku_num);
-				$KeiyakuTankaArray[]=$targetContractdetail->unit_price;
-				$KeiyakuPriceArray[]=$targetContractdetail->price;
-				$num++;
-			}
-		}
-		*/
 		for($i=$num;$i<=5;$i++){
 			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
 			$KeiyakuTankaArray[]="";
@@ -1603,8 +1478,6 @@ class AdminController extends Controller
 		}
 		$GoBackPlace="/customers/ContractList";
 		$TreatmentsTimes_slct=OtherFunc::make_html_TreatmentsTimes_slct($targetContract->treatments_num);
-		//$html_staff_slct=OtherFunc::make_html_staff_slct($targetContract->serial_tantosya);
-		//$stf=DB::table('Staff')->first();
 		$html_staff_slct=OtherFunc::make_html_staff_slct($targetContract->serial_tantosya);
 		$contract_type_checked=array();
 		if($targetContract->keiyaku_type=='subscription'){
@@ -1677,6 +1550,7 @@ class AdminController extends Controller
 
 			'remarks' => $request->memo,
 			'treatments_num' => $request->TreatmentsTimes_slct,
+			'branch'=>session('target_branch'),
 			'deleted_at'=>null
 		];
 
@@ -1692,6 +1566,7 @@ class AdminController extends Controller
 					'serial_keiyaku'=>$request->ContractSerial,
 					'serial_user'=>$request->serial_user,
 					'keiyaku_naiyo'=>'サブスクリプション',
+					'branch'=>session('target_branch'),
 					'unit_price'=>str_replace(',','',$request->inpMonthlyAmount),
 				];
 				$targetDataArray[]=$targetDetailData;
@@ -1706,6 +1581,7 @@ class AdminController extends Controller
 							'serial_user'=>$request->serial_user,
 							'keiyaku_naiyo'=>$request->ContractNaiyo[$i],
 							'keiyaku_num'=>$request->KeiyakuNumSlct[$i],
+							'branch'=>session('target_branch'),
 							'unit_price'=>str_replace(',','',$request->AmountPerNum[$i]),
 							'price'=>str_replace(',','',$request->subTotalAmount[$i]),
 						];
@@ -1742,25 +1618,6 @@ class AdminController extends Controller
 					return view("layouts.DialogMsgKeiyaku", compact('msg','SerialUser','SerialKeiyaku','GoBackToPlace'));
 				}
 			}
-			/*
-				}else{
-				if(session('ContractManage')=='syusei'){
-					return redirect("/customers/ContractList/".$SerialUser);
-				}else{
-					$userInf=User::where('serial_user','=',$request->serial_user)->first();
-					$keiyakuInf=Contract::where('serial_keiyaku','=',$request->ContractSerial)->first();
-					
-					$msg="氏名: ".$userInf->name_sei." ".$userInf->name_mei."さんの契約を新規登録しました。";
-	
-					if(session('fromMenu')=='MenuCustomerManagement'){
-						$GoBackToPlace="../top";
-					}else if(session('fromMenu')=='CustomersList'){
-						$GoBackToPlace="/customers/CustomersList";
-					}
-			    		return view("layouts.DialogMsgKeiyaku", compact('msg','SerialUser','SerialKeiyaku','GoBackToPlace','header',"slot"));
-		    		}
-			}
-			*/
 		}
 	}
 
@@ -1768,7 +1625,6 @@ class AdminController extends Controller
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		session(['fromPage' => 'InpKeiyaku']);
 		$header="";$slot="";$HowToPay=array();
-		//$KeiyakuNumSlct=OtherFunc::make_html_keiyaku_num_slct("");
 		$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();
 		for($i=0;$i<=4;$i++){
 			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
@@ -1792,7 +1648,6 @@ class AdminController extends Controller
 		$HowToPay['cash']="";
 		if(isset($request->serial_user)){
 			$targetSerial=$request->serial_user;
-			//$redirectPlace='/customers/ShowCustomersList';
 			$redirectPlace='/customers/ShowCustomersList';
 		}else{
 			$max = User::max('serial_user');
@@ -1805,7 +1660,6 @@ class AdminController extends Controller
 			$KeiyakuNaiyouSelectArray[]=OtherFunc::make_htm_get_treatment_slct('');
 		}
 		$TreatmentsTimes_slct=OtherFunc::make_html_TreatmentsTimes_slct("");
-		//$targetContract="";
 		$targetContract=array();
 		$KeiyakuNaiyouArray=array();
 		$CardCompanySelect=OtherFunc::make_html_card_company_slct("");
@@ -1864,86 +1718,10 @@ class AdminController extends Controller
 
 			'phone' => $request->phone,
 			'reason_coming'=>$reason_coming,
+			'branch'=>session('target_branch'),
 			'referee_name'=>trim($request->syokaisya_txt)
 		];
 		User::upsert($targetData,['serial_user']);
-		/*
-		$ck_cnt=Point::where('referred_serial','=',$targetSerial)->count();
-		$target_rec_sql=Point::where('referred_serial','=',$targetSerial);
-		if($target_rec_sql->count()==1){
-			$target_rec_sql->update(
-				[
-					'serial_user' =>trim($request->syokaisya_txt)
-				]
-			);
-		}else{
-			$target_rec_sql->insert(
-				[
-					'serial_user' =>trim($request->syokaisya_txt),
-					'method' => '紹介',
-					'date_get' => date('Y-m-d'),
-					'point' => initConsts::UserPointReferral(),
-					'referred_serial' => $targetSerial,
-					'validity_flg' => 'true',
-					'digestion_flg'=> 'false',
-					'created_at'=> date('Y-m-d H:i:s'),
-					'updated_at'=> date('Y-m-d H:i:s'),
-				]
-			);
-		}
-		*/
-		/*
-		$targetDataPoint=[
-			'serial_user' =>trim($request->syokaisya_txt),
-			'method' => '紹介',
-			'date_get' => date('Y-m-d'),
-			'point' => initConsts::UserPointReferral(),
-			'referred_serial' => $targetSerial,
-			'validity_flg' => 'true',
-			'digestion_flg'=> 'false'
-			//'created_at'=> date('Y-m-d H:i:s'),
-			//'updated_at'=> date('Y-m-d H:i:s'),
-		];
-		Log::info($targetDataPoint);
-		Point::upsert(
-			$targetDataPoint,
-			['referred_serial']
-			//['updated_at']
-		);
-		*/
-		/*
-		$target_referee_array=array();$target_referee_array1=array();$target_referee_array2=array();$referee_old_array=array();$referee_new_array=array();
-		$referee_old_array=explode(",",$referee_old);
-		$referee_new_array=explode(",",$request->syokaisya_txt);
-		foreach($referee_old_array as $old_serial){
-			if(array_search($old_serial, $referee_new_array)==false and !empty($old_serial)){
-				$target_referee_array[]=$old_serial;
-			}
-		}
-		
-		foreach($referee_new_array as $new_serial){
-			if(array_search($new_serial, $referee_old_array)==false and !empty($new_serial)){
-				$target_referee_array[]=$new_serial;
-			}
-		}
-		
-		foreach($target_referee_array as $target_referee_serial){
-			$target_referee=sprintf('%06d', $target_referee_serial);
-			$total_cnt=DB::table('users')->where('referee','like','%'.$target_referee_serial.'%')->count();
-			DB::table('users')->where('serial_user','=', $target_referee)->update(['referee_num' => $total_cnt]);
-		}
-		$referee_target_serial_array=array();
-		$sql_referee_inf=User::where('serial_user','=', sprintf('%06d', trim($request->syokaisya_txt)))->first();
-		$referee_target_serial_old="";
-		if(isset($sql_referee_inf->referee_target_serial)){
-			$referee_target_serial_old=$sql_referee_inf->referee_target_serial;
-		}
-		
-		$referee_target_serial_array[]=$referee_target_serial_old;
-		$referee_target_serial_array[]=$targetSerial;
-		$referee_target_serial=implode( ',', $referee_target_serial_array);
-		$userBuilder=User::where('serial_user','=', sprintf('%06d',trim($request->syokaisya_txt)))->update(['referee_target_serial' => $referee_target_serial]);
-		*/
 		setcookie('TorokuMessageFlg','true',time()+60);
 		$header="";$slot="";
 		$html_birth_year_slct=OtherFunc::make_html_slct_birth_year_list("");
@@ -1966,23 +1744,6 @@ class AdminController extends Controller
 		$deleStaff=Staff::where('serial_staff','=',$serial_staff)->delete();
 		return view("admin.ListStaffs");
 	}
-	/*
-	public function ShowMedicalRecord(Request $request){
-		$target_file='storage/MedicalRecord/'.session('ContractSerial')."-".$request->count_btn.".png";
-		Log::alert('count='.$request->count_btn);
-		if (!file_exists($target_file)) {
-			$target_file="";
-		}
-		$array=explode('-', $request->VisitHistorySerial);
-		$UserSerial=str_replace('V_', '', $array[0]);
-		$UserInf=User::where('serial_user','=',$UserSerial)->first();
-		$visit_history_serial=$request->count_btn;
-		$keiyaku_array=Contract::where('serial_keiyaku','=',session('ContractSerial'))->first();
-		$keiyaku_name=$keiyaku_array->keiyaku_name;
-		$ContractSerial=session('ContractSerial');
-		return view('customers.MedicalRecord',compact('target_file','ContractSerial','visit_history_serial','UserInf','keiyaku_name'));
-	}
-	*/
 	
 	public function SaveCampaign(Request $request){
 		$targetData=[
@@ -1995,6 +1756,7 @@ class AdminController extends Controller
 			'contract_amount_total' =>$request->contract_amount_total,
 			'payment_terms' => $request->jyoken_rdo,
 			'details_campaign' => $request->Campaign_details,
+			'branch'=>session('target_branch'),
 			'memo' => $request->memo,
 		];
 		Campaign::upsert($targetData,['serial_campaign']);
@@ -2089,7 +1851,7 @@ class AdminController extends Controller
 			'created_at' => date('Y-m-d H:i:s'),
 			'serial_treatment_contents' => $request->serial_TreatmentContent,
 			'name_treatment_contents' => $request->TreatmentContent_name,
-			
+			'branch'=>session('target_branch'),
 			'name_treatment_contents_kana' => $request->TreatmentContent_name_kana,
 			'treatment_details' => $request->TreatmentContent_details,
 			'memo' => $request->memo,
@@ -2168,6 +1930,8 @@ class AdminController extends Controller
 			'selling_price' => $request->selling_price,
 			'memo' =>  $request->memo,
 			'how_to_pay'=>$request->how_to_pay_rdo,
+
+			'branch'=>session('target_branch'),
 		];
 		DB::table('sales_records')->upsert($targetData,['serial_sales']);
 		$this::save_recorder("SaveGood");
@@ -2212,6 +1976,7 @@ class AdminController extends Controller
 				'selling_price' => $request->selling_price,
 				'zaiko' => $request->zaiko,
 				'memo' =>  $request->memo,
+				'branch'=>  session('target_branch'),
 				'created_at'=>date("Y-m-d H:i:s")
 			];
 
@@ -2387,40 +2152,11 @@ class AdminController extends Controller
 		return view('customers.InfoCustomer',compact("user","header","slot"));
 	}
 
-	/*
-	public function ShowCustomersList(Request $request){
-		$header="";$slot="";
-		$key="";
-		$key=$request->kensakuKey;
-		$users="";
-		if($request->kensakuKey<>""){
-			$users=User::where('serial_user','like',"%$key%")
-				->orwhere('name_sei','like',"%$key%")
-				->orwhere('name_mei','like',"%$key%")
-				->orwhere('name_sei_kana','like',"%$key%")
-				->orwhere('name_mei_kana',"%$key%")
-				->orwhere('birth_year','like',"%$key%")
-				->orwhere('birth_month','like',"%$key%")
-				->orwhere('birth_day','like',"%$key%")
-				->orwhere('address_region','like',"%$key%")
-				->orwhere('address_locality','like',"%$key%")
-				->orwhere('email','like',"%$key%")->paginate(10);
-		}else{
-			$users=User::paginate(10);
-		}
-		return view('customers.ListCustomers',compact("users","header","slot"));
-	}
-	*/
-	
-	
-	
 	public function ckDellPossibleTeacher(Request $request){
 		$unixStrt=$request->input('utcStartTime');
 		$unixEnd=$request->input('utcEndTime');
 		$unixToday = time();
-		//console.log( session('target_teacher_serial'));
 		$flg=true;
-		//$target_schedules=DB::table('Schedules')->where('parentEventId','=', $request->input('eventID'))->get();
 		$target_schedules=Schedule::where('parentEventId','=', $request->input('eventID'))->get();
 		$resArr["count"]=$target_schedules->count();
 		if($unixStrt<=$unixToday){
@@ -2428,25 +2164,19 @@ class AdminController extends Controller
 		}else if($target_schedules->count()>0){
 			$flg='lessonReserved';
 		}
-		//$resArr["startUNIXTimeStamp"]=$open_schedule->startUNIXTimeStamp ;
 		$resArr["utcStrt"]=$unixStrt;
 		$resArr["utcEnd"]=$unixEnd;
 		$resArr["unixToday"]=$unixToday;
 		$resArr["flg"]=$flg;
 		echo json_encode($resArr);
-		//echo json_encode($request);
 	}
 	
 	public function ckReservPossibleTeacher(Request $request){
 		$unixStrt=$request->input('utcStartTime');
 		$unixEnd=$request->input('utcEndTime');
 		$unixToday = time();
-		
-		//$target_schedules=DB::table('Schedules')->where('idPerson','=', session('target_teacher_serial'))->where('startUNIXTimeStamp','>=', $unixToday)->get();
 		$flg=false;
 		$resArr["deadlineReservPossible"]=config('const.deadlineReservPossible');
-		//$resArr["deadlineReservPossible"]=60;
-
 		if($unixStrt>=$unixToday){
 			$flg=true;
 		}
@@ -2455,7 +2185,6 @@ class AdminController extends Controller
 		$resArr["flg"]=$flg;
 		$resArr["unixToday"]=$unixToday;
 		echo json_encode($resArr);
-		//echo json_encode($request);
 	}
 
 	public function setResourcesTimeLine(Request $request){
@@ -2469,13 +2198,7 @@ class AdminController extends Controller
 				$personID[]=$user_inf->idPerson;
 				$newItem["id"] =$user_inf->idPerson;
 				$target_name=DB::table('users')->where('serial_user',$user_inf->idPerson)->first();
-				//$new = htmlspecialchars('<button type="submit" formaction="ShowTimeLine">Time Line</button>', ENT_QUOTES);
 				$newItem["title"] =$target_name->name;
-				//$newItem["eventTextColor"] ='Red';
-				//$newItem["eventBackgroundColor"] ='Red';
-				//$newItem["eventColor"]='#6fc2d0';
-				//$newItem["eventClassNames"]='eventClassNames';
-
 				$newArr[] = $newItem;
 			}
 		}
@@ -2483,14 +2206,8 @@ class AdminController extends Controller
 	}
 
 	public function setScheduleTimeLine(Request $request){
-		/*
-		{ id: '1', resourceId: 'a', start: '2019-05-14', end: '2019-05-16', title: 'event 1' },
-        { id: '2', resourceId: 'b', start: '2019-05-16', end: '2019-05-22', title: 'event 2' },
-        { id: '3', resourceId: 'a', start: '2019-05-19', end: '2019-05-21', title: 'event 3' }
-        */
 		$teacher_inf = Auth::guard('admin')->user();
 		$target = $teacher_inf->serial_teacher;
-		//$target_schedules=DB::table('Schedules')->where('idPerson',$target)->orwhere('idTeacher',$target)->where('deleted_at','=',null)->get();
 		$target_schedules=Schedule::where('idTeacher',$target)->where('deleted_at','=',null)->get();
 		$data = [];
 		$ev=array();$newItem=array();
@@ -2519,13 +2236,8 @@ class AdminController extends Controller
 			}else{
 				$newItem["color"] = 'blue';
 				$newItem["Editable"] = true;
-				//$newItem["Editable"] = false;
 				$newItem["startEditable"] = false;
 				$newItem["durationEditable"] = false;
-				//$close_schedule_user_array[$cnt]["eventDurationEditable"] = false;
-				//$close_schedule_user_array[$cnt]["eventStartEditable"] = false;
-
-				//$newItem["eventDurationEditable"] = false;
 			}
 			$newArr[] = $newItem;
 		}

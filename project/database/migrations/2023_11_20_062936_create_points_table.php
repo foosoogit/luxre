@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
+            $table->string('branch',20)->comment('支店番号');
             $table->string('serial_user',10)->comment('ユーザーシリアル');
             $table->string('method',10)->comment('取得方法');
             $table->string('date_get',10)->comment('取得日');

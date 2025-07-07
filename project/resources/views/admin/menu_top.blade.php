@@ -8,8 +8,13 @@
 					<div class="card-header">
 						<div class="container">
 							<div class="row">
-								<div class="col-10">
+								<div class="col-8">
 									メニュー&nbsp;{{ config('app.name', 'Laravel') }}
+								</div>
+								<div class="col-2">
+									<form method="GET" action="{{ route('admin.select_branch') }}">
+										<button type="submit" class="btn btn-outline-dark btn-sm">店舗選択</button>
+									</form>
 								</div>
 								<div class="col-2">
 									<form method="POST" action="{{ route('admin.login.destroy') }}">

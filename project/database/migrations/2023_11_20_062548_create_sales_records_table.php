@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-			$table->string('serial_sales',30)->unique();
+			$table->string('branch',20)->comment('支店番号');
+            $table->string('serial_sales',30)->unique();
 			$table->string('serial_user',20);
 			$table->string('serial_good',20)->nullable();
 			$table->string('date_sale',20)->nullable()->comment('販売日');

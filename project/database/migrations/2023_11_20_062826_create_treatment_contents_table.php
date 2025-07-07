@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
+            $table->string('branch',20)->comment('支店番号');
 			$table->string('serial_treatment_contents',20)->comment('施術シリアル');
 			$table->string('name_treatment_contents',255)->comment('施術名');
             $table->string('name_treatment_contents_kana',255)->nullable()->comment('施術名カナ');
