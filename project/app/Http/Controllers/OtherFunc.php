@@ -381,8 +381,6 @@ class OtherFunc extends Controller
 			//$REFERER_name=self::get_page_name($_SERVER['HTTP_REFERER']);
 			$REFERER_name=self::get_page_name($target_referer);
 			$URI_name=self::get_page_name($_SERVER['REQUEST_URI']);
-			
-			//log::alert('target_referer ='.$target_referer);
 			if($url_name_now==$access_history_0_name){
 				array_splice($_SESSION['access_history'], 0,1);
 			}else{
