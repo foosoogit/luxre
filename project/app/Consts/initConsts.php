@@ -9,6 +9,10 @@ use App\Http\Controllers\OtherFunc;
 
 // usersで使う定数
 class initConsts{
+	public static function PermittedIPAaddresses(){
+		$inits=Configration::where('subject','=','PermittedIPAaddresses')->first();
+		return $inits->value1;
+	}
 	public static function PaymentMethod(){
 		$inits_array=Configration::where('subject','=','PaymentMethod')->first();
 		return $inits_array->value1;

@@ -267,6 +267,7 @@ class AdminController extends Controller
 		}
 		
 		$payCnt=$targetContract->how_many_pay_genkin;
+		Log::alert("payCnt=".$payCnt);
 		if($targetContract->how_to_pay=="Credit Card"){
 			$payCnt=$targetContract->how_many_pay_card;
 		}
@@ -1167,8 +1168,9 @@ class AdminController extends Controller
 			$ht_type='https://';			
 		}
 		$host_url=$_SERVER['HTTP_HOST'];
+		$PermittedIPAaddresses=InitConsts::PermittedIPAaddresses();
 		session(['target_serial' => ""]);
-		return view('admin.StaffReceptionStandByDisplayJQ',compact('host_url'));
+		return view('admin.StaffReceptionStandByDisplayJQ',compact('host_url','PermittedIPAaddresses'));
 	}
 
 	public function ShowCustomerStandbyDisplay(){
@@ -1810,6 +1812,7 @@ class AdminController extends Controller
 		$KeiyakuNaiyouArray=array();
 		$CardCompanySelect=OtherFunc::make_html_card_company_slct("");
 		$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct("",20,1);
+		$HowManyPay['PaypaySlct']=OtherFunc::make_html_how_many_slct("",20,1);
 		$html_staff_slct=OtherFunc::make_html_staff_slct("");
 		$contract_type_checked['subsc']='';
 		$contract_type_checked['cyclic']='';

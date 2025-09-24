@@ -37,6 +37,7 @@
     		</div>
 		</div>
 	</div>
+	<input type="hidden" value="{{$PermittedIPAaddresses}}" name="PermittedIPAaddresses" id="PermittedIPAaddresses"/>
 	<input type="hidden" value="{{$host_url}}" name="HTTP_HOST" id="HTTP_HOST"/>
 	<input type="hidden" value="{{asset('/in.mp3')}}" name="sound_in_url" id="sound_in_url"/>
 	<input type="hidden" value="{{asset('/out.mp3')}}" name="sound_out_url" id="sound_out_url"/>
@@ -67,8 +68,14 @@
 				}).done(function (data) {
 					const item_json = JSON.parse(data);
 					document.getElementById("name_fadeout_alert").style.display="";
-					//alert("ipadd="+item_json.ipadd);
-					if(item_json.ipadd!="153.185.58.27" && item_json.ipadd!="172.20.0.1" && item_json.ipadd!="121.117.50.143"){
+					//
+					let PermittedIPAaddresses=document.getElementById("PermittedIPAaddresses").value;
+					let IPCkFlg = PermittedIPAaddresses.indexOf(item_json.ipadd);
+					console.log('PermittedIPAaddresses='+PermittedIPAaddresses);
+					console.log('ipadd='+item_json.ipadd);
+					if(IPCkFlg==-1){
+					
+					//if(item_json.ipadd!="153.185.58.27" && item_json.ipadd!="172.20.0.1" && item_json.ipadd!="121.117.50.143"){
 					//if(item_json.ipadd!="153.185.58.27"){
 						alert("正規の場所から読み込んでください。");
 						document.getElementById("seated_type").style.display="";
@@ -104,9 +111,7 @@
 					alert('エラー1');
 				});
 			}else{
-				//alert("TEST");
 			}
-			//document.getElementById("target_serial_txt").disabled=false;
 		});
 
 		function dispNone(){
@@ -132,7 +137,6 @@
 				alert(errorThrown);	
 				alert('エラー2');
 			});
-			//$('#name_fadeout_alert').show();		
 		}
 
 		function name_fadeOut(){

@@ -151,10 +151,8 @@ jQuery(document).ready(function($){
 	  	},
 		errorPlacement: function(error, element) {
 			if (element.is(':radio, :checkbox')) {
-				//alert("TEST");
 				if(element.attr("name")=='contract_type'){
 					error.appendTo($('#contract_type_for_error'));
-					//error.appendTo(element.parent());
 				}
 			}else if(element.attr("name")=="ContractsDate"){
 				error.appendTo($('#ContractsDate_for_error'));
@@ -192,7 +190,6 @@ function getTodayForTypeDate() {
 }
 
 function cancel_validate(){
-	//console.log(document.getElementById("KaiyakuDate").value);
 	if(document.getElementById("KaiyakuDate").value==""){
 		alert("解約日を入力してください。");
 		return false;
@@ -219,13 +216,11 @@ function modosu_cancel(){
 }
 
 function canceled_message(){
-	//console.log(document.getElementById("KaiyakuDate").value);
 	alert("契約が解約されてます。保存できません。");
 	return false;
 }
 
 function HowPayRdioManage(){
-	//console.log("value="+document.getElementById("HowPayRdio_genkin").value);
 	var today = new Date();
 	var HowPay=document.getElementsByName("HowPayRdio").value;
 	console.log(document.getElementById("HowPayRdio_genkin").checked);
@@ -313,11 +308,6 @@ function HowPayRdioManage(){
 	}
 	document.getElementById("TotalAmount").value=total;
 	ck_total_amount();
-	/*
-	if(inpTotalAmount!==total){
-		alert("契約金合計金額が合いません。確認してください。");
-	}
-	*/
 }
 
 function removeComma(number) {
@@ -326,16 +316,12 @@ function removeComma(number) {
 }
 
 function addComma(obj) {
-	//alert(obj.value);
 	var NoComma=removeComma(obj.value)
-	//alert(NoComma);	
 	if(isNaN(NoComma)){
 		obj.value='';
 	}else{
 		var money=Number(removeComma(obj.value));
-	    //alert(removeComma(obj.value));
 	    moneyComma=NoComma.toLocaleString();
-	    //alert(moneyComma);
 	    obj.value=moneyComma;
     }
 }
@@ -346,7 +332,6 @@ document.getElementById('submit').onclick = function() {
 }
 
 function total_amount(){
-	//alert("Test");
 	var KeiyakuNum=document.getElementsByName("KeiyakuNumSlct[]");
 	var AmountPerNum=document.getElementsByName("AmountPerNum[]");
 	var subTotalAmount=document.getElementsByName("subTotalAmount[]");
@@ -354,7 +339,6 @@ function total_amount(){
 	var total=0;
 
 	for(i=0;i<5;i++){
-		//alert(ContractNaiyo[i].value);	
 		if(ContractNaiyo[i].value==""){break;}
 		subtotal_cal=Number(removeComma(KeiyakuNum[i].value))*Number(removeComma(AmountPerNum[i].value));
 		total=total+subtotal_cal;

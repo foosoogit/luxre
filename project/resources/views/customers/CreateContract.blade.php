@@ -223,32 +223,39 @@ input,textarea{border: 1px solid #aaa;}
 								</td>
 							</tr>
 						</table>
-						<p class="cyclic"><span class="auto-style2">*</span>お支払い方法・期間：</p> 
+						<p class="cyclic"><span class="auto-style2">*</span>支払い方法：</p> 
+						<div class="ml-5">
+							<p class="cyclic">
+								<label>
+									<input name="HowPayRdio" id="HowPayRdio_paypay" type="radio" onchange="HowPayRdioManage()" value="Paypay" {!!optional($HowToPay)['paypay']!!} class="cyclic"/>Paypay
+								</label>
+							</p>
+							<p class="cyclic">
+								<label>
+									<input name="HowPayRdio" id="HowPayRdio_paypay" type="radio" onchange="HowPayRdioManage()" value="smart" {!!optional($HowToPay)['smart']!!} class="cyclic"/>スマート支払い
+								</label>
+							</p>
+							<p class="cyclic"><label><input name="HowPayRdio" id="HowPayRdio_genkin" type="radio" onchange="HowPayRdioManage()" value="現金" {!!optional($HowToPay)['cash']!!} class="cyclic"/>現金支払い</label>
+								{{-- 
+								<select name="HowManyPaySlct" id="HowManyPaySlct" class="cyclic">
+									{!!optional($HowManyPay)['CashSlct']!!}
+								</select>回
+								--}}
+							</p>
 						
-						<p class="cyclic">
-							<label>
-								<input name="HowPayRdio" id="HowPayRdio_paypay" type="radio" onchange="HowPayRdioManage()" value="Paypay" {!!optional($HowToPay)['paypay']!!} class="cyclic"/>Paypay
-							</label>
-						</p>
-						<p class="cyclic">
-							<label>
-								<input name="HowPayRdio" id="HowPayRdio_paypay" type="radio" onchange="HowPayRdioManage()" value="smart" {!!optional($HowToPay)['smart']!!} class="cyclic"/>スマート支払い
-							</label>
-						</p>
-						<p class="cyclic"><label><input name="HowPayRdio" id="HowPayRdio_genkin" type="radio" onchange="HowPayRdioManage()" value="現金" {!!optional($HowToPay)['cash']!!} class="cyclic"/>現金支払い</label>
-							<select name="HowManyPaySlct" id="HowManyPaySlct" class="cyclic">
-								{!!optional($HowManyPay)['CashSlct']!!}
-							</select>回
-						</p>
+						{{-- 
 						<div class="auto-style1 cyclic"><span>1回目：<input name="DateFirstPay" id="DateFirstPay" type="date" value="{{optional($targetContract)->date_first_pay_genkin}}" class="cyclic"/><input type="text" name="AmountPaidFirst" id="AmountPaidFirst" class="form-control col-2 form-control-sm my-2 cyclic" value="{{optional($targetContract)->amount_first_pay_cash}}">円</span></div> 
 						<p class="auto-style1 cyclic">2回目：<input name="DateSecondtPay" id="DateSecondtPay" type="date" value="{{optional($targetContract)->date_second_pay_genkin}}" class="cyclic"/><span>(<input type="text" name="AmountPaidSecond" id="AmountPaidSecond" class="form-control col-2 form-control-sm my-2 cyclic" value="{{optional($targetContract)->amount_second_pay_cash}}">円)</p>
-						<p>
-							<label class="cyclic"><input name="HowPayRdio" id="HowPayRdio_card" type="radio" value="Credit Card" onchange="HowPayRdioManage()" {!!optional($HowToPay)['card']!!} class="cyclic"/>クレジットカード</label><label>カード会社</label>
+						--}}
+							<p>
+							<label class="cyclic"><input name="HowPayRdio" id="HowPayRdio_card" type="radio" value="Credit Card" onchange="HowPayRdioManage()" {!!optional($HowToPay)['card']!!} class="cyclic"/>クレジットカード支払い</label>&nbsp;(<label>カード会社</label>
 							<select name="CardCompanyNameSlct" id="CardCompanyNameSlct">
 								<option value="未選択">選択してください</option>
 								{!!$CardCompanySelect!!}
-							</select>
+							</select>)
+						</div>
 						</p>
+						<p class="cyclic"><span class="auto-style2">*</span>支払い回数：</p> 
 						<p class="cyclic">
 							<label>
 								<input name="HowmanyCard" id="HowmanyCard_OneTime" type="radio" value="一括" class="auto-style1 cyclic" onchange="HowPayRdioManage()" {!!optional($HowManyPay)['one']!!}/>一括支払い：支払日<input name="DatePayCardOneDay" id="DatePayCardOneDay" type="date" value="{{optional($targetContract)->date_pay_card}}" class="cyclic"/>
