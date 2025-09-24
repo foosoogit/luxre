@@ -113,7 +113,6 @@
 			}else{
 			}
 		});
-
 		function dispNone(){
 			document.getElementById("name_fadeout_alert").style.display="none";
 			document.getElementById("target_customer_serial_txt").disabled=false;

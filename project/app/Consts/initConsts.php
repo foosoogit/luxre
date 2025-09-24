@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Configration;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\OtherFunc;
-
 // usersで使う定数
 class initConsts{
 	public static function PermittedIPAaddresses(){
