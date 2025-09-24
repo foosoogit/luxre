@@ -3,7 +3,7 @@
 <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-<script type="text/javascript" src="{{ asset('/js/CreateCustomer.js?20231223') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/CreateCustomer.js?20231224') }}"></script>
 {{--<script  type="text/javascript" src="{{ asset('/js/jquery-3.6.0.min.js') }}"></script>--}}
 <style type="text/css">
 input,textarea{
@@ -16,19 +16,7 @@ input,textarea{
 			<div class="row">
 				@include('layouts.header')
 			</div>	
-			{{-- 
-			<div class="row">
-				<div class="col-auto">
-					<a href="{{route('admin.top')}}" class="btn btn-primary btn-sm">メニューに戻る</a>
-				</div>
-				<div class="col-auto">
-                	<button class="btn btn-primary btn-sm" type="button" onclick="location.href='{{$GoBackPlace}}'">前画面に戻る</button>
-				</div>
-			</div>
-			 --}}
-				{{-- <form name='input_customer_fm' id="input_customer_fm" action="/customers/insertCustomer" method="POST" class="h-adr">@csrf --}}
 				<form name='input_customer_fm' id="input_customer_fm" action="{{ route('customers.insertCustomer')}}" method="POST" class="h-adr">@csrf
-				{{-- <form action="{{ route('customers.insertCustomer') }}" method="POST" class="h-adr">@csrf --}}
 					@if (optional($target_user)->serial_user<>null)
 						<p><div class="mb-2 bg-secondary text-white">顧客データ修正</div></p>
 						<p>顧客番号<input type="text" name="serial_user" value="{{optional($target_user)->serial_user}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" readonly></p>
@@ -55,26 +43,17 @@ input,textarea{
 					<div class="row" style="text-indent: 1em">
 						<div class="col-auto">
 							{{-- <p style="text-indent:20px"> --}}
-							<span class="text-danger">*</span>せい<input type="text" name="name_sei_kana" id="name_sei_kana" value="{{old('name_sei_kana', optional($target_user)->name_sei_kana)}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="3"><span id="name_sei_kana_for_error" class="text-danger fw-bold"></span>
+							{{--<span class="text-danger">*</span>--}}せい<input type="text" name="name_sei_kana" id="name_sei_kana" value="{{old('name_sei_kana', optional($target_user)->name_sei_kana)}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="3"><span id="name_sei_kana_for_error" class="text-danger fw-bold"></span>
 						</div>
 						<div class="col-auto">
 							{{-- <p style="text-indent:20px"> --}}
-							<span class="text-danger">*</span>めい<input type="text" name="name_mei_kana" id="name_mei_kana" value="{{old('name_mei_kana',optional($target_user)->name_mei_kana)}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="4"><span id="name_mei_kana_for_error" class="text-danger fw-bold"></span>
+							{{--<span class="text-danger">*</span>--}}めい<input type="text" name="name_mei_kana" id="name_mei_kana" value="{{old('name_mei_kana',optional($target_user)->name_mei_kana)}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="4"><span id="name_mei_kana_for_error" class="text-danger fw-bold"></span>
 						</div>
 					</div>
-					{{-- 
-					<div class="row" style="text-indent: 1em">
-						
-						<div class="col-auto">
-							
-							<span class="text-danger">*</span>めい<input type="text" name="name_mei_kana" id="name_mei_kana" value="{{old('name_mei_kana',optional($target_user)->name_mei_kana)}}" class="bg-white-500 text-black rounded px-3 py-1" tabindex="4"><span id="name_mei_kana_for_error" class="text-danger fw-bold"></span>
-						</div>
-					</div>
-					--}}
 					<p style="py-2.5">
 						<div class="row">
 							<div class="col-auto">
-								●<span class="text-danger">*</span>性別
+								●{{--<span class="text-danger">*</span>--}}性別
 							</div>
 							<div class="col-auto form-check">
 								<input name="GenderRdo" id="GenderRdo_man" type="radio" value="man" class="form-check-input" {{optional($GenderRdo)['man']}}/>
@@ -210,7 +189,7 @@ input,textarea{
 					<p>
 					<input type="text" name="email" id="email" value="{{optional($target_user)->email}}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="12"><span id="email_for_error" class="text-danger fw-bold"></span></p>
                     <p style="py-2.5">●電話番号</p>
-					<p style="py-2.5"><span class="text-danger">*</span>
+					<p style="py-2.5">{{-- <span class="text-danger">*</span>--}}
 					<input type="text" name="phone" id="phone" value="{{ optional($target_user)->phone }}" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" tabindex="13"><span id="phone_for_error" class="text-danger fw-bold"></span></p>
                     <p style="py-2.5">●何を見て当サロンに来られましたか？</p>
 					{!!$html_reason_coming!!}  

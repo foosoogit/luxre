@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
+            $table->string('branch',20)->comment('支店番号');
             $table->string('serial_staff',10)->unique();
             $table->string('email',255)->nullable();
             $table->string('phone',20)->nullable();

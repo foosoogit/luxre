@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     
     Route::name('admin.')->group(function() {
+        Route::get('/select_branch', [AdminController::class,'ShowSelectBranch'])->name('select_branch');
         Route::post('admin/ajax_upsert_CashBook',[AdminController::class,'ajax_upsert_CashBook'])->name('ajax_upsert_CashBook');
 
         Route::post('admin/CashBookList', function () {
@@ -223,7 +224,7 @@ Route::middleware('auth:admin')->group(function () {
         })->name('CustomersList.show.post');
 
         Route::get('livewire/update', function () {
-            Log::alert("target_livewire_page=".session('target_livewire_page'));
+            //Log::alert("target_livewire_page=".session('target_livewire_page'));
             if(session('target_livewire_page')=="ListPoints"){
                 return view('admin.ListPoints');
             }else if(session('target_livewire_page')=="ListContract"){
@@ -270,6 +271,8 @@ Route::middleware('auth:admin')->group(function () {
         return view('admin.ListStaffs');
     })->name('StaffsList.show');
     Route::get('/top', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top');
+    Route::post('/top', [AdminController::class,'ShowMenuCustomerManagement'])->name('admin.top.post');
+    Route::get('/select_branch', [AdminController::class,'ShowSelectBranch'])->name('admin.select_branch');
     Route::post('ajax_get_coming_soon_user',[AdminController::class,'ajax_get_coming_soon_user'])->name('ajax_staff_dell_time_card');
 });
 

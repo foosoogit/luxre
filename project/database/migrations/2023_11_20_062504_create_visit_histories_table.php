@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->string('visit_history_serial',20)->unique()->comment('テーブルシリアル');
+            $table->string('branch',20)->comment('支店番号');
+            $table->string('visit_history_serial',20)->unique()->comment('来店履歴シリアル');
             $table->string('serial_keiyaku',20)->comment('契約番号');
             $table->string('serial_user',20)->comment('serial_user');
             $table->string('serial_staff',10)->nullable()->comment('serial Staff');

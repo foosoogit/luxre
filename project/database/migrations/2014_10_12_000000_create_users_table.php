@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
             $table->softDeletes();
+            $table->string('branch',20)->nullable()->comment('支店番号');
             $table->string('serial_user')->unique();
             $table->string('admission_date',10)->comment('Admission Date')->nullable();
 			$table->string('name_sei',100)->comment('姓');

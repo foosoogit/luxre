@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
+            $table->string('branch',20)->comment('支店番号');
 			$table->string('serial_good',10)->nullable();
 			$table->string('model_nmber',30)->nullable()->comment('型番');
 			$table->string('buying_price',20)->nullable()->comment('買値');

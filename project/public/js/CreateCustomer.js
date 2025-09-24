@@ -68,8 +68,9 @@ jQuery(document).ready(function($){
 			},
 			name_mei: {
 				required: true
-			},
-			name_sei_kana: {
+			}
+			/*
+			,name_sei_kana: {
 				required: true
 			},
 			name_mei_kana: {
@@ -91,6 +92,7 @@ jQuery(document).ready(function($){
 			locality: {
 				required: true
 			}
+			*/
 
 		},
 		messages: {
@@ -127,10 +129,8 @@ jQuery(document).ready(function($){
 	  	},
 		errorPlacement: function(error, element) {
 			if (element.is(':radio, :checkbox')) {
-				//alert("TEST");
 				if(element.attr("name")=='GenderRdo'){
 					error.appendTo($('#GenderRdo_for_error'));
-					//error.appendTo(element.parent());
 				}
 			}else if(element.attr("name")=="AdmissionDate"){
 				error.appendTo($('#AdmissionDate_for_error'));

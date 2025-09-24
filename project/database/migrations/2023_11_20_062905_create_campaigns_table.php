@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('campaigns', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('branch',20)->comment('支店番号');
         });
     }
 

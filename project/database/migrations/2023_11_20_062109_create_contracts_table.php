@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 			
+			$table->string('branch',20)->comment('支店番号');
 			$table->string('serial_keiyaku', 50)->unique()->comment('契約シリアル-自動');
 			$table->string('serial_user',20)->nullable()->comment('serial_user');
 			$table->string('serial_staff',20)->nullable()->comment('ID Staff');

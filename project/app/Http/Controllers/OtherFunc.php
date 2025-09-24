@@ -26,10 +26,25 @@ use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
+use App\Models\Branch;
 if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function make_select_branch_btn(){
+		$branch_inf_array=Branch::all();
+		$htm_select_branch_btn='<div class="d-grid gap-2 col-6 mx-auto">';
+        $color_array=['primary','info','secondary','warning','light','secondary','dark'];
+		$cnum=0;
+		foreach($branch_inf_array as $branch_inf){
+			$htm_select_branch_btn.='<button class="mt-5 btn btn-'.$color_array[$cnum].'" type="submit" style="font-weight:bold;font-size: 200%;height: 200px;" name="target_branch" value="'.$branch_inf->serial_branch.'" >'.$branch_inf->name_branch.'</button>';
+			//Log::alert("cnum=".$color_array[$cnum]);
+			$cnum++;
+		}
+		$htm_select_branch_btn.='</div>';
+		return $htm_select_branch_btn;
+	}
+
 	public static function make_html_monthly_report_table($targetYear,$targetMonth){
 		$sbj_array=array();
 		$htm_month_table="";
@@ -138,27 +153,10 @@ class OtherFunc extends Controller
 		}else if($HowToPay=='smart'){
 			$hwtpay='スマート支払い';
 		}
-		//$TargetQuery=DB::table('payment_histories');
 		$TargetQuery=PaymentHistory::query();
 		$TargetQuery=$TargetQuery->leftJoin('contracts', 'payment_histories.serial_keiyaku', '=', 'contracts.serial_keiyaku')
-			//->where('payment_histories.deleted_at','=',NULL)
 			->where('payment_histories.how_to_pay','=',$HowToPay)
 			->where('payment_histories.date_payment','=',$targetDay);
-		/*
-		if($HowToPay=='cash'){
-			if($HowMany=='bunkatu'){
-				$TargetQuery=$TargetQuery->where(function($query) {
-					$query->where('contracts.how_many_pay_genkin','>','1')->orWhere('contracts.how_many_pay_card','>','1');
-				});
-			}else{
-				$TargetQuery=$TargetQuery->where(function($query) {
-					$query->where('contracts.how_many_pay_genkin','=','1')
-					->orWhere('contracts.how_many_pay_card','=','1')
-					->orWhere('contracts.how_many_pay_genkin','=',null);
-				});
-			}
-		}
-		*/
 		$TargetQuery=$TargetQuery->selectRaw('SUM(amount_payment) as total');
 		$TotalAmount=$TargetQuery->first(['total']);
 		$total=$TotalAmount->total+session('TotalSales');
@@ -182,7 +180,6 @@ class OtherFunc extends Controller
 			$target_item_array['from_email']=env('MAIL_FROM_ADDRESS');
 			$target_item_array['QR_file_path']=storage_path('images/'.$TargetStaffSerial.'.png');
 			Mail::send(new SendMail($target_item_array));
-
 		}
 	}
 
@@ -195,34 +192,29 @@ class OtherFunc extends Controller
 			'amount_payment' => $request->amount,
 			'how_to_pay' => $request->method,
 			'serial_keiyaku'=>session('targetKeiyakuSerial'),
+			'branch'=>session('target_branch'),
 			'serial_user'=>$seriar_user]
 		];
 		$res=PaymentHistory::upsert($payments, ['payment_history_serial']);
-		//Log::alert("res=".$res);
 		echo $res;
 	}
 
 	public static function make_htm_get_payment_method_slct_ajax(Request $request){
 		$PaymentMethod=initConsts::PaymentMethod();
-		//Log::alert("PaymentMethod=".$PaymentMethod);
 		$PaymentMethodArray=explode(",", $PaymentMethod);
-		//Log::info($PaymentMethodArray);
 		$htm_PaymentMethod_slct="";
 		$htm_PaymentMethod_slct='<select name="month_slct" id="method_slct" class="form-select">';
 		$sct='';
 		if($request->target==''){
 			$sct='Selected';
 		}
-		//Log::info('targe2='.$request->target);
 		$htm_PaymentMethod_slct.='<option value=0 '.$sct.'>-- 選択してください。 --</option>';
 		foreach($PaymentMethodArray as $value){
 			$value_array=explode("_", $value);
 			$sct='';
 			if(str_contains($value, $request->target) && $request->target!=''){
 				$sct='Selected';
-				//Log::alert("value=".$value);
 			}
-			//$htm_PaymentMethod_slct.='<option value="'.$value_array[0].'" '.$sct.'>'.$value_array[1].'</option>';
 			$htm_PaymentMethod_slct.='<option value="'.$value_array[0].'" '.$sct.' >'.$value_array[1].'</option>';
 			$sct='';
 		}
@@ -237,34 +229,28 @@ class OtherFunc extends Controller
 	public function save_visit_data_ajax(Request $request){
 		$keiyaku_array=explode("-", session('targetKeiyakuSerial'));
 		$seriar_user=str_replace('K_', '', $keiyaku_array[0]);
-		Log::alert("seriar_user=".$seriar_user);
-		Log::alert("request->Tvisit_history_serial=".$request->Tvisit_history_serial);
 		$visits = [
 			['visit_history_serial' =>$request->Tvisit_history_serial,
 			'date_visit' => $request->Tdate,
 			'treatment_dtails' => $request->Ttr_content,
-			//'point' =>$request->Tpoint,
 			'serial_keiyaku'=>session('targetKeiyakuSerial'),
+			'branch'=>session('target_branch'),
 			'serial_user'=>$seriar_user
 			]
 		];
 		$res=VisitHistory::upsert($visits, ['visit_history_serial']);
-		//Log::alert("res v =".$res);
 		echo $res;
 	}
 
 	public static function make_htm_get_treatment_slct_ajax(Request $request){
 		$TargetTreatmentName=$request->target;
-		//$htm_TreatmentsName_slct='<select name="tr_content_slct" id="tr_content_slct" onchange="return ck_slct(this)">';
 		$htm_TreatmentsName_slct='<select name="tr_content_slct" id="tr_content_slct">';
-		//$htm_TreatmentsName_slct.='<option value=0>-- 選択してください --</option>';
 		$htm_TreatmentsName_slct.=OtherFunc::make_htm_get_treatment_slct($request->target);
 		$htm_TreatmentsName_slct.='</select>';
 		echo $htm_TreatmentsName_slct;
 	}
 
 	public static function make_htm_get_treatment_slct($TargetTreatmentName){
-		//Log::alert("TargetTreatmentName=".$TargetTreatmentName);
 		$kana = array(
 			"ア行" => "[ア-オあ-お]",
 			"カ行" => "[カ-コガ-ゴか-こが-ご]",
@@ -823,12 +809,6 @@ class OtherFunc extends Controller
 				break;
 			}
 		}
-		/*
-		$page_num_array=explode("page=",$target_url);
-			if(isset($page_num_array[1])){
-				$pn=$page_num_array[1];
-			}
-		*/
 		return $pn;
 	}
 
@@ -1336,9 +1316,7 @@ class OtherFunc extends Controller
 		$htms=array();
 		foreach ($target_instruments_array as $key => $instruments){
 			$instrument_array=explode(",", $instruments);
-			//foreach($target_instruments_array as $instrumentSerial){ 
 			foreach($instrument_array as $instrumentSerial){ 
-				//print "instrumentSerial=".$instrumentSerial."<br>";
 				$InstrumentName=self::getInstrumentNameBySerial($instrumentSerial);
 				$htms[]='<label><input name="instruments_rdibtn" type="radio" value="'.$instrumentSerial.'" />'.$InstrumentName.'</label>';
 			}
@@ -1368,20 +1346,12 @@ class OtherFunc extends Controller
 		$ev=array();$newItem=array();
 		foreach ($open_schedules as $open_schedule){ 
 			$ev = ['id'=>$open_schedule->serial,'title'=>$open_schedule->serial_teacher,'start'=>$open_schedule->date.'T'.$open_schedule->start_time,'color'=>'lightpink'];
-			//$ev2 = ['id'=>'2','teacher_id'=>'20','title'=>'event2','start'=>'2020-03-18T10:30:00','color'=>'lightgreen'];
 			array_push($data,$ev);
 			$newItem["id"] = $open_schedule->serial;
 			$newItem["title"] = $open_schedule->serial_teacher;
-			//$newItem["start"] = $open_schedule->date.'T'.$open_schedule->start_time;
 			$newItem["start"] = $open_schedule->date;
 			$newArr[] = $newItem;
 		}
-		//$data_j=json_encode($data);
-		//$newArr_j=json_encode($newArr);
-		//$start = date('Y-m-d H:i:s', $open_schedule->date." ".$open_schedule->start_time);
-		// カレンダー終了日時の１秒前
-		//$end = date('Y-m-d H:i:s', $open_schedule->date." ".$open_schedule->end_time);
-		// イベントデータを出力
 		return $newArr;
 	}
 	
@@ -1391,7 +1361,6 @@ class OtherFunc extends Controller
 		if($resRnum==""){
 			$resnum="LT".date("ymd")."-0001";
 		}else{
-			//$resRnum="R".date("ymd")."-0002";
 			$resnum=$resRnum->reservation_number;
 			$resnum++;
 		}
@@ -1404,7 +1373,6 @@ class OtherFunc extends Controller
 		if($resRnum==""){
 			$resnum="R".date("ymd")."-0001";
 		}else{
-			//$resRnum="R".date("ymd")."-0002";
 			$resnum=$resRnum->reservation_number;
 			$resnum++;
 		}
@@ -1544,7 +1512,6 @@ class OtherFunc extends Controller
 	
 	public static function getInstrumentNameByUserEventId($UserEventId){
 		$targetInstSerial = DB::table('Schedules')->where('event_id',$UserEventId)->first();
-		//print "UserEventId=".$UserEventId."<br>;
 		$target = DB::table('instruments')->where('serial_instrument',$targetInstSerial->course)->first();
 		return $target->instrument_eng;
 	}
@@ -1552,7 +1519,6 @@ class OtherFunc extends Controller
 	public static function getInstrumentNameBySerial($serial){
 		$instSerialArray=explode(",", $serial);
 		$target = DB::table('instruments')->where('serial_instrument',$instSerialArray[0])->first();
-		//$target = DB::table('instruments')->where('serial_instrument',$serial)->first();
 		return $target->instrument_eng;
 	}
 	
