@@ -24,7 +24,6 @@
                 <form method="GET" action="{{route($target_historyBack_inf_array[2])}}">@csrf
                     <button type="submit" name="target_date" class="btn btn-primary btn-sm" value="{{$target_historyBack_inf_array[3]}}">{{$target_historyBack_inf_array[1]}}に戻る</button>
                 </form>
-            @else    
             @endif
             <input name="back_flg" type="hidden" value="true"/>
         </div>
