@@ -157,8 +157,6 @@ class AdminController extends Controller
 
 	public function customer_reception_manage(Request $request)
     {
-		//$ipadd=$_SERVER['REMOTE_ADDR'];
-		//$target_item_array['ipadd']=$_SERVER['REMOTE_ADDR'];
 		$user_serial=$request->target_serial;
 		if(substr(strtoupper($user_serial), 0, 2)=="SF"){
 			$json=$this::staff_reception_manage(strtoupper($user_serial));
