@@ -45,7 +45,8 @@ class AdminController extends Controller
 	
 	public function ShowMenuCustomerManagement(Request $request){
 		
-		session(['target_branch' => $request->target_branch]);
+		//session(['target_branch' => $request->target_branch]);
+		session(['target_branch' => '1']);
 		session(['fromPage' => 'MenuCustomerManagement']);
 		session(['fromMenu' => 'MenuCustomerManagement']);
 		session(['fromMenu' => 'MenuCustomerManagement']);
