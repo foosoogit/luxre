@@ -77,7 +77,7 @@
 					
 					//if(item_json.ipadd!="153.185.58.27" && item_json.ipadd!="172.20.0.1" && item_json.ipadd!="121.117.50.143"){
 					//if(item_json.ipadd!="153.185.58.27"){
-						alert("正規の場所から読み込んでください。IP="+PermittedIPAaddresses);
+						alert("正規の場所から読み込んでください。IP="+PermittedIPAaddresses+"/"+item_json.ipadd);
 						document.getElementById("seated_type").style.display="";
 						document.getElementById("seated_type").innerText = "";
 						document.getElementById('target_customer_serial_txt').value="";
