@@ -13,25 +13,25 @@ if(!isset($_SESSION)){session_start();}
 
 class PointsList extends Component
 {
-    public $sort_key = '',$asc_desc="",$serch_key="",$serch_date_key="";
+    public $sort_key = '',$asc_desc="",$serch_key_point="",$serch_date_key_point="";
 	public $target_page=null;
     public $state_validity_checked="true";
     public $state_used_checked="false";
 
     public function searchClear(){
-		$this->serch_key="";
+		$this->serch_key_point="";
         $this->sort_key="";
-        $this->serch_date_key="";
+        $this->serch_date_key_point="";
         $this->asc_desc="";
 		session(['serch_key_point' => null]);
         session(['serch_date_key_point' =>null]);
 	}
     public function search_date($key){
-		$this->serch_date_key=$key;
+		$this->serch_date_key_point=$key;
 		session(['serch_date_key_poin' => $key]);
 	}
     public function search($key){
-        $this->serch_key=$key;
+        $this->serch_key_point=$key;
 		session(['serch_key_point' => $key]);
 	}
 
@@ -104,11 +104,11 @@ class PointsList extends Component
         }
         */
         if(empty(session('serch_key_point'))){
-			session(['serch_key_point' => $this->serch_key]);
+			session(['serch_key_point' => $this->serch_key_point]);
 		}
 
-        if($this->serch_key<>"" && $this->serch_date_key==""){
-			$key="%".$this->serch_key."%";
+        if($this->serch_key_point<>"" && $this->serch_date_key_point==""){
+			$key="%".$this->serch_key_point."%";
 			$points_histories =$points_histories->where('points.serial_user','like',$key)
 				->orwhere('users.name_sei','like',$key)
 				->orwhere('users.name_mei','like',$key)
@@ -116,13 +116,13 @@ class PointsList extends Component
 				->orwhere('users.name_mei_kana','like',$key)
                 ->orwhere('points.date_get','like',$key)
                 ->orwhere('points.visit_date','like',$key);
-		}else if($this->serch_date_key<>"" && $this->serch_key==""){
-                $key_d="%".$this->serch_date_key."%";
+		}else if($this->serch_date_key_point<>"" && $this->serch_key_point==""){
+                $key_d="%".$this->serch_date_key_point."%";
                 $points_histories =$points_histories->where('points.date_get','like',$key_d)
                     ->orwhere('points.visit_date','like',$key_d);
-        }else if($this->serch_date_key<>"" && $this->serch_key<>""){
-            $key_d="%".$this->serch_date_key."%";
-            $key="%".$this->serch_key."%";
+        }else if($this->serch_date_key_point<>"" && $this->serch_key_point<>""){
+            $key_d="%".$this->serch_date_key_point."%";
+            $key="%".$this->serch_key_point."%";
             /*
             $points_histories =$points_histories->where('points.serial_user','like',$key)
             ->orwhere('users.name_sei','like',$key)
