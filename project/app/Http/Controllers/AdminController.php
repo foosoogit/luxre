@@ -281,7 +281,7 @@ class AdminController extends Controller
 		}
 		
 		$payCnt=$targetContract->how_many_pay_genkin;
-		Log::alert("payCnt=".$payCnt);
+		//Log::alert("payCnt=".$payCnt);
 		if($targetContract->how_to_pay=="Credit Card"){
 			$payCnt=$targetContract->how_many_pay_card;
 		}

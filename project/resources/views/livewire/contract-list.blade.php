@@ -15,7 +15,6 @@
                     <div class="col-auto">
                         <a class="btn btn-primary btn-sm" href="javascript:history.back();">戻る</a>
                     </div>
-                    
                 </div>
                  --}}
                 <div class="mb-2 bg-secondary text-white">契約リスト</div>

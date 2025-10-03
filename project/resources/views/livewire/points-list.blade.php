@@ -32,7 +32,7 @@
                             </div>
                             <div class="col-auto">
                                 <label>検索：</label>
-                                <input name="search_key" id="search_key" type="text" wire:change="search(document.getElementById('search_key').value)" value="{{$serch_key_point}}"/>
+                                <input name="search_key" id="search_key" type="text" wire:change="search(document.getElementById('search_key').value)" value="{{$serch_key_point}}" wire:model.defer="serch_key_point"/>
                             </div>
                             <div class="col-auto">
                                 {{-- <button onclick="document.getElementById('search_key').value='';)" wire:click="searchClear()" class='btn btn-primary btn-sm rounded'>検索解除</button>     --}}

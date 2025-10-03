@@ -21,13 +21,13 @@ class PointsList extends Component
     public function searchClear(){
 		$this->serch_key_point="";
         $this->sort_key="";
-        $this->serch_date_key_point="";
+        $this->serch_date_key="";
         $this->asc_desc="";
 		session(['serch_key_point' => null]);
         session(['serch_date_key_point' =>null]);
 	}
     public function search_date($key){
-		$this->serch_date_key_point=$key;
+		$this->serch_date_key=$key;
 		session(['serch_date_key_poin' => $key]);
 	}
     public function search($key){
@@ -81,7 +81,9 @@ class PointsList extends Component
         //$target_day = date("Y-m-d");
 
         $target_day = null;
-
+        if(session('serch_key_point')<>""){
+			$this->serch_key_point=session('serch_key_point');
+		}
         $points_histories = Point::query();
        // $points_histories = $points_histories->select("points.id AS points_id")->select("*")->join('users', 'points.serial_user', '=', 'users.serial_user');
         $points_histories = $points_histories->select('*', 'points.id as points_id')->join('users', 'points.serial_user', '=', 'users.serial_user');
@@ -103,10 +105,11 @@ class PointsList extends Component
             $points_histories = $points_histories->where('digestion_flg','=','none');
         }
         */
+        /*
         if(empty(session('serch_key_point'))){
 			session(['serch_key_point' => $this->serch_key_point]);
 		}
-
+        */
         if($this->serch_key_point<>"" && $this->serch_date_key_point==""){
 			$key="%".$this->serch_key_point."%";
 			$points_histories =$points_histories->where('points.serial_user','like',$key)
@@ -220,14 +223,14 @@ class PointsList extends Component
 			}
 		}
         */
-
+        /*
         $targetSortKey="";
 		if(empty(session('sort_key_point'))){
             $targetSortKey=$this->sort_key;
 		}else{
 			$targetSortKey=session('sort_key_point');
 		}
-
+        */
         if($this->sort_key<>''){
 			if($this->sort_key=="name_user"){
                 $points_histories =$points_histories->orderBy('users.name_sei_kana', session('asc_desc_point'));
@@ -235,8 +238,13 @@ class PointsList extends Component
 				$points_histories =$points_histories->orderBy($this->sort_key,  session('asc_desc_point'));
             }
 		}
-
-        $points_histories=$points_histories->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
+        if(empty($this->target_page)){
+			$points_histories=$points_histories->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
+		}else{
+			$points_histories=$points_histories->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->target_page);
+			$this->target_page=null;
+		}
+        //$points_histories=$points_histories->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
         //$points_histories=Point::paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
         return view('livewire.points-list',compact('points_histories','target_day'));
     }
