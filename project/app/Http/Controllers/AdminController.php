@@ -45,8 +45,7 @@ class AdminController extends Controller
 	
 	public function ShowMenuCustomerManagement(Request $request){
 		
-		//session(['target_branch' => $request->target_branch]);
-		session(['target_branch' => '1']);
+		session(['target_branch_serial' => '01']);
 		session(['fromPage' => 'MenuCustomerManagement']);
 		session(['fromMenu' => 'MenuCustomerManagement']);
 		session(['fromMenu' => 'MenuCustomerManagement']);
@@ -92,11 +91,19 @@ class AdminController extends Controller
 				'payment'=> $request->payment ?? '',
 				'deposit'=> $request->deposit ?? '',
 				'inputter'=> Auth::id(),
-				'branch'=>session('target_branch'),
+				'branch'=>session('target_branch_serial'),
 				'remarks'=>$request->remarks 
 			],
         ];
         CashBook::upsert($rec, ['id']);
+		//Log::alert("id=".$request->id);
+		if($request->id==""){
+			$Tid=CashBooksSmall::where('branch', session('target_branch_serial'))->max('id');
+		}else{
+			$Tid=$request->id;
+		}
+		log::alert("Tid=".$Tid);
+		OtherFunc::set_target_balance_to_CashBookDb($Tid);
 	}
 
 	private function staff_reception_manage($staff_serial){
@@ -142,7 +149,7 @@ class AdminController extends Controller
 				'target_name'=>$item_array["name"],
 				'created_at'=> date('Y-m-d H:i:s'),
 				'updated_at'=> date('Y-m-d H:i:s'),
-				'branch'=>session('target_branch'),
+				'branch'=>session('target_branch_serial'),
 				'ip_address_in'=> $ipadd,
 			]);
 		}else if($item_array['in_out_type']=='退勤'){
@@ -662,7 +669,7 @@ class AdminController extends Controller
 			'first_name_kanji' => $request->name_mei,
 			'last_name_kana' =>$request->name_sei_kana,
 			'first_name_kana' =>$request->name_mei_kana,
-			'branch'=>session('target_branch'),
+			'branch'=>session('target_branch_serial'),
 			'birth_date'=>$request->year.'-'.$request->month.'-'.$request->day,
 		];
 		Staff::upsert($targetData,['serial_staff']);
@@ -678,7 +685,7 @@ class AdminController extends Controller
 			'first_name_kanji' => $request->name_mei,
 			'last_name_kana' =>$request->name_sei_kana,
 			'first_name_kana' =>$request->name_mei_kana,
-			'branch'=>session('target_branch'),
+			'branch'=>session('target_branch_serial'),
 			'birth_date'=>$request->year.'-'.$request->month.'-'.$request->day,
 		];
 		Staff::upsert($targetData,['serial_staff']);
@@ -1045,7 +1052,7 @@ class AdminController extends Controller
 				'date_get' => date('Y-m-d'),
 				'point' => initConsts::UserPointVisit(),
 				'visit_date' => date('Y-m-d H:i:s'),
-				'branch'=>session('target_branch'),
+				'branch'=>session('target_branch_serial'),
 				'validity_flg' => "true",
 				'digestion_flg' => "false",
 				'created_at'=> date('Y-m-d H:i:s'),
@@ -1278,6 +1285,7 @@ class AdminController extends Controller
     {
 		$target_serial=$request->target_serial;
         $target_serial_length=strlen($target_serial);
+		//Log::alert("target_serial=".$target_serial);
         $TargetInfSql=Staff::where('serial_staff','=',$target_serial);
         if($TargetInfSql->count()>0){
             $TargetInf=$TargetInfSql->first();
@@ -1322,7 +1330,7 @@ class AdminController extends Controller
                     'student_name_kana'=>$TargetInf->name_sei_kana.' '.$TargetInf->name_mei_kana,
                     'to_mail_address'=>$TargetInf->email,
                     'from_mail_address'=>$target_item_array['from_email'],
-					'branch'=>session('target_branch'),
+					'branch'=>session('target_branch_serial'),
                 ]);
             }
          }else{
@@ -1551,7 +1559,7 @@ class AdminController extends Controller
 
 			'remarks' => $request->memo,
 			'treatments_num' => $request->TreatmentsTimes_slct,
-			'branch'=>session('target_branch'),
+			'branch'=>session('target_branch_serial'),
 			'deleted_at'=>null
 		];
 
@@ -1567,7 +1575,7 @@ class AdminController extends Controller
 					'serial_keiyaku'=>$request->ContractSerial,
 					'serial_user'=>$request->serial_user,
 					'keiyaku_naiyo'=>'サブスクリプション',
-					'branch'=>session('target_branch'),
+					'branch'=>session('target_branch_serial'),
 					'unit_price'=>str_replace(',','',$request->inpMonthlyAmount),
 				];
 				$targetDataArray[]=$targetDetailData;
@@ -1582,7 +1590,7 @@ class AdminController extends Controller
 							'serial_user'=>$request->serial_user,
 							'keiyaku_naiyo'=>$request->ContractNaiyo[$i],
 							'keiyaku_num'=>$request->KeiyakuNumSlct[$i],
-							'branch'=>session('target_branch'),
+							'branch'=>session('target_branch_serial'),
 							'unit_price'=>str_replace(',','',$request->AmountPerNum[$i]),
 							'price'=>str_replace(',','',$request->subTotalAmount[$i]),
 						];
@@ -1720,7 +1728,7 @@ class AdminController extends Controller
 
 			'phone' => $request->phone,
 			'reason_coming'=>$reason_coming,
-			'branch'=>session('target_branch'),
+			'branch'=>session('target_branch_serial'),
 			'referee_name'=>trim($request->syokaisya_txt)
 		];
 		User::upsert($targetData,['serial_user']);
@@ -1758,7 +1766,7 @@ class AdminController extends Controller
 			'contract_amount_total' =>$request->contract_amount_total,
 			'payment_terms' => $request->jyoken_rdo,
 			'details_campaign' => $request->Campaign_details,
-			'branch'=>session('target_branch'),
+			'branch'=>session('target_branch_serial'),
 			'memo' => $request->memo,
 		];
 		Campaign::upsert($targetData,['serial_campaign']);
@@ -1853,7 +1861,7 @@ class AdminController extends Controller
 			'created_at' => date('Y-m-d H:i:s'),
 			'serial_treatment_contents' => $request->serial_TreatmentContent,
 			'name_treatment_contents' => $request->TreatmentContent_name,
-			'branch'=>session('target_branch'),
+			'branch'=>session('target_branch_serial'),
 			'name_treatment_contents_kana' => $request->TreatmentContent_name_kana,
 			'treatment_details' => $request->TreatmentContent_details,
 			'memo' => $request->memo,
@@ -1933,7 +1941,7 @@ class AdminController extends Controller
 			'memo' =>  $request->memo,
 			'how_to_pay'=>$request->how_to_pay_rdo,
 
-			'branch'=>session('target_branch'),
+			'branch'=>session('target_branch_serial'),
 		];
 		DB::table('sales_records')->upsert($targetData,['serial_sales']);
 		$this::save_recorder("SaveGood");
@@ -1978,7 +1986,7 @@ class AdminController extends Controller
 				'selling_price' => $request->selling_price,
 				'zaiko' => $request->zaiko,
 				'memo' =>  $request->memo,
-				'branch'=>  session('target_branch'),
+				'branch'=>  session('target_branch_serial'),
 				'created_at'=>date("Y-m-d H:i:s")
 			];
 

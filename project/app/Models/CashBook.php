@@ -11,6 +11,14 @@ class CashBook extends Model
     use HasFactory;
     use SoftDeletes;
 
+    public function getbalanceAddYenAttribute(){
+	    $payment="";$balance="";
+		if($this->balance!=""){
+            $balance=number_format($this->balance).'円';
+        }
+		return $balance;
+	}
+    
     public function getIntDepositAttribute(){
         $int_deposit=intval($this->deposit);
 		return $int_deposit;

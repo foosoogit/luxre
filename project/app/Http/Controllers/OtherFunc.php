@@ -27,17 +27,53 @@ use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
 use App\Models\Branch;
+use App\Models\CashBook;
 if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+
+	public static function set_target_balance_to_CashBookDb($target_id){
+		$balance_tatal=0;
+		$Branch_inf_array=Branch::get();
+		$fnd_flg=false;	
+		$CashBook_inf_array=CashBook::where('branch',session('target_branch_serial'))->orderBy('target_date', 'asc')->orderBy('created_at', 'asc')->get();
+		foreach($CashBook_inf_array as $CashBook_inf){
+			if($CashBook_inf->id==$target_id or $fnd_flg==true){
+				$fnd_flg=true;
+				$balance_tatal=$balance_tatal+intval($CashBook_inf->deposit)-intval($CashBook_inf->payment);
+				$target_rec = CashBook::find($CashBook_inf->id);
+				$target_rec->balance = $balance_tatal;
+				$target_rec->save();
+			}else if(!$fnd_flg){
+				$target_befor_serial=$CashBook_inf->id;
+				$balance_tatal=$CashBook_inf->balance;
+			}
+		}
+	} 
+
+	public static function set_balance_to_CashBookDb(){
+		//Log::alert("message");
+		$balance_tatal=0;
+		$Branch_inf_array=Branch::get();
+		foreach($Branch_inf_array as $Branch_inf){
+			$CashBook_inf_array=CashBook::where('branch',$Branch_inf->serial_branch)->orderBy('target_date', 'asc')->orderBy('created_at', 'asc')->get();
+			foreach($CashBook_inf_array as $CashBook_inf){
+				$balance_tatal=$balance_tatal+intval($CashBook_inf->deposit)-intval($CashBook_inf->payment);
+				$target_rec = CashBook::find($CashBook_inf->id);
+				$target_rec->balance = $balance_tatal;
+				$target_rec->save();
+			}
+		}
+	} 
+
 	public static function make_select_branch_btn(){
 		$branch_inf_array=Branch::all();
 		$htm_select_branch_btn='<div class="d-grid gap-2 col-6 mx-auto">';
         $color_array=['primary','info','secondary','warning','light','secondary','dark'];
 		$cnum=0;
 		foreach($branch_inf_array as $branch_inf){
-			$htm_select_branch_btn.='<button class="mt-5 btn btn-'.$color_array[$cnum].'" type="submit" style="font-weight:bold;font-size: 200%;height: 200px;" name="target_branch" value="'.$branch_inf->serial_branch.'" >'.$branch_inf->name_branch.'</button>';
+			$htm_select_branch_btn.='<button class="mt-5 btn btn-'.$color_array[$cnum].'" type="submit" style="font-weight:bold;font-size: 200%;height: 200px;" name="target_branch_serial" value="'.$branch_inf->serial_branch.'" >'.$branch_inf->name_branch.'</button>';
 			//Log::alert("cnum=".$color_array[$cnum]);
 			$cnum++;
 		}
@@ -192,7 +228,7 @@ class OtherFunc extends Controller
 			'amount_payment' => $request->amount,
 			'how_to_pay' => $request->method,
 			'serial_keiyaku'=>session('targetKeiyakuSerial'),
-			'branch'=>session('target_branch'),
+			'branch'=>session('target_branch_serial'),
 			'serial_user'=>$seriar_user]
 		];
 		$res=PaymentHistory::upsert($payments, ['payment_history_serial']);
@@ -234,7 +270,7 @@ class OtherFunc extends Controller
 			'date_visit' => $request->Tdate,
 			'treatment_dtails' => $request->Ttr_content,
 			'serial_keiyaku'=>session('targetKeiyakuSerial'),
-			'branch'=>session('target_branch'),
+			'branch'=>session('target_branch_serial'),
 			'serial_user'=>$seriar_user
 			]
 		];

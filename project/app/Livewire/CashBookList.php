@@ -17,9 +17,13 @@ if(!isset($_SESSION)){session_start();}
 class CashBookList extends Component
 {
     use WithPagination;
-    public $test,$kensakukey,$target_date,$payment_deposit_rdo,$payment,$deposit,$summary,$amount,$remarks,$id_txt,$serch_key_month,$serch_key_date,$serch_key_all,$serch_key_payment,$serch_key_deposit;
-
-    public function sort($sort_key){
+    public $test,$kensakukey,$target_date,$payment,$deposit,$summary,$amount,$remarks,$id_txt,$serch_key_month,$serch_key_date,$serch_key_all,$serch_key_payment,$serch_key_deposit,$sort_key_p ,$asc_desc_p;
+    
+    public function del_cash_book_rec($target_sirial){
+		CashBook::where('id',$target_sirial)->delete();
+	}
+    
+   public function sort($sort_key){
 		$sort_key_array=array();
 		$sort_key_array=explode("-", $sort_key);
 		session(['sort_key_cashbook' =>$sort_key_array[0]]);
@@ -32,11 +36,12 @@ class CashBookList extends Component
     }
 
     public function searchClear(){
-		$this->serch_key_month="";
+		session(['sort_key_cashbook' =>'target_date']);
+        session(['asc_desc_cashbook' =>'desc']);
+        $this->serch_key_month="";
 		$this->serch_key_all="";
 		$this->serch_key_date="";
         session(['serch_payment_flg'=>'checked'],['serch_deposit_flg'=>'checked'],['serchKey'=>''],['serch_payment_flg'=>'target_date'],['asc_desc_cashbook' =>'Desc'],['sort_key_cashbook' =>'']);
-        //Log::alert("searchClear");
 	}
 
     public function serch_payment(){
@@ -88,12 +93,18 @@ class CashBookList extends Component
         $balance=CashBook::select(DB::raw('SUM(deposit -  payment) as balance'))
             ->value('balance');
         $CashBookQuery=CashBook::query();
+        $balance_Query=CashBook::query();
+        //Log::alert("target_branch_serial=".session('target_branch_serial'));
+        //$CashBookQuery=$CashBookQuery->where('branch',session('target_branch_serial'));
+        //$balance_Query=$balance_Query->where('branch',session('target_branch_serial'));
         if($this->serch_key_month<>""){
             $key="%".$this->serch_key_month."%";
             $CashBookQuery=$CashBookQuery->where('target_date','like',$key);
+            $balance_Query=$balance_Query->where('target_date','like',$key);
         }else if($this->serch_key_date<>""){
             $key="%".$this->serch_key_date."%";
             $CashBookQuery=$CashBookQuery->where('target_date','like',$key);
+            $balance_Query=$balance_Query->where('target_date','like',$key);
         }else if($this->serch_key_all<>""){
             $key="%".$this->serch_key_all."%";
             $CashBookQuery=$CashBookQuery
@@ -102,25 +113,32 @@ class CashBookList extends Component
 				->orwhere('payment','like',$key)
 				->orwhere('deposit','like',$key)
 				->orwhere('remarks','like',$key);
+            $balance_Query=$balance_Query
+                ->where('target_date','like',$key)
+				->orwhere('summary','like',$key)
+				->orwhere('payment','like',$key)
+				->orwhere('deposit','like',$key)
+				->orwhere('remarks','like',$key);
         }
 
         if(session('serch_payment_flg')=="checked" &&  empty(session('serch_deposit_flg'))){
             $CashBookQuery=$CashBookQuery->where('in_out','=','payment');
+            $balance_Query=$balance_Query->where('in_out','=','payment');
         }else if(empty(session('serch_payment_flg')) && session('serch_deposit_flg')=="checked"){
             $CashBookQuery=$CashBookQuery->where('in_out','=','deposit');
+            $balance_Query=$balance_Query->where('in_out','=','deposit');
         }
         
         $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
         $newCashBookQuerySerial="";
-        //orderByRaw('CAST(book_code as SIGNED) ASC')
-        //$CashBookQuery =$CashBookQuery->orderBy(session('sort_key'), session('asc_desc'));
-        //$CashBookQuery =$CashBookQuery->sortBy(session('sort_key'));
+
+        $CashBookQuery =$CashBookQuery->orderBy('target_date', 'desc')->orderBy('created_at', 'desc');
         $CashBookQuery=$CashBookQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
-        $serch_payment_sum=$CashBookQuery->sum('IntPayment');
-        $serch_deposit_sum=$CashBookQuery->sum('IntDeposit');
+
+        $balance_res=$balance_Query->get();
+        $serch_payment_sum=$balance_res->sum('IntPayment');
+        $serch_deposit_sum=$balance_res->sum('IntDeposit');
         $serch_balance=$serch_deposit_sum-$serch_payment_sum;
-        //$st='CAST('.session("sort_key").' AS SIGNED) '.session('asc_desc');
-        //$CashBookQuery =$CashBookQuery->orderByRaw($st);
-        return view('livewire.cash-book-list',compact('serch_balance','serch_deposit_sum','serch_payment_sum','balance','target_historyBack_inf_array','CashBookQuery','newCashBookQuerySerial'));
+        return view('livewire.cash-book-list',compact('serch_balance','serch_deposit_sum','serch_payment_sum','balance','target_historyBack_inf_array','CashBookQuery','newCashBookQuerySerial'));   return view('livewire.cash-book-list',compact('serch_balance','serch_deposit_sum','serch_payment_sum','balance','target_historyBack_inf_array','CashBookQuery','newCashBookQuerySerial'));
     }
 }

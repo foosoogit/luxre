@@ -66,38 +66,46 @@
                     <tr>
                         <th class="border px-4 py-2">シリアル(修正)
                             <div class="text-nowrap">
-                                <button type="button" wire:click="sort('id-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                <button type="button" wire:click="sort('id-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('id-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('id-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>   
                         </th>
                         <th class="border px-4 py-2">日付
                             <div class="text-nowrap">
-                                <button type="button" wire:click="sort('target_date-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                <button type="button" wire:click="sort('target_date-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('target_date-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('target_date-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>   
                         </th>
                         <th class="border px-4 py-2">摘要
                             <div class="text-nowrap">
-                                <button type="button" wire:click="sort('summary-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                <button type="button" wire:click="sort('summary-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('summary-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('summary-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>
                         </th>
                         <th class="border px-4 py-2">出金
                             <div class="text-nowrap">
-                                <button type="button" wire:click="sort('payment-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                <button type="button" wire:click="sort('payment-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('payment-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('payment-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>
                         </th>
                         <th class="border px-4 py-2">入金
                             <div class="text-nowrap">
-                                <button type="button" wire:click="sort('deposit-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                <button type="button" wire:click="sort('deposit-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('deposit-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('deposit-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
+                            </div>
+                        </th>
+                        <th class="border px-4 py-2">残高
+                            <div class="text-nowrap">
+                                {{-- 
+                                <button type="button" wire:click="sort('deposit-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('deposit-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
+                                 --}}
                             </div>
                         </th>
 						<th class="border px-4 py-2">備考
                             <div class="text-nowrap">
-                                <button type="button" wire:click="sort('remarks-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
-                                <button type="button" wire:click="sort('remarks-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('remarks-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('remarks-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>
                         </th>
                         <th class="border px-4 py-2">削除</th>
@@ -131,11 +139,26 @@
                                 {{$dCashBookQuery->PaymentAddYen }}
                             </td>
                             <td class="border px-4 py-2">{{ $dCashBookQuery->DepositAddYen}}</td>
+                            <td class="border px-4 py-2">{{ $dCashBookQuery->balanceAddYen}}</td>
                             <td class="border px-4 py-2">{{ $dCashBookQuery->remarks}}</td>
                             <td class="border px-4 py-2">
+                                {{-- 
                                 <button type="button" wire:click="del('{{$dCashBookQuery->id}}')" id="delete_btn_{{$dCashBookQuery->id}}" class="btn btn-danger modalBtn btn-sm">
                                 削除
                                 </button>
+                                 --}}
+                                <button type="button" id="delete_btn_{{$dCashBookQuery->id}}" class="btn btn-danger modalBtn btn-sm" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#delConfirmModal" 
+                                data-num="{{$dCashBookQuery->id}}" 
+                                data-t_date="{{$dCashBookQuery->target_date}}"
+                                data-summary="{{$dCashBookQuery->summary}}" 
+                                data-payment="{{$dCashBookQuery->payment}}"
+                                data-deposit="{{$dCashBookQuery->deposit}}"
+                                data-remarks="{{$dCashBookQuery->remarks}}"
+                            > 
+                                削除
+                            </button>
                             </td>
                         </tr>
                     @endforeach
