@@ -83,18 +83,21 @@
 										</form>
 									</li>
 								</div>
-							<li>
-								<a href="{{ route('admin.show_setting') }}" class="btn btn-primary btn-sm">環境設定</a>
-							</li>
-							<div class="row">
-								<div class="col-auto">
-									<li>
-										<form method="GET" action="{{route('admin.DailyReport.get')}}">@csrf
-											<button class="btn btn-primary btn-sm" type="submit">日報</button>
-										</form>
-									</li>
+								<div class="row">
+									<div class="col-auto">
+										<li>
+											<a href="{{ route('admin.show_setting') }}" class="btn btn-primary btn-sm">環境設定</a>
+										</li>
+									</div>
 								</div>
-
+								<div class="row">
+									<div class="col-auto">
+										<li>
+											<form method="GET" action="{{route('admin.DailyReport.get')}}">@csrf
+												<button class="btn btn-primary btn-sm" type="submit">日報</button>
+											</form>
+										</li>
+									</div>
 								<div class="col-auto">
 									<li>
 										<form method="POST" action="{{route('admin.MonthlyReport.post')}}">@csrf
@@ -124,11 +127,13 @@
 									</li>
 								</div>
 							</div>
-							<li>
-								<form method="POST" action="{{route('admin.TreatmentList.post')}}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">施術登録</button>
-								</form>
-							</li>
+							<div class="col-auto">
+								<li>
+									<form method="POST" action="{{route('admin.TreatmentList.post')}}">@csrf
+										<button class="btn btn-primary btn-sm" type="submit">施術登録</button>
+									</form>
+								</li>
+							</div>
 							<div class="row">
 								<div class="col-auto">
 									<li> 
@@ -137,7 +142,6 @@
 										</form>
 									</li>
 								</div>
-								
 								<div class="col-auto">
 									<li>
 										<form method="GET" action="{{ route('StaffsList.show') }}">@csrf
@@ -153,11 +157,17 @@
 									</li>
 								</div>
 							</div>
-							<li>
-								<form method="POST" action="{{ route('admin.CashBookList.post') }}">@csrf
-									<button class="btn btn-primary btn-sm" type="submit">出納帳</button>
-								</form>
-							</li>
+							<div class="row">
+								<div class="col-auto">
+									<li>
+										<form method="POST" action="{{ route('admin.CashBookList.post') }}">@csrf
+											<button class="btn btn-primary btn-sm" type="submit">出納帳</button>
+										</form>
+									</li>
+								</div>
+							</div>
+
+							{{-- 
 							<div class="col-auto">
 								<li>
 									<form method="GET" action="{{ route('admin.set_balance_to_CashBookDb.get') }}">@csrf
@@ -165,11 +175,16 @@
 									</form>
 								</li>
 							</div>
-							<li>
-								<form method="GET" action="/workers/ShowGoodsList">@csrf
-									<button class="btn btn-primary btn-sm" type="submit" disabled>商品登録</button>
-								</form>
-							</li>
+							 --}}
+							<div class="row">
+								<div class="col-auto">
+									<li>
+										<form method="GET" action="/workers/ShowGoodsList">@csrf
+											<button class="btn btn-primary btn-sm" type="submit" disabled>商品登録</button>
+										</form>
+									</li>
+								</div>
+							</div>
                         </ul>
                     </div>
                 </div>
