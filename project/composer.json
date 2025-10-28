@@ -18,7 +18,7 @@
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.0",
         "maatwebsite/excel": "^1.1",
-        "nesbot/carbon": "^2.72",
+        "nesbot/carbon": "^2.73",
         "phpoffice/phpspreadsheet": "^2.1",
         "simplesoftwareio/simple-qrcode": "^4.2"
     },

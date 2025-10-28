@@ -37,7 +37,6 @@ class Contract extends Model
 
     public function getLatestVisitDateAttribute($value){
 		$max_date=VisitHistory::where('serial_keiyaku','=',$this->serial_keiyaku)->max('date_visit');
-		//Log::info($max_date);
 		return $max_date;
 	}
 

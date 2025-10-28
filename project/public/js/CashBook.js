@@ -1,5 +1,92 @@
-﻿function kakunin_msg(){
+﻿$(function(){
+  $("#del_btn").on('click', function() {
+    $('#delConfirmModal').modal('hide');
+  })
+});
 
+$(function(){
+  $('#delConfirmModal').on('show.bs.modal', function (event) {
+    //削除確認モーダルを開いたボタンを取得
+    let button = $(event.relatedTarget);
+    //モーダルを取得
+    let modal_delConfirm = $(this);
+    let serial,t_date,summary,payment,deposit,type,amount,remarks;
+    serial = button.data('num');
+    t_date = button.data('t_date');
+    summary= button.data('summary');
+    payment = button.data('payment');
+    deposit = button.data('deposit');
+    type='出金';
+    amount=payment;
+    if(payment==""){
+      type='入金';
+      amount=deposit;
+    }
+    remarks = button.data('remarks');
+    document.getElementById("delTargetCashbookSerial_hdn").value=serial;
+    modal_delConfirm.find('.modal-body span#serial').text(serial);
+    modal_delConfirm.find('.modal-body span#t_date').text(t_date);
+    modal_delConfirm.find('.modal-body span#summary').text(summary);
+    modal_delConfirm.find('.modal-body span#type').text(type);
+    modal_delConfirm.find('.modal-body span#amount').text(amount);
+    modal_delConfirm.find('.modal-body span#remarks').text(remarks);
+  });
+});
+
+function set_summmary(obj){
+  document.getElementById("summary").value=obj.value;
+}
+
+function make_html_select_summary(){
+  //console.log('summary-1');
+  $.ajax({
+    url: "html_make_select_summary_ajax",
+    type: 'post', // getかpostを指定(デフォルトは前者)
+    dataType: 'html', 
+    scriptCharset: 'utf-8',
+    frequency: 10,
+    cache: false,
+    async : false,
+    data: {
+      'cash_book_type': ''
+    },
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  }).done(function (data) {
+    $("#summary_span").append(data);
+  }) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+    alert(XMLHttpRequest.status);
+    alert(textStatus);
+    alert(errorThrown);	
+    alert('摘要を取得できませんでした。');
+  });
+}
+
+function make_html_select_summary(){
+  //console.log('summary-1');
+  $.ajax({
+    url: "html_make_select_summary_ajax",
+    type: 'post', // getかpostを指定(デフォルトは前者)
+    dataType: 'html', 
+    scriptCharset: 'utf-8',
+    frequency: 10,
+    cache: false,
+    async : false,
+    data: {
+      'cash_book_type': ''
+    },
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  }).done(function (data) {
+    $("#summary_span").append(data);
+  }) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+    alert(XMLHttpRequest.status);
+    alert(textStatus);
+    alert(errorThrown);	
+    alert('摘要を取得できませんでした。');
+  });
 }
 
 function searchClearManage(){
@@ -8,7 +95,6 @@ function searchClearManage(){
     document.getElementById('kensakukey_txt').value='';
     document.getElementById('month').value='';
     document.getElementById('date').value='';
-    console.log("searchClearManage");
 }
 
 function p_d_manage(){
@@ -33,7 +119,6 @@ jQuery(document).ready(function($){
       amount:{required: "金額を入力して下さい。",number:"数値を入力してください。"}
 	  },
 		errorPlacement: function(error, element) {
-			//console.log("element.attr name="+element.attr("name"));
       if (element.is(':radio, :checkbox')) {
 				if(element.attr("name")=='payment_deposit_rdo'){
 					error.appendTo($('#payment_deposit_rdo_for_error'));
@@ -57,6 +142,7 @@ $(function(){
     //モーダルを開いたボタンを取得
     let button = $(event.relatedTarget);
     let modal_obj = $(this);
+    make_html_select_summary();
     manage_type = button.data('manage');
     if(manage_type=='modyfy'){
       target_date=button.data('t_date');target_date
@@ -103,12 +189,7 @@ $(function(){
       let amount=document.getElementById("amount").value;
       let deposit_amount="";
       let payment_amount="";
-
-      //console.log("target_date="+target_date);
-      //console.log("summary="+summary);
-      //console.log("payment_deposit="+payment_deposit);
-      //console.log("amount="+amount);
-      
+     
       if(payment_deposit=="payment"){
             payment_amount=amount;
       }else{

@@ -215,6 +215,14 @@
                                         <label>摘要：<input type="datalist" id="summary" name="summary" wire:model="summary"/><span id="summary"></span></label>
                                         <span id="summary_for_error" class="text-danger"></span>
                                     </div>
+                                    <div class="col-auto">
+                                    <span id="summary_span"></span>
+                                </div>
+                                </div>
+                                <div class="row p-2">
+                                    <div class="col-auto">
+                                        ※リストから選択できます。リストにない場合は、直接入力してください。
+                                    </div>
                                 </div>
                                 <div class="row p-2">
                                     <div class="col-auto">
@@ -237,6 +245,59 @@
                     </div>
                 </div>
 			</div>
+
+                        <!--　削除確認 -->
+            <div class="modal fade" id="delConfirmModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <meta http-equiv="Pragma" content="no-cache">
+                            <meta http-equiv="Cache-Control" content="no-cache"> 
+                            <h4 class="modal-title">出納帳削除確認</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-bs-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>シリアル：<span id="serial"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>日付：<span id="t_date"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>適用：<span id="summary"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>出・入金：<span id="type"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>金額：<span id="amount"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label>備考：<span id="remarks"></span></label>
+                                </div>
+                            </div>
+                            上記データを削除します。よろしいですか？
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="delTargetCashbookSerial_hdn">
+                            <button type="button" id="del_btn" wire:click="del_cash_book_rec(document.getElementById('delTargetCashbookSerial_hdn').value)" class="btn btn-danger">削除</button>
+                            <button type="button" class="btn btn-info" data-bs-dismiss="modal">キャンセル</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
 		</div>
 	</div>
 </div>

@@ -32,11 +32,31 @@ if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
-
+	public static function html_make_select_summary_ajax(){
+		/*
+		if($_POST["cash_book_type"]=="small"){
+			$summary_array=CashBooksSmall::where('branch',session('target_branch_serial'))->select('summary')->distinct()->get();
+		}else{
+			$summary_array=CashBook::where('branch',session('target_branch_serial'))->select('summary')->distinct()->get();
+		}
+		*/
+		$summary_array=CashBook::where('branch',session('target_branch_serial'))->select('summary')->distinct()->get();
+		$htm_summary_slct="";
+		$htm_summary_slct='<select name="summary_slct" id="summary_slct" class="form-select" onchange="set_summmary(this);">';
+		$sct='';
+		$htm_summary_slct.='<option value=0 '.$sct.'>-- 選択してください。 --</option>';
+		foreach($summary_array as $value){
+			$htm_summary_slct.='<option value="'.$value->summary.'">'.$value->summary.'</option>';
+		}
+		$htm_summary_slct.='</select>';
+		return $htm_summary_slct;
+	}
+	
 	public static function set_target_balance_to_CashBookDb($target_id){
 		$balance_tatal=0;
 		$Branch_inf_array=Branch::get();
-		$fnd_flg=false;	
+		$fnd_flg=false;
+		//Log::alert("target_id=".$target_id);
 		$CashBook_inf_array=CashBook::where('branch',session('target_branch_serial'))->orderBy('target_date', 'asc')->orderBy('created_at', 'asc')->get();
 		foreach($CashBook_inf_array as $CashBook_inf){
 			if($CashBook_inf->id==$target_id or $fnd_flg==true){

@@ -56,6 +56,11 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     
     Route::name('admin.')->group(function() {
+        Route::post('admin/ajax_upsert_HandOver',[AdminController::class,'ajax_upsert_HandOver'])->name('ajax_upsert_HandOver');
+        Route::get('/admin/HandOver', function () {
+            return view('admin.HandOver');
+        })->name('show_handover.get');
+        Route::post('admin/html_make_select_summary_ajax', [OtherFunc::class,'html_make_select_summary_ajax'])->name('html_make_select_summary_ajax');
         Route::get('/set_balance_to_CashBookDb', [OtherFunc::class,'set_balance_to_CashBookDb'])->name('set_balance_to_CashBookDb.get');
         Route::get('/select_branch', [AdminController::class,'ShowSelectBranch'])->name('select_branch');
         Route::post('admin/ajax_upsert_CashBook',[AdminController::class,'ajax_upsert_CashBook'])->name('ajax_upsert_CashBook');

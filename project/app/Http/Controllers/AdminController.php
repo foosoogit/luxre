@@ -27,6 +27,7 @@ use App\Consts\initConsts;
 use App\Models\Point;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Endroid\QrCode\Writer\ValidationException;
+use App\Models\HandOver;
 
 //use DateTime;
 //use App\Consts\get_imagick_info;
@@ -43,8 +44,35 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 	
+	public function ajax_upsert_HandOver(Request $request){
+        Log::info($request);
+		$rec = [
+            [
+				'id' => $request->id,
+				'target_date' => $request->target_date,
+				'serial_staff' => $request->staff_serial,
+				'handover' => $request->handover,
+				'daily_report'=> $request->daily_report,
+				'inputter'=> Auth::id(),
+				'branch'=>session('target_branch_serial'),
+				'remarks'=>$request->remarks 
+			],
+        ];
+        HandOver::upsert($rec, ['id']);
+		//Log::alert("id=".$request->id);
+		/*
+		if($request->id==""){
+			$Tid=HandOver::where('branch', session('target_branch_serial'))->max('id');
+		}else{
+			$Tid=$request->id;
+		}
+		*/
+		//$Tid=$request->id;
+		//log::alert("Tid=".$Tid);
+		//OtherFunc::set_target_balance_to_CashBookDb($Tid);
+	}
+
 	public function ShowMenuCustomerManagement(Request $request){
-		
 		session(['target_branch_serial' => '01']);
 		session(['fromPage' => 'MenuCustomerManagement']);
 		session(['fromMenu' => 'MenuCustomerManagement']);
@@ -98,11 +126,12 @@ class AdminController extends Controller
         CashBook::upsert($rec, ['id']);
 		//Log::alert("id=".$request->id);
 		if($request->id==""){
-			$Tid=CashBooksSmall::where('branch', session('target_branch_serial'))->max('id');
+			$Tid=CashBook::where('branch', session('target_branch_serial'))->max('id');
 		}else{
 			$Tid=$request->id;
 		}
-		log::alert("Tid=".$Tid);
+		//$Tid=$request->id;
+		//log::alert("Tid=".$Tid);
 		OtherFunc::set_target_balance_to_CashBookDb($Tid);
 	}
 

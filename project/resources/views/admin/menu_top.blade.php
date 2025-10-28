@@ -36,6 +36,13 @@
                         @endif
                         <ul>
 							<li>
+								<form method="GET" action="{{route('admin.show_handover.get')}}">@csrf
+									<button type="submit" id="show_handover_Btn" class="btn btn-success modalBtn btn-sm">
+										日報・申し送り
+									</button>
+								</form>
+							</li>
+							<li>
 								<button type="button" id="ReservationBirthdayModalBtn" class="btn btn-info modalBtn btn-sm" data-toggle="modal" data-target="#ReservationBirthdayModal" >
 									予約・誕生日確認
 								</button>
@@ -167,7 +174,7 @@
 								</div>
 							</div>
 
-							{{-- 
+
 							<div class="col-auto">
 								<li>
 									<form method="GET" action="{{ route('admin.set_balance_to_CashBookDb.get') }}">@csrf
@@ -175,7 +182,7 @@
 									</form>
 								</li>
 							</div>
-							 --}}
+
 							<div class="row">
 								<div class="col-auto">
 									<li>
