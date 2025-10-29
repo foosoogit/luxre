@@ -21,13 +21,13 @@
                         <button type="button" wire:click="searchClear()" onclick="searchClearManage()">検索解除</button>
                     </div>
                     <div class="col-auto">
-                        <input type="month" id="month" name="month" wire:model="serch_key_month"/><button type="button" name="serch_month_btn" id="serch_month_btn" wire:click="search_month()" >月で検索</button>
+                        <input type="month" id="month" name="month" wire:model="serch_key_month_ho"/><button type="button" name="serch_month_btn" id="serch_month_btn" wire:click="search_month()" >月で検索</button>
                     </div>
                     <div class="col-auto">
-                        <input type="date" id="date" name="date" wire:model="serch_key_date"/><button type="button" name="serch_date_btn" id="serch_date_btn" wire:click="search_date()" >日付で検索</button>
+                        <input type="date" id="date" name="date" wire:model="serch_key_date_ho"/><button type="button" name="serch_date_btn" id="serch_date_btn" wire:click="search_date()" >日付で検索</button>
                     </div>
                     <div class="col-auto">
-                        <input type="text" name="kensakukey_txt" id="kensakukey_txt" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model="serch_key_all">
+                        <input type="text" name="serch_key_all_ho" id="serch_key_all_ho" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model="serch_key_all()">
                     </div>
                     <div class="col-auto">
                         <button type="button" name="SerchBtn" id="SerchBtn" wire:click="search_all()">全件検索</button>

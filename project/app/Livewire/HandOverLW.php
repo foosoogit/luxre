@@ -16,16 +16,27 @@ class HandOverLW extends Component
     use WithPagination;
     public $kensakukey_ho,$target_date_ho,$remarks_ho,$id_txt_ho,$serch_key_month_ho,$serch_key_date_ho,$serch_key_all_ho,$sort_key_ho ,$asc_desc_ho,$handover,$daily_report,$staff_slct;
     
+    public function search_all(){
+        $this->serch_key_date_ho="";
+        $this->serch_key_month_ho="";
+    }
+
+    public function search_date(){
+        $this->serch_key_month_ho="";
+        $this->serch_key_all_ho="";
+        log::alert("serch_key_date_ho=".$this->serch_key_date_ho);
+    }
+
     public function search_month(){
         $this->serch_key_date="";
         $this->serch_key_all="";
-         $this->serch_key_all="";
+        $this->serch_key_all="";
     }
 
     public function searchClear(){
-        $this->serch_key_month="";
-		$this->serch_key_all="";
-		$this->serch_key_date="";
+        $this->serch_key_month_ho="";
+		$this->serch_key_all_ho="";
+		$this->serch_key_date_ho="";
         session(['serchKey_handover'=>''],['asc_desc_handover' =>'Desc'],['sort_key_handover' =>'target_date']);
 	}
 
@@ -55,6 +66,25 @@ class HandOverLW extends Component
     public function render()
     {
         OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+        $HandOverQuery=HandOver::query();
+        $HandOverQuery=$HandOverQuery->leftJoin('staff', 'hand_overs.serial_staff', '=', 'staff.serial_staff')->select('staff.id as id_staff','target_date','hand_overs.serial_staff','daily_report','hand_overs.remarks','hand_overs.id as id','staff.last_name_kanji','staff.first_name_kanji','hand_overs.handover');
+        if($this->serch_key_month_ho<>""){
+            $key="%".$this->serch_key_month_ho."%";
+            $HandOverQuery=$HandOverQuery->where('target_date','like',$key);
+        }else if($this->serch_key_date_ho<>""){
+            $key="%".$this->serch_key_date_ho."%";
+            $HandOverQuery=$HandOverQuery->where('target_date','like',$key);
+        }else if($this->serch_key_all_ho<>""){
+            $key="%".$this->serch_key_all_ho."%";
+            $HandOverQuery=$HandOverQuery
+				->where('target_date','like',$key)
+				->orwhere('handover','like',$key)
+				->orwhere('daily_report','like',$key)
+				->orwhere('remarks','like',$key)
+				->orwhere('last_name_kanji','like',$key)
+                ->orwhere('first_name_kanji','like',$key);
+        }
+
         if(session('sort_key_handover')==null){
             session(['sort_key_handover' =>'target_date']);
         }
@@ -66,9 +96,7 @@ class HandOverLW extends Component
 		$this->asc_desc_handover=session('asc_desc_handover');
 
         $htm_staff_select=OtherFunc::make_html_staff_slct('');
-        $HandOverQuery=HandOver::query();
-        
-        $HandOverQuery=$HandOverQuery->leftJoin('staff', 'hand_overs.serial_staff', '=', 'staff.serial_staff')->select('staff.id as id_staff','target_date','hand_overs.serial_staff','daily_report','hand_overs.remarks','hand_overs.id as id','staff.last_name_kanji','staff.first_name_kanji','hand_overs.handover');
+                
         $HandOverQuery =$HandOverQuery->orderBy($this->sort_key_ho, $this->asc_desc_handover);
         //Log::alert("asc_desc_handover=".$this->asc_desc_handover);
         //Log::alert("sort_key_ho=".$this->sort_key_ho);
