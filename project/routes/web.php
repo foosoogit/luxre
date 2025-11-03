@@ -78,6 +78,7 @@ Route::middleware('auth:admin')->group(function () {
             if (null ===session('asc_desc_cashbook')){
                 session(['asc_desc_cashbook' => "Desc"]);
             }
+            session(['target_livewire_page' => "CashBookList"]);
             return view('admin.CashBookList');
         })->name('CashBookList.post');
 
@@ -94,6 +95,7 @@ Route::middleware('auth:admin')->group(function () {
             if (null ===session('asc_desc')){
                 session(['asc_desc' => "Desc"]);
             }
+            session(['target_livewire_page' => "CashBookList"]);
             return view('admin.CashBookList');
         })->name('CashBookList.get');
 
@@ -239,7 +241,9 @@ Route::middleware('auth:admin')->group(function () {
                  return view('customers.ListCustomers');
              }else if(session('target_livewire_page')=="ListStaffInOut"){
                 return view('admin.ListStaffInOutHistories');
-             } 
+             } else if(session('target_livewire_page')=="CashBookList"){
+                return view('admin.CashBookList');
+            }
         });
         
         Route::post('/customers/MedicalRecordIflame', [AdminController::class,'ShowMedicalRecordFromIframe',function(Request $request){}])->name("ShowMedicalRecordIflame");
