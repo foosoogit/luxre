@@ -44,32 +44,41 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 	
+	public function ajax_get_customer_slct_option_for_HandOver(Request $request){
+		if(empty($request->customer_serial)){
+			$customer_serial='';
+		}else{
+			$customer_serial=$request->customer_serial;
+		}
+		//Log::info("customer_serial=".$customer_serial);
+		echo OtherFunc::ajax_get_customer_slct_option($customer_serial);
+	}
+
+	public function ajax_make_customer_list_for_HandOver(Request $request){
+		if(empty($request->customer_serial)){
+			$customer_serial='';
+		}else{
+			$customer_serial=$request->customer_serial;
+		}
+		echo OtherFunc::make_html_customer_slct($customer_serial);
+	}
+
 	public function ajax_upsert_HandOver(Request $request){
-        Log::info($request);
+		//log::alert("sentence=".$request->sentence);
 		$rec = [
             [
 				'id' => $request->id,
+				'branch'=>session('target_branch_serial'),
 				'target_date' => $request->target_date,
 				'serial_staff' => $request->staff_serial,
-				'handover' => $request->handover,
-				'daily_report'=> $request->daily_report,
-				'inputter'=> Auth::id(),
-				'branch'=>session('target_branch_serial'),
-				'remarks'=>$request->remarks 
+				'target_customaer_serial' => $request->customer_serial,
+				'sentence' => $request->sentence,
+				'type_flag'=> $request->type_flag,
+				'remarks'=>$request->remarks,
+				'inputter'=> Auth::id()
 			],
         ];
         HandOver::upsert($rec, ['id']);
-		//Log::alert("id=".$request->id);
-		/*
-		if($request->id==""){
-			$Tid=HandOver::where('branch', session('target_branch_serial'))->max('id');
-		}else{
-			$Tid=$request->id;
-		}
-		*/
-		//$Tid=$request->id;
-		//log::alert("Tid=".$Tid);
-		//OtherFunc::set_target_balance_to_CashBookDb($Tid);
 	}
 
 	public function ShowMenuCustomerManagement(Request $request){
@@ -79,7 +88,6 @@ class AdminController extends Controller
 		session(['fromMenu' => 'MenuCustomerManagement']);
 		session(['targetYear' => date('Y')]);
 		$targetYear=session('targetYear');
-		//OtherFunc::set_access_history('');
 		if(isset($_SERVER['HTTP_REFERER'])){
 			$_SESSION['access_history']=array();
 		}
@@ -90,13 +98,11 @@ class AdminController extends Controller
 				$query->select('contracts.serial_user')->from('contracts')->where('contracts.cancel','=', null);
 			})
 			->distinct()->select('name_sei','name_mei')->get();
-		//$UnpaidPerson
 		$html_year_slct=OtherFunc::make_html_year_slct(date('Y'));
 		$html_month_slct=OtherFunc::make_html_month_slct(date('n'));
 		$default_customers=OtherFunc::make_htm_get_default_user();
 		$not_coming_customers=OtherFunc::make_htm_get_not_coming_customer();
 		$htm_kesanMonth=OtherFunc::make_html_month_slct(InitConsts::KesanMonth());
-		//list($targetNameHtmFront, $targetNameHtmBack) =OtherFunc::make_htm_get_not_coming_customer();
 		$csrf="csrf";
 		session(['GoBackPlace' => '../ShowMenuCustomerManagement']);
 		$_SESSION['access_history']=array();
@@ -104,7 +110,6 @@ class AdminController extends Controller
 	}
 
 	public function ShowSelectBranch(){
-		//OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$select_branch_btn=OtherFunc::make_select_branch_btn();
 		return view('admin.select_branch',compact("select_branch_btn"));
 	}
@@ -124,19 +129,15 @@ class AdminController extends Controller
 			],
         ];
         CashBook::upsert($rec, ['id']);
-		//Log::alert("id=".$request->id);
 		if($request->id==""){
 			$Tid=CashBook::where('branch', session('target_branch_serial'))->max('id');
 		}else{
 			$Tid=$request->id;
 		}
-		//$Tid=$request->id;
-		//log::alert("Tid=".$Tid);
 		OtherFunc::set_target_balance_to_CashBookDb($Tid);
 	}
 
 	private function staff_reception_manage($staff_serial){
-		//Log::alert("ipadd=".$_SERVER['REMOTE_ADDR']);
 		$target_item_array['ipadd']=$_SERVER['REMOTE_ADDR'];
 		$staff_inf=Staff::where("serial_staff","=",$staff_serial)->first();
 		$latest_in_out_history_id=InOutHistory::where("target_serial","=",$staff_serial)

@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('branch',20)->comment('支店番号');
             $table->string('target_date',10)->comment('日付');
             $table->string('serial_staff',10)->comment('入力スタッフシリアル');
-            $table->text('handover',10)->nullable()->comment('申し送り');
-            $table->text('daily_report',100)->nullable()->comment('日報');
+            $table->string('target_customaer_serial',10)->comment('顧客番号');
+            $table->text('sentence')->comment('文章');
+            $table->string('type_flag',10)->comment('タイプ');
             $table->string('inputter',10)->nullable()->comment('ログイン者');
             $table->text('remarks')->nullable()->comment('備考');
         });

@@ -8,6 +8,27 @@ td:hover { background-color: #fcfcaa; }
 }
 */
 
+.auto-wrap {
+  word-break: break-word;    /* 単語の途中で折り返し */
+  overflow-wrap: break-word; /* 標準的な折り返し */
+  white-space: normal;       /* 改行を許可 */
+  text-align: left !important;  /* 左寄せに強制 */
+}
+
+table.table-handover {
+  width: 100%;
+  table-layout: auto;
+}
+/*
+.sentence {
+  width: 100px;
+  text-align: left !important;  
+}
+*/
+.chosen-results li {
+    text-align: left !important;  /* 左寄せに強制 */
+}
+
  .left-aligned-button {
     text-align: left;
   }

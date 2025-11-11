@@ -32,6 +32,66 @@ if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function ajax_get_customer_slct_option($targetCustomerSerial){
+		//$htm_customers_slct="";
+		//$htm_customers_slct='<select id="chosen" class="form-select chosen"><option value="" selected>--選択してください。--</option>';
+		$customersQuery=User::query();
+		$customersQuery=$customersQuery->orderBy('name_sei_kana', 'asc')->select('serial_user','name_sei','name_mei','name_sei_kana','name_mei_kana')->orderBy('name_mei_kana', 'asc')->get();
+		$CustomersInfArray=array();
+		foreach($customersQuery as $customerInf) {
+			$sct='';
+			/*
+			if($optgroup_new<>$customer->date_visit){
+				$optgroup_new=$customer->date_visit;
+				$htm_customers_slct.='<optgroup label="'.$optgroup_new.'">';
+			}
+			*/
+			if($customerInf->serial_user==$targetCustomerSerial){
+					$sct='selected';
+			}
+			$CustomersInfArray[]=[
+				'serial'=>$customerInf->serial_user,
+				'name_sei'=>$customerInf->name_sei,
+				'name_mei'=>$customerInf->name_mei,
+				'name_sei_kana'=>$customerInf->name_sei_kana,
+				'name_mei_kana'=>$customerInf->name_mei_kana,
+				$sct
+			];
+			//$CustomersInfArray[][1]=$customer->name_sei;
+			//$CustomersInfArray[][2]=$customer->name_mei;
+			//$CustomersInfArray[][3]=$customer->name_mei;
+			//$htm_customers_slct.='<option value="'.$customer->u_serial.'" '.$sct.'>'.$customer->u_serial.' '.$customer->name_sei.' '.$customer->name_mei.'</option>';
+		}
+
+		//$htm_customers_slct.='</select>';
+		//Log::info($CustomersInfArray);
+		return json_encode($CustomersInfArray);
+	}
+
+	public static function make_html_customer_slct($targetCustomerSerial){
+		$htm_customers_slct="";
+		$htm_customers_slct='<select id="customer_slct" name="customer_slct" class="form-select" style="width: 200px;" onchange="set_customer_serial(this)"><option value="" selected>選択してください。</option>';
+		$customersQuery=User::query();
+		$customersQuery=$customersQuery->leftJoin('visit_histories', 'visit_histories.serial_user', '=', 'users.serial_user')
+			->select('users.serial_user as u_serial','name_sei','name_mei','date_visit')
+    		->distinct()
+			->orderBy('date_visit', 'desc')->get();
+		$optgroup_new='';
+		foreach($customersQuery as $customer) {
+			$sct='';
+			if($optgroup_new<>$customer->date_visit){
+				$optgroup_new=$customer->date_visit;
+				$htm_customers_slct.='<optgroup label="'.$optgroup_new.'">';
+			}
+			if($customer->u_serial==$targetCustomerSerial){
+					$sct='selected';
+			}
+			$htm_customers_slct.='<option value="'.$customer->u_serial.'" '.$sct.'>'.$customer->u_serial.' '.$customer->name_sei.' '.$customer->name_mei.'</option>';
+		}
+		$htm_customers_slct.='</select>';
+		return $htm_customers_slct;
+	}
+	
 	public static function html_make_select_summary_ajax(){
 		/*
 		if($_POST["cash_book_type"]=="small"){
@@ -56,7 +116,6 @@ class OtherFunc extends Controller
 		$balance_tatal=0;
 		$Branch_inf_array=Branch::get();
 		$fnd_flg=false;
-		//Log::alert("target_id=".$target_id);
 		$CashBook_inf_array=CashBook::where('branch',session('target_branch_serial'))->orderBy('target_date', 'asc')->orderBy('created_at', 'asc')->get();
 		foreach($CashBook_inf_array as $CashBook_inf){
 			if($CashBook_inf->id==$target_id or $fnd_flg==true){
@@ -73,7 +132,6 @@ class OtherFunc extends Controller
 	} 
 
 	public static function set_balance_to_CashBookDb(){
-		//Log::alert("message");
 		$balance_tatal=0;
 		$Branch_inf_array=Branch::get();
 		foreach($Branch_inf_array as $Branch_inf){
@@ -121,7 +179,6 @@ class OtherFunc extends Controller
 		$ruikei_visiters_cnt=0;$ruikei_contract_cnt=0;
 		$amount_card=0;$total_amount_card=0;
 		$amount_paypay=0;$total_amount_paypay=0;
-		//$amount_cash_bunkatu=0;$total_mount_cash_bunkatu=0;
 		$amount_cash_uriage=0;$total_amount_cash_uriage=0;
 		$amount_smart=0;$total_amount_smart=0;
 		$total_new_visiters_cnt=0;$total_member_visiters_cnt=0;

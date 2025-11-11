@@ -140,6 +140,7 @@ class CashBookList extends Component
         $CashBook->delete();
     }
     public function submitForm(Request $request){
+        //log::info($request->all());
         $validator = Validator::make($request->all(), [
             'components.0.updates.target_date' => 'required',
             'components.0.updates.payment_deposit_rdo' => 'required',

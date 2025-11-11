@@ -34,52 +34,59 @@
                     </div>
                 </div>
             </div>
-            <table id="table_handover" class="table-striped table-hover table-handover container-fluid">
+            <div class="table-responsive">
+            <table id="table_handover" class="table container-fluid table-striped table-bordered table-hover">
                 <thead class="table-success">
                     <tr>
-                        <th class="border px-4 py-2">シリアル(修正)
+                        <th >シリアル(修正)
                             <div class="text-nowrap">
                                 <button type="button" wire:click="sort('id-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
                                 <button type="button" wire:click="sort('id-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>   
                         </th>
-                        <th class="border px-4 py-2">日付
+                        <th >日付
                             <div class="text-nowrap">
                                 <button type="button" wire:click="sort('target_date-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
                                 <button type="button" wire:click="sort('target_date-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>   
                         </th>
-                        <th class="border px-4 py-2">入力者
+                        <th >入力者
                             <div class="text-nowrap">
                                 <button type="button" wire:click="sort('last_name_kana-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
                                 <button type="button" wire:click="sort('last_name_kana-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>
                         </th>
-                        <th class="border px-4 py-2">申し送り
+                        <th >種類
                             <div class="text-nowrap">
-                                <button type="button" wire:click="sort('handover-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
-                                <button type="button" wire:click="sort('handover-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('type_flag-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('type_flag-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>
                         </th>
-                        <th class="border px-4 py-2">日報
+                        <th >顧客名
                             <div class="text-nowrap">
-                                <button type="button" wire:click="sort('daily_report-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
-                                <button type="button" wire:click="sort('daily_report-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('target_customaer_serial-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('target_customaer_serial-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>
                         </th>
-    					<th class="border px-4 py-2">備考
+                        <th class="sentence" style="width: 250px" >内容
+                            <div class="text-nowrap">
+                                <button type="button" wire:click="sort('sentence-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
+                                <button type="button" wire:click="sort('sentence-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
+                            </div>
+                        </th>
+    					<th >備考
                             <div class="text-nowrap">
                                 <button type="button" wire:click="sort('remarks-ASC')"><img src="{{ asset('images/sort_A_Z.png') }}" width="15px" /></button>
                                 <button type="button" wire:click="sort('remarks-Desc')"><img src="{{ asset('images/sort_Z_A.png') }}" width="15px" /></button>
                             </div>
                         </th>
-                        <th class="border px-4 py-2">削除</th>
+                        <th >削除</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($HandOverQuery as $dHandOverQuery)
                         <tr>
-                            <td class="border px-4 py-2">
+                            <td >
                                 <button type="button" id="modify_btn_{{$dHandOverQuery->payment_history_serial}}" class="btn btn-info modalBtn btn-sm" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#CreateModal" 
@@ -87,42 +94,38 @@
                                     data-manage="modyfy"
                                     data-t_date="{{$dHandOverQuery->target_date}}"
                                     data-serial_staff="{{$dHandOverQuery->serial_staff}}" 
-                                    data-daily_report="{{$dHandOverQuery->daily_report}}" 
-                                    data-handover="{{$dHandOverQuery->handover}}"
+                                    data-type_flag="{{$dHandOverQuery->type_flag}}" 
+                                    data-sentence="{{$dHandOverQuery->sentence}}"
                                     data-remarks="{{$dHandOverQuery->remarks}}">
                                     {{ $dHandOverQuery->id}}
                                 </button>
                             </td>
-                            <td class="border px-4 py-2">
+                            <td >
                                 {{$dHandOverQuery->target_date}}
                             </td>
-                            <td class="border px-4 py-2">
+                            <td >
                                 {{$dHandOverQuery->last_name_kanji}} {{$dHandOverQuery->first_name_kanji}}
                             </td>
-                            <td class="border px-4 py-2 td_handover">
-                                <span class ="d-flex justify-content-start">
-                                <button type="button" class="NoBorder text-left" style="text-align: left;"
-                                data-bs-toggle="modal"
-                                data-bs-target="#DispHandoverModal"
-                                data-serial="{{$dHandOverQuery->id}}"
-                                data-sentence="{{ $dHandOverQuery->handover}}"
-                                data-inputter_name="{{$dHandOverQuery->InputterName}}"
-                                data-t_date="{{$dHandOverQuery->target_date}}"
-                                data-sbj="申し送り"
-                            >{!! nl2br($dHandOverQuery->handover) !!}</button></span></td>
-                            <td class="border px-4 py-2 td_daily_report">
-                                <button type="button" class="NoBorder text-left" style="text-align: left;"
+                            <td >
+                                {{$dHandOverQuery->TypeFlagJP}}
+                           </td>
+                           <td >
+                                {{$dHandOverQuery->CustomerName}}
+                           </td>
+                            <td  >
+                                <button type="button" class="text-wrap NoBorder td_daily_report" style="word-break: break-word; white-space: normal;"
                                     data-bs-toggle="modal"
                                     data-bs-target="#DispHandoverModal"
                                     data-serial="{{$dHandOverQuery->id}}"
-                                    data-sentence="{{ $dHandOverQuery->daily_report}}"
+                                    data-sentence="{{ $dHandOverQuery->sentence}}"
                                     data-inputter_name="{{$dHandOverQuery->InputterName}}"
+                                    data-type_flag="{{$dHandOverQuery->TypeFlagJP}}"
                                     data-t_date="{{$dHandOverQuery->target_date}}"
-                                    data-sbj="日報"
-                                >{!!nl2br($dHandOverQuery->daily_report)!!}</button>
+                                    data-customer_name="{{$dHandOverQuery->last_name_kanji}} {{$dHandOverQuery->first_name_kanji}}"
+                                >{!!nl2br($dHandOverQuery->sentence)!!}</button>
                             </td>
-                            <td class="border px-4 py-2"><span class="item-row" data-detail="{{ $dHandOverQuery->handover}}">{{ $dHandOverQuery->remarks}}</span></td>
-                            <td class="border px-4 py-2">
+                            <td ><span class="item-row" data-detail="{{ $dHandOverQuery->handover}}">{{ $dHandOverQuery->remarks}}</span></td>
+                            <td >
                                 <button type="button" id="delete_btn_{{$dHandOverQuery->id}}" class="btn btn-danger modalBtn btn-sm" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#delConfirmModal" 
@@ -141,6 +144,7 @@
                 </tbody>
             </table>
 	        {{$HandOverQuery->appends(request()->query())->links('pagination::bootstrap-4')}}
+            </div>
         </div>    
         <!-- モーダル・ダイアログ -->
         <!--　申し送り・日報表示 -->
@@ -169,8 +173,18 @@
                                 <label>入力者：<span id="InputterName"></span></label>
                             </div>
                         </div>
+                        <div class="row" id="disp_type_customer">
+                            <div class="col-auto">
+                                <label>顧客名：<span id="target_customer_name"></span></label>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-auto">
+                                <label>種類：<span id="type_flag"></span></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto auto-wrap">
                                 <span id="sentence" class="pull-left"></span>
                             </div>
                         </div>
@@ -233,7 +247,8 @@
             </div>
         </div>
         <!--　新規・修正入力 -->
-        <div class="modal fade" id="CreateModal" tabindex="-1" aria-hidden="true">
+        {{--<div class="modal fade" id="CreateModal" tabindex="-1" aria-hidden="true">--}}
+        <div class="modal fade CreateModal" id="CreateModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -248,31 +263,72 @@
                                 <div class="d-flex flex-row mb-2">
                                     <div class="p-2">登録番号</div>
                                     <div class="p-2">
-                                        <input type="text" id="id_txt" name="id_txt" wire:model="id_txt" class="form-control"/>
+                                        <input type="text" id="id_txt" name="id_txt" wire:model="id_txt" class="form-control" readonly/>
                                     </div>
                                 </div>
                             </span>
-                            <div class="d-flex flex-row mb-2">
-                                <div class="p-2">登 録 者</div>
-                                <div class="p-2">
+                            <div class="row justify-content-md-left">
+                                <div class="col col-lg-2">入力者</div>
+                                <div class="col-md-auto">
                                     {!!$htm_staff_select!!}
+                                    <span id="staff_slct_for_error" class="text-danger"></span>
                                 </div>
-                                <span id="staff_slct_for_error" class="text-danger"></span>
-                            </div>
-                            <div class="d-flex flex-row mb-2">
-                                <div class="p-2">日　付</div>
-                                <div class="p-2">
+                                <div class="col-md-auto">日　付</div>
+                                <div class="col-md-auto">
                                     <input type="date" name="target_date" id="target_date" wire:model="target_date" class="form-control">
-                                </div>
-                                <span id="target_date_for_error" class="text-danger"></span>
-                            </div>
-                            <div class="flex-row mb-2">
-                                <div class="p-2 text-start">申し送り</div>
-                                <div class="p-2">
-                                    <textarea id="handover" name="handover" wire:model="handover" class="form-control RequiredContent"></textarea>
+                                    <span id="target_date_for_error" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="flex-row mb-2">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="my-box col-2">
+                                        <input class="form-check-input" type="radio" name="HandOver_DaylyRepo_rbn" wire:model="HandOver_DaylyRepo_rbn" id="handover_rbn" onclick="type_manage()" value="HandOver">
+                                        <label class="form-check-label" for="handover_rbn">
+                                            申し送り
+                                        </label>
+                                    </div>
+                                    <div class="my-box col-2">
+                                        <input class="form-check-input" type="radio" name="HandOver_DaylyRepo_rbn" wire:model="HandOver_DaylyRepo_rbn" id="daylyrepo_rbn" onclick="type_manage()" value="DaylyRepo">
+                                        <label class="form-check-label" for="daylyrepo_rbn">
+                                            日報
+                                        </label>
+                                        
+                                    </div>
+                                    <span id="HandOver_DaylyRepo_rbn_for_error" class="text-danger col-md-auto"></span>
+                                </div>
+                            </div>
+                            <span id="disp_non_customer">
+                                <div class="row justify-content-md-left">
+                                    <div class="col col-lg-2">対象来店者</div>
+                                    <div class="col-md-auto">
+                                        <input type="text" name="customer_txt" id="customer_txt" class="form-control" placeholder="直接入力できません。" readonly>
+                                        <input type="hidden" name="customer_serial_hdn" id="customer_serial_hdn" wire:model="customer_serial_hdn">
+                                    </div>
+                                    <div class="col-md-auto">
+                                        <label>※下記リストから選択してください。</label>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-md-left">
+                                    <div class="col col-lg-2 p-2">来店日から検索</div>
+                                        {{--<button type="button" id="customer_serch_by_date_btn" class="btn btn-primary" onclick="show_customers('');">来院日から検索</button>--}}
+                                    <div class="col-md-auto p-2"><span id="show_customers_list"></span></div>
+                                    <div class="col-md-auto p-2"> 顧客名から検索</div>
+                                        {{--<button type="button" id="customer_serch_by_list_btn" class="btn btn-primary" onclick="show_customers_order('');">顧客名から検索</button>--}}
+                                    <div class="col-md-auto p-2">
+                                        <select id="customer_slct_chosen_id" name="customer_slct_chosen" class="customer_slct_chosen_" onchange="set_customer_serial(this);">
+                                            <option value="">選択してください。(検索できます。)</option>
+                                        </select>
+                                    </div>
+                                    {{-- <select id="customer_slct_chosen" class="chosen customer_slct_chosen_1"> --}}
+                                    <span id="customer_slct_for_error" class="text-danger"></span>
+                                </div>
+                            </span>
+                                <div>
+                                    <textarea id="sentence_txtarea" name="sentence" wire:model="sentence" class="form-control" style="word-break: normal;"></textarea>
+                                </div>
+                                <span id="sentence_for_error" class="text-danger"></span>
+                            {{--
+                            <div class="d-flex flex-row mb-2">
                                 <div class="p-2 text-start">日報</div>
                                 <div class="p-2">
                                     <textarea id="daily_report" name="daily_report" wire:model="daily_report" class="form-control RequiredContent"></textarea>
@@ -280,12 +336,11 @@
                                 <span id="RequiredContent_for_error" class="text-danger"></span>
                                 <span id="test"></span>
                             </div>
-                            <div class="flex-row mb-2">
+                            --}}
+
                                 <div class="p-2 text-start">備考</div>
-                                <div class="p-2">
                                     <textarea id="remarks" name="remarks" wire:model="remarks" class="form-control"></textarea>
-                                </div>
-                            </div>
+                                <input type="hidden" id="error_flg_hdn" name="error_flg_hdn" wire:model="error_flg_hdn"/>
                         <div class="modal-footer">
                             <button type="submit" id="submit_btn" class="btn btn-primary" wire:click="submitForm">保存</button>
                             <button type="button" class="btn btn-default" data-bs-dismiss="modal">キャンセル</button>

@@ -56,6 +56,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     
     Route::name('admin.')->group(function() {
+        Route::post('admin/ajax_get_customer_slct_option_for_HandOver',[AdminController::class,'ajax_get_customer_slct_option_for_HandOver'])->name('ajax_get_customer_slct_option_for_HandOver');
+        Route::post('admin/ajax_make_customer_list_for_HandOver',[AdminController::class,'ajax_make_customer_list_for_HandOver'])->name('ajax_make_customer_list_for_HandOver');
         Route::post('admin/ajax_upsert_HandOver',[AdminController::class,'ajax_upsert_HandOver'])->name('ajax_upsert_HandOver');
         Route::get('/admin/HandOver', function () {
             return view('admin.HandOver');
