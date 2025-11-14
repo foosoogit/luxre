@@ -44,13 +44,42 @@ class AdminController extends Controller
 		$this->middleware('auth:admin')->except('logout');
 	}
 	
+	public function ajax_get_Medical_records_file_name(Request $request){
+		$ContractSerial=$request->contract_serial;
+		$serch_file="MedicalRecord/".$ContractSerial."-*.png";
+		$result=array();
+		foreach(glob($serch_file) as $file) {
+			$file_name= str_replace('K', 'V', $file);
+			$visit_serial_array=explode("-", $file_name);
+			$visit_serial_array=explode("-", $file);
+			$visit_serial=$visit_serial_array[0].'-'.$visit_serial_array[1].'-'.$visit_serial_array[2];
+			//Log::alert("visit_serial=".$visit_serial);
+			$visit_serial=str_replace('MedicalRecord/', '', $visit_serial);
+			$visit_serial=str_replace('K', 'V', $visit_serial);
+			$visit_date=VisitHistory::where('visit_history_serial','=',$visit_serial)->first('date_visit');
+			//Log::alert("visit_date->date_visit=".$visit_date->date_visit);
+			$res=$file."|".$visit_date->date_visit;
+			//Log::alert("res=".$res);
+			$result[] = $res;
+		}
+		rsort($result);
+		if(count($result)>0){
+			$target_file=$result[0];
+		}else{
+			$target_file="";
+		}
+		Log::info($result);
+		$keiyaku_array=Contract::where('serial_keiyaku','=',$ContractSerial)->first();
+		//$keiyaku_name=$keiyaku_array->keiyaku_name;
+		echo json_encode($result, JSON_UNESCAPED_UNICODE);;
+	}
+	
 	public function ajax_get_customer_slct_option_for_HandOver(Request $request){
 		if(empty($request->customer_serial)){
 			$customer_serial='';
 		}else{
 			$customer_serial=$request->customer_serial;
 		}
-		//Log::info("customer_serial=".$customer_serial);
 		echo OtherFunc::ajax_get_customer_slct_option($customer_serial);
 	}
 
@@ -64,7 +93,6 @@ class AdminController extends Controller
 	}
 
 	public function ajax_upsert_HandOver(Request $request){
-		//log::alert("sentence=".$request->sentence);
 		$rec = [
             [
 				'id' => $request->id,

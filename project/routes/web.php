@@ -190,7 +190,6 @@ Route::middleware('auth:admin')->group(function () {
     });
 
     Route::controller(AdminController::class)->name('customers.')->group(function() {
-
         Route::get('/customers/ShowPaymentRegistrationIflame/{SerialKeiyaku}/{SerialUser}',[AdminController::class,'ShowPaymentRegistrationIflame',function($SerialKeiyaku,$SerialUser){}])->name('ShowPaymentRegistrationIflame');
         Route::get('/customers/ShowVisitHistory', function () {
             return view('customers.ListVisit');
@@ -247,9 +246,7 @@ Route::middleware('auth:admin')->group(function () {
                 return view('admin.CashBookList');
             }
         });
-        
         Route::post('/customers/MedicalRecordIflame', [AdminController::class,'ShowMedicalRecordFromIframe',function(Request $request){}])->name("ShowMedicalRecordIflame");
-
         Route::get('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
 	    Route::post('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
         Route::post('/customers/recordVisitPaymentHistory/', [AdminController::class,'recordVisitPaymentHistory',function(Request $request){}])->name("recordVisitPaymentHistory");
@@ -270,6 +267,10 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('customers/ShowInputNewCustomer', [AdminController::class,'ShowInputNewCustomer'])->name('ShowInpNewCustomer');
         Route::post('/customers/ShowInputCustomer', [AdminController::class,'ShowInputCustomer',function(Request $request){}])->name('ShowInpCustomer');
     });
+    
+    Route::post('/customers/ContractList/ajax_get_Medical_records_file_name',[AdminController::class,'ajax_get_Medical_records_file_name'])->name('ajax_get_Medical_records_file_name');
+    Route::post('/customers/ajax_get_Medical_records_file_name',[AdminController::class,'ajax_get_Medical_records_file_name'])->name('ajax_get_Medical_records_file_name_VH');
+    Route::get('/customers/ajax_get_Medical_records_file_name',[AdminController::class,'ajax_get_Medical_records_file_name'])->name('get.ajax_get_Medical_records_file_name');
     Route::post('/customers/save_payment_history_ajax', [OtherFunc::class,'save_payment_history_ajax'])->name('save_payment_history_ajax');
     Route::post('/customers/make_htm_get_payment_method_slct_ajax', [OtherFunc::class,'make_htm_get_payment_method_slct_ajax'])->name('make_htm_get_payment_method_slct_ajax');
     Route::post('/customers/save_visit_data_ajax', [OtherFunc::class,'save_visit_data_ajax'])->name('save_visit_data_ajax');

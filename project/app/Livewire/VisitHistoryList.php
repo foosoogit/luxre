@@ -111,12 +111,15 @@ class VisitHistoryList extends Component
 		//Log::alert("UserSerial=".$UserSerial);
 		$UserInf=User::where('serial_user','=',$UserSerial)->first();
 		$User_name=$UserInf->name_sei." ".$UserInf->name_mei;
+		$targetKeiyakuinf=Contract::where('keiyaku_num',session('targetKeiyakuSerial'))->select('keiyaku_name')->first();
+		$KeiyakuName=$targetKeiyakuinf->keiyaku_name;
+		
 		//Log::info($newVisitHistorySerial);
 		//$newVisitHistorySerial;
 		//$newVisitHistorySerial=$VisitHistoryArray->visit_history_serial;
         //$VisitHistoryQuery=$VisitHistoryQuery->where('contracts.serial_user','=',session('targetUserSerial'));
 		//$VisitHistoryQuery=$VisitHistoryQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->targetPage);
 		$VisitHistoryQuery=$VisitHistoryQuery->paginate($perPage = 10,['*'], 'page',$this->targetPage);
-        return view('livewire.visit-history-list',compact('VisitHistoryQuery','newVisitHistorySerial','User_name'));
+        return view('livewire.visit-history-list',compact('KeiyakuName','UserSerial','VisitHistoryQuery','newVisitHistorySerial','User_name'));
     }
 }

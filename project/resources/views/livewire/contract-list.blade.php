@@ -5,18 +5,6 @@
                 <div class="row">
                     @include('layouts.header')
                 </div>
-                {{-- 
-                <div class="row">
-                    <div class="col-auto">
-                        <form method="GET" action="{{ route('admin.top') }}">@csrf
-                            <button class="btn btn-primary btn-sm" type="submit">メニュー</button>
-                        </form>
-                    </div>
-                    <div class="col-auto">
-                        <a class="btn btn-primary btn-sm" href="javascript:history.back();">戻る</a>
-                    </div>
-                </div>
-                 --}}
                 <div class="mb-2 bg-secondary text-white">契約リスト</div>
 		        <div class="row pb-2">
                     <div class="col-auto">   
@@ -94,13 +82,14 @@
                                 <td class="border px-4 py-2">{{ $dContracts->keiyaku_bi}}</td>
                                 <td class="border px-4 py-2">
                                     <form action="/customers/ShowSyuseiContract/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
-                                        <input name="syusei_Btn" type="submit" value="{{$dContracts->serial_keiyaku}}">
+                                        <input name="syusei_Btn" type="submit" value="{{$dContracts->serial_keiyaku}}"><span class="fs-12">{{$dContracts->keiyaku_name}}</span>
                                         @if($dContracts->cancel<>null)
                                             <span class="text-danger">解約済み</span>
                                         @endif
                                     </form>
                                 </td>
                                 <td class="border px-4 py-2">
+                                    <div class="row"><div class="col-auto">
                                     @if ($dContracts->keiyaku_type=="subscription")
                                         <form action="/customers/ShowPaymentRegistrationIflame/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
                                             <input name="Record_Btn" type="submit" value="{{$dContracts->LatestVisitDate}}">
@@ -114,6 +103,20 @@
                                             @endif
                                         </form>
                                     @endif
+                                    </div>
+                                    <div class="col-auto">
+                                        {{-- <form action="/customers/deleteContract/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf --}}
+                                           {{--  <button type="button" class="btn btn-outline-primary btn-sm">カルテ一覧</button> --}}
+                                            <button type="button" class="modalBtn btn-outline-primary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#MedicalRecordFormModal"
+                                                data-contractserial="{{$dContracts->serial_keiyaku}}"
+                                                data-customer_name="{{$userinf->name_sei}}&nbsp;{{$userinf->name_mei}}"
+                                                data-customerserial="{{$dContracts->serial_user}}"
+                                                data-keiyaku_name="{{$dContracts->keiyaku_name}}"
+                                            >カルテ一覧</button>
+                                        {{--</form>--}}
+                                    </div>
                                 </td>
                                 @if($UserSerial=="all")
                                     <td class="border px-4 py-2">
@@ -137,6 +140,47 @@
                     </tbody>
                 </table>
 	            {{$contractQuery->appends(request()->query())->links('pagination::bootstrap-4')}}
+            </div>
+        </div>
+        <!--　カルテ一覧 -->
+        <div class="modal fade" id="MedicalRecordFormModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <meta http-equiv="Pragma" content="no-cache">
+                        <meta http-equiv="Cache-Control" content="no-cache"> 
+                        <h4 class="modal-title">カルテ一覧</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-bs-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>顧客番号：<span id="serial"></span></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>顧客名：<span id="customer_name"></span></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>契約内容：<span id="contract_name"></span></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <div id="medical_records_list_img" class="image-container">
+                                {{-- <span id="medical_records_list_img"></span> --}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="delTargetHandoverSerial_hdn">
+                        <button type="button" class="btn btn-info" data-bs-dismiss="modal">閉じる</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

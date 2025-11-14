@@ -24,6 +24,6 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
 		{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.25.0/dist/bootstrap-table.min.js"></script> --}}
-		<script  type="text/javascript" src="{{ asset('/js/HandOver.js?2024120621') }}"></script>
+		<script  type="text/javascript" src="{{ asset('/js/HandOver.js?2024120622') }}"></script>
 	</body>
 </html>

@@ -15,6 +15,14 @@
                 </button>
             </div>
             <div class="col-auto">
+                <button type="button" class="modalBtn btn-outline-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#MedicalRecordFormModal"
+                    data-contractserial="{{session('targetKeiyakuSerial')}}"
+                    data-customer_name="{{$User_name}}"
+                    data-customerserial="{{$UserSerial}}"
+                    data-keiyaku_name="{{$KeiyakuName}}"
+                >カルテ一覧</button>
                 <button type="button" wire:click="searchClear()" onclick="document.getElementById('Vkensakukey_txt').value=''" disabled>解除</button>
                 <input type="text" name="Vkensakukey_txt" id="Vkensakukey_txt" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model.defer="Vkensakukey" disabled>
                 <button type="button" name="SerchBtn" id="SerchBtn" wire:click="Vsearch()" disabled>検索</button>
@@ -200,5 +208,48 @@
                 </div>
             </div>
         </div>
+
+        <!--　カルテ一覧 -->
+        <div class="modal fade" id="MedicalRecordFormModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <meta http-equiv="Pragma" content="no-cache">
+                        <meta http-equiv="Cache-Control" content="no-cache"> 
+                        <h4 class="modal-title">カルテ一覧</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-bs-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>顧客番号：<span id="serial"></span></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>顧客名：<span id="customer_name"></span></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <label>契約内容：<span id="contract_name"></span></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <div id="medical_records_list_img" class="image-container">
+                                {{-- <span id="medical_records_list_img"></span> --}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="delTargetHandoverSerial_hdn">
+                        <button type="button" class="btn btn-info" data-bs-dismiss="modal">閉じる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
