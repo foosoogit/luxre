@@ -32,9 +32,7 @@ class VisitHistoryList extends Component
 			->update(['visit_history_serial' => "del_".$target_Vsirial]);
 		VisitHistory::where('visit_history_serial',"del_".$target_Vsirial)->delete();
 		$target_serch_file_name=str_replace('V', 'K', $target_Vsirial)."*.png";
-		//Log::alert("target_serch_file_name=".$target_serch_file_name);
 		foreach (glob(public_path('MedicalRecord/'.$target_serch_file_name)) as $file){
-			//Log::alert("file=".$file);
 			unlink($file);
 		}
 	}
@@ -57,7 +55,6 @@ class VisitHistoryList extends Component
 	}
     
 	public function Vsearch(){
-		//Log::alert("Vkensakukey=".$this->Vkensakukey);
 		//$this->serch_key_p=$this->Vkensakukey;
 		//$this->target_page=1;
 		//session(['serchKey_VH' => $this->Vkensakukey]);
@@ -104,17 +101,14 @@ class VisitHistoryList extends Component
 		}else{
 			$newVisitHistorySerial=++$newVisitHistorySerial;
 		}
-		//Log::info($newVisitHistorySerial);
 		
 		$visit_history_serial_array=explode('-', session('targetKeiyakuSerial'));
 		$UserSerial=str_replace('K_', '', $visit_history_serial_array[0]);
-		//Log::alert("UserSerial=".$UserSerial);
 		$UserInf=User::where('serial_user','=',$UserSerial)->first();
 		$User_name=$UserInf->name_sei." ".$UserInf->name_mei;
 		$targetKeiyakuinf=Contract::where('keiyaku_num',session('targetKeiyakuSerial'))->select('keiyaku_name')->first();
 		$KeiyakuName=$targetKeiyakuinf->keiyaku_name;
 		
-		//Log::info($newVisitHistorySerial);
 		//$newVisitHistorySerial;
 		//$newVisitHistorySerial=$VisitHistoryArray->visit_history_serial;
         //$VisitHistoryQuery=$VisitHistoryQuery->where('contracts.serial_user','=',session('targetUserSerial'));

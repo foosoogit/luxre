@@ -40,7 +40,7 @@ $(function(){
 		}).done(function (data) {
 			location.replace(location.href);
 			$msg= "修正しました。";
-			console.log("data="+data);
+			//console.log("data="+data);
 			if(data=="1"){
 				$msg= "登録しました。";
 			}
@@ -103,7 +103,7 @@ $(function(){
 		modal_payment.find('.modal-body span#payment_history_serial_d').text(payment_history_serial);
 		  //受け取った値をspanタグのとこに表示some
 		modal_payment.find('.modal-body span#name_d').text(name);
-		console.log("name="+name);
+		//console.log("name="+name);
 	  });
 
 	$('#ModifyModal').on('show.bs.modal', function (event) {

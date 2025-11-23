@@ -76,7 +76,6 @@ $('#initialize').click(function(e) {
 	ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
 	//chara.src ='https://'+host_url+"/images/Image_body_w796_h496.png";
 	chara.src =host_url+"/images/Image_body_w796_h496.png";
-	console.log("chara.src-2"+chara.src);
 	//chara.src = 'https://foosoo.xsrv.jp/images/Image_body_w796_h496.png';
 	chara.onload = () => {
 		var bairitu=2;
@@ -105,7 +104,6 @@ $('li').click(function() {
 $('#clear').click(function(e) {
 	if(!confirm('本当に消去しますか？')) return;
         var undo_cnt=undoImg_array.length-1;
-        //console.log("undo_cnt="+undo_cnt);
         if(undo_cnt==-1){
 	       alert('消去できません。');
         }else{
@@ -143,7 +141,12 @@ function SaveMedicalRecord(obj){
 	var img_url = TargetCanvas.toDataURL("image/png").replace(new RegExp("data:image/png;base64,"),"");
 	$.ajax({
 		url: "/ajax_SaveMedicalRecord",
-		data: {"upload_data":img_url,"VisitHistorySerial":document.getElementById('visit_history_serial').value,"StaffSerial":document.getElementById('staff_slct').value},
+		data: {
+			"upload_data":img_url,
+			"VisitHistorySerial":document.getElementById('visit_history_serial').value,
+			"StaffSerial":document.getElementById('staff_slct').value,
+			"remarks":document.getElementById('memo_txtarea').value
+		},
 	    type: 'POST',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')	}
 	}).done(function (data) {

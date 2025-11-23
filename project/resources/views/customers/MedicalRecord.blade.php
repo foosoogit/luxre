@@ -36,7 +36,7 @@
 			</div>
 			<div class="row text-left">
 				<!--<div id="ccc">-->
-				<div class="col-2">
+				<div class="col">
 					線の太さ<input type="range" min="1" max="5" value="1" id="lineWidth" list="markers" style="width:100px;"/><span id="lineNum">1</span>
 					<datalist id="markers">
 						<option value="0"></option><option value="20"></option><option value="40"></option><option value="60"></option><option value="80"></option><option value="100"></option>
@@ -51,20 +51,25 @@
 						<li style="background-color:#FFFFFF" class="border border-dark border-3"></li>
 					</ul>
 				</div>
-				<div class="col-5">
+				<div class="col-4">
 					<input name="mae_face_btn" id="mae_face_btn" type="button" value="前顔" onclick="mark_bui(this)"/>
 					<input name="mae_foot_right_btn" id="mae_foot_right_btn" type="button" value="前右足" value="前右足" onclick="mark_bui(this)"/>
 					<input name="mae_foot_left_btn" id="mae_foot_left_btn" type="button" value="前左足" value="前左足" onclick="mark_bui(this)"/>
 				</div>
-			</div>
-			<div class="row text-center">
-				<div class="col"><button id="undo">１つ前の状態に戻す</button></div>
-				<div class="col"><button id="clear">すべて消去</button></div>
+				<div class="col-4"><button id="undo">１つ前の状態に戻す</button></div>
+				<div class="col-2"><button id="clear">すべて消去</button></div>
 				<div class="col"><button style="width:100px;" id="initialize">初期化</button></div>
-				<div class="col">
-					<button class="btn btn-primary btn-sm" onclick="SaveMedicalRecord(this)" id="btn-send">保存</button>
+			</div>
+			<div class="row">
+				<div class="col-7">
+					<label for="memo_txtarea" class="form-label">メモ</label>
+  					<textarea class="form-control" id="memo_txtarea" name="memo_txtarea" rows="2">{{$visit_history_remarks}}</textarea>
 				</div>
-			</div><!--container-->
+				<div class="col align-self-end">
+					<button class="btn btn-primary" onclick="SaveMedicalRecord(this)" id="btn-send">保存</button>
+				</div>
+			</div>
+			<!--container-->
 			<button class="btn btn-primary btn-sm" onclick="GetCampasSize()" id="btn-send" style="display:none">サイズ取得</button>
 			<input name="visit_history_serial" id="visit_history_serial" type="hidden" value="{{$visit_history_num}}"/>
 			<input name="contract_serial" id="contract_serial" type="hidden" value="{{$ContractSerial}}"/>

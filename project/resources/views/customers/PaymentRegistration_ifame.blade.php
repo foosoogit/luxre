@@ -24,7 +24,7 @@ table td {border: 1px solid #aaa;}
 				<iframe height="560" class="sub_VisitHistory pull-right" width="100%" id="sub_VisitHistory" onload="func_VisitHistory()" src="{{ route('customers.VisitHistory.post') }}"></iframe>
 			</div>
 			<div class="col">
-				<iframe height="560" class="pull-left"  width="100%" id="sub_PaymentHistory" onload="func_PaymentHistory()" src="{{ route('customers.PaymentHistory.post') }}"></iframe>
+				<iframe height="560" class="pull-left"  width="80%" id="sub_PaymentHistory" onload="func_PaymentHistory()" src="{{ route('customers.PaymentHistory.post') }}"></iframe>
 			</div>
 		</div>
 	{{--</div>--}}

@@ -14,7 +14,9 @@
                     来店記録新規登録
                 </button>
             </div>
+             
             <div class="col-auto">
+                {{--
                 <button type="button" class="modalBtn btn-outline-primary btn-sm"
                     data-bs-toggle="modal"
                     data-bs-target="#MedicalRecordFormModal"
@@ -23,6 +25,7 @@
                     data-customerserial="{{$UserSerial}}"
                     data-keiyaku_name="{{$KeiyakuName}}"
                 >カルテ一覧</button>
+                 --}}
                 <button type="button" wire:click="searchClear()" onclick="document.getElementById('Vkensakukey_txt').value=''" disabled>解除</button>
                 <input type="text" name="Vkensakukey_txt" id="Vkensakukey_txt" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model.defer="Vkensakukey" disabled>
                 <button type="button" name="SerchBtn" id="SerchBtn" wire:click="Vsearch()" disabled>検索</button>
@@ -37,7 +40,15 @@
                             <button type="button" wire:click="Vsort('visit_history_serial-Desc')" disabled><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px"/></button>
                         </div>   
                     </th>
-                    <th class="border px-4 py-2">来店日(カルテ入力)
+                    <th class="border px-4 py-2 small">来店日(カルテ入力/
+                        <button type="button" class="modalBtn btn-outline-primary btn-sm small"
+                    data-bs-toggle="modal"
+                    data-bs-target="#MedicalRecordFormModal"
+                    data-contractserial="{{session('targetKeiyakuSerial')}}"
+                    data-customer_name="{{$User_name}}"
+                    data-customerserial="{{$UserSerial}}"
+                    data-keiyaku_name="{{$KeiyakuName}}"
+                >一覧</button>)
                         <div class="text-nowrap">
                             <button type="button" wire:click="Vsort('date_visit-ASC')" disabled><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
                             <button type="button" wire:click="Vsort('date_visit-Desc')" disabled><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
@@ -95,15 +106,14 @@
                                 data-visit_history_serial="{{$dVisitHistory->visit_history_serial}}" 
                                 data-visit_date="{{$dVisitHistory->date_visit}}"
                                 data-sejyutusya="{{$dVisitHistory->last_name_kanji}}&nbsp;{{$dVisitHistory->first_name_kanji}}"
-                            > 
-                                削除
+                            >削除
                             </button>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-	    {{$VisitHistoryQuery->appends(request()->query())->links('pagination::bootstrap-5')}}
+	    {{$VisitHistoryQuery->appends(request()->query())->links('pagination::bootstrap-4')}}
         <!-- モーダル・ダイアログ -->
         <div class="modal fade" id="ModifyModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">

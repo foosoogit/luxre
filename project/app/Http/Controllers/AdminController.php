@@ -53,13 +53,10 @@ class AdminController extends Controller
 			$visit_serial_array=explode("-", $file_name);
 			$visit_serial_array=explode("-", $file);
 			$visit_serial=$visit_serial_array[0].'-'.$visit_serial_array[1].'-'.$visit_serial_array[2];
-			//Log::alert("visit_serial=".$visit_serial);
 			$visit_serial=str_replace('MedicalRecord/', '', $visit_serial);
 			$visit_serial=str_replace('K', 'V', $visit_serial);
 			$visit_date=VisitHistory::where('visit_history_serial','=',$visit_serial)->first('date_visit');
-			//Log::alert("visit_date->date_visit=".$visit_date->date_visit);
 			$res=$file."|".$visit_date->date_visit;
-			//Log::alert("res=".$res);
 			$result[] = $res;
 		}
 		rsort($result);
@@ -68,7 +65,6 @@ class AdminController extends Controller
 		}else{
 			$target_file="";
 		}
-		Log::info($result);
 		$keiyaku_array=Contract::where('serial_keiyaku','=',$ContractSerial)->first();
 		//$keiyaku_name=$keiyaku_array->keiyaku_name;
 		echo json_encode($result, JSON_UNESCAPED_UNICODE);;
@@ -257,7 +253,6 @@ class AdminController extends Controller
 
 	public function ShowInpRecordVisitPayment($ContractSerial,$UserSerial){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-		//Log::alert("ShowInpRecordVisitPayment-1");
 		$fromURLArray=parse_url($_SERVER['HTTP_REFERER']);
 		if(!session('InpRecordVisitPaymentFlg')){
 			session(['ShowInpRecordVisitPaymentfromPage' => $fromURLArray['path']]);
@@ -346,7 +341,6 @@ class AdminController extends Controller
 		}
 		
 		$payCnt=$targetContract->how_many_pay_genkin;
-		//Log::alert("payCnt=".$payCnt);
 		if($targetContract->how_to_pay=="Credit Card"){
 			$payCnt=$targetContract->how_many_pay_card;
 		}
@@ -445,6 +439,7 @@ class AdminController extends Controller
 		$UserInf=User::where('serial_user','=',$UserSerial)->first();
 		$inf_keiyaku_array=Contract::where('serial_keiyaku','=',$serial_keiyaku)->first();
 		$keiyaku_name=$inf_keiyaku_array->keiyaku_name;
+		$visit_history_remarks=$VisitHistoryInfArray->remarks;
 		if(empty($VisitHistoryInfArray->serial_staff)){
 			$SerialStaff="";
 		}else{
@@ -458,7 +453,7 @@ class AdminController extends Controller
 			$ht_type='https://';			
 		}
 		$host_url=$_SERVER['HTTP_ORIGIN'];
-		return view('customers.MedicalRecord',compact('host_url','html_staff_slct','target_file','ContractSerial','visit_history_num','UserInf','keiyaku_name'));
+		return view('customers.MedicalRecord',compact('visit_history_remarks','host_url','html_staff_slct','target_file','ContractSerial','visit_history_num','UserInf','keiyaku_name'));
 	}
 	
 	public function ShowContractList($UserSerial,Request $request){
@@ -640,8 +635,9 @@ class AdminController extends Controller
 		} else {
 			$ht_type='https://';			
 		}
+		$visit_history_remarks=$VisitHistoryArray->remarks;
 		$host_url=$_SERVER['HTTP_ORIGIN'];
-		return view('customers.MedicalRecord',compact('host_url','html_staff_slct','target_file','ContractSerial','visit_history_num','UserInf','keiyaku_name'));
+		return view('customers.MedicalRecord',compact('visit_history_remarks','host_url','html_staff_slct','target_file','ContractSerial','visit_history_num','UserInf','keiyaku_name'));
 	}
 
 	public function ajax_show_point_list(Request $request){
@@ -750,30 +746,7 @@ class AdminController extends Controller
 		$this::save_recorder("SaveStaff");
 		return view("admin.ListStaffs");
 	}
-	/*
-	public function send_attendance_card($TargetStaffSerial){
-		
-		$staff_inf=Staff::where("serial_staff","=",$TargetStaffSerial)->first();
-		if(empty($staff_inf)){
-			$target_item_array['msg']='スタッフのご登録が見つかりません。';
-			$target_item_array['res']='no serial';
-			$json = json_encode( $target_item_array , JSON_PRETTY_PRINT ) ;
-		}else{
-			OtherFunc::make_QRCode($TargetStaffSerial,storage_path('images/'.$TargetStaffSerial.'.png'));
-			$target_item_array=array();
-			//Mail::send(new ContactMail($target_item_array));
-			$target_item_array['msg']=$staff_inf->last_name_kanji." ".$staff_inf->first_name_kanji." 様<br>出勤用QRコードをお送りします。<br>Luxer";
-			$target_item_array['to_email']=$staff_inf->email;
-			$target_item_array['subject']='出退記録用QRコード';
-			$target_item_array['from_email']=env('MAIL_FROM_ADDRESS');
-			$target_item_array['QR_file_path']=storage_path('images/'.$TargetStaffSerial.'.png');
-			//Log::info($target_item_array);
-			Mail::send(new SendMail($target_item_array));
 
-		}
-	}
-	*/
-	
 	public function ajax_get_coming_soon_user(Request $request){
 		if(!(isset($_SESSION['PopupComingSoonFlg']) and $_SESSION['PopupComingSoonFlg']==date("Y-m-d"))){
 			//予約処理
@@ -814,7 +787,6 @@ class AdminController extends Controller
 				$dy="";
 				if($number==0){
 					$date = date('w');
-					//Log::alert("date= ".$date);
 					$w=OtherFunc::day_of_the_week_dtcls($date);
 					$dy="<span class='text-primary'>"."・今日 (".date('y年m月d日')."(".$w."))"."</span>";
 				}else if($number==1){
@@ -1196,7 +1168,6 @@ class AdminController extends Controller
 	public function ShowSyuseiCustomer(Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		session(['livewire_page_num_for_back' => OtherFunc::get_page_num($_SESSION['access_history'][0])]);
-		//Log::alert("livewire_page_num_for_back SyuseiCustomer=".session('livewire_page_num_for_back'));
 		if(isset($_POST['back_flg'])){
             array_shift($_SESSION['access_history']);
             array_shift($_SESSION['access_history']);
@@ -1343,7 +1314,6 @@ class AdminController extends Controller
     {
 		$target_serial=$request->target_serial;
         $target_serial_length=strlen($target_serial);
-		//Log::alert("target_serial=".$target_serial);
         $TargetInfSql=Staff::where('serial_staff','=',$target_serial);
         if($TargetInfSql->count()>0){
             $TargetInf=$TargetInfSql->first();
@@ -1469,7 +1439,8 @@ class AdminController extends Controller
 		fclose($fp);
 		$ts=str_replace('K', 'V', session('ContractSerial')."-".$request->VisitHistorySerial);
 		VisitHistory::where('visit_history_serial', '=', $ts)->update([
-			'serial_staff' => $request->StaffSerial
+			'serial_staff' => $request->StaffSerial,
+			'remarks'=> $request->remarks
 		]);
 	}
 
