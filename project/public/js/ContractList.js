@@ -59,6 +59,16 @@ $(function(){
     let medical_records_inf_array=medical_records_inf.split(',');
 
     for (let i=0;i<medical_records_inf_array.length;i++){
+      //let target_array=medical_records_inf_array[i];
+     
+      /*
+      medical_records_file_url=target_array[0];
+      console.log("medical_records_file_url="+medical_records_file_url);
+      medical_records_file_date=target_array[1];
+      medical_records_file_memo=target_array[2];
+      medical_records_file_date=medical_records_file_date.replace(/"/g, '');
+      medical_records_file_date=medical_records_file_date.replace(/]/g, '');
+      */
       let target_array=medical_records_inf_array[i].split("|");
       medical_records_file_url=target_array[0];
       medical_records_file_date=target_array[1];
@@ -80,8 +90,8 @@ $(function(){
       //document.getElementById("medical_records_list_img").appendChild(new_image);
 
 
-      //$('#medical_records_list_img').prepend('<figure> <img src="'+url+'" alt="'+medical_records_file_date+'" /><figcaption>'+medical_records_file_date+'</figcaption></figure>');
-      $('#medical_records_list_img').append('<figure><a href="'+url+'" target="_blank"><img src="'+url+'" alt="'+medical_records_file_date+'" /></a><figcaption>'+medical_records_file_date+'</figcaption></figure>');
+      $('#medical_records_list_img').prepend('<figure> <img src="'+url+'" alt="'+medical_records_file_date+'" /><figcaption>'+medical_records_file_date+'</figcaption></figure>');
+      //$('#medical_records_list_img').append('<figure><a href="'+url+'" target="_blank"><img src="'+url+'" alt="'+medical_records_file_date+'" /></a><figcaption>'+medical_records_file_date+'</figcaption></figure>');
     }
 	});
 });

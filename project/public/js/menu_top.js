@@ -12,7 +12,7 @@
 
 function pass_ctrl(){
 	let pass = window.prompt('パスワードを入力してください。');
-	if(pass=='0927'){
+	if(pass=='kzh1965'){
 		return true;
 	}else{
 		return false;

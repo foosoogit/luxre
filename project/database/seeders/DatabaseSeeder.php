@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
 				'name' => 'ksuzuki',
 				'serial_admin' => 'A_001',
 				'email' => 'moezbeauty.ts@gmail.com',
-				'password' => Hash::make('0101'),
+				'password' => Hash::make('kzh0927'),
 			],
 			[
 				'name' => 'ksuzuki',
