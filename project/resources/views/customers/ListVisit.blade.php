@@ -18,7 +18,7 @@
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="{{asset('/js/ListVisit.js')}}?date=20230617"></script>
 		@livewireScripts
-		<script  type="text/javascript" src="{{ asset('/js/ContractList.js?2024120406')}}"></script>
+		<script  type="text/javascript" src="{{ asset('/js/ContractList.js?2024120413')}}"></script>
 		<script type="text/javascript">var base_url = '{{ asset('') }}';</script>
 	</body>
 </html>

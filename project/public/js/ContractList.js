@@ -24,6 +24,7 @@ function get_medical_records_file_url(contract_serial){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(response) {
+          //console.log("response="+response);
           medical_records_inf=response;
           //return "url" + response;
           //            callback(response);  // データが取れたらコールバック実行
@@ -43,10 +44,6 @@ $(function(){
     let button = $(event.relatedTarget);
     let modal_obj = $(this);
     let contract_serial = button.data('contractserial');
-    //let flg= button.data('VisitHHistory');
-    //if(flg=='VisitHHistory'){
-    //  target_URL=
-    //}
     
     get_medical_records_file_url(contract_serial);
     
@@ -59,24 +56,21 @@ $(function(){
     let medical_records_inf_array=medical_records_inf.split(',');
 
     for (let i=0;i<medical_records_inf_array.length;i++){
-      //let target_array=medical_records_inf_array[i];
-     
-      /*
-      medical_records_file_url=target_array[0];
-      console.log("medical_records_file_url="+medical_records_file_url);
-      medical_records_file_date=target_array[1];
-      medical_records_file_memo=target_array[2];
-      medical_records_file_date=medical_records_file_date.replace(/"/g, '');
-      medical_records_file_date=medical_records_file_date.replace(/]/g, '');
-      */
-      let target_array=medical_records_inf_array[i].split("|");
+       let target_array=medical_records_inf_array[i].split("|");
       medical_records_file_url=target_array[0];
       medical_records_file_date=target_array[1];
+      medical_records_remarks=target_array[2];
+      console.log("medical_records_file_date="+ medical_records_file_date);
+      console.log("medical_records_remarks="+medical_records_remarks);
+      medical_records_remarks=medical_records_remarks.replace(/"/g, '');
+      medical_records_remarks=medical_records_remarks.replace(/]/g, '');
+      if(medical_records_remarks!==''){
+        medical_records_remarks='<br>'+medical_records_remarks;
+      }
       medical_records_file_date=medical_records_file_date.replace(/"/g, '');
       medical_records_file_date=medical_records_file_date.replace(/]/g, '');
       const new_image = document.createElement("img");
       let new_div = document.createElement("div");
-      //new_div.className='overlay-text';
       new_div.innerHTML=medical_records_file_date;
       let url=base_url+medical_records_file_url;
       url=url.replace(/"/g, '');
@@ -86,11 +80,8 @@ $(function(){
       new_image.src = url;
       new_image.width = 300;
       new_image.style.margin = "5px";
-      //document.getElementById("medical_records_list_img").appendChild(new_div);
-      //document.getElementById("medical_records_list_img").appendChild(new_image);
-
-
-      $('#medical_records_list_img').prepend('<figure> <img src="'+url+'" alt="'+medical_records_file_date+'" /><figcaption>'+medical_records_file_date+'</figcaption></figure>');
+      $('#medical_records_list_img').prepend('<figure> <img src="'+url+'" alt="'+medical_records_file_date+'" /><figcaption>'+medical_records_file_date+medical_records_remarks+'</figcaption></figure>');
+      //$('#medical_records_list_img').prepend('<figure> <img src="'+url+'" alt="'+medical_records_file_date+'" /></figure>');
       //$('#medical_records_list_img').append('<figure><a href="'+url+'" target="_blank"><img src="'+url+'" alt="'+medical_records_file_date+'" /></a><figcaption>'+medical_records_file_date+'</figcaption></figure>');
     }
 	});

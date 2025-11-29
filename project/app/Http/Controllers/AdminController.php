@@ -48,7 +48,7 @@ class AdminController extends Controller
 		$ContractSerial=$request->contract_serial;
 		$serch_file="MedicalRecord/".$ContractSerial."-*.png";
 		$result=array();$medical_records_inf_array=array();
-		$cnt=0;
+		//$cnt=0;
 		foreach(glob($serch_file) as $file) {
 			$file_name= str_replace('K', 'V', $file);
 			$visit_serial_array=explode("-", $file_name);
@@ -56,38 +56,17 @@ class AdminController extends Controller
 			$visit_serial=$visit_serial_array[0].'-'.$visit_serial_array[1].'-'.$visit_serial_array[2];
 			$visit_serial=str_replace('MedicalRecord/', '', $visit_serial);
 			$visit_serial=str_replace('K', 'V', $visit_serial);
-			$visit_date=VisitHistory::where('visit_history_serial','=',$visit_serial)->first('date_visit');
-			//$res=$file."|".$visit_date->date_visit."|".$visit_date->remarks;
-			$res=$file."|".$visit_date->date_visit;
-			//Log::alert("res=".$res);
+			$visit_date=VisitHistory::where('visit_history_serial','=',$visit_serial)->orderBy('date_visit','desc')->first();
+			$res=$file."|".$visit_date->date_visit."|".$visit_date->remarks;
+			//$res=$file."|".$visit_date->date_visit;
 			$result[] = $res;
-			/*
-			$medical_records_inf_array[$cnt][0]=$file;
-			$medical_records_inf_array[$cnt][1]=$visit_date->date_visit;
-			$memo="";
-			
-			if(!empty($visit_date->remarks)){
-				$memo=$visit_date->remarks;
-			}
-			$medical_records_inf_array[$cnt][2]=$visit_date->remarks;
-			*/
-			//Log::alert("file=".$file);
-			//Log::alert("date_visit=".$visit_date->date_visit);
-			//Log::alert("remarks=".$memo);
-			//Log::info("medical_records_inf_array=".$memo);
-			$cnt=$cnt++;
+			//$cnt=$cnt++;
 		}
-		//Log::info($medical_records_inf_array);
-		rsort($result);
-		//rsort($medical_records_inf_array);
-		//Log::info($medical_records_inf_array);
 		if(count($result)>0){
 			$target_file=$result[0];
 		}else{
 			$target_file="";
 		}
-		//$keiyaku_array=Contract::where('serial_keiyaku','=',$ContractSerial)->first();
-		//$keiyaku_name=$keiyaku_array->keiyaku_name;
 		echo json_encode($result, JSON_UNESCAPED_UNICODE);
 		//echo json_encode($medical_records_inf_array, JSON_UNESCAPED_UNICODE);
 	}
