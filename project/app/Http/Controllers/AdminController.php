@@ -43,6 +43,32 @@ class AdminController extends Controller
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
 	}
+
+	public function ShowContractContentsAllList($UserSerial,Request $request){
+		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
+		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		$key="";
+		$Contracts="";
+		/*
+		if($UserSerial=="all"){
+			$userinf="";
+			$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
+			$GoBackPlace="/top";
+			session(['targetUserSerial' => 'all']);
+		}else{
+		*/
+			session(['targetUserSerial' => $UserSerial]);
+			session(['target_page_for_pager'=>'']);
+			$_SESSION['access_history'][0]=$_SESSION['access_history'][0]."/".$UserSerial;
+			$GoBackPlace="/customers/CustomersList";				
+			$userinf=User::where('serial_user','=',$UserSerial)->first();
+			$ContractsContents=Contract::where('contracts.serial_user','=',$UserSerial)
+				->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
+				->select('contracts.*', 'users.*')
+				->paginate(initConsts::DdisplayLineNumContractList());
+		//}
+		return view('Livewire.ContractContenttsAllList',compact("target_historyBack_inf_array","ContractsContents","UserSerial","userinf"));
+	}
 	
 	public function ajax_get_Medical_records_file_name(Request $request){
 		$ContractSerial=$request->contract_serial;

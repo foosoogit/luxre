@@ -32,6 +32,41 @@ if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function html_make_constracts_list_ajax(Request $request){
+		//Log::info($request);
+		//Log::alert("serial_user=".$request->target_serial_user);
+		$contract_array=Contract::where('serial_user',$request->target_serial_user)->withTrashed()->orderby('serial_keiyaku', 'desc')->get();
+		$sentence='<table id="contracts_table" class="table-striped table-hover table-bordered" style="font-size: 10pt;">';
+		$sentence.='<thead class="table-success">
+            <tr>
+                <th class="border px-4 py-2">契約日</th>
+                <th class="border px-4 py-2">契約番号</th>
+                <th class="border px-4 py-2">契約期間</th>
+                <th class="border px-4 py-2">契約金額</th>
+                <th class="border px-4 py-2">支払い金額</th>
+                <th class="border px-4 py-2">支払い方法</th>
+                <th class="border px-4 py-2">支払い回数</th>
+                <th class="border px-4 py-2">契約タイプ</th>
+				<th class="border px-4 py-2">解約日</th>
+			</tr>
+            </thead>';
+		$sentence.='<tbody>';
+		foreach($contract_array as $value){
+			$sentence.='<tr><th class="border px-4 py-2">'.$value->keiyaku_kikan_start.'</th>
+                            <th class="border px-4 py-2">'.$value->serial_keiyaku.'</th>
+                            <th class="border px-4 py-2">'.$value->keiyaku_kikan_start.'～'.$value->keiyaku_kikan_end.'</th>
+                            <th class="border px-4 py-2">'.$value->keiyaku_kingaku_total.'</th>
+                            <th class="border px-4 py-2">'.$value->keiyaku_kingaku.'</th>
+                            <th class="border px-4 py-2">'.$value->how_to_pay.'</th>
+                            <th class="border px-4 py-2">'.$value->how_many_pay_genkin.$value->how_many_pay_card.'</th>
+                            <th class="border px-4 py-2">'.$value->ConvertJP.'</th>
+							<th class="border px-4 py-2">'.$value->cancel.'</th></tr>';
+		}
+		$sentence.='</tbody></table>';
+		//$htm_summary_slct.='</select>';
+		return $sentence;
+	}
+
 	public static function ajax_get_customer_slct_option($targetCustomerSerial){
 		//$htm_customers_slct="";
 		//$htm_customers_slct='<select id="chosen" class="form-select chosen"><option value="" selected>--選択してください。--</option>';
@@ -93,13 +128,6 @@ class OtherFunc extends Controller
 	}
 	
 	public static function html_make_select_summary_ajax(){
-		/*
-		if($_POST["cash_book_type"]=="small"){
-			$summary_array=CashBooksSmall::where('branch',session('target_branch_serial'))->select('summary')->distinct()->get();
-		}else{
-			$summary_array=CashBook::where('branch',session('target_branch_serial'))->select('summary')->distinct()->get();
-		}
-		*/
 		$summary_array=CashBook::where('branch',session('target_branch_serial'))->select('summary')->distinct()->get();
 		$htm_summary_slct="";
 		$htm_summary_slct='<select name="summary_slct" id="summary_slct" class="form-select" onchange="set_summmary(this);">';

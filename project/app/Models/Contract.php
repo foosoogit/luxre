@@ -35,6 +35,16 @@ class Contract extends Model
 		'serial_tantosya',
 	];
 
+	public function getConvertJPAttribute($value){
+		$ConvertJP="";
+		if($this->keiyaku_type=='subscription'){
+			$ConvertJP='サブスク';
+		}else if($this->keiyaku_type=='cyclic'){
+			$ConvertJP='期間契約';
+		}
+		return $ConvertJP;
+	}
+
     public function getLatestVisitDateAttribute($value){
 		$max_date=VisitHistory::where('serial_keiyaku','=',$this->serial_keiyaku)->max('date_visit');
 		return $max_date;

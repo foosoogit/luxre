@@ -205,6 +205,9 @@ Route::middleware('auth:admin')->group(function () {
         })->name('PaymentHistory.post');
 
         Route::post('/customers/CustomersList/ajax_save_yoyaku_time',[AdminController::class,'ajax_save_yoyaku_time'])->name('ajax_save_yoyaku_time');
+        
+        Route::post('/customers/CustomersList/html_make_constracts_list_ajax', [OtherFunc::class,'html_make_constracts_list_ajax'])->name('html_make_constracts_list_ajax');
+
         Route::get('/customers/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
         Route::post('/customers/ContractCancellation/{targetContract}/{UserSerial}', [AdminController::class,'ContractCancellation'],function($targetContract,$UserSerial){});
 
@@ -219,6 +222,7 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
         Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
+        Route::get('/customers/ShowContractContentsAllList/{UserSerial}', [AdminController::class,'ShowContractContentsAllList',function($UserSerial){}])->name("ContractList.get");
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
 	    

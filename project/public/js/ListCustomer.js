@@ -13,6 +13,52 @@ function delArert(targetUser){
 }
 
 $(function(){
+  $('#AllConstractListuModal').on('show.bs.modal', function (event) {
+    //モーダルを開いたボタンを取得
+    let button = $(event.relatedTarget);
+    let user_serial = button.data('serial');
+    let user_name = button.data('name');
+    console.log("user_serial="+user_serial);
+    console.log("user_name="+user_name);  
+    make_html_constracts_list(user_serial);
+      //モーダルを取得
+    //let modal_Yoyaku = $(this);
+      //受け取った値をspanタグのとこに表示some
+    var modal_AllConstractList = $(this);
+    modal_AllConstractList.find('.modal-body span#serial_modal').text(user_serial);
+    modal_AllConstractList.find('.modal-body span#name_modal').text(user_name);
+    //modal_Yoyaku.find('.modal-body input#YoyakuDate').val(yoyaku_array[0]);
+    //modal_Yoyaku.find('.modal-body input#YoyakuTime').val(yoyaku_array[1]);
+  });
+});
+
+function make_html_constracts_list(user_serial){
+  //console.log('user_serial = '+user_serial);
+  $.ajax({
+    url: "CustomersList/html_make_constracts_list_ajax",
+    type: 'post', // getかpostを指定(デフォルトは前者)
+    dataType: 'html', 
+    scriptCharset: 'utf-8',
+    frequency: 10,
+    cache: false,
+    async : false,
+    data: {
+      'target_serial_user': user_serial
+    },
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  }).done(function (data) {
+    $("#contracts_list").append(data);
+  }) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+    alert(XMLHttpRequest.status);
+    alert(textStatus);
+    alert(errorThrown);	
+    alert('摘要を取得できませんでした。');
+  });
+}
+
+$(function(){
   $('#YoyakuModal').on('show.bs.modal', function (event) {
     //モーダルを開いたボタンを取得
     var button = $(event.relatedTarget);
