@@ -18,8 +18,8 @@ class ContractList extends Component
 	//public $sort_key_p_contract = '',$asc_desc_p_contract="",$serch_key_p_contract="";
 	public $targetPage=null;
 	public static $statickey="";
-	public $serch_key_contract,$sort_key_contract,$sort_type_contract="asc";
-	public $livewire_cnt=0;
+	public $serch_key_contract,$sort_key_contract,$sort_type_contract="asc",$contract_subscription_flg=true,$contract_cancel_flg=true;
+	public $contract_type;
 	protected $search_Contract;
 	protected $target_historyBack_inf_array;
 	public function searchClear(){
@@ -30,8 +30,31 @@ class ContractList extends Component
 		session(['serch_key_contract' => '']);
 		session(['sort_key_contract' => '']);
 		session(['sort_type_contract' => 'asc']);
+		session(['checked_subscription' => 'checked']);
+		session(['checked_cancel' => 'checked']);
 	}
 	
+	public function select_subscription(){
+		//log::alert("contract_subscription_flg=".$this->contract_subscription_flg);
+		log::alert("checked_subscription=".session('checked_subscription'));
+		if(session('checked_subscription')=="checked"){
+            session(['checked_subscription' => ""]);
+        }else{
+            session(['checked_subscription' => "checked"]);
+        }
+		log::alert("checked_subscription=".session('checked_subscription'));
+	}
+
+	public function select_cancel(){
+		//log::alert("contract_subscription_flg=".$this->contract_subscription_flg);
+		//log::alert("contract_type=".$this->contract_type);
+		if(session('checked_cancel')=="checked"){
+            session(['checked_cancel' => ""]);
+        }else{
+            session(['checked_cancel' => "checked"]);
+        }
+	}
+
 	public function search_from_top_menu(Request $request){
 		$this->kensakukey_contract=$request->input('user_serial');
 		session(['serchKey_contract' => $request->input('user_serial')]);
@@ -52,6 +75,7 @@ class ContractList extends Component
 
     public function render()
     {
+		//OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		if($this->sort_key_contract<>session('sort_key_contract')){
 			//session(['sort_key_contract' =>$this->sort_key_contract]);
 			$this->sort_key_contract=session('sort_key_contract');
@@ -124,6 +148,15 @@ class ContractList extends Component
 				});
 		}
 		
+		if(session('checked_subscription')=='checked'){
+			log::alert("checked_subscription-3=".session('checked_subscription'));
+			$contractQuery=$contractQuery->where('keiyaku_type','subscription');
+		}
+		log::alert("checked_subscription-2=".session('checked_subscription'));
+		if(session('checked_cancel')=='checked'){
+			$contractQuery=$contractQuery->where('cancel','<>','');
+		}
+		
 		if($this->sort_key_contract<>''){
 			if($this->sort_key_contract=="name_sei"){
 				if($this->sort_type_contract=="ASC"){
@@ -153,7 +186,7 @@ class ContractList extends Component
 		
 		
 		$contractQuery=$contractQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->targetPage);
-    	
+    	//$contractQuery=$contractQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
 		/*$GoBackPlaceName="";
 		foreach($_SESSION['access_history'] as $targetHistory){
 			if(strpos($targetHistory,"UserList")){
@@ -167,7 +200,11 @@ class ContractList extends Component
 		//$GoBackPlace="/ShowMenuCustomerManagement/";
 		*/
 		$this->search_Contract();
-		return view('livewire.contract-list',["target_historyBack_inf_array"=>$this->target_historyBack_inf_array,"userinf"=>$userinf,"contractQuery"=>$this->search_Contract,"UserSerial"=>$UserSerial,"serchKey_contract"=>$this->serch_key_contract]);
+		//$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
+		//return view('livewire.contract-list',["target_historyBack_inf_array"=>$this->target_historyBack_inf_array,"userinf"=>$userinf,"contractQuery"=>$this->search_Contract,"UserSerial"=>$UserSerial,"serchKey_contract"=>$this->serch_key_contract]);
+		return view('livewire.contract-list',["target_historyBack_inf_array"=>$this->target_historyBack_inf_array,"userinf"=>$userinf,'contractQuery'=>$contractQuery,"UserSerial"=>$UserSerial,"serchKey_contract"=>$this->serch_key_contract]);
+		//return view('livewire.contract-list',compact("target_historyBack_inf_array"=>$this->target_historyBack_inf_array,"userinf"=>$userinf,'contractQuery',"UserSerial"=>$UserSerial,"serchKey_contract"=>$this->serch_key_contract));
+		//return view('livewire.contract-list',compact("target_historyBack_inf_array","userinf",'contractQuery',"UserSerial","serchKey_contract"));
     }
 
 	public function search_Contract(){
@@ -202,6 +239,13 @@ class ContractList extends Component
 		$UserSerial=session('targetUserSerial');
         $Contracts="";$userinf="";
 		$contractQuery = Contract::query();
+		/*
+		if(session('checked_subscription')=='checked'){
+			log::alert("checked_subscription-4=".session('checked_subscription'));
+			$contractQuery=$contractQuery->where('keiyaku_type','subscription');
+			//$contractQuery->dd();
+		}
+		*/
 		//$contractQuery=$contractQuery->leftjoin('contract_details', 'contracts.serial_keiyaku', '=', 'contract_details.serial_keiyaku');
 		if($this->serch_key_contract<>""){
 			$key="%".$this->kensakukey."%";
@@ -214,6 +258,23 @@ class ContractList extends Component
 		if(session('targetUserSerial')=="all"){
 			$contractQuery=$contractQuery->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
 				//->leftjoin('contract_details', 'contracts.serial_keiyaku', '=', 'contract_details.serial_keiyaku')
+				->Where(function($query) {
+					$query->orwhere('contracts.serial_keiyaku','like',self::$statickey)
+					->orwhere('contracts.serial_user','like',self::$statickey)
+					->orwhere('users.name_mei','like',self::$statickey)
+					->orwhere('users.name_sei','like',self::$statickey)
+					->orwhere('users.name_sei_kana','like',self::$statickey)
+					->orwhere('users.name_mei_kana','like',self::$statickey)
+					->orwhere('date_latest_visit','like',self::$statickey)
+					->orwhere('keiyaku_bi','like',self::$statickey)
+					->orwhere('keiyaku_kikan_start','like',self::$statickey)
+					->orwhere('keiyaku_kikan_end','like',self::$statickey)
+					->orwhere('keiyaku_kingaku','like',self::$statickey)
+					->orwhere('how_to_pay','like',self::$statickey)
+					->orwhere('how_many_pay_genkin','like',self::$statickey)
+					->orwhere('how_many_pay_card','like',self::$statickey);
+				});
+				/*
 				->where('contracts.serial_keiyaku','like',$key)
 				->orwhere('contracts.serial_user','like',$key)
 				->orwhere('users.name_mei','like',$key)
@@ -228,6 +289,7 @@ class ContractList extends Component
 				->orwhere('how_to_pay','like',$key)
 				->orwhere('how_many_pay_genkin','like',$key)
 				->orwhere('how_many_pay_card','like',$key);
+				*/
 			$GoBackPlace="/top";
 		}else{
 			$userinf=User::where('serial_user','=',session('targetUserSerial'))->first();
@@ -251,6 +313,19 @@ class ContractList extends Component
 					->orwhere('how_many_pay_genkin','like',self::$statickey)
 					->orwhere('how_many_pay_card','like',self::$statickey);
 				});
+		}
+
+		if(session('checked_subscription')=='checked'){
+			$contractQuery=$contractQuery->Where(function($query) {
+					$query->where('keiyaku_type','subscription');
+				});
+			//log::alert("checked_subscription-4=".session('checked_subscription'));
+			//$contractQuery=$contractQuery->where('keiyaku_type','subscription');
+			//$contractQuery->dd();
+		}
+
+		if(session('checked_cancel')=='checked'){
+			$contractQuery=$contractQuery->where('cancel','<>','');
 		}
 		
 		if($this->sort_key_contract<>''){
@@ -279,6 +354,7 @@ class ContractList extends Component
 		if(session('targetUserSerial')!="all"){
 			$this->targetPage=null;
 		}
+
 		$this->search_Contract=$contractQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->targetPage);
     }
 	

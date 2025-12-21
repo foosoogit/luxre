@@ -488,6 +488,7 @@ class AdminController extends Controller
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		$key="";
 		$Contracts="";
+		log::alert("UserSerial=".$UserSerial);
 		if($UserSerial=="all"){
 			$userinf="";
 			$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());

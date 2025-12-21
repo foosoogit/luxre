@@ -71,9 +71,10 @@
 					//
 					let PermittedIPAaddresses=document.getElementById("PermittedIPAaddresses").value;
 					let IPCkFlg = PermittedIPAaddresses.indexOf(item_json.ipadd);
-					console.log('PermittedIPAaddresses='+PermittedIPAaddresses);
-					console.log('ipadd='+item_json.ipadd);
-					if(IPCkFlg==-1){
+					//console.log('PermittedIPAaddresses='+PermittedIPAaddresses);
+					//console.log('ipadd='+item_json.ipadd);
+					//IPチェック制限解除
+					/*if(IPCkFlg==-1){
 					
 					//if(item_json.ipadd!="153.185.58.27" && item_json.ipadd!="172.20.0.1" && item_json.ipadd!="121.117.50.143"){
 					//if(item_json.ipadd!="153.185.58.27"){
@@ -85,7 +86,8 @@
 						data=null;
 						window.setTimeout(dispNone, 4000);
 						return;
-					}else if(item_json.res=="no serial"){
+					}else*/
+					if(item_json.res=="no serial"){
 						audio_false.play();
 					}else if(item_json.res=="no contract"){
 						audio_false.play();

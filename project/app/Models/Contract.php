@@ -35,7 +35,7 @@ class Contract extends Model
 		'serial_tantosya',
 	];
 
-	public function getConvertJPAttribute($value){
+	public function getKeiyakuTypeJPAttribute($value){
 		$ConvertJP="";
 		if($this->keiyaku_type=='subscription'){
 			$ConvertJP='サブスク';

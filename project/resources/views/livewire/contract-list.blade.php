@@ -21,6 +21,15 @@
                             顧客番号：&nbsp;{{$UserSerial}}&nbsp;&nbsp;契約者：{{$userinf->name_sei}}&nbsp;{{$userinf->name_mei}}
                         @endif
                     </div>
+                    <div class="col-auto">
+                        <input class="form-check-input" type="checkbox" value="subscription" name="contract_type[]" id="contract_type_subscription" onclick="p_d_manage()" {{session('check_subscription')}} wire:click="select_subscription()"/>
+				        {{--  <input class="form-check-input" type="checkbox" value="payment" name="amount_type[]" id="payment_cbox" onclick="p_d_manage()" {{session('serch_payment_flg')}}  wire:click="serch_payment()">--}}
+                        <label class="form-check-label" for="contract_type_subscription">サブスク</label>
+                    </div>
+                    <div class="col-auto">
+                        <input class="form-check-input" type="checkbox" value="cancel" name="contract_type[]" id="contract_type_cancel" onclick="p_d_manage()" {{session('checked_cancel')}} wire:click="select_cancel()"/>
+				        <label class="form-check-label" for="contract_type_cancel">契約解除者</label>
+                    </div>
                 </div>
                 <table id="table_responsive container-fluid" class="table-striped table-hover">
                     <thead class="table-success">
@@ -59,6 +68,8 @@
                             @endif
                             
                             <th class="border px-4 py-2">契約期間</th>
+                            <th class="border px-4 py-2">契約タイプ</th>
+                            <th class="border px-4 py-2">契約状態</th>
                             <th class="border px-4 py-2">契約金額
                                 <div class="text-nowrap">
                                     <button type="button" wire:click="sort('keiyaku_kingaku-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
@@ -111,7 +122,7 @@
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#MedicalRecordFormModal"
                                                 data-contractserial="{{$dContracts->serial_keiyaku}}"
-                                                data-customer_name="{{$userinf->name_sei}}&nbsp;{{$userinf->name_mei}}"
+                                                data-customer_name="{{$dContracts->name_sei}}&nbsp;{{$dContracts->name_mei}}"
                                                 data-customerserial="{{$dContracts->serial_user}}"
                                                 data-keiyaku_name="{{$dContracts->keiyaku_name}}"
                                             >カルテ一覧</button>
@@ -127,6 +138,8 @@
                                     <td class="border px-4 py-2">{{$dContracts->name_sei}} &nbsp; {{$dContracts->name_mei}}</td>
                                 @endif
                                 <td class="border px-4 py-2" {!! $dContracts->closed_color!!}>{{ $dContracts->keiyaku_kikan_start}}-{{ $dContracts->keiyaku_kikan_end}}</td>
+                                <td class="border px-4 py-2">{{ $dContracts->KeiyakuTypeJP}}</td>
+                                <td class="border px-4 py-2">{{ $dContracts->cancel}}</td>
                                 <td class="border px-4 py-2">{{ $dContracts->keiyaku_kingaku}}</td>
                                 <td class="border px-4 py-2">{{ $dContracts->how_to_pay}}</td>
                                 <td class="border px-4 py-2">{{ $dContracts->how_many_pay_genkin}}</td>

@@ -4,9 +4,15 @@ window.onload = function(){
 }
 */
 let medical_records_inf;
-//let target_URL;
-//let url=ajax_get_Medical_records_file_name_by_customers
-//let url=ajax_get_Medical_records_file_name_by_customers
+/*
+function p_d_manage(){
+  if(document.getElementById('payment_cbox').checked==false && document.getElementById('deposit_cbox').checked==false){
+    document.getElementById('payment_cbox').checked=true;
+    document.getElementById('deposit_cbox').checked=true;
+  }
+}
+*/
+
 function get_medical_records_file_url(contract_serial){
   $.ajax({
         //url: '{{route("ajax_get_Medical_records_file_name")}}',
