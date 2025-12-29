@@ -13,6 +13,25 @@ function p_d_manage(){
 }
 */
 
+function contract_status_manage(){
+  /*
+  if(document.getElementById('contract_status_under').checked==false && document.getElementById('contract_status_cancellation').checked==false){
+    document.getElementById('contract_status_under').checked=true;
+    document.getElementById('contract_status_cancellation').checked=true;
+  }
+    */
+}
+
+function contract_type_manage(obj){
+  /*
+  console.log("name="+obj.name);
+  if(document.getElementById('contract_type_subscription').checked==false && document.getElementById('contract_type_cyclic').checked==false){
+    document.getElementById('contract_type_subscription').checked=true;
+    document.getElementById('contract_type_cyclic').checked=true;
+  }
+    */
+}
+
 function get_medical_records_file_url(contract_serial){
   $.ajax({
         //url: '{{route("ajax_get_Medical_records_file_name")}}',

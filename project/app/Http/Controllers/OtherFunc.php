@@ -489,7 +489,7 @@ class OtherFunc extends Controller
 	}
 
 	public static function set_access_history($REFERER){
-		//log::alert("REFERER=".$REFERER);
+		log::alert("REFERER=".$REFERER);
 		$prevurl = url()->previous();
 		$targetPage=1;
 		if(isset($_SESSION['access_history'][0])){
@@ -562,6 +562,7 @@ class OtherFunc extends Controller
 				array_splice($_SESSION['access_history'], 0, 2);
 			}
 		}
+		log::info($_SESSION['access_history']);
 		//$_SESSION[OtherFunc::get_page_name($_SESSION['access_history'][0])]=OtherFunc::get_page_num($_SESSION['access_history'][0]);
 	}
 	

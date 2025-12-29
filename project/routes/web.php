@@ -221,7 +221,12 @@ Route::middleware('auth:admin')->group(function () {
 	    Route::post('/customers/ShowSyuseiContract/{ContractSerial}/{UserSerial}', [AdminController::class,'ShowSyuseiContract',function($ContractSerial,$UserSerial){}]);
 
         Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
-        Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){}])->name("ContractList.get");
+        Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){
+            session(['target_livewire_page' => "ListContract"]);
+            session(['checked_subscription'=>true],['check_cyclic' => true],['checked_Under'=>true],['checked_cancel' => true]);
+            return view('customers.ListCustomers');
+        }])->name("ContractList.get");
+        
         Route::get('/customers/ShowContractContentsAllList/{UserSerial}', [AdminController::class,'ShowContractContentsAllList',function($UserSerial){}])->name("ContractList.get");
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
@@ -237,7 +242,7 @@ Route::middleware('auth:admin')->group(function () {
         })->name('CustomersList.show.post');
 
         Route::get('livewire/update', function () {
-            //Log::alert("target_livewire_page=".session('target_livewire_page'));
+            //Log::alert("target_livewire_page-1=".session('target_livewire_page'));
             if(session('target_livewire_page')=="ListPoints"){
                 return view('admin.ListPoints');
             }else if(session('target_livewire_page')=="ListContract"){

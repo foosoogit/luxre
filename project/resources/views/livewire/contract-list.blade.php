@@ -22,13 +22,22 @@
                         @endif
                     </div>
                     <div class="col-auto">
-                        <input class="form-check-input" type="checkbox" value="subscription" name="contract_type[]" id="contract_type_subscription" onclick="p_d_manage()" {{session('check_subscription')}} wire:click="select_subscription()"/>
+                        <input class="form-check-input" type="checkbox" value="subscription" name="contract_type" id="contract_type_subscription" wire:model="isSubscriptionCheckBox" onclick="contract_type_manage(this)" {{session('check_subscription')}} wire:click="select_subscription()"/>
 				        {{--  <input class="form-check-input" type="checkbox" value="payment" name="amount_type[]" id="payment_cbox" onclick="p_d_manage()" {{session('serch_payment_flg')}}  wire:click="serch_payment()">--}}
                         <label class="form-check-label" for="contract_type_subscription">サブスク</label>
                     </div>
                     <div class="col-auto">
-                        <input class="form-check-input" type="checkbox" value="cancel" name="contract_type[]" id="contract_type_cancel" onclick="p_d_manage()" {{session('checked_cancel')}} wire:click="select_cancel()"/>
-				        <label class="form-check-label" for="contract_type_cancel">契約解除者</label>
+                        <input class="form-check-input" type="checkbox" value="cyclic" name="contract_type" id="contract_type_cyclic" wire:model="isCyclicCheckBox" onclick="contract_type_manage(this)" {{session('check_cyclic')}} wire:click="select_cyclic()"/>
+				        {{--  <input class="form-check-input" type="checkbox" value="payment" name="amount_type[]" id="payment_cbox" onclick="p_d_manage()" {{session('serch_payment_flg')}}  wire:click="serch_payment()">--}}
+                        <label class="form-check-label" for="contract_type_cyclic">期間契約</label>
+                    </div>
+                    <div class="col-auto">
+                        <input class="form-check-input" type="checkbox" value="cancel" name="contract_status[]" id="contract_status_under" wire:model="isContractStatusUnderCheckBox" onclick="contract_status_manage()" {{session('checked_cancel')}} wire:click="select_Under()"/>
+				        <label class="form-check-label" for="contract_status_under">契約中</label>
+                    </div>
+                    <div class="col-auto">
+                        <input class="form-check-input" type="checkbox" value="cancel" name="contract_status[]" id="contract_status_cancellation" wire:model="isContractStatusCancellationCheckBox" onclick="contract_status_manage()" {{session('checked_cancel')}} wire:click="select_cancel()"/>
+				        <label class="form-check-label" for="contract_status_cancellation">契約解約者</label>
                     </div>
                 </div>
                 <table id="table_responsive container-fluid" class="table-striped table-hover">
@@ -69,7 +78,7 @@
                             
                             <th class="border px-4 py-2">契約期間</th>
                             <th class="border px-4 py-2">契約タイプ</th>
-                            <th class="border px-4 py-2">契約状態</th>
+                            <th class="border px-4 py-2">解約日</th>
                             <th class="border px-4 py-2">契約金額
                                 <div class="text-nowrap">
                                     <button type="button" wire:click="sort('keiyaku_kingaku-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
