@@ -1,8 +1,14 @@
-﻿/*
+﻿
 window.onload = function(){
-  console.log("MedicalRecordsListBtn clicked1");
+  //console.log("MedicalRecordsListBtn clicked1");
+  document.getElementById('contract_type_subscription').checked=true;
+  document.getElementById('contract_type_cyclic').checked=true;
+  document.getElementById('contract_status_under').checked=true;
+  document.getElementById('contract_status_cancellation').checked=true;
+  //payment_cbox=document.getElementById('payment_cbox');
+  //deposit_cbox=document.getElementById('deposit_cbox'); 
 }
-*/
+
 let medical_records_inf;
 /*
 function p_d_manage(){

@@ -488,7 +488,7 @@ class AdminController extends Controller
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		$key="";
 		$Contracts="";
-		log::alert("UserSerial=".$UserSerial);
+		log::alert("UserSeria-2=".$UserSerial);
 		if($UserSerial=="all"){
 			$userinf="";
 			$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
@@ -498,13 +498,16 @@ class AdminController extends Controller
 			session(['targetUserSerial' => $UserSerial]);
 			session(['target_page_for_pager'=>'']);
 			$_SESSION['access_history'][0]=$_SESSION['access_history'][0]."/".$UserSerial;
-			$GoBackPlace="/customers/CustomersList";				
+			$GoBackPlace="/customers/CustomersList";
+			log::alert("UserSeria-3=".$UserSerial);				
 			$userinf=User::where('serial_user','=',$UserSerial)->first();
+			Log::info($userinf);
 			$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
 				->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
 				->select('contracts.*', 'users.*')
 				->paginate(initConsts::DdisplayLineNumContractList());
 		}
+		log::alert("UserSeria-2=".$UserSerial);
 		return view('customers.ListContract',compact("target_historyBack_inf_array","Contracts","UserSerial","userinf","GoBackPlace"));
 	}
 	public function ShowMedicalRecord(Request $request){

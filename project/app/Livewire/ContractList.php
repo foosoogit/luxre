@@ -20,7 +20,7 @@ class ContractList extends Component
 	public $targetPage=null;
 	public static $statickey="";
 	public $serch_key_contract,$sort_key_contract,$sort_type_contract="asc",$isSubscriptionCheckBox=true,$isCyclicCheckBox=true,$isContractStatusUnderCheckBox=true,$isContractStatusCancellationCheckBox=true;
-	public $contract_type;
+	public $contract_type,$userinf;
 	protected $search_Contract;
 	protected $target_historyBack_inf_array;
 	public function searchClear(){
@@ -221,7 +221,7 @@ class ContractList extends Component
 		*/
 		$this->search_Contract();
 		//$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		return view('livewire.contract-list',["target_historyBack_inf_array"=>$this->target_historyBack_inf_array,"userinf"=>$userinf,"contractQuery"=>$this->search_Contract,"UserSerial"=>$UserSerial,"serchKey_contract"=>$this->serch_key_contract]);
+		return view('livewire.contract-list',["target_historyBack_inf_array"=>$this->target_historyBack_inf_array,"userinf"=>$this->userinf,"contractQuery"=>$this->search_Contract,"UserSerial"=>$UserSerial,"serchKey_contract"=>$this->serch_key_contract]);
 		//return view('livewire.contract-list',["target_historyBack_inf_array"=>$this->target_historyBack_inf_array,"userinf"=>$userinf,'contractQuery'=>$contractQuery,"UserSerial"=>$UserSerial,"serchKey_contract"=>$this->serch_key_contract]);
 		//return view('livewire.contract-list',compact("target_historyBack_inf_array"=>$this->target_historyBack_inf_array,"userinf"=>$userinf,'contractQuery',"UserSerial"=>$UserSerial,"serchKey_contract"=>$this->serch_key_contract));
 		//return view('livewire.contract-list',compact("target_historyBack_inf_array","userinf",'contractQuery',"UserSerial","serchKey_contract"));
@@ -271,7 +271,7 @@ class ContractList extends Component
 		if($this->serch_key_contract<>""){
 			$key="%".$this->kensakukey."%";
 			self::$statickey="%".$this->serch_key_contract."%";
-			$userinf="";
+			$this->userinf="";
 		}else{
 			$key="%%";
 			self::$statickey="%%";
@@ -313,7 +313,8 @@ class ContractList extends Component
 				*/
 			$GoBackPlace="/top";
 		}else{
-			$userinf=User::where('serial_user','=',session('targetUserSerial'))->first();
+			log::info("UserSerial-5=".session('targetUserSerial'));
+			$this->userinf=User::where('serial_user','=',session('targetUserSerial'))->first();
 			$contractQuery=$contractQuery->where('contracts.serial_user','=',session('targetUserSerial'))
 				->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
 				//->leftjoin('contract_details', 'contracts.serial_keiyaku', '=', 'contract_details.serial_keiyaku')
@@ -480,8 +481,8 @@ class ContractList extends Component
 		}
 
 		$this->search_Contract=$contractQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->targetPage);
-		Log::info($contractQuery->toSql());
-		Log::info($contractQuery->getBindings());
+		//Log::info($contractQuery->toSql());
+		//Log::info($contractQuery->getBindings());
 		//dd(DB::getQueryLog());
 		//dd($contractQuery->toSql(), $contractQuery->getBindings());
 		//dump($contractQuery);
