@@ -20,16 +20,17 @@
                         @else
                             顧客番号：&nbsp;{{$UserSerial}}&nbsp;&nbsp;契約者：{{$userinf->name_sei}}&nbsp;{{$userinf->name_mei}}
                         @endif
+                            {{-- 
                                 <input class="form-check-input" type="checkbox" value="subscription" name="contract_type" id="contract_type_subscription" wire:model="isSubscriptionCheckBox" onclick="contract_type_manage(this)" checked wire:click="select_subscription()"/>
-                                {{--  <input class="form-check-input" type="checkbox" value="payment" name="amount_type[]" id="payment_cbox" onclick="p_d_manage()" {{session('serch_payment_flg')}}  wire:click="serch_payment()">--}}
                                 <label class="form-check-label" for="contract_type_subscription">サブスク</label>
                                 <input class="form-check-input" type="checkbox" value="cyclic" name="contract_type" id="contract_type_cyclic" wire:model="isCyclicCheckBox" onclick="contract_type_manage(this)" checked wire:click="select_cyclic()"/>
-                                {{--  <input class="form-check-input" type="checkbox" value="payment" name="amount_type[]" id="payment_cbox" onclick="p_d_manage()" {{session('serch_payment_flg')}}  wire:click="serch_payment()">--}}
                                 <label class="form-check-label" for="contract_type_cyclic">期間契約</label>
                                 <input class="form-check-input" type="checkbox" value="cancel" name="contract_status[]" id="contract_status_under" wire:model="isContractStatusUnderCheckBox" onclick="contract_status_manage()" checked wire:click="select_Under()"/>
                                 <label class="form-check-label" for="contract_status_under">契約中</label>
                                 <input class="form-check-input" type="checkbox" value="cancel" name="contract_status[]" id="contract_status_cancellation" wire:model="isContractStatusCancellationCheckBox" onclick="contract_status_manage()" checked wire:click="select_cancel()"/>
                                 <label class="form-check-label" for="contract_status_cancellation">契約解約者</label>
+                             --}}
+                     
                     </div>
                 </div>
                 <table id="table_responsive container-fluid" class="table-striped table-hover">
@@ -67,11 +68,12 @@
                                     </div>
                                 </th>
                             @endif
-                            
                             <th class="border px-4 py-2">契約期間</th>
+                            {{-- 
                             <th class="border px-4 py-2">契約タイプ</th>
                             <th class="border px-4 py-2">解約日</th>
-                            <th class="border px-4 py-2">契約金額
+                             --}}
+                            <th class="border px-4 py-2">契約金額(円)
                                 <div class="text-nowrap">
                                     <button type="button" wire:click="sort('keiyaku_kingaku-ASC')"><img src="{{ asset('storage/images/sort_A_Z.png') }}" width="15px" /></button>
                                     <button type="button" wire:click="sort('keiyaku_kingaku-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
@@ -83,8 +85,10 @@
                                     <button type="button" wire:click="sort('how_to_pay-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button>
                                 </div>
                             </th>
-                            <th class="border px-4 py-2">支払い回数
-                            </th>
+                            {{-- 
+                            <th> class="border px-4 py-2">支払い回数</th>
+                            --}}
+                            
                             <th class="border px-4 py-2">削除</th>
                         </tr>
                     </thead>
@@ -94,7 +98,10 @@
                                 <td class="border px-4 py-2">{{ $dContracts->keiyaku_bi}}</td>
                                 <td class="border px-4 py-2">
                                     <form action="/customers/ShowSyuseiContract/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
-                                        <input name="syusei_Btn" type="submit" value="{{$dContracts->serial_keiyaku}}"><span class="fs-12">{{$dContracts->keiyaku_name}}</span>
+                                        <input name="syusei_Btn" type="submit" value="{{$dContracts->serial_keiyaku}}">
+                                        {{-- 
+                                        <span class="fs-12">{{$dContracts->keiyaku_name}}</span>
+                                         --}}
                                         @if($dContracts->cancel<>null)
                                             <span class="text-danger">解約済み</span>
                                         @endif
@@ -139,11 +146,15 @@
                                     <td class="border px-4 py-2">{{$dContracts->name_sei}} &nbsp; {{$dContracts->name_mei}}</td>
                                 @endif
                                 <td class="border px-4 py-2" {!! $dContracts->closed_color!!}>{{ $dContracts->keiyaku_kikan_start}}-{{ $dContracts->keiyaku_kikan_end}}</td>
+                               {{-- 
                                 <td class="border px-4 py-2">{{ $dContracts->KeiyakuTypeJP}}</td>
                                 <td class="border px-4 py-2">{{ $dContracts->cancel}}</td>
-                                <td class="border px-4 py-2">{{ $dContracts->keiyaku_kingaku}}</td>
+                                 --}}
+                                <td class="border px-4 py-2">{{ number_format($dContracts->keiyaku_kingaku)}}</td>
                                 <td class="border px-4 py-2">{{ $dContracts->how_to_pay}}</td>
+                                {{-- 
                                 <td class="border px-4 py-2">{{ $dContracts->how_many_pay_genkin}}</td>
+                                 --}}
                                 <td class="border px-4 py-2">
                                     <form action="/customers/deleteContract/{{$dContracts->serial_keiyaku}}/{{$dContracts->serial_user}}" method="GET">@csrf
                                         <input name="delete_btn" type="submit" value="削除" onclick="return delArert('{{ $dContracts->serial_user}} {{ $dContracts->name_sei}} {{ $dContracts->name_mei}}');" >

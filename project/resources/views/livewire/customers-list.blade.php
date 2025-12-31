@@ -85,14 +85,11 @@
                                                 <input name="page_num" type="hidden" value="{{$users->currentPage()}}"/>
                                             </form>
                                         </div>
+                                        {{-- 
                                         <div class="col-auto">
                                             <button type="button" id="{{$user->serial_user}}" class="btn btn-success modalBtn btn-sm" data-toggle="modal" data-target="#AllConstractListuModal" data-serial="{{$user->serial_user}}" data-name="{{ $user->name_sei}}&nbsp;{{ $user->name_mei}}">一覧</button>
-                                            {{-- 
-                                            <form action="/customers/ContractAllList/{{$user->serial_user}}" method="GET">@csrf<input name="keiyaku_list_Btn" type="submit" value="一覧">
-                                                <input name="page_num" type="hidden" value="{{$users->currentPage()}}"/>
-                                            </form>
-                                             --}}
                                         </div>
+                                         --}}
                                     </div>
                                 </td>
                                 <td class="border px-4 py-2" {!! $user->default_color!!}><div class="text-nowrap">{{ $user->name_sei}}&nbsp;{{ $user->name_mei}}</div></td>

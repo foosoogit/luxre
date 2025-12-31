@@ -342,6 +342,8 @@ class ContractList extends Component
 		log::alert("checked_cancel=".session('checked_cancel'));
 */
 		
+/*サブスク・期間契約の絞り込み処理
+		
 		$this->isSubscriptionCheckBox=session('checked_subscription');
 		$this->isCyclicCheckBox=session('check_cyclic');
 
@@ -397,6 +399,9 @@ class ContractList extends Component
 				$query->WhereNotNull('cancel')->WhereNull('cancel');
 			});
 		}
+		*/
+
+
 /*
 		if($this->isContractStatusCancellationCheckBox and !$this->isContractStatusUnderCheckBox){
 			$contractQuery=$contractQuery->Where(function($query) {

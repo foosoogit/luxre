@@ -67,9 +67,11 @@
 									<p><button class="btn btn-primary btn-sm" type="submit" value="new" name="CreateCustomer">顧客新規登録</button></p>
 								</form>
 							</li>
+							{{-- 
                 			<li>
 								<form method="GET" action="/customers/ContractList/all">@csrf<button class="btn btn-primary btn-sm" type="submit" >契約一覧</button>&nbsp;修正・新規登録・契約</form>
 							</li>
+							 --}}
 							<li>
 								<form method="GET" action="{{route('admin.CustomerStandbyDisplay.get')}}">@csrf
 									<button class="btn btn-primary btn-sm" type="submit">顧客受付待ち受け</button>
