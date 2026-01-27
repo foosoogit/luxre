@@ -175,7 +175,7 @@
 									</li>
 								</div>
 							</div>
-							{{-- 
+
 							<div class="col-auto">
 								<li>
 									<form method="GET" action="{{ route('admin.set_balance_to_CashBookDb.get') }}">@csrf
@@ -183,7 +183,7 @@
 									</form>
 								</li>
 							</div>
- 							--}}
+
 							<div class="row">
 								<div class="col-auto">
 									<li>
