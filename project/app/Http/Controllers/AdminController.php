@@ -488,7 +488,7 @@ class AdminController extends Controller
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		$key="";
 		$Contracts="";
-		log::alert("UserSeria-2=".$UserSerial);
+		//log::alert("UserSeria-2=".$UserSerial);
 		if($UserSerial=="all"){
 			$userinf="";
 			$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
@@ -499,15 +499,15 @@ class AdminController extends Controller
 			session(['target_page_for_pager'=>'']);
 			$_SESSION['access_history'][0]=$_SESSION['access_history'][0]."/".$UserSerial;
 			$GoBackPlace="/customers/CustomersList";
-			log::alert("UserSeria-3=".$UserSerial);				
+			//log::alert("UserSeria-3=".$UserSerial);				
 			$userinf=User::where('serial_user','=',$UserSerial)->first();
-			Log::info($userinf);
+			//Log::info($userinf);
 			$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
 				->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
 				->select('contracts.*', 'users.*')
 				->paginate(initConsts::DdisplayLineNumContractList());
 		}
-		log::alert("UserSeria-2=".$UserSerial);
+		//log::alert("UserSeria-2=".$UserSerial);
 		return view('customers.ListContract',compact("target_historyBack_inf_array","Contracts","UserSerial","userinf","GoBackPlace"));
 	}
 	public function ShowMedicalRecord(Request $request){
@@ -1561,6 +1561,7 @@ class AdminController extends Controller
 	}
 
 	function insertContract(Request $request){
+		//Log::info($request);
 		$motourl = $_SERVER['HTTP_REFERER'];
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$kyo=date("Y-m-d H:i:s");
@@ -1572,8 +1573,15 @@ class AdminController extends Controller
 		}else{
 			$how_many_pay_card=$request->HowManyPayCardSlct;
 		}
-		$how_many_pay_genkin=$request->HowManyPaySlct;
+		//Log::alert("HowmanyCard rdo=".$request->HowmanyCard);
+		//Log::alert("HowPayRdio rdo=".$request->HowPayRdio);
+		//$how_many_pay_genkin=$request->HowManyPaySlct;
 		if($request->HowPayRdio=='現金'){
+			if($request->HowmanyCard=='一括'){
+				$how_many_pay_genkin=1;
+			}else{
+				$how_many_pay_genkin=$request->HowManyPayCardSlct;
+			}	
 			$how_many_pay_card=null;
 		}else{
 			$how_many_pay_genkin=null;
@@ -1586,6 +1594,8 @@ class AdminController extends Controller
 		if($request->contract_type=='subscription'){
 			$how_to_pay="Credit Card";
 		}
+		//Log::alert("how_many_pay_genkin=".$how_many_pay_genkin);
+		//Log::alert("how_many_pay_card=".$how_many_pay_card);
 		$targetData=[
 			'serial_keiyaku' => $request->ContractSerial,
 			'serial_user' => $request->serial_user,
