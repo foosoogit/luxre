@@ -590,21 +590,21 @@ class OtherFunc extends Controller
 
 	public static function make_html_working_list_month_slct(){
 		$month_now=date('m');
-		$htm_month_slct='<select name="month_slct" id="month_slct" class="form-select">';
+		$htm_month_slct='<select name="month_slct" id="month_slct" class="form-select" wire:model.change="month_slct_id">';
 		$htm_month_slct.='<option  value="" Selected>--Select--</option>';
 		for ($i=1; $i <= 12; $i++) {
 			$sct="";
 			if($i==$month_now){
 				$sct='Selected';
 			}
-			$htm_month_slct .= '<option value="'.sprintf('%02d', $i).'" '.$sct.'>'.$i.'月</option>';
+			$htm_month_slct .= '<option value="'.sprintf('%02d', $i).'" '.$sct.'  @selected($month_slct_id ==='.$i.')>'.$i.'月</option>';
 		}
 		$htm_month_slct.='</select>';
 		return $htm_month_slct;
 	}
 
 	public static function make_html_working_list_year_slct(){
-		$htm_year_slct='<select name="year_slct" id="year_slct" class="form-select">';
+		$htm_year_slct='<select name="year_slct" id="year_slct" class="form-select" wire:model.change="year_slct_id">';
 		$htm_year_slct.='<option  value="" Selected>--Select--</option>';
 		$start_year='2024';$year_now=date('Y');
 		for($i = $start_year; $i<= $year_now; $i++){
@@ -612,7 +612,7 @@ class OtherFunc extends Controller
 			if($i==$year_now){
 				$sct='Selected';
 			}
-			$htm_year_slct.='<option  value="'.$i.'" '.$sct.'>'.$i.'年</option>';
+			$htm_year_slct.='<option  value="'.$i.'" '.$sct.' @selected($year_slct_id ==='.$i.')>'.$i.'年</option>';
 		}
 		$htm_year_slct.='</select>';
 		return $htm_year_slct;
@@ -903,7 +903,8 @@ class OtherFunc extends Controller
 			if($staff->serial_staff==$targetStaffSerial){
 					$sct='selected';
 			}
-			$htm_staff_slct.='<option value="'.$staff->serial_staff.'" '.$sct.'>'.$staff->last_name_kanji.' '.$staff->first_name_kanji.'</option>';
+			//$htm_year_slct.='<option  value="'.$i.'" '.$sct.' @selected($target_staff_serial ==='.$staff->serial_staff.')>'.$i.'年</option>';
+			$htm_staff_slct.='<option value="'.$staff->serial_staff.'" '.$sct.' @selected($target_staff_serial ==='.$staff->serial_staff.')>'.$staff->last_name_kanji.' '.$staff->first_name_kanji.'</option>';
 		}
 		return $htm_staff_slct;
 	}

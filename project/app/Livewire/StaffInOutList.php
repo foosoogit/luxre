@@ -21,19 +21,27 @@ class StaffInOutList extends Component
     use WithPagination;
     public $sort_key_p = '',
         $asc_desc_p="",
-        $serch_key_p="",
+        //$serch_key_p="",
         $targetPage=null,
         $target_day="",
         $sort_type="",
         $target_staff_serial="",
-        $target_year="",
-        $target_month="";
+        //$target_year="",
+        //$target_month="",
+        $year_slct_id,
+        $month_slct_id;
 	public $kensakukey="";
     public static $key="";
     protected $histories,
         $download_sql;
 
-    public function del_rec($id){
+    public function __construct(){
+        //$this->year_slct_id = date('Y');
+        //$this->month_slct_id = date('m');
+        //$this->target_day=date('Y-M-D');
+    }
+
+        public function del_rec($id){
         $todo = InOutHistory::find($id);
 		$todo->delete();
     }
@@ -46,6 +54,7 @@ class StaffInOutList extends Component
     public function csv_download(){
         $spreadsheet = new Spreadsheet();
         $TargetStaffSerialArray=array();
+        //Log::alert("target_staff_serial=".$this->target_staff_serial);
         if($this->target_staff_serial==""){
             $staff_array=Staff::get();
             foreach ($staff_array as $staff) {
@@ -56,6 +65,7 @@ class StaffInOutList extends Component
         }
         $cnt=1;
         foreach($TargetStaffSerialArray as $TargetStaffSerial){
+            //Log::alert("TargetStaffSerial=".$TargetStaffSerial);
             $staff_inf=Staff::where("serial_staff","=",$TargetStaffSerial)->first();
             if($cnt==1){
                 $sheet = $spreadsheet->getActiveSheet();
@@ -83,8 +93,15 @@ class StaffInOutList extends Component
             $sheet->getStyle( 'F2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
             $cnt=3;
             $work_records_array=session('work_records');
+            $serch_year_month=$this->year_slct_id."-".$this->month_slct_id;
+
+            //log::alert("target_date=".$this->year_slct_id."-".$this->month_slct_id);
+            //log::alert("work_record=".$work_record->target_date);
+
+            //$start = new DateTime($work_record->target_date>=$this->year_slct_id."-".$this->month_slct_id."-01");
+            //$end   = (new DateTime($this->year_slct_id."-".$this->month_slct_id."-01"))->modify('last day of this month');
             foreach ($work_records_array as $work_record) {
-                if($work_record->target_serial==$TargetStaffSerial){
+                if($work_record->target_serial==$TargetStaffSerial && str_contains($work_record->target_date, $serch_year_month)){
                     $sheet->setCellValue('A'.$cnt, $work_record->target_date);
                     $sheet->getStyle( 'A'.$cnt )->getAlignment()->setHorizontal('center');  // 中央寄せ
                     $sheet->setCellValue('B'.$cnt, $work_record->time_in);
@@ -110,7 +127,6 @@ class StaffInOutList extends Component
             $sheet->getColumnDimension( 'D' )->setWidth( 10 );
         }
         $writer = new Xlsx($spreadsheet);
-        date("Y-m-d");
         if(count($TargetStaffSerialArray)==1){
             $fileName = 'WorkingTimeList_'.$staff_inf->last_name_kanji.$staff_inf->first_name_kanji.'_'.date("Y_m_d").'.xlsx';
         }else{
@@ -157,12 +173,18 @@ $headers = [['Content-Type' => $mimeType]];
         
         */
     }
-    public function search_month($target_year,$target_month){
-		$this->target_year=$target_year;
-        $this->target_month=$target_month;
-        $this->target_day="";
+    //public function search_month($target_year,$target_month){
+    /*
+    public function search_month(){
+		//$this->target_year=$target_year;
+        //$this->target_month=$target_month;
+        //$this->target_day="";
+        //Log::alert("year_slct_id=".$this->year_slct_id);
+        //Log::alert("month_slct_id=".$this->month_slct_id);
+        //Log::alert("target_year=".$target_year);
 
 	}
+    */
     public function searchClear(){
 		$this->serch_key_p="";
 		$this->kensakukey="";
@@ -176,9 +198,9 @@ $headers = [['Content-Type' => $mimeType]];
 	}
 
     public function search(){
-		$this->serch_key_p=$this->kensakukey;
+		//$this->serch_key_p=$this->kensakukey;
 		$this->target_page=1;
-		session(['serchKey' => $this->kensakukey]);
+		//session(['serchKey' => $this->kensakukey]);
 	}
 
     public function sort($sort_key){
@@ -189,20 +211,37 @@ $headers = [['Content-Type' => $mimeType]];
 	}
 
     public function render(){
+        //Log::alert("target_staff_serial=".$this->target_staff_serial);
         $HistoriesQuery = InOutHistory::query();
         $workListQuery = InOutHistory::query();
-        if($this->target_year<>"" and $this->target_month<>""){
-            $HistoriesQuery = $HistoriesQuery->where('target_date','like',$this->target_year."-".$this->target_month."%");
-            $workListQuery = $workListQuery->where('target_date','like',$this->target_year."-".$this->target_month."%");
+        if($this->year_slct_id<>"" and $this->month_slct_id<>""){
+            //Log::alert("year_slct_id-2=".$this->year_slct_id);
+            //Log::alert("month_slct_id-2=".$this->month_slct_id);
+            //Log::alert("year_month_slct_id-2=".$this->year_slct_id."-".$this->month_slct_id."%");
+            //$HistoriesQuery = $HistoriesQuery->where('target_date','like',$this->target_year."-".$this->target_month."%");
+            //$HistoriesQuery = $HistoriesQuery->where('target_date','like',$this->year_slct_id."-".$this->month_slct_id."%");
+            $sk=$this->year_slct_id."-".$this->month_slct_id."%";
+            $HistoriesQuery = $HistoriesQuery->where('target_date','like',$sk);
+            //$HistoriesQuery = $HistoriesQuery->where('target_date','like','2026-01%');
+            //$workListQuery = $workListQuery->where('target_date','like',$this->target_year."-".$this->target_month."%");
+            $workListQuery = $workListQuery->where('target_date','like',$sk);
+            //$workListQuery = $workListQuery->where('target_date','like','2026-01%');
             $this->target_day="";
         }
-         
+        //dd($HistoriesQuery->toSql());
+
+        if($this->target_staff_serial!="" ){
+            //$this->target_staff_serial=session('target_staff_serial');
+            $HistoriesQuery = $HistoriesQuery->where('target_serial','=',$this->target_staff_serial);
+            $workListQuery = $workListQuery->where('target_serial','=',$this->target_staff_serial);
+        }
+        /*
         if(!empty(session('target_staff_serial'))){
             $this->target_staff_serial=session('target_staff_serial');
             $HistoriesQuery = $HistoriesQuery->where('target_serial','=',$this->target_staff_serial);
             $workListQuery = $workListQuery->where('target_serial','=',$this->target_staff_serial);
         }
-
+        */
         if($this->target_day<>""){
             $HistoriesQuery = $HistoriesQuery->where('target_date','=',$this->target_day);
             $workListQuery = $workListQuery->where('target_date','=',$this->target_day);
@@ -211,12 +250,14 @@ $headers = [['Content-Type' => $mimeType]];
         }else{
             $this->target_day="";
         }
+
         if($this->sort_type<>""){
             $HistoriesQuery = $HistoriesQuery->orderBy('time_in',$this->sort_type); 
         }else{
             $HistoriesQuery = $HistoriesQuery->orderBy('time_in','desc');
         }
         $workListQuery = $workListQuery->orderBy('time_in','asc');
+        //dd($HistoriesQuery->toSql());
         $list_res=$workListQuery->get();
         session(['work_records' => $list_res]);
         $this->histories=$HistoriesQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'],'page');
@@ -238,11 +279,12 @@ $headers = [['Content-Type' => $mimeType]];
         $this->target_year="";
         $this->target_month="";
         $this->target_day=$target;
+        //Log::alert("target=".$target);
     }
 
     public function set_staff($target){
-        $this->target_staff_serial=$target;
-        session(['target_staff_serial' => $this->target_staff_serial]);
+        //$this->target_staff_serial=$target;
+        //session(['target_staff_serial' => $this->target_staff_serial]);
     }
 
     /*

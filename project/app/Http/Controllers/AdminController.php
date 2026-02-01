@@ -1561,7 +1561,6 @@ class AdminController extends Controller
 	}
 
 	function insertContract(Request $request){
-		//Log::info($request);
 		$motourl = $_SERVER['HTTP_REFERER'];
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$kyo=date("Y-m-d H:i:s");
@@ -1573,8 +1572,6 @@ class AdminController extends Controller
 		}else{
 			$how_many_pay_card=$request->HowManyPayCardSlct;
 		}
-		//Log::alert("HowmanyCard rdo=".$request->HowmanyCard);
-		//Log::alert("HowPayRdio rdo=".$request->HowPayRdio);
 		//$how_many_pay_genkin=$request->HowManyPaySlct;
 		if($request->HowPayRdio=='現金'){
 			if($request->HowmanyCard=='一括'){
@@ -1594,8 +1591,6 @@ class AdminController extends Controller
 		if($request->contract_type=='subscription'){
 			$how_to_pay="Credit Card";
 		}
-		//Log::alert("how_many_pay_genkin=".$how_many_pay_genkin);
-		//Log::alert("how_many_pay_card=".$how_many_pay_card);
 		$targetData=[
 			'serial_keiyaku' => $request->ContractSerial,
 			'serial_user' => $request->serial_user,

@@ -14,10 +14,12 @@
                     <div class="row lh-lg">
                         <p class="lh-lg">
                             <div class="col">
-                                <label>日付検索： <input name="target_day" id="target_day" type="date" wire:change="search_day(document.getElementById('target_day').value)" value="{{$target_day}}"/></label>
+                               {{--  <input name="target_day" id="target_day" type="date" wire:model.live="search_day(document.getElementById('target_day').value)" value="{{$target_day}}"/></label> --}}
+                                <label>日付検索： <input name="target_day" id="target_day" type="date" wire:model.live="search_day()" value="{{$target_day}}"/></label>
                             </div>
                             <div class="col">
-                                <button wire:click="search_month(document.getElementById('year_slct').value,document.getElementById('month_slct').value)" class='btn btn-primary btn-sm rounded'>月検索</button>： {!!$html_working_list_year_slct!!}
+                                {{--<button wire:click="search_month(document.getElementById('year_slct').value,document.getElementById('month_slct').value)" class='btn btn-primary btn-sm rounded'>月検索</button>： {!!$html_working_list_year_slct!!}--}}
+                                <button wire:click="search()" class='btn btn-primary btn-sm rounded'>月検索</button>： {!!$html_working_list_year_slct!!}
                             </div>
                             <div class="col">
                                 {!!$html_working_list_month_slct!!}
@@ -26,7 +28,11 @@
                                 <button wire:click="search_day('')" class='btn btn-primary btn-sm rounded'>検索解除</button>    
                             </div>
                             <div class="col">
-                                <label>スタッフ検索： <select name="staff_slct" id="staff_slct" class="form-select form-select-sm" wire:change="set_staff(document.getElementById('staff_slct').value)">
+                                {{--<label>スタッフ検索： <select name="staff_slct" id="staff_slct" class="form-select form-select-sm" wire:change="set_staff(document.getElementById('staff_slct').value)">--}}
+                                    <label>スタッフ検索：
+                                        {{-- <select name="staff_slct" id="staff_slct" class="form-select form-select-sm" wire:change="set_staff(document.getElementById('staff_slct').value)">--}}
+                                        {{-- <select name="year_slct" id="year_slct" class="form-select" wire:model.change="target_staff_serial"> --}}
+                                        <select name="year_slct" id="year_slct" class="form-select" wire:model.change="target_staff_serial">
                                     {!!$html_staff_inout_slct!!}
                                     </select></label>
                             </div>

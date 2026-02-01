@@ -25,7 +25,7 @@
 		{{-- <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script> --}}
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="{{asset('/js/bootstrap-datetimepicker.min.js')}}"></script>
-		<script type="text/javascript" src="{{asset('/js/ListStaffInOutHistories.js?20230118')}}"></script>
+		<script type="text/javascript" src="{{asset('/js/ListStaffInOutHistories.js?20230119')}}"></script>
 		
 	</body>
 </html>
