@@ -234,12 +234,12 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
 	    
-        Route::get('/customers/CustomersList', function () {
+        Route::get('/CustomersList', function () {
             session(['target_livewire_page' => "ListCustomers"],['sort_key'=>'']);
             return view('customers.ListCustomers');
         })->name('CustomersList.show');
 
-        Route::post('/customers/CustomersList', function () {
+        Route::post('/CustomersList', function () {
             session(['target_livewire_page' => "ListCustomers"],['sort_key'=>'']);
             return view('customers.ListCustomers');
         })->name('CustomersList.show.post');

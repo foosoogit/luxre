@@ -18,7 +18,7 @@ class CashBookList extends Component
 {
     use WithPagination;
 
-    public $test,$kensakukey,$target_date,$payment,$deposit,$summary,$amount,$remarks,$id_txt,$serch_key_month,$serch_key_date,$serch_key_all,$serch_key_payment,$serch_key_deposit,$sort_key_p ,$asc_desc_p;
+    public $test,$kensakukey,$target_date,$payment,$deposit,$summary,$amount,$remarks,$id_txt,$serch_key_month,$serch_key_date,$serch_key_all,$serch_key_payment,$serch_key_deposit,$asc_desc_p;
 
     public function del_cash_book_rec($target_sirial){
 		CashBook::where('id',$target_sirial)->delete();
@@ -165,6 +165,9 @@ class CashBookList extends Component
         
         $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
         $newCashBookQuerySerial="";
+        if(empty(session('asc_desc_cashbook'))){
+            session(['asc_desc_cashbook' =>'desc']);
+        }
         if(empty(session('sort_key_cashbook'))){
             session(['sort_key_cashbook' =>'target_date']);
         }

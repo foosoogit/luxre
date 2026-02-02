@@ -60,8 +60,12 @@ class CustomersList extends Component
 		if(!isset($sort_key_p) and session('sort_key')==null){
 			session(['sort_key' =>'']);
 		}
+		log::alert("sort_key_p-3=".$this->sort_key_p);
 		$this->sort_key_p=session('sort_key');
-
+		if($this->sort_key_p=="target_date"){
+			$this->sort_key_p="";
+		}
+		log::alert("sort_key_p-2=".$this->sort_key_p);
 		if(!isset($asc_desc_p) and session('asc_desc')==null){
 			session(['asc_desc' =>'ASC']);
 		}
@@ -177,6 +181,7 @@ class CustomersList extends Component
 				}
 			}
 		}
+		Log::alert("sort_key_p=".$this->sort_key_p);
 		if(empty($this->target_page)){
 			$users=$userQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
 		}else{
