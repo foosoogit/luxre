@@ -163,8 +163,9 @@
                         </tr>
                     @endforeach
                 </tbody>
-            </table>
+            </table>  
 	        {{$CashBookQuery->appends(request()->query())->links('pagination::bootstrap-4')}}
+            {{-- {{$CashBookQuery->links('pagination::bootstrap-4')}}--}}
         </div>    
             <!-- モーダル・ダイアログ -->
             <div class="modal fade" id="CreateModal" tabindex="-1" aria-hidden="true">

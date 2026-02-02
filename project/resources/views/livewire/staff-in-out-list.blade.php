@@ -25,7 +25,7 @@
                                 {!!$html_working_list_month_slct!!}
                             </div> 
                             <div class="col">
-                                <button wire:click="search_day('')" class='btn btn-primary btn-sm rounded'>検索解除</button>    
+                                <button wire:click="searchClear()" class='btn btn-primary btn-sm rounded'>検索解除</button>    
                             </div>
                             <div class="col">
                                 {{--<label>スタッフ検索： <select name="staff_slct" id="staff_slct" class="form-select form-select-sm" wire:change="set_staff(document.getElementById('staff_slct').value)">--}}

@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use App\Models\Staff;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
+use DateTime;
 
 class StaffInOutList extends Component
 {
@@ -23,17 +25,23 @@ class StaffInOutList extends Component
         $asc_desc_p="",
         //$serch_key_p="",
         $targetPage=null,
-        $target_day="",
-        $sort_type="",
-        $target_staff_serial="",
+        $target_day,
+        $sort_type="";
+        
+        
         //$target_year="",
         //$target_month="",
-        $year_slct_id,
-        $month_slct_id;
-	public $kensakukey="";
-    public static $key="";
-    protected $histories,
-        $download_sql;
+        
+    #[Session(key: 'target_staff_serial')] 
+    public $target_staff_serial; 
+    #[Session(key: 'year_slct_id')] 
+    public $year_slct_id; 
+    #[Session(key: 'month_slct_id')] 
+    public $month_slct_id; 
+    
+	//public $kensakukey="";
+    //public static $key="";
+    protected $histories,$download_sql;
 
     public function __construct(){
         //$this->year_slct_id = date('Y');
@@ -146,8 +154,6 @@ class StaffInOutList extends Component
         //File::download($filePath, $fileName, $headers);
         //File::download($fileName);
         return response()->download($fileName);
-
-
         /*
         
         
@@ -186,21 +192,28 @@ $headers = [['Content-Type' => $mimeType]];
 	}
     */
     public function searchClear(){
-		$this->serch_key_p="";
-		$this->kensakukey="";
         $this->target_staff_serial="";
 		$this->target_page=null;
-        $this->target_year="";
-        $this->target_month="";
-        $this->target_day="";
-		session(['serchKey' => '']);
-        session(['target_staff_serial' => ""]);
+        $this->year_slct_id="";
+        $this->month_slct_id="";
+        $this->target_staff_serial="";
+        session(['target_staff_serial_StaffInOutList' => ""]);
+        session(['target_year_StaffInOutList' => ""]);
+        session(['target_month_StaffInOutList' => ""]);
+        session(['target_day_StaffInOutList' => ""]);
 	}
 
     public function search(){
 		//$this->serch_key_p=$this->kensakukey;
+        session(['serch_flg_StaffInOutList' => true]);
 		$this->target_page=1;
 		//session(['serchKey' => $this->kensakukey]);
+        Log::alert("target_staff_serial-s=".$this->target_staff_serial);
+        Log::alert("year_slct_id-s=".$this->year_slct_id);
+        Log::alert("month_slct_id-s=".$this->month_slct_id);
+        session(['target_year_StaffInOutList' => $this->year_slct_id]);
+        session(['target_month_StaffInOutList' => $this->month_slct_id]);
+        session(['target_staff_serial_StaffInOutList' => $this->target_staff_serial]);
 	}
 
     public function sort($sort_key){
@@ -211,12 +224,47 @@ $headers = [['Content-Type' => $mimeType]];
 	}
 
     public function render(){
+        log::alert("target_year_StaffInOutList-1=".session('target_year_StaffInOutList'));
+        if(empty(session('target_year_StaffInOutList'))){
+            $this->year_slct_id=date('Y');
+        }else{
+            session(['target_year_StaffInOutList' => $this->year_slct_id]);
+        }
+        log::alert("target_year_StaffInOutList-2=".session('target_year_StaffInOutList'));
+        //log::alert("今月=".date('m'));
+        if(empty(session('target_month_StaffInOutList'))){  
+            //$this->month_slct_id=ltrim(date('m'), '0');
+            $this->month_slct_id=date('m');
+            //log::alert("今月3=".$this->month_slct_id);
+        }else{
+            session(['target_month_StaffInOutList' => $this->month_slct_id]);
+        }
+        //log::alert("今月2=".$this->month_slct_id);
+        if(!empty(session('target_staff_serial_StaffInOutList'))){
+            session(['target_staff_serial_StaffInOutList' => $this->target_staff_serial]);
+        }
         //Log::alert("target_staff_serial=".$this->target_staff_serial);
+        //Log::alert("year_slct_id=".$this->year_slct_id);
+        //Log::alert("month_slct_id=".$this->month_slct_id);
+
         $HistoriesQuery = InOutHistory::query();
         $workListQuery = InOutHistory::query();
+        
+        if(session('target_year_StaffInOutList')!="" and session('target_month_StaffInOutList')!=""){
+            $sk=session('target_year_StaffInOutList')."-".session('target_month_StaffInOutList')."%";
+            $HistoriesQuery = $HistoriesQuery->where('target_date','like',$sk);
+            $workListQuery = $workListQuery->where('target_date','like',$sk);
+            $this->target_day="";
+            session(['target_day_StaffInOutList' => ""]);
+        }else if(session('target_month_StaffInOutList')==""){
+            $sk=session('target_year_StaffInOutList')."-%";
+            $HistoriesQuery = $HistoriesQuery->where('target_date','like',$sk);
+            $workListQuery = $workListQuery->where('target_date','like',$sk);
+            $this->target_day="";
+            session(['target_day_StaffInOutList' => ""]);
+        }
+        /*
         if($this->year_slct_id<>"" and $this->month_slct_id<>""){
-            //Log::alert("year_slct_id-2=".$this->year_slct_id);
-            //Log::alert("month_slct_id-2=".$this->month_slct_id);
             //Log::alert("year_month_slct_id-2=".$this->year_slct_id."-".$this->month_slct_id."%");
             //$HistoriesQuery = $HistoriesQuery->where('target_date','like',$this->target_year."-".$this->target_month."%");
             //$HistoriesQuery = $HistoriesQuery->where('target_date','like',$this->year_slct_id."-".$this->month_slct_id."%");
@@ -228,6 +276,7 @@ $headers = [['Content-Type' => $mimeType]];
             //$workListQuery = $workListQuery->where('target_date','like','2026-01%');
             $this->target_day="";
         }
+        */
         //dd($HistoriesQuery->toSql());
 
         if($this->target_staff_serial!="" ){
@@ -260,7 +309,7 @@ $headers = [['Content-Type' => $mimeType]];
         //dd($HistoriesQuery->toSql());
         $list_res=$workListQuery->get();
         session(['work_records' => $list_res]);
-        $this->histories=$HistoriesQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'],'page');
+        $this->histories=$HistoriesQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'],'page')->withQueryString();
         return view('livewire.staff-in-out-list',[
             'histories'=>$this->histories,
             'target_day'=>'',

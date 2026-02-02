@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PaymentHistory;
+use App\Models\InOutHistory;
 use App\Models\VisitHistory;
 use DateTime;
 use App\Models\Contract;
@@ -590,7 +591,7 @@ class OtherFunc extends Controller
 
 	public static function make_html_working_list_month_slct(){
 		$month_now=date('m');
-		$htm_month_slct='<select name="month_slct" id="month_slct" class="form-select" wire:model.change="month_slct_id">';
+		$htm_month_slct='<select name="month_slct" id="month_slct" class="form-select" wire:model="month_slct_id">';
 		$htm_month_slct.='<option  value="" Selected>--Select--</option>';
 		for ($i=1; $i <= 12; $i++) {
 			$sct="";
@@ -604,15 +605,19 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_html_working_list_year_slct(){
-		$htm_year_slct='<select name="year_slct" id="year_slct" class="form-select" wire:model.change="year_slct_id">';
+		$minYear=InOutHistory::where('target_serial','like','SF_%')->min('target_date');
+		Log::alert("minYear=".$minYear);
+		$minYear_array=explode("-", $minYear);
+		//$htm_year_slct='<select name="year_slct" id="year_slct" class="form-select" wire:model.change="year_slct_id">';
+		$htm_year_slct='<select name="year_slct" id="year_slct" class="form-select" wire:model="year_slct_id">';
 		$htm_year_slct.='<option  value="" Selected>--Select--</option>';
-		$start_year='2024';$year_now=date('Y');
+		$start_year=$minYear_array[0];$year_now=date('Y');
 		for($i = $start_year; $i<= $year_now; $i++){
 			$sct='';
 			if($i==$year_now){
-				$sct='Selected';
+				$sct='Selected="Selected"';
 			}
-			$htm_year_slct.='<option  value="'.$i.'" '.$sct.' @selected($year_slct_id ==='.$i.')>'.$i.'年</option>';
+			$htm_year_slct.='<option  value="'.$i.'" '.$sct.' @selected($year_slct_id ==="'.$i.'")>'.$i.'年</option>';
 		}
 		$htm_year_slct.='</select>';
 		return $htm_year_slct;

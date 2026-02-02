@@ -13,6 +13,7 @@ use App\Http\Livewire\MonthlyReport;
 use App\Http\Livewire\ContractsReport;
 use App\Http\Livewire\YearlyReport;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Log;
 
 if(!isset($_SESSION)){session_start();}
 /*
@@ -68,6 +69,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('admin/ajax_upsert_CashBook',[AdminController::class,'ajax_upsert_CashBook'])->name('ajax_upsert_CashBook');
 
         Route::post('admin/CashBookList', function () {
+            log::alert("HTTP_REFERER=".$_SERVER['HTTP_REFERER']);
             if(null ===session('serch_payment_flg')){
                 session(['serch_payment_flg' => "checked"]);
             }
@@ -83,8 +85,8 @@ Route::middleware('auth:admin')->group(function () {
             session(['target_livewire_page' => "CashBookList"]);
             return view('admin.CashBookList');
         })->name('CashBookList.post');
-
-        Route::get('/admin/CashBookList', function () {
+        //Route::get('/admin/CashBookList', function () {
+        Route::get('CashBookList', function () {
             if (null ===session('serch_payment_flg')){
                 session(['serch_payment_flg' => "checked"]);
             }
@@ -243,7 +245,7 @@ Route::middleware('auth:admin')->group(function () {
         })->name('CustomersList.show.post');
 
         Route::get('livewire/update', function () {
-            //Log::alert("target_livewire_page-1=".session('target_livewire_page'));
+            Log::alert("target_livewire_page-1=".session('target_livewire_page'));
             if(session('target_livewire_page')=="ListPoints"){
                 return view('admin.ListPoints');
             }else if(session('target_livewire_page')=="ListContract"){

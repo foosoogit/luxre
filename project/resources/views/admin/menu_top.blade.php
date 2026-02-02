@@ -169,7 +169,7 @@
 							<div class="row">
 								<div class="col-auto">
 									<li>
-										<form method="POST" action="{{ route('admin.CashBookList.post') }}">@csrf
+										<form method="GET" action="{{ route('admin.CashBookList.get') }}">@csrf
 											<button class="btn btn-primary btn-sm" type="submit">出納帳</button>
 										</form>
 									</li>
