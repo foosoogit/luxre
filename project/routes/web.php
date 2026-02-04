@@ -193,16 +193,16 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::controller(AdminController::class)->name('customers.')->group(function() {
         Route::get('/customers/ShowPaymentRegistrationIflame/{SerialKeiyaku}/{SerialUser}',[AdminController::class,'ShowPaymentRegistrationIflame',function($SerialKeiyaku,$SerialUser){}])->name('ShowPaymentRegistrationIflame');
-        Route::get('/customers/ShowVisitHistory', function () {
+        Route::get('/ShowVisitHistory', function () {
             return view('customers.ListVisit');
         })->name('VisitHistory.get');
-        Route::post('/customers/ShowVisitHistory', function () {
+        Route::post('/ShowVisitHistory', function () {
             return view('customers.ListVisit');
         })->name('VisitHistory.post');
-        Route::get('/customers/ShowPaymentHistory', function () {
+        Route::get('/ShowPaymentHistory', function () {
             return view('customers.ListPayment');
         })->name('PaymentHistory.get');
-        Route::post('/customers/ShowPaymentHistory', function () {
+        Route::post('/ShowPaymentHistory', function () {
             return view('customers.ListPayment');
         })->name('PaymentHistory.post');
 
