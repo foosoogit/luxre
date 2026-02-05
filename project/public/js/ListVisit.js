@@ -67,10 +67,12 @@ $(function(){
         alert("施術内容を選択してください。");
         return false;
       }
-      //console.log("Ttr_content="+Ttr_content);
+      console.log("Ttr_content3="+Ttr_content);
       $('#ModifyModal').modal('hide');
       $.ajax({
-        url: "save_visit_data_ajax",
+        url: "customers/save_visit_data_ajax",
+        //url: "{{ route('customers.save_visit_data_ajax') }}",
+        
         type: 'post', // getかpostを指定(デフォルトは前者)
         dataType: 'text', 
         scriptCharset: 'utf-8',
@@ -100,9 +102,10 @@ $(function(){
 });
 
 function gettreatmentslct(target){
+  //console.log("target="+target);
 	  $.ajax({
 			//url: '{{route("make_htm_get_treatment_slct_ajax")}}',
-      url: 'make_htm_get_treatment_slct_ajax',
+      url: 'customers/make_htm_get_treatment_slct_ajax',
 			type: 'post', // getかpostを指定(デフォルトは前者)
 			dataType: 'text', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
 			scriptCharset: 'utf-8',

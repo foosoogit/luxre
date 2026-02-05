@@ -26,7 +26,7 @@ $(function(){
 		}
 		$('#ModifyModal').modal('hide');
 		$.ajax({
-		  url: "save_payment_history_ajax",
+		  url: "customers/save_payment_history_ajax",
 		  type: 'post', // getかpostを指定(デフォルトは前者)
 		  dataType: 'text', 
 		  scriptCharset: 'utf-8',
@@ -58,9 +58,10 @@ $(function(){
   });
 
 function getPaymentMethodSlct(target){
+	console.log("target="+target);
 	$.ajax({
 		  //url: '{{route("make_htm_get_treatment_slct_ajax")}}',
-		url: 'make_htm_get_payment_method_slct_ajax',
+		url: 'customers/make_htm_get_payment_method_slct_ajax',
 		  type: 'post', // getかpostを指定(デフォルトは前者)
 		  dataType: 'text', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
 		  scriptCharset: 'utf-8',

@@ -32,11 +32,11 @@ class StaffInOutList extends Component
         //$target_year="",
         //$target_month="",
         
-    #[Session(key: 'target_staff_serial')] 
+    //#[Session(key: 'target_staff_serial')] 
     public $target_staff_serial; 
-    #[Session(key: 'year_slct_id')] 
+    //#[Session(key: 'year_slct_id')] 
     public $year_slct_id; 
-    #[Session(key: 'month_slct_id')] 
+    //#[Session(key: 'month_slct_id')] 
     public $month_slct_id; 
     
 	//public $kensakukey="";
@@ -208,9 +208,9 @@ $headers = [['Content-Type' => $mimeType]];
         session(['serch_flg_StaffInOutList' => true]);
 		$this->target_page=1;
 		//session(['serchKey' => $this->kensakukey]);
-        Log::alert("target_staff_serial-s=".$this->target_staff_serial);
-        Log::alert("year_slct_id-s=".$this->year_slct_id);
-        Log::alert("month_slct_id-s=".$this->month_slct_id);
+        //Log::alert("target_staff_serial-s=".$this->target_staff_serial);
+        //Log::alert("year_slct_id-s=".$this->year_slct_id);
+        //Log::alert("month_slct_id-s=".$this->month_slct_id);
         session(['target_year_StaffInOutList' => $this->year_slct_id]);
         session(['target_month_StaffInOutList' => $this->month_slct_id]);
         session(['target_staff_serial_StaffInOutList' => $this->target_staff_serial]);
