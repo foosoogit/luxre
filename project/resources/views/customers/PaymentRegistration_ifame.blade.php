@@ -1,6 +1,6 @@
 @extends('layouts.appCustomer')
 @section('content')
-<script type="text/javascript" src="{{ asset('/js/PaymentRegistration.js?20230201') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/PaymentRegistration.js?20230202') }}"></script>
 <script type="text/javascript" src="{{ asset('/js/MediaRecord.js?20230129') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{asset('css/iflame.css')}}">
 <style type="text/css">
@@ -12,7 +12,7 @@ table td {border: 1px solid #aaa;}
 		@include('layouts.header')
 	</div>
 	<div class="row">
-		契約番号 test:&nbsp;{{$KeiyakuInf->serial_keiyaku}}&nbsp;/&nbsp;契約名:&nbsp;{{$KeiyakuInf->keiyaku_name}}
+		契約番号:&nbsp;{{$KeiyakuInf->serial_keiyaku}}&nbsp;/&nbsp;契約名:&nbsp;{{$KeiyakuInf->keiyaku_name}}
 	</div>
 	<div class="row">
 		顧客番号:&nbsp;{{$UserInf->serial_user}}&nbsp;/&nbsp;顧客名: {{$UserInf->name_sei}}&nbsp;{{$UserInf->name_mei}}&nbsp;({{$UserInf->name_sei_kana}}&nbsp;{{$UserInf->name_mei_kana}})

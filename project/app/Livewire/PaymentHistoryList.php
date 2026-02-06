@@ -20,12 +20,16 @@ class PaymentHistoryList extends Component
 	public $dynamic_key,$serch_key,$sort_key,$sort_type="desc";
 	public $livewire_cnt=0;
 	public $kensakukey="";
+	public $delPaymentHistorySerial;
 	
 	public function del_payment_history($target_Psirial){
-		Log::alert("target_Vsirial=".$target_Psirial);
+		//Log::alert("target_Vsirial=".$target_Psirial);
+		//payment_history_serial_d
+		/*
 		PaymentHistory::where('payment_history_serial',$target_Psirial)
 			->update(['payment_history_serial' => "del_".$target_Psirial]);
 		PaymentHistory::where('payment_history_serial',"del_".$target_Psirial)->delete();
+		*/
 	}
 
 	public function sort($sort_key){
@@ -87,7 +91,7 @@ class PaymentHistoryList extends Component
 		$PaymentHistoryQuery=$PaymentHistoryQuery->orderBy("payment_history_serial", "desc");
 		$PaymentHistoryQuery=$PaymentHistoryQuery->where('serial_keiyaku','=',session('targetKeiyakuSerial'));
 
-		$newPaymentHistorySerial=PaymentHistory::where('serial_keiyaku','=',session('targetKeiyakuSerial'))->max('payment_history_serial');
+		$newPaymentHistorySerial=PaymentHistory::where('serial_keiyaku','=',session('targetKeiyakuSerial'))->withTrashed()->max('payment_history_serial');
 		if(empty($newPaymentHistorySerial)){
 			$newPaymentHistorySerial=str_replace('K', 'P', session('targetKeiyakuSerial')).'-01';
 		}else{

@@ -224,13 +224,13 @@ $headers = [['Content-Type' => $mimeType]];
 	}
 
     public function render(){
-        log::alert("target_year_StaffInOutList-1=".session('target_year_StaffInOutList'));
+        //log::alert("target_year_StaffInOutList-1=".session('target_year_StaffInOutList'));
         if(empty(session('target_year_StaffInOutList'))){
             $this->year_slct_id=date('Y');
         }else{
             session(['target_year_StaffInOutList' => $this->year_slct_id]);
         }
-        log::alert("target_year_StaffInOutList-2=".session('target_year_StaffInOutList'));
+        //log::alert("target_year_StaffInOutList-2=".session('target_year_StaffInOutList'));
         //log::alert("今月=".date('m'));
         if(empty(session('target_month_StaffInOutList'))){  
             //$this->month_slct_id=ltrim(date('m'), '0');

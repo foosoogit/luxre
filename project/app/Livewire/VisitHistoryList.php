@@ -28,10 +28,12 @@ class VisitHistoryList extends Component
 	}
 
 	public function del_visit_history($target_Vsirial){
-		VisitHistory::where('visit_history_serial',$target_Vsirial)
-			->update(['visit_history_serial' => "del_".$target_Vsirial]);
-		VisitHistory::where('visit_history_serial',"del_".$target_Vsirial)->delete();
-		$target_serch_file_name=str_replace('V', 'K', $target_Vsirial)."*.png";
+
+		VisitHistory::where('visit_history_serial',$this->delTargetVisitHistorySerial)
+			->update(['visit_history_serial' => "del_".$this->delTargetVisitHistorySerial]);
+		VisitHistory::where('visit_history_serial',"del_".$this->delTargetVisitHistorySerial)->delete();
+		$target_serch_file_name=str_replace('V', 'K', $this->delTargetVisitHistorySerial)."*.png";
+
 		foreach (glob(public_path('MedicalRecord/'.$target_serch_file_name)) as $file){
 			unlink($file);
 		}
@@ -95,7 +97,7 @@ class VisitHistoryList extends Component
 		//$VisitHistoryQuery=$VisitHistoryQuery->orderBy($this->Vsort_key, $this->Vsort_type);
 		$VisitHistoryQuery=$VisitHistoryQuery->orderBy("visit_history_serial", "desc");
 		
-		$newVisitHistorySerial=VisitHistory::where('serial_keiyaku','=',session('targetKeiyakuSerial'))->max('visit_history_serial');
+		$newVisitHistorySerial=VisitHistory::where('serial_keiyaku','=',session('targetKeiyakuSerial'))->withTrashed()->max('visit_history_serial');
 		if(empty($newVisitHistorySerial)){
 			$newVisitHistorySerial=str_replace('K', 'V', session('targetKeiyakuSerial')).'-01';
 		}else{

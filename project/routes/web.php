@@ -284,8 +284,10 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/customers/ajax_get_Medical_records_file_name',[AdminController::class,'ajax_get_Medical_records_file_name'])->name('ajax_get_Medical_records_file_name_VH');
     Route::get('/customers/ajax_get_Medical_records_file_name',[AdminController::class,'ajax_get_Medical_records_file_name'])->name('get.ajax_get_Medical_records_file_name');
     Route::post('/customers/save_payment_history_ajax', [OtherFunc::class,'save_payment_history_ajax'])->name('save_payment_history_ajax');
+    Route::post('/customers/del_payment_history_ajax', [OtherFunc::class,'del_payment_history_ajax'])->name('del_payment_history_ajax');
     Route::post('/customers/make_htm_get_payment_method_slct_ajax', [OtherFunc::class,'make_htm_get_payment_method_slct_ajax'])->name('make_htm_get_payment_method_slct_ajax');
     Route::post('/customers/save_visit_data_ajax', [OtherFunc::class,'save_visit_data_ajax'])->name('save_visit_data_ajax');
+    Route::post('/customers/del_visit_data_ajax', [OtherFunc::class,'del_visit_data_ajax'])->name('del_visit_data_ajax');
     Route::post('/customers/make_htm_get_treatment_slct_ajax', [OtherFunc::class,'make_htm_get_treatment_slct_ajax'])->name('make_htm_get_treatment_slct_ajax');
     Route::post('make_htm_get_treatment_slct_ajax', [OtherFunc::class,'make_htm_get_treatment_slct_ajax'])->name('make_htm_get_treatment_slct_ajax');
     Route::get('/send_attendance_card/{TargetStaffSerial}',[OtherFunc::class,'send_attendance_card'],function($TargetStaffSerial){});

@@ -367,8 +367,19 @@ class OtherFunc extends Controller
 	public static function make_html_payment_table($targetContract){
 		Contract::where(serial_keiyaku,"=",$targetContract)->get();
 	}
+
+	public function del_visit_data_ajax(Request $request){
+		//Log::info($request);
+		VisitHistory::where('visit_history_serial',$request->Tvisit_history_serial)->delete();
+	}
+	
+	public function del_payment_history_ajax(Request $request){
+		//Log::info($request);
+		PaymentHistory::where('payment_history_serial',$request->Tpayment_history_serial)->delete();
+	}
 	
 	public function save_visit_data_ajax(Request $request){
+		//Log::info($request);
 		$keiyaku_array=explode("-", session('targetKeiyakuSerial'));
 		$seriar_user=str_replace('K_', '', $keiyaku_array[0]);
 		$visits = [
@@ -380,6 +391,7 @@ class OtherFunc extends Controller
 			'serial_user'=>$seriar_user
 			]
 		];
+		//Log::info($visits);
 		$res=VisitHistory::upsert($visits, ['visit_history_serial']);
 		echo $res;
 	}

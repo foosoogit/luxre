@@ -10,12 +10,37 @@ function radioDeselection(already, numeric) {
 
 $(function(){
 	$("#del_btn").on('click', function() {
-		//console.log("delConfirmModal-2");
+		let Tpayment_history_serial=document.getElementById("payment_history_serial_d").innerText;
+      	//console.log("Tvisit_history_serial="+Tvisit_history_serial);
+		$.ajax({
+			url: "customers/del_payment_history_ajax",
+			//url: "{{ route('customers.save_visit_data_ajax') }}",
+			type: 'post', // getかpostを指定(デフォルトは前者)
+			dataType: 'text', 
+			scriptCharset: 'utf-8',
+			frequency: 10,
+			cache: false,
+			async : false,
+			data: {"Tpayment_history_serial": Tpayment_history_serial},
+			headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+		}).done(function (data) {
+			location.replace(location.href);
+			$msg= "削除しました。";
+				alert($msg);
+		}) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+			alert(XMLHttpRequest.status);
+			alert(textStatus);
+			alert(errorThrown);	
+			alert('エラー');
+		});
 		$('#delConfirmModal').modal('hide');
 	})
+
+	
 	// モーダルの中の「ボタン1」を押した時の処理
 	  $("#btn1").on('click', function() {
-
 		let Tdate=document.getElementById("payment_date").value;
 		let Tpayment_history_serial=document.getElementById("payment_history_serial").innerText;
 		let Tmethod_slct=document.getElementById("method_slct").value;
@@ -58,7 +83,7 @@ $(function(){
   });
 
 function getPaymentMethodSlct(target){
-	console.log("target="+target);
+	//console.log("target="+target);
 	$.ajax({
 		  //url: '{{route("make_htm_get_treatment_slct_ajax")}}',
 		url: 'customers/make_htm_get_payment_method_slct_ajax',
@@ -108,7 +133,6 @@ $(function(){
 	  });
 
 	$('#ModifyModal').on('show.bs.modal', function (event) {
-
 	  //モーダルを開いたボタンを取得
 	  let button = $(event.relatedTarget);
 	  //モーダルを取得

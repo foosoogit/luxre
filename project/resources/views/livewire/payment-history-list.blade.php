@@ -117,7 +117,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-auto">
-                                    <label>回数：<span id="num"></span></label>
+                                    <label>支払番号：<span id="num"></span></label>
                                 </div>
                             </div>
                             <div class="row">
@@ -157,7 +157,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-auto">
-                                <label>支払いシリアル：<span id="payment_history_serial_d"></span></label>
+                                <label>支払いシリアル：<span id="payment_history_serial_d" ></span></label>
                             </div>
                         </div>
                         <div class="row">
@@ -167,7 +167,7 @@
                         </div>
                         <div class="row">
                             <div class="col-auto">
-                                <label>回数：<span id="num_d"></span></label>
+                                <label>支払番号：<span id="num_d"></span></label>
                             </div>
                         </div>
                         <div class="row">

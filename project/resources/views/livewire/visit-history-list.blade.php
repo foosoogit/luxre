@@ -16,16 +16,6 @@
             </div>
              
             <div class="col-auto">
-                {{--
-                <button type="button" class="modalBtn btn-outline-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#MedicalRecordFormModal"
-                    data-contractserial="{{session('targetKeiyakuSerial')}}"
-                    data-customer_name="{{$User_name}}"
-                    data-customerserial="{{$UserSerial}}"
-                    data-keiyaku_name="{{$KeiyakuName}}"
-                >カルテ一覧</button>
-                 --}}
                 <button type="button" wire:click="searchClear()" onclick="document.getElementById('Vkensakukey_txt').value=''" disabled>解除</button>
                 <input type="text" name="Vkensakukey_txt" id="Vkensakukey_txt" class="bg-white-500 border-solid pxtext-black rounded px-3 py-1" wire:model.defer="Vkensakukey" disabled>
                 <button type="button" name="SerchBtn" id="SerchBtn" wire:click="Vsearch()" disabled>検索</button>
@@ -100,7 +90,8 @@
                         <td class="border px-4 py-2">
                             <button type="button" id="delete_btn_{{$dVisitHistory->visit_history_serial}}" class="btn btn-danger modalBtn btn-sm" 
                                 data-bs-toggle="modal" 
-                                data-bs-target="#delConfirmModal" 
+                                data-bs-target="#delConfirmModal"
+                                data-name="{{$User_name}}" 
                                 data-num="{{$dVisitHistory->VisitNum}}" 
                                 data-sejyutu_naiyou="{{$dVisitHistory->treatment_dtails}}" 
                                 data-visit_history_serial="{{$dVisitHistory->visit_history_serial}}" 
@@ -137,7 +128,7 @@
                         </div>
                         <div class="row">
                             <div class="col-auto">
-                                回数：<span id="num"></span>
+                                来店番号：<span id="num"></span>
                             </div>
                         </div>
                         <div class="row">
@@ -190,7 +181,7 @@
                         </div>
                         <div class="row">
                             <div class="col-auto">
-                                <label>回数：<span id="num_d"></span></label>
+                                <label>来店番号：<span id="num_d"></span></label>
                             </div>
                         </div>
                         <div class="row">
@@ -211,7 +202,7 @@
                         上記データを削除します。よろしいですか？
                     </div>
                     <div class="modal-footer">
-                        <input type="hidden" id="delTargetVisitHistorySerial_hdn">
+                        <input type="hidden" id="delTargetVisitHistorySerial_hdn" wire:model="delTargetVisitHistorySerial">
                         <button type="button" id="del_btn" wire:click="del_visit_history(document.getElementById('delTargetVisitHistorySerial_hdn').value)" class="btn btn-danger">削除</button>
                         <button type="button" class="btn btn-info" data-bs-dismiss="modal">キャンセル</button>
                     </div>
