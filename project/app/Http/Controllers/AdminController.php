@@ -43,7 +43,23 @@ class AdminController extends Controller
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
 	}
-
+	/*
+	public function show_staff_in_out_list(Request $request){
+		session(['target_livewire_page' => "ListStaffInOut"]);
+		//return redirect('./Livewire/StaffInOutList');
+		//return view('livewire.staff-in-out-list');
+		
+		$html_working_list_year_slct= OtherFunc::make_html_working_list_year_slct();
+        $html_working_list_month_slct = OtherFunc::make_html_working_list_month_slct();
+        $html_staff_inout_slct=OtherFunc::make_html_staff_inout_slct("");
+        $html_working_list_month_slct=OtherFunc::make_html_working_list_month_slct();
+        $target_day='';
+        $histories=InOutHistory::paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'],'page')->withQueryString();
+		//return redirect('/customers/ShowSyuseiContract/'.$serial_Contract.'/'.$UserSerial);
+		return view('livewire.staff-in-out-list',compact('histories','html_staff_inout_slct','html_working_list_month_slct','target_day','html_working_list_year_slct','html_working_list_month_slct'));
+		
+	}
+	*/
 	public function ShowContractContentsAllList($UserSerial,Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);

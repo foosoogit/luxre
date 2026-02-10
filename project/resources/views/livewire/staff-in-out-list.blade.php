@@ -1,3 +1,4 @@
+{{-- 
 <div class="container-fluid ml-5">
     <div class="py-12 row justify-content-center">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -7,38 +8,18 @@
                 </div>
                 <div class="mb-2 bg-secondary text-white">入退勤履歴</div>
                 <div class="col">
-                    {{-- <input type="button" name="show_calender" id="tshow_calender" value='カレンダー表示'> --}}
-                    <input type="button" name="csv_download" id="csv_download" value='ファイルのダウンロード' wire:click="csv_download()">
+                    <input type="button" name="csv_download" id="csv_download" class="btn btn-success" value='ファイルのダウンロード' wire:click="csv_download()">
                 </div>
                 <div class="col-auto">
-                    <div class="row lh-lg">
-                        <p class="lh-lg">
-                            <div class="col">
-                               {{--  <input name="target_day" id="target_day" type="date" wire:model.live="search_day(document.getElementById('target_day').value)" value="{{$target_day}}"/></label> --}}
-                                <label>日付検索： <input name="target_day" id="target_day" type="date" wire:model.live="search_day()" value="{{$target_day}}"/></label>
-                            </div>
-                            <div class="col">
-                                {{--<button wire:click="search_month(document.getElementById('year_slct').value,document.getElementById('month_slct').value)" class='btn btn-primary btn-sm rounded'>月検索</button>： {!!$html_working_list_year_slct!!}--}}
-                                <button wire:click="search()" class='btn btn-primary btn-sm rounded'>月検索</button>： {!!$html_working_list_year_slct!!}
-                            </div>
-                            <div class="col">
-                                {!!$html_working_list_month_slct!!}
-                            </div> 
-                            <div class="col">
-                                <button wire:click="searchClear()" class='btn btn-primary btn-sm rounded'>検索解除</button>    
-                            </div>
-                            <div class="col">
-                                {{--<label>スタッフ検索： <select name="staff_slct" id="staff_slct" class="form-select form-select-sm" wire:change="set_staff(document.getElementById('staff_slct').value)">--}}
-                                    <label>スタッフ検索：
-                                        {{-- <select name="staff_slct" id="staff_slct" class="form-select form-select-sm" wire:change="set_staff(document.getElementById('staff_slct').value)">--}}
-                                        {{-- <select name="year_slct" id="year_slct" class="form-select" wire:model.change="target_staff_serial"> --}}
-                                        <select name="year_slct" id="year_slct" class="form-select" wire:model.change="target_staff_serial">
-                                    {!!$html_staff_inout_slct!!}
-                                    </select></label>
-                            </div>
-                            <div class="col">※Enterで更新</div>
-                        </p>
+                    <div class="d-flex flex-row gap-2">
+                        <div class="p-2"><button onclick="change_serch_month_manage()" wire:click="search_month()" class='btn btn-primary btn-sm rounded'>月検索</button>： {!!$html_working_list_year_slct!!}{!!$html_working_list_month_slct!!}</div>
+                        <div class="p-2"> <label>日付検索：<input name="TDay" id="TDay" type="date" wire:model.live="searchDay" onchange="change_serch_day_manage(this)"/></label></div>
+                        <div class="p-2"><label>スタッフ検索：<select name="year_slct" id="year_slct" class="form-select" wire:model.change="target_staff_serial">{!!$html_staff_inout_slct!!}</select></label></div>
+                        <div class="p-2"><button onclick="serch_Clear_manage();" wire:click="searchClear()" class='btn btn-primary btn-sm rounded'>検索解除</button> </div>
                     </div>
+                    <div class="col">※:Enterで更新</div>
+                     --}}
+                <div>
                     <div class="row">
                         <div class="col">
                             <table id="table_responsive">
@@ -51,8 +32,8 @@
                                     <th>出勤時間</th>
                                     <th>退勤時間</th>
                                     <th>勤務時間(分)</th>
-                                    <th>遅刻理由</th>
-                                    <th>備考</th>
+                                    <th>遅刻理由(※)</th>
+                                    <th>備考(※)</th>
                                     <th>削除</th>
                                 </tr>
                                 @foreach ($histories as $history)
@@ -87,8 +68,11 @@
                         </div>
                     </div>
                     {{$histories->appends(request()->query())->links('pagination::bootstrap-4')}}
+                    
                 </div>
+                {{-- 
             </div>
         </div>
     </div>
 </div>
+--}}

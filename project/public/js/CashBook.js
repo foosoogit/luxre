@@ -66,7 +66,7 @@ function make_html_select_summary(){
 function make_html_select_summary(){
   //console.log('summary-1');
   $.ajax({
-    url: "html_make_select_summary_ajax",
+    url: "admin/html_make_select_summary_ajax",
     type: 'post', // getかpostを指定(デフォルトは前者)
     dataType: 'html', 
     scriptCharset: 'utf-8',
@@ -198,7 +198,7 @@ $(function(){
       if(target_date!='' && summary!='' && amount!='' && typeof payment_deposit !== 'undefined'){
         document.getElementById("CreateModal").close;
         $.ajax({
-            url: "ajax_upsert_CashBook",
+            url: "admin/ajax_upsert_CashBook",
             type: 'post', // getかpostを指定(デフォルトは前者)
             dataType: 'text', 
             scriptCharset: 'utf-8',

@@ -4,6 +4,24 @@ $(function() {
 })
 */
 
+function serch_Clear_manage(){
+	$('#TDay').val('');
+	$('#month_slct').val('');
+	$('#year_slct').val('');
+}
+
+function change_serch_month_manage(){
+	//console.log("btn clicked");
+	$('#TDay').val('');
+}
+
+function change_serch_day_manage($sbj){
+	//console.log("sbj.value 3="+$sbj.value);
+	//document.getElementById("target_day_hdn").value=$sbj.value;
+	$('#month_slct').val('');
+	$('#year_slct').val('');
+}
+
 function delArert(msg){
 	//return false;
 	//console.log("delArert");

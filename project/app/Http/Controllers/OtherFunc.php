@@ -604,7 +604,7 @@ class OtherFunc extends Controller
 	public static function make_html_working_list_month_slct(){
 		$month_now=date('m');
 		$htm_month_slct='<select name="month_slct" id="month_slct" class="form-select" wire:model="month_slct_id">';
-		$htm_month_slct.='<option  value="" Selected>--Select--</option>';
+		$htm_month_slct.='<option  value="" @selected($month_slct_id ==="" Selected>--Select--</option>';
 		for ($i=1; $i <= 12; $i++) {
 			$sct="";
 			if($i==$month_now){
@@ -618,9 +618,7 @@ class OtherFunc extends Controller
 
 	public static function make_html_working_list_year_slct(){
 		$minYear=InOutHistory::where('target_serial','like','SF_%')->min('target_date');
-		Log::alert("minYear=".$minYear);
 		$minYear_array=explode("-", $minYear);
-		//$htm_year_slct='<select name="year_slct" id="year_slct" class="form-select" wire:model.change="year_slct_id">';
 		$htm_year_slct='<select name="year_slct" id="year_slct" class="form-select" wire:model="year_slct_id">';
 		$htm_year_slct.='<option  value="" Selected>--Select--</option>';
 		$start_year=$minYear_array[0];$year_now=date('Y');

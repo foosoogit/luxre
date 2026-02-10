@@ -111,7 +111,10 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::get('/show_staff_in_out_rireki', function () {
             session(['target_livewire_page' => "ListStaffInOut"]);
-            return view('admin.ListStaffInOutHistories');
+            $html_working_list_year_slct = OtherFunc::make_html_working_list_year_slct();
+            $html_working_list_month_slct = OtherFunc::make_html_working_list_month_slct();
+            $html_staff_inout_slct = OtherFunc::make_html_staff_inout_slct("");
+            return view('admin.ListStaffInOutHistories',compact('html_working_list_year_slct','html_working_list_month_slct','html_staff_inout_slct'));
         })->name('show_staff_in_out_rireki.get');
 
         Route::get('/admin/show_point_list', function () {
