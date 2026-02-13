@@ -527,12 +527,6 @@ class OtherFunc extends Controller
 			}else if(!str_contains($_SERVER['REQUEST_URI'],'update')){
 				$target_referer=$_SERVER['REQUEST_URI'];
 			}
-			/*
-			else{
-				$target_referer=$_SERVER['HTTP_REFERER'];
-			}
-			*/
-			//$REFERER_name=self::get_page_name($_SERVER['HTTP_REFERER']);
 			$REFERER_name=self::get_page_name($target_referer);
 			$URI_name=self::get_page_name($_SERVER['REQUEST_URI']);
 			if($url_name_now==$access_history_0_name){
@@ -556,7 +550,7 @@ class OtherFunc extends Controller
 		if(isset($_SESSION['access_history'][1]) && $_SESSION['access_history'][0]==$_SESSION['access_history'][1]){
 			array_splice($_SESSION['access_history'], 1, 1);
 		}
-		//Livewireから違う画面にアクセスしたとき
+
 		if(isset($_SESSION['access_history'][1])){
 			$url_ck_array0=explode("/",$_SESSION['access_history'][0]);
 			$url_ck_array1=explode("/",$_SESSION['access_history'][1]);
@@ -575,8 +569,6 @@ class OtherFunc extends Controller
 				array_splice($_SESSION['access_history'], 0, 2);
 			}
 		}
-		//log::info($_SESSION['access_history']);
-		//$_SESSION[OtherFunc::get_page_name($_SESSION['access_history'][0])]=OtherFunc::get_page_num($_SESSION['access_history'][0]);
 	}
 	
 	public static function getStaffDiffAttribute($time_in,$time_out){
@@ -601,33 +593,24 @@ class OtherFunc extends Controller
         return $diff_m;
     }
 
-	public static function make_html_working_list_month_slct(){
-		$month_now=date('m');
+	public static function make_html_working_list_month_slct($target_momth){
 		$htm_month_slct='<select name="month_slct" id="month_slct" class="form-select" wire:model="month_slct_id">';
-		$htm_month_slct.='<option  value="" @selected($month_slct_id ==="" Selected>--Select--</option>';
+		$htm_month_slct.='<option value="" >--Select--</option>';
 		for ($i=1; $i <= 12; $i++) {
-			$sct="";
-			if($i==$month_now){
-				$sct='Selected';
-			}
-			$htm_month_slct .= '<option value="'.sprintf('%02d', $i).'" '.$sct.'  @selected($month_slct_id ==='.$i.')>'.$i.'月</option>';
+			$htm_month_slct .= '<option value="'.$i.'" >'.$i.'月</option>';
 		}
 		$htm_month_slct.='</select>';
 		return $htm_month_slct;
 	}
 
-	public static function make_html_working_list_year_slct(){
+	public static function make_html_working_list_year_slct($target_year){
 		$minYear=InOutHistory::where('target_serial','like','SF_%')->min('target_date');
 		$minYear_array=explode("-", $minYear);
 		$htm_year_slct='<select name="year_slct" id="year_slct" class="form-select" wire:model="year_slct_id">';
 		$htm_year_slct.='<option  value="" Selected>--Select--</option>';
 		$start_year=$minYear_array[0];$year_now=date('Y');
 		for($i = $start_year; $i<= $year_now; $i++){
-			$sct='';
-			if($i==$year_now){
-				$sct='Selected="Selected"';
-			}
-			$htm_year_slct.='<option  value="'.$i.'" '.$sct.' @selected($year_slct_id ==="'.$i.'")>'.$i.'年</option>';
+			$htm_year_slct.='<option  value="'.$i.'" >'.$i.'年</option>';
 		}
 		$htm_year_slct.='</select>';
 		return $htm_year_slct;
