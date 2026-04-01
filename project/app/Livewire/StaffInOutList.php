@@ -155,68 +155,10 @@ class StaffInOutList extends Component
         }else{
             $this->HistoriesQuery = $this->HistoriesQuery->orderBy('time_in','desc');
         }
-        //return $query_string;
     }
 
     public function render(){
-        //$this->HistoriesQuery = InOutHistory::query();
-        //$this->workListQuery = InOutHistory::query();
-        //Log::alert("target_year=".session('target_year_StaffInOutList'));
-        //Log::alert("target_month=".session('target_month_StaffInOutList'));
-        //log::alert("m=".date('m'));
         self::get_query_string("");
-        /*
-
-        if(session('search_sbj_StaffInOutList')=="month"){  
-            if(empty(session('target_year_StaffInOutList'))){
-                session(['target_year_StaffInOutList' => date('Y')]);
-                $this->year_slct_id=date('Y');
-            }else{
-                //session(['target_year_StaffInOutList' => date('Y')]);
-                //$this->year_slct_id=session('target_year_StaffInOutList');
-                //Log::alert("year_slct_id-2=".$this->year_slct_id);
-            }
-            
-            if(empty(session('target_month_StaffInOutList'))){
-                session(['target_month_StaffInOutList' => date('m')]);
-                $this->month_slct_id=str_replace("0", "", date('m'));
-            }else{
-                //log::alert("target_month-2=".session('target_month_StaffInOutList'));  
-                //$this->month_slct_id=session('target_month_StaffInOutList');
-                //Log::alert("month_slct_id-2=".$this->month_slct_id);
-            }
-            if(!empty(session('target_staff_serial_StaffInOutList'))){
-                //session(['target_staff_serial_StaffInOutList' => $this->target_staff_serial]);
-            }
-            $sk=session('target_year_StaffInOutList')."-".sprintf('%02d', session('target_month_StaffInOutList'))."%";
-            $this->HistoriesQuery = $this->HistoriesQuery->where('target_date','like',$sk);
-            $this->workListQuery = $this->workListQuery->where('target_date','like',$sk);
-            session(['target_day_StaffInOutList' => ""]);$this->target_day="";
-        }else if(session('search_sbj_StaffInOutList')=="day"){
-            $this->HistoriesQuery = $this->HistoriesQuery->where('target_date',session('target_day_StaffInOutList'));
-            $this->workListQuery = $this->workListQuery->where('target_date',session('target_day_StaffInOutList'));
-        }
-        */
-        /*
-        if($this->target_staff_serial!="" ){
-            $this->HistoriesQuery = $this->HistoriesQuery->where('target_serial','=',$this->target_staff_serial);
-            $this->workListQuery = $this->workListQuery->where('target_serial','=',$this->target_staff_serial);
-        }
-        if($this->sort_type<>""){
-            $this->HistoriesQuery = $this->HistoriesQuery->orderBy('time_in',$this->sort_type); 
-        }else{
-            $this->HistoriesQuery = $this->HistoriesQuery->orderBy('time_in','desc');
-        }
-       
-        */
-        /*
-        if($this->manage_type=="csv_download"){
-            log::alert("manage_type=".$this->manage_type);
-            $work_records_array = $this->workListQuery->orderBy('time_in','asc')->get();
-            session(['work_records' => $work_records_array]);
-            $this->manage_type="";
-        }
-        */
         $histories=$this->HistoriesQuery->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'],'page')->withQueryString();
         return view('livewire.staff-in-out-list',compact('histories'));
     }
@@ -245,13 +187,13 @@ class StaffInOutList extends Component
         }else{
             $TargetStaffSerialArray[]=$this->target_staff_serial;
         }
-        Log::info($TargetStaffSerialArray);
+        //Log::info($TargetStaffSerialArray);
         
         $cnt=1;
         foreach($TargetStaffSerialArray as $TargetStaffSerial){
-            Log::alert("cnt=".$cnt);
+            //Log::alert("cnt=".$cnt);
             $staff_inf=Staff::where("serial_staff","=",$TargetStaffSerial)->first();
-            log::info($staff_inf);
+            //log::info($staff_inf);
             if($cnt==1){
                 $sheet = $spreadsheet->getActiveSheet()->setTitle($staff_inf->last_name_kanji.$staff_inf->first_name_kanji);
             }else{
@@ -282,11 +224,7 @@ class StaffInOutList extends Component
             $sheet->getStyle( 'F2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
             $row=3;
             $work_records_array=$this->workListQuery->orderBy('time_in','asc')->get();
-            //$work_records_array = session('work_records', []);
-            //$work_records_array=$this->workListQuery->get();
-            //$work_records_array = $this->workListQuery->orderBy('time_in','asc')->get();
             $serch_year_month=$this->year_slct_id."-".sprintf("%02d", $this->month_slct_id);
-            //Log::alert("serch_year_month=".$serch_year_month);
             foreach ($work_records_array as $work_record) {
                 if($work_record->target_serial==$TargetStaffSerial && str_contains($work_record->target_date, $serch_year_month)){
                     $sheet->setCellValue('A'.$row, $work_record->target_date);

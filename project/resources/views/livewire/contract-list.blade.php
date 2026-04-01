@@ -20,17 +20,6 @@
                         @else
                             顧客番号：&nbsp;{{$UserSerial}}&nbsp;&nbsp;契約者：{{$userinf->name_sei}}&nbsp;{{$userinf->name_mei}}
                         @endif
-                            {{-- 
-                                <input class="form-check-input" type="checkbox" value="subscription" name="contract_type" id="contract_type_subscription" wire:model="isSubscriptionCheckBox" onclick="contract_type_manage(this)" checked wire:click="select_subscription()"/>
-                                <label class="form-check-label" for="contract_type_subscription">サブスク</label>
-                                <input class="form-check-input" type="checkbox" value="cyclic" name="contract_type" id="contract_type_cyclic" wire:model="isCyclicCheckBox" onclick="contract_type_manage(this)" checked wire:click="select_cyclic()"/>
-                                <label class="form-check-label" for="contract_type_cyclic">期間契約</label>
-                                <input class="form-check-input" type="checkbox" value="cancel" name="contract_status[]" id="contract_status_under" wire:model="isContractStatusUnderCheckBox" onclick="contract_status_manage()" checked wire:click="select_Under()"/>
-                                <label class="form-check-label" for="contract_status_under">契約中</label>
-                                <input class="form-check-input" type="checkbox" value="cancel" name="contract_status[]" id="contract_status_cancellation" wire:model="isContractStatusCancellationCheckBox" onclick="contract_status_manage()" checked wire:click="select_cancel()"/>
-                                <label class="form-check-label" for="contract_status_cancellation">契約解約者</label>
-                             --}}
-                     
                     </div>
                 </div>
                 <table id="table_responsive container-fluid" class="table-striped table-hover">
@@ -151,7 +140,7 @@
                                 <td class="border px-4 py-2">{{ $dContracts->cancel}}</td>
                                  --}}
                                 <td class="border px-4 py-2">{{ number_format($dContracts->keiyaku_kingaku)}}</td>
-                                <td class="border px-4 py-2">{{ $dContracts->how_to_pay}}</td>
+                                <td class="border px-4 py-2">{{-- {{ $dContracts->how_to_pay}}  --}}{{ $dContracts->ConversionHowToPayForSCR}}</td>
                                 {{-- 
                                 <td class="border px-4 py-2">{{ $dContracts->how_many_pay_genkin}}</td>
                                  --}}

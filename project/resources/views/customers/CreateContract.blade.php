@@ -1,7 +1,8 @@
 @extends('layouts.appCustomer')
 @section('content')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-<script type="text/javascript" src="{{ asset('/js/CreateContract.js?20230130') }}"></script>
+<script type="text/javascript" src="{{asset('js/CreateContract.js?20230219')}}"></script>
+{{-- <script type="text/javascript" src="{{ asset('/js/CashBook.js?20240628') }}"></script> --}}
 
 <style type="text/css">
 .auto-style1 {margin-left: 40px;}
@@ -58,7 +59,10 @@ input,textarea{border: 1px solid #aaa;}
 							<div class="py-2"><span class="auto-style2">*</span><span class="font-semibold text-1xl text-slate-600">:必須項目</span></div>
 							
 							<div class="py-2">●<span class="auto-style2">*</span>契約締結日：<input name="ContractsDate" id="ContractsDate" type="date" value="{{optional($targetContract)->keiyaku_bi}}"/><span id="ContractsDate_for_error" class="text-danger fw-bold"></span></div>
-							<div class="py-2">●<span class="auto-style2">*</span>契約名：<input name="ContractName" id="ContractName" type="text" class="form-control col-5" value="{{optional($targetContract)->keiyaku_name}}"/><span id="ContractName_for_error" class="text-danger fw-bold"></span></div>
+							<div class="py-2">●<span class="auto-style2">*</span>契約名：
+								<select name="ContractName" id="ContractName">{!!$KeiyakuNameSelect!!}</select>
+								{{--<input name="ContractNameTxt" id="ContractNameTxt" type="text" class="form-control col-5" value="{{optional($targetContract)->keiyaku_name}}"/>--}}
+								<span id="ContractName_for_error" class="text-danger fw-bold"></span></div>
 							<div class="py-3">●<span class="auto-style2">*</span>担当者：{!!$html_staff_slct!!}<span id="staff_slct_for_error" class="text-danger fw-bold"></span></div>
 							<div>●<span class="auto-style2">*</span>契約形態<span id="contract_type_for_error" class="text-danger fw-bold"></span></div>
 							<div class="form-check" style="text-indent: 1em">
@@ -71,7 +75,7 @@ input,textarea{border: 1px solid #aaa;}
 							<div class="form-check" style="text-indent: 1em">
 								<input class="form-check-input" type="radio" name="contract_type" id="contract_type_cyclic" value="cyclic" onclick="contract_type_manage();" {!! $contract_type_checked['cyclic'] !!}>
 								<label class="form-check-label" for="contract_type_cyclic">回数、期間指定</label>
-								<div class="py-2"><span class="auto-style2">*</span>契約金（チェック用入力）：
+								<div class="py-2"><span class="auto-style2">*</span>契約金：
 									@if(isset($targetContract->keiyaku_kingaku)) 
 										{{-- <input type="text" name="inpTotalAmount" id="inpTotalAmount" value="{{number_format($targetContract->keiyaku_kingaku)}}" class="form-control col-5 cyclic">--}}
 										<input type="text" name="inpTotalAmount" id="inpTotalAmount" value="{{$targetContract->keiyaku_kingaku}}" class="form-control col-5 cyclic" onclick="contract_type_manage();">
@@ -87,6 +91,8 @@ input,textarea{border: 1px solid #aaa;}
 							</div>
 							<p class="cyclic">●<span class="auto-style2">*</span>施術回数 {!!$TreatmentsTimes_slct!!}</p>
 						</div>
+
+						{{-- 
 						<table style="width: 100%;border-collapse: collapse;border: 1px solid #aaa;" class="table-auto border-solid cyclic">
 							<tr>
 								<td>契約内容明細&nbsp;&nbsp;<input name="toroku_treatment_btn" type="button" class="btn btn-success btn-sm cyclic" value="施術内容登録" onclick="location.href='/workers/ShowTreatmentContents'"></td>
@@ -223,6 +229,8 @@ input,textarea{border: 1px solid #aaa;}
 								</td>
 							</tr>
 						</table>
+ 						--}}
+						{{-- 
 						<p class="cyclic"><span class="auto-style2">*</span>支払い方法：</p> 
 						<div class="ml-5">
 							<p class="cyclic">
@@ -236,17 +244,7 @@ input,textarea{border: 1px solid #aaa;}
 								</label>
 							</p>
 							<p class="cyclic"><label><input name="HowPayRdio" id="HowPayRdio_genkin" type="radio" onchange="HowPayRdioManage()" value="現金" {!!optional($HowToPay)['cash']!!} class="cyclic"/>現金支払い</label>
-								{{-- 
-								<select name="HowManyPaySlct" id="HowManyPaySlct" class="cyclic">
-									{!!optional($HowManyPay)['CashSlct']!!}
-								</select>回
-								--}}
 							</p>
-						
-						{{-- 
-						<div class="auto-style1 cyclic"><span>1回目：<input name="DateFirstPay" id="DateFirstPay" type="date" value="{{optional($targetContract)->date_first_pay_genkin}}" class="cyclic"/><input type="text" name="AmountPaidFirst" id="AmountPaidFirst" class="form-control col-2 form-control-sm my-2 cyclic" value="{{optional($targetContract)->amount_first_pay_cash}}">円</span></div> 
-						<p class="auto-style1 cyclic">2回目：<input name="DateSecondtPay" id="DateSecondtPay" type="date" value="{{optional($targetContract)->date_second_pay_genkin}}" class="cyclic"/><span>(<input type="text" name="AmountPaidSecond" id="AmountPaidSecond" class="form-control col-2 form-control-sm my-2 cyclic" value="{{optional($targetContract)->amount_second_pay_cash}}">円)</p>
-						--}}
 							<p>
 							<label class="cyclic"><input name="HowPayRdio" id="HowPayRdio_card" type="radio" value="Credit Card" onchange="HowPayRdioManage()" {!!optional($HowToPay)['card']!!} class="cyclic"/>クレジットカード支払い</label>&nbsp;(<label>カード会社</label>
 							<select name="CardCompanyNameSlct" id="CardCompanyNameSlct">
@@ -269,6 +267,54 @@ input,textarea{border: 1px solid #aaa;}
 								</select>回払い
 							</label>
 						</p>
+ 						--}}
+
+						<p><span class="auto-style2">*</span>支払い方法：</p> 
+						<div class="ml-5">
+							{!!$htm_payment_method_slct!!}
+							(カード会社：<select name="CardCompanyNameSlct" id="CardCompanyNameSlct">
+								<option value="未選択">選択してください</option>
+								{!!$CardCompanySelect!!}
+							</select>)
+							<span id="method"></span></label>
+							{{-- 
+							<p>
+								<label>
+									<input name="HowPayRdio" id="HowPayRdio_paypay" type="radio" onchange="HowPayRdioManage()" value="Paypay" {!!optional($HowToPay)['paypay']!!} class="cyclic"/>Paypay
+								</label>
+							</p>
+							<p>
+								<label>
+									<input name="HowPayRdio" id="HowPayRdio_paypay" type="radio" onchange="HowPayRdioManage()" value="smart" {!!optional($HowToPay)['smart']!!} class="cyclic"/>スマート支払い
+								</label>
+							</p>
+							<p><label><input name="HowPayRdio" id="HowPayRdio_genkin" type="radio" onchange="HowPayRdioManage()" value="現金" {!!optional($HowToPay)['cash']!!} class="cyclic"/>現金支払い</label>
+							</p>
+							<p>
+							<label><input name="HowPayRdio" id="HowPayRdio_card" type="radio" value="Credit Card" onchange="HowPayRdioManage()" {!!optional($HowToPay)['card']!!} class="cyclic"/>クレジットカード支払い</label>&nbsp;(<label>カード会社</label>
+							<select name="CardCompanyNameSlct" id="CardCompanyNameSlct">
+								<option value="未選択">選択してください</option>
+								{!!$CardCompanySelect!!}
+							</select>)
+							 --}}
+						</div>
+						</p>
+						<p class="cyclic"><span class="auto-style2">*</span>支払い回数：</p> 
+						<p class="cyclic">
+							<label>
+								<input name="HowmanyCard" id="HowmanyCard_OneTime" type="radio" value="一括" class="auto-style1 cyclic" onchange="HowPayRdioManage()" {!!optional($HowManyPay)['one']!!}/>一括支払い：支払日<input name="DatePayCardOneDay" id="DatePayCardOneDay" type="date" value="{{optional($targetContract)->date_pay_card}}" class="cyclic"/>
+							</label>
+						</p>
+						<p class="cyclic">
+							<label>
+								<input name="HowmanyCard" id="HowmanyCard_Bunkatsu" type="radio" value="分割" class="auto-style1 cyclic" onchange="HowPayRdioManage()" {!!optional($HowManyPay)['bunkatu']!!} style="width: 20px"/>分割支払
+								<select name="HowManyPayCardSlct" id="HowManyPayCardSlct" class="cyclic">
+									{!!$HowManyPay['CardSlct']!!}
+								</select>回払い
+							</label>
+						</p>
+
+
 						<p>メモ：<textarea cols="20" name="memo" id="memo" rows="2" class="bg-white-500 text-black rounded px-3 py-1">{{optional($targetContract)->remarks}}</textarea></p>
 						<p style="text-align: center">
 							@if(optional($targetContract)->cancel===null)

@@ -1,10 +1,15 @@
 <div class="col-auto">
     <a class="btn mb-2 btn-primary btn-sm" href="{{route('admin.top')}}">メニューに戻る</a>
 </div>
+@if(url()->current() != route('customers.CustomersList.show'))
+    <div class="col-auto">
+        <a class="btn mb-2 btn-primary btn-sm" href="{{route('customers.CustomersList.show')}}">顧客一覧</a>
+</div>
+@endif
 @if(isset($target_historyBack_inf_array) && $target_historyBack_inf_array[0]<>'top')
     @if($target_historyBack_inf_array[0]!=='admin')
         <div class="col-auto">
-            @if(isset( $target_day ))
+            @if(isset( $target_day ) && isset($target_historyBack_inf_array[2]))
                 <form method="POST" action="{{route($target_historyBack_inf_array[2])}}">@csrf
                     <input name="target_day" type="hidden" value="{{$target_day}}"/>
                     <button type="submit" name="target_date" class="btn btn-primary btn-sm" value="{{$target_day}}">{{$target_historyBack_inf_array[1]}}に戻る</button>

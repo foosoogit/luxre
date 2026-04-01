@@ -1,16 +1,49 @@
 ﻿
 window.onload = function(){
 	contract_type_manage();
-	HowPayRdioManage();
+	//HowPayRdioManage();
 	//console.log("onload");
+	//getPaymentMethodSlct('');
 }
 
-/*
-window.addEventListener("load", (event) => {
-	console.log("ページが完全に読み込まれました");
-  });
-*/
-//window.confirm("これが確認ダイアログです。");
+function PaymentMethodChange(obj){
+	var target=obj.value;
+	console.log("target="+target);
+	CardCompanyNameSlct=document.getElementById("CardCompanyNameSlct");
+	if(target=="card"){
+		CardCompanyNameSlct.disabled=false;
+	}else{
+		CardCompanyNameSlct.selectedIndex=0;
+		CardCompanyNameSlct.disabled=true;
+	}
+}
+
+function getPaymentMethodSlct(target){
+	console.log("target="+target);
+	$.ajax({
+		//url: 'customers/make_htm_get_payment_method_slct_ajax',
+		url: "{{ route('make_htm_get_payment_method_slct_ajax_CC') }}",
+		
+		type: 'get', // getかpostを指定(デフォルトは前者)
+		dataType: 'text', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
+		scriptCharset: 'utf-8',
+		frequency: 10,
+		//cache: false,
+		//async : false,
+		data: {'target': "test"},
+		//_token: "{{ csrf_token() }}",
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	  }).done(function (data) {
+		document.getElementById("method").innerHTML=data;
+	  }) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+		  alert(XMLHttpRequest.status);
+		  alert(textStatus);
+		  alert(errorThrown);	
+		  alert('エラー');
+	  });
+}
 
 function contract_type_manage(){
 	//console.log('ontract_type_manage');

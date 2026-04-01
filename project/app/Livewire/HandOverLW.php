@@ -52,9 +52,9 @@ class HandOverLW extends Component
 	}
 
     public function submitForm(Request $request){
-        Log::alert("HandOver_DaylyRepo=".$request->HandOver_DaylyRepo_rbn);
-        Log::alert("target_date=".$request->target_date);
-        Log::info($request->all());
+        //Log::alert("HandOver_DaylyRepo=".$request->HandOver_DaylyRepo_rbn);
+        //Log::alert("target_date=".$request->target_date);
+        //Log::info($request->all());
         $validator = Validator::make($request->all(), [
             //'HandOver_DaylyRepo_rbn'=> 'required',
             'components.0.updates.target_date' => 'required',

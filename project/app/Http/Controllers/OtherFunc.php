@@ -33,6 +33,29 @@ if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function ConversionHowToPayForDisplay($targethowtopay){
+		$PaymentMethod=initConsts::PaymentMethod();
+		$PaymentMethodArray=explode(",", $PaymentMethod);
+		foreach($PaymentMethodArray as $valueArray){
+			$valueArray=explode("_", $valueArray);
+			if($valueArray[0]==$targethowtopay){
+				return $valueArray[1];
+			}
+		}
+	/*
+	if($targethowtopay=="cash"){
+			return "現金";
+		}else if($targethowtopay=="card"){
+			return "Credit Card";
+		}else if($targethowtopay=="paypay"){
+			return "PayPay";
+		}else if($targethowtopay=="smart"){
+			return "スマート支払い";
+		}
+	*/
+		return $targethowtopay;
+	}
+	
 	public static function html_make_constracts_list_ajax(Request $request){
 		//Log::info($request);
 		//Log::alert("serial_user=".$request->target_serial_user);
@@ -341,7 +364,37 @@ class OtherFunc extends Controller
 		echo $res;
 	}
 
+	public static function make_htm_get_payment_method_slct($target_method){
+		
+		//Log::alert("make_htm_get_payment_method_slct_ajax");		
+		//log::info($request);
+
+		$PaymentMethod=initConsts::PaymentMethod();
+		$PaymentMethodArray=explode(",", $PaymentMethod);
+		$htm_PaymentMethod_slct="";
+		$htm_PaymentMethod_slct='<select name="PaymentMethod_slct" id="PaymentMethod_slct" class="form-select" onchange="PaymentMethodChange(this)">';
+		$sct='';
+		if($target_method==''){
+			$sct='Selected';
+		}
+		$htm_PaymentMethod_slct.='<option value=0 '.$sct.'>-- 選択してください。 --</option>';
+		foreach($PaymentMethodArray as $value){
+			$value_array=explode("_", $value);
+			$sct='';
+			if(str_contains($value, $target_method) && $target_method!=''){
+				$sct='Selected';
+			}
+			$htm_PaymentMethod_slct.='<option value="'.$value_array[0].'" '.$sct.' >'.$value_array[1].'</option>';
+			$sct='';
+		}
+		$htm_PaymentMethod_slct.='</select>';
+		return $htm_PaymentMethod_slct;
+	}
+
+
 	public static function make_htm_get_payment_method_slct_ajax(Request $request){
+		//Log::alert("make_htm_get_payment_method_slct_ajax");		
+		//log::info($request);
 		$PaymentMethod=initConsts::PaymentMethod();
 		$PaymentMethodArray=explode(",", $PaymentMethod);
 		$htm_PaymentMethod_slct="";

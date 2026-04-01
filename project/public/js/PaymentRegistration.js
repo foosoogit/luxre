@@ -86,17 +86,17 @@ function getPaymentMethodSlct(target){
 	//console.log("target="+target);
 	$.ajax({
 		  //url: '{{route("make_htm_get_treatment_slct_ajax")}}',
-		url: 'customers/make_htm_get_payment_method_slct_ajax',
-		  type: 'post', // getかpostを指定(デフォルトは前者)
-		  dataType: 'text', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
-		  scriptCharset: 'utf-8',
-		  frequency: 10,
-		  cache: false,
-		  async : false,
-		  data: {'target': target},
-		  headers: {
-			  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		  }
+		url: '/make_htm_get_payment_method_slct_ajax_CC',
+		type: 'post', // getかpostを指定(デフォルトは前者)
+		dataType: 'text', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
+		scriptCharset: 'utf-8',
+		frequency: 10,
+		cache: false,
+		async : false,
+		data: {'target': target},
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
 	  }).done(function (data) {
 		document.getElementById("method").innerHTML=data;
 	  }) .fail(function (XMLHttpRequest, textStatus, errorThrown) {

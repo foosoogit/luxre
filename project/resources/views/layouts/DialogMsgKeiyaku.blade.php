@@ -14,6 +14,14 @@
 							</form>
 						</li>
 						<li class="my-3">
+							{{-- 
+							<form method="GET" action="{{route('customers.ContractList.get',['UserSerial' => {{$SerialUser}}])}}">@csrf
+								 --}}
+							<form method="GET" action="{{route('customers.ContractList.get', $SerialUser)}}">@csrf
+								<button class="btn btn-primary" type="submit">{{$userInf->name_sei}} {{$userInf->name_mei}} さんの契約一覧</button>
+							</form>
+						</li>
+						<li class="my-3">
 							<form method="GET" action="{{route('customers.ShowInpNewCustomer')}}">@csrf
 								<button class="btn btn-primary" type="submit">新規顧客追加</button>
 							</form>

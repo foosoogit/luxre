@@ -186,4 +186,99 @@ class CashBookList extends Component
         $this->serch_key_all=session('serch_key_all_cashbook');
         return view('livewire.cash-book-list',compact('serch_balance','serch_deposit_sum','serch_payment_sum','balance','target_historyBack_inf_array','CashBookQuery','newCashBookQuerySerial'));
     }
+
+    public function csv_download(){
+        $this->csv_manage=true;
+        self::search_month();
+        self::get_query_string("");
+        $spreadsheet = new Spreadsheet();
+        $TargetStaffSerialArray=array();
+        if($this->target_staff_serial==""){
+            $staff_array=Staff::get();
+            foreach ($staff_array as $staff) {
+                $TargetStaffSerialArray[]= $staff->serial_staff;
+            }
+        }else{
+            $TargetStaffSerialArray[]=$this->target_staff_serial;
+        }
+        //Log::info($TargetStaffSerialArray);
+        
+        $cnt=1;
+        foreach($TargetStaffSerialArray as $TargetStaffSerial){
+            //Log::alert("cnt=".$cnt);
+            $staff_inf=Staff::where("serial_staff","=",$TargetStaffSerial)->first();
+            //log::info($staff_inf);
+            if($cnt==1){
+                $sheet = $spreadsheet->getActiveSheet()->setTitle($staff_inf->last_name_kanji.$staff_inf->first_name_kanji);
+            }else{
+                //$sheet=$spreadsheet->createSheet()->setTitle('明細2');
+                $sheet = $spreadsheet->createSheet();
+                $sheet->setTitle($staff_inf->last_name_kanji.$staff_inf->first_name_kanji);
+                //$spreadsheet->createSheet()->setTitle($staff_inf->last_name_kanji.$staff_inf->first_name_kanji);
+                //$spreadsheet->addSheet(new Worksheet($spreadsheet, $staff_inf->last_name_kanji.$staff_inf->first_name_kanji));
+                //$sheet = $spreadsheet->getActiveSheet($cnt-1);
+                //$sheet->setTitle('2枚目のシート');
+            }
+            //$sheet->setTitle($staff_inf->last_name_kanji.$staff_inf->first_name_kanji);
+            $sheet->setCellValue('A1', '氏名');
+            $sheet->setCellValue('B1', $staff_inf->last_name_kanji." ".$staff_inf->first_name_kanji);
+            $sheet->setCellValue('C1', 'Staff No.');
+            $sheet->setCellValue('D1', $staff_inf->serial_staff);
+            $sheet->setCellValue('A2', '日付');
+            $sheet->getStyle( 'A2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->setCellValue('B2', '入勤時間');
+            $sheet->getStyle( 'B2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->setCellValue('C2', '退勤時間');
+            $sheet->getStyle( 'C2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->setCellValue('D2', '労働時間(分)');
+            $sheet->getStyle( 'D2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->setCellValue('E2', '遅刻理由');
+            $sheet->getStyle( 'E2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->setCellValue('F2', '備考');
+            $sheet->getStyle( 'F2' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $row=3;
+            $work_records_array=$this->workListQuery->orderBy('time_in','asc')->get();
+            $serch_year_month=$this->year_slct_id."-".sprintf("%02d", $this->month_slct_id);
+            foreach ($work_records_array as $work_record) {
+                if($work_record->target_serial==$TargetStaffSerial && str_contains($work_record->target_date, $serch_year_month)){
+                    $sheet->setCellValue('A'.$row, $work_record->target_date);
+                    $sheet->getStyle( 'A'.$row )->getAlignment()->setHorizontal('center');  // 中央寄せ
+                    $sheet->setCellValue('B'.$row, $work_record->time_in);
+                    $sheet->getStyle( 'B'.$row )->getAlignment()->setHorizontal('center');  // 中央寄せ
+                    if(!empty($work_record->time_out)){
+                        $sheet->setCellValue('C'.$row, $work_record->time_out);
+                        $sheet->getStyle( 'C'.$row )->getAlignment()->setHorizontal('center');  // 中央寄せ
+                        $sheet->setCellValue('D'.$row, OtherFunc::getStaffDiffAttribute($work_record->time_in,$work_record->time_out));
+                        $sheet->getStyle( 'D'.$row )->getAlignment()->setHorizontal('center');  // 中央寄せ
+                    }
+                    $sheet->setCellValue('E'.$row, $work_record->reason_late);
+                    $sheet->setCellValue('F'.$row, $work_record->remarks);
+                    $row++;
+                }
+            }
+            
+            $sheet->getStyle( 'B1' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->getStyle( 'C1' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->getStyle( 'D1' )->getAlignment()->setHorizontal('center');  // 中央寄せ
+            $sheet->getColumnDimension( 'A' )->setWidth( 13 );
+            $sheet->getColumnDimension( 'B' )->setWidth( 20 );
+            $sheet->getColumnDimension( 'C' )->setWidth( 20 );
+            $sheet->getColumnDimension( 'D' )->setWidth( 10 );
+            $cnt=$cnt+1;
+        }
+        $writer = new Xlsx($spreadsheet);
+        if(count($TargetStaffSerialArray)==1){
+            $fileName = 'WorkingTimeList_'.$staff_inf->last_name_kanji.$staff_inf->first_name_kanji.'_'.date("Y_m_d").'.xlsx';
+        }else{
+            $fileName = 'WorkingTimeList_all_'.date("Y_m_d").'.xlsx';
+        }
+        $writer->save($fileName);
+        $filePath = $fileName;
+        $mimeType = File::mimeType($filePath);
+            $headers = [['Content-Type' => $mimeType,
+                  'Content-Disposition' => 'attachment; filename*=UTF-8\'\''.rawurlencode($fileName)
+            ]];
+        $this->csv_manage=false;
+        return response()->download($fileName);
+    }
 }

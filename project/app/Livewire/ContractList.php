@@ -44,8 +44,6 @@ class ContractList extends Component
 	}
 
 	public function select_cyclic(){
-		//log::alert("isCyclicCheckBox-2=".$this->isCyclicCheckBox);
-		//isSubscriptionCheckBox=false;
 		if($this->isCyclicCheckBox){
 			session(['check_cyclic' => true]);
         }else{
@@ -59,13 +57,6 @@ class ContractList extends Component
         }else{
             session(['checked_subscription' => false]);
         }
-		/*
-		if(session('checked_subscription')=="checked"){
-            session(['checked_subscription' => ""]);
-        }else{
-            session(['checked_subscription' => "checked"]);
-        }
-		*/
 	}
 
 	public function select_cancel(){
@@ -99,7 +90,6 @@ class ContractList extends Component
 		session(['target_livewire_page' => "ListContract"]);
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		if($this->sort_key_contract<>session('sort_key_contract')){
-			//session(['sort_key_contract' =>$this->sort_key_contract]);
 			$this->sort_key_contract=session('sort_key_contract');
 		}
 
@@ -228,7 +218,6 @@ class ContractList extends Component
     }
 
 	public function search_Contract(){
-		//DB::enableQueryLog();
 		if(session('livewire_cnt')<>0){
 			OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 			$this->livewire_cnt=1;
@@ -260,14 +249,6 @@ class ContractList extends Component
 		$UserSerial=session('targetUserSerial');
         $Contracts="";$userinf="";
 		$contractQuery = Contract::query();
-		/*
-		if(session('checked_subscription')=='checked'){
-			log::alert("checked_subscription-4=".session('checked_subscription'));
-			$contractQuery=$contractQuery->where('keiyaku_type','subscription');
-			//$contractQuery->dd();
-		}
-		*/
-		//$contractQuery=$contractQuery->leftjoin('contract_details', 'contracts.serial_keiyaku', '=', 'contract_details.serial_keiyaku');
 		if($this->serch_key_contract<>""){
 			$key="%".$this->kensakukey."%";
 			self::$statickey="%".$this->serch_key_contract."%";
@@ -278,7 +259,6 @@ class ContractList extends Component
 		}
 		if(session('targetUserSerial')=="all"){
 			$contractQuery=$contractQuery->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
-				//->leftjoin('contract_details', 'contracts.serial_keiyaku', '=', 'contract_details.serial_keiyaku')
 				->Where(function($query) {
 					$query->orwhere('contracts.serial_keiyaku','like',self::$statickey)
 					->orwhere('contracts.serial_user','like',self::$statickey)
@@ -295,29 +275,12 @@ class ContractList extends Component
 					->orwhere('how_many_pay_genkin','like',self::$statickey)
 					->orwhere('how_many_pay_card','like',self::$statickey);
 				});
-				/*
-				->where('contracts.serial_keiyaku','like',$key)
-				->orwhere('contracts.serial_user','like',$key)
-				->orwhere('users.name_mei','like',$key)
-				->orwhere('users.name_sei','like',$key)
-				->orwhere('users.name_sei_kana','like',$key)
-				->orwhere('users.name_mei_kana','like',$key)
-				->orwhere('date_latest_visit','like',$key)
-				->orwhere('keiyaku_bi','like',$key)
-				->orwhere('keiyaku_kikan_start','like',$key)
-				->orwhere('keiyaku_kikan_end','like',$key)
-				->orwhere('keiyaku_kingaku','like',$key)
-				->orwhere('how_to_pay','like',$key)
-				->orwhere('how_many_pay_genkin','like',$key)
-				->orwhere('how_many_pay_card','like',$key);
-				*/
+
 			$GoBackPlace="/top";
 		}else{
-			log::info("UserSerial-5=".session('targetUserSerial'));
 			$this->userinf=User::where('serial_user','=',session('targetUserSerial'))->first();
 			$contractQuery=$contractQuery->where('contracts.serial_user','=',session('targetUserSerial'))
 				->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
-				//->leftjoin('contract_details', 'contracts.serial_keiyaku', '=', 'contract_details.serial_keiyaku')
 				->select('contracts.*', 'users.*')
 				->Where(function($query) {
 					$query->orwhere('contracts.serial_keiyaku','like',self::$statickey)
@@ -336,11 +299,6 @@ class ContractList extends Component
 					->orwhere('how_many_pay_card','like',self::$statickey);
 				});
 		}
-		/*
-		log::alert("checked_subscription=".session('checked_subscription'));
-		log::alert("checked_check_cyclic=".session('checked_check_cyclic'));
-		log::alert("checked_cancel=".session('checked_cancel'));
-*/
 		
 /*サブスク・期間契約の絞り込み処理
 		

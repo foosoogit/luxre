@@ -24,7 +24,7 @@ class ContractsReport extends Component
 		//$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		Log::alert("access_history CR=".$_SESSION['access_history'][0]);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		Log::info($target_historyBack_inf_array);
+		//Log::info($target_historyBack_inf_array);
 		$html_year_slct=OtherFunc::make_html_year_slct($_POST['year']);
 		$html_month_slct=OtherFunc::make_html_month_slct($_POST['month']);
 		list($htm_month_table, $ruikei_keiyaku_amount ,$ruikei_contract_cnt)=OtherFunc::make_html_contract_report_table($_POST['year'],$_POST['month']);

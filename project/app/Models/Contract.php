@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 use App\Models\Staff;
 use App\Models\VisitHistory;
+use App\Consts\initConsts;
 
 class Contract extends Model
 {
@@ -34,6 +35,29 @@ class Contract extends Model
 		'tantosya',
 		'serial_tantosya',
 	];
+
+	public function getConversionHowToPayAttribute(){
+        if($this->how_to_pay== "Credit Card"){
+			return "card";
+		}else if($this->how_to_pay== "現金"){
+			return "cash";
+		}else if($this->how_to_pay== "Paypay"){
+			return "paypay";
+		}
+		return $this->how_to_pay;
+	}
+
+	public function getConversionHowToPayForSCRAttribute(){
+		$PaymentMethod=initConsts::PaymentMethod();
+		$PaymentMethodArray=explode(",", $PaymentMethod);
+		foreach($PaymentMethodArray as $valueArray){
+			$valueArray=explode("_", $valueArray);
+			if($valueArray[0]==$this->how_to_pay){
+				return $valueArray[1];
+			}
+		}
+		return $this->how_to_pay;
+	}
 
 	public function getKeiyakuTypeJPAttribute($value){
 		$ConvertJP="";

@@ -7,13 +7,11 @@
                 </div>
                 <div class="mb-2 bg-secondary text-white">入退勤履歴</div>
                 <div class="col">
-                    <input type="button" name="csv_download" id="csv_download" class="btn btn-success" value='ファイルのダウンロード' wire:click="csv_download()">
+                    <input type="button" name="csv_download" id="csv_download" class="btn btn-success btn-sm" value='ファイルのダウンロード' wire:click="csv_download()">
                 </div>
                 <div class="col-auto">
                     <div class="d-flex flex-row gap-2">
-                        {{-- <div class="p-2"><button onclick="change_serch_month_manage()" wire:click="search_month()" class='btn btn-primary btn-sm rounded'>月検索</button>： {!!$html_working_list_year_slct!!}{!!$html_working_list_month_slct!!}</div> --}}
                         <div class="p-2"><button wire:click="search_month()" class='btn btn-primary btn-sm rounded'>月検索</button>： {!!$html_working_list_year_slct!!}{!!$html_working_list_month_slct!!}</div>
-                        {{--<div class="p-2"> <label>日付検索：<input name="TDay" id="TDay" type="date" wire:model.live="searchDay" onchange="change_serch_day_manage(this)"/></label></div>--}}
                         <div class="p-2"><button type="button" wire:click="search_day()" class='btn btn-primary btn-sm rounded'>日付検索</button>：<input name="TDay" id="TDay" type="date" wire:model="target_day"/></div>
                         <div class="p-2"><label>スタッフ検索：<select name="year_slct" id="year_slct" class="form-select" wire:model.change="target_staff_serial">{!!$html_staff_inout_slct!!}</select></label></div>
                         <div class="p-2"><button onclick="serch_Clear_manage();" wire:click="searchClear()" class='btn btn-primary btn-sm rounded'>検索解除</button> </div>

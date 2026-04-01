@@ -43,28 +43,13 @@ class AdminController extends Controller
 	public function __construct(){
 		$this->middleware('auth:admin')->except('logout');
 	}
-	/*
-	public function show_staff_in_out_list(Request $request){
-		session(['target_livewire_page' => "ListStaffInOut"]);
-		//return redirect('./Livewire/StaffInOutList');
-		//return view('livewire.staff-in-out-list');
-		
-		$html_working_list_year_slct= OtherFunc::make_html_working_list_year_slct();
-        $html_working_list_month_slct = OtherFunc::make_html_working_list_month_slct();
-        $html_staff_inout_slct=OtherFunc::make_html_staff_inout_slct("");
-        $html_working_list_month_slct=OtherFunc::make_html_working_list_month_slct();
-        $target_day='';
-        $histories=InOutHistory::paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'],'page')->withQueryString();
-		//return redirect('/customers/ShowSyuseiContract/'.$serial_Contract.'/'.$UserSerial);
-		return view('livewire.staff-in-out-list',compact('histories','html_staff_inout_slct','html_working_list_month_slct','target_day','html_working_list_year_slct','html_working_list_month_slct'));
-		
-	}
-	*/
+
 	public function ShowContractContentsAllList($UserSerial,Request $request){
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		$key="";
 		$Contracts="";
+		log::alert("UserSerial=".$UserSerial);
 		/*
 		if($UserSerial=="all"){
 			$userinf="";
@@ -500,11 +485,12 @@ class AdminController extends Controller
 	}
 	
 	public function ShowContractList($UserSerial,Request $request){
+		Log::alert("UserSerial=".$UserSerial);		
 		OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
 		$target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
 		$key="";
 		$Contracts="";
-		log::alert("UserSeria=".$UserSerial);
+		//log::alert("UserSeria=".$UserSerial);
 		if($UserSerial=="all"){
 			$userinf="";
 			$Contracts=Contract::leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')->paginate(initConsts::DdisplayLineNumContractList());
@@ -515,15 +501,16 @@ class AdminController extends Controller
 			session(['target_page_for_pager'=>'']);
 			$_SESSION['access_history'][0]=$_SESSION['access_history'][0]."/".$UserSerial;
 			$GoBackPlace="/customers/CustomersList";
-			//log::alert("UserSeria-3=".$UserSerial);				
+			//log::alert("UserSeria-3=".$UserSerial);
+			Log::alert("UserSerial=".$UserSerial);				
 			$userinf=User::where('serial_user','=',$UserSerial)->first();
-			//Log::info($userinf);
+			Log::info($userinf);
 			$Contracts=Contract::where('contracts.serial_user','=',$UserSerial)
 				->leftjoin('users', 'contracts.serial_user', '=', 'users.serial_user')
 				->select('contracts.*', 'users.*')
 				->paginate(initConsts::DdisplayLineNumContractList());
 		}
-		log::info($Contracts);
+		//log::info($Contracts);
 		return view('customers.ListContract',compact("target_historyBack_inf_array","Contracts","UserSerial","userinf","GoBackPlace"));
 	}
 	public function ShowMedicalRecord(Request $request){
@@ -1505,6 +1492,7 @@ class AdminController extends Controller
 		$CardCompany="";$HowManyPay=array();
 	
 		$HowManyPay['CardSlct']=OtherFunc::make_html_how_many_slct("",20,2);
+		
 		if($targetContract->how_to_pay=="Credit Card"){
 			$HowToPay['card']='checked';
 			$CardCompany=$targetContract->card_company;
@@ -1525,8 +1513,8 @@ class AdminController extends Controller
 		}else if($targetContract->how_to_pay=="Paypay"){
 			$HowToPay['paypay']='checked';
 		}
-		$CardCompanySelect=OtherFunc::make_html_card_company_slct($CardCompany);
-
+		
+		/*
 		$KeiyakuNaiyouArray=array();$KeiyakuNumSlctArray=array();$KeiyakuTankaArray=array();$KeiyakuPriceArray=array();$KeiyakuNaiyouSelectArray=array();
 		for($i=0;$i<5;$i++){
 			$KeiyakuNaiyouArray[]="";
@@ -1535,6 +1523,8 @@ class AdminController extends Controller
 			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
 			$KeiyakuTankaArray[]="";
 		}
+		*/
+		/*
 		if(!empty($targetContractdetails)){
 			$num=0;
 			foreach($targetContractdetails as $targetContractdetail){
@@ -1546,11 +1536,15 @@ class AdminController extends Controller
 				$num++;
 			}
 		}
+		*/
+		/*
 		for($i=$num;$i<=5;$i++){
 			$KeiyakuNumSlctArray[]=OtherFunc::make_html_keiyaku_num_slct("");
 			$KeiyakuTankaArray[]="";
 			$KeiyakuPriceArray[]="";
 		}
+		*/
+		
 		if(isset($request->syusei_Btn)){
 			$GoBackPlace="/customers/CustomersList";
 			if(Auth::user()->serial_admin=="A_0001"){
@@ -1573,7 +1567,14 @@ class AdminController extends Controller
 			$contract_type_checked['cyclic']='checked';
 		}
 		$GoBackPlace=$_SESSION['access_history'][0];
-		return view('customers.CreateContract',compact("contract_type_checked","html_staff_slct",'newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
+		$target_method="";
+		//$htm_payment_method_slct=OtherFunc::make_htm_get_payment_method_slct($targetContract->how_to_pay);
+		$htm_payment_method_slct=OtherFunc::make_htm_get_payment_method_slct($targetContract->ConversionHowToPay);
+		$KeiyakuNameSelect=$KeiyakuNameSelect=OtherFunc::make_htm_get_treatment_slct($targetContract->keiyaku_name);
+		$CardCompanySelect=OtherFunc::make_html_card_company_slct($targetContract->card_company);
+		//$KeiyakuNumSlct=OtherFunc::make_html_keiyaku_num_slct($targetContract->keiyaku_name);
+		//return view('customers.CreateContract',compact("htm_payment_method_slct","contract_type_checked","html_staff_slct",'newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct","KeiyakuNaiyouSelectArray"));
+		return view('customers.CreateContract',compact("KeiyakuNameSelect","htm_payment_method_slct","contract_type_checked","html_staff_slct",'newKeiyakuSerial','targetContract',"targetContractdetails","targetUser","HowToPay","HowManyPay","CardCompanySelect","GoBackPlace","TreatmentsTimes_slct"));
 	}
 
 	function insertContract(Request $request){
@@ -1603,10 +1604,14 @@ class AdminController extends Controller
 		if($request->contract_type=='subscription'){
 			$keiyakukinngaku=str_replace(',','',mb_convert_kana($request->inpMonthlyAmount, "n"));
 		}
-		$how_to_pay=$request->HowPayRdio;
+		//$how_to_pay=$request->HowPayRdio;
+		$how_to_pay=$request->PaymentMethod_slct;
+		/*
 		if($request->contract_type=='subscription'){
 			$how_to_pay="Credit Card";
 		}
+		*/
+
 		$targetData=[
 			'serial_keiyaku' => $request->ContractSerial,
 			'serial_user' => $request->serial_user,
@@ -1644,9 +1649,11 @@ class AdminController extends Controller
 			'deleted_at'=>null
 		];
 
+		
 		if($request->ContractSerial<>""){
 			Contract::upsert($targetData,['serial_keiyaku']);
 			$targetDataArray=array();
+			/*
 			DB::table('contract_details')->where('serial_keiyaku','=',$request->ContractSerial)->delete();
 			if($request->contract_type=="subscription"){
 				$contract_detail_serial=$request->ContractSerial."-0001";
@@ -1682,11 +1689,10 @@ class AdminController extends Controller
 				}
 			}
 			ContractDetail::upsert($targetDataArray,['contract_detail_serial']);
+			*/
 			Storage::append('errorCK.txt', $kyo." / ".$motourl." / ok");
-			//$header="";$slot="";
 			$SerialUser=$request->serial_user;$SerialKeiyaku=$request->ContractSerial;
 			session(['targetUserSerial' => $SerialUser]);
-			//if(Auth::user()->serial_admin=="A_0001"){
 			if(isset($request->contract_sheet)){
 				return redirect('/customers/MakeContractPDF/'.$request->ContractSerial);
 			}else{
@@ -1705,7 +1711,7 @@ class AdminController extends Controller
 					}else if(session('fromMenu')=='CustomersList'){
 						$GoBackToPlace="/customers/CustomersList";
 					}
-					return view("layouts.DialogMsgKeiyaku", compact('msg','SerialUser','SerialKeiyaku','GoBackToPlace'));
+					return view("layouts.DialogMsgKeiyaku", compact('userInf','msg','SerialUser','SerialKeiyaku','GoBackToPlace'));
 				}
 			}
 		}
@@ -1721,7 +1727,7 @@ class AdminController extends Controller
 			$KeiyakuTankaArray[]="";
 			$KeiyakuPriceArray[]="";
 		}
-
+		$KeiyakuNameSelect=OtherFunc::make_htm_get_treatment_slct("");
 		$targetUser=User::where('serial_user','=',$serial_user)->first();
 		$serial_max=Contract::where('serial_user','=',$serial_user)->max('serial_keiyaku');
 		$newKeiyakuSerial=++$serial_max;
@@ -1756,9 +1762,12 @@ class AdminController extends Controller
 		$HowManyPay['CashSlct']=OtherFunc::make_html_how_many_slct("",20,1);
 		$HowManyPay['PaypaySlct']=OtherFunc::make_html_how_many_slct("",20,1);
 		$html_staff_slct=OtherFunc::make_html_staff_slct("");
+		//$payment_method_slct=OtherFunc::make_htm_get_payment_method_slct_ajax("");
+		$target_method="";
+		$htm_payment_method_slct=OtherFunc::make_htm_get_payment_method_slct($target_method);
 		$contract_type_checked['subsc']='';
 		$contract_type_checked['cyclic']='';
-		return view('customers.CreateContract',compact("contract_type_checked","html_staff_slct","targetUser","header","slot","tday","endDay","newKeiyakuSerial","targetContract","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","CardCompanySelect","HowManyPay",'TreatmentsTimes_slct','KeiyakuNaiyouSelectArray'));
+		return view('customers.CreateContract',compact("htm_payment_method_slct","KeiyakuNameSelect","contract_type_checked","html_staff_slct","targetUser","header","slot","tday","endDay","newKeiyakuSerial","targetContract","KeiyakuNaiyouArray","KeiyakuNumSlctArray","KeiyakuTankaArray","KeiyakuPriceArray","HowToPay","CardCompanySelect","HowManyPay",'TreatmentsTimes_slct','KeiyakuNaiyouSelectArray'));
 	}
 
 	function insertCustomer(Request $request){

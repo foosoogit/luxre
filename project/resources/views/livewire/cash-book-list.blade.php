@@ -31,6 +31,9 @@
                 </div>
                 <div class="row pb-2">
                     <div class="col-auto">
+                        <button type="button" class="btn btn-success" wire:click="csv_download()">ダウンロード</button>
+                    </div>
+                    <div class="col-auto">
                         <button type="button" wire:click="searchClear()" onclick="searchClearManage()">検索解除</button>
                     </div>
                     <div class="col-auto">

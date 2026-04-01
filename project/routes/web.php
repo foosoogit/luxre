@@ -226,13 +226,13 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::post('/customers/ContractList/', [AdminController::class,'ShowContractList'])->name("ContractList.post");
         Route::get('/customers/ContractList/{UserSerial}', [AdminController::class,'ShowContractList',function($UserSerial){
-            //log::info("UserSerial=".$UserSerial);
+            log::info("UserSerial=".$UserSerial);
             session(['target_livewire_page' => "ListContract"]);
             session(['checked_subscription'=>true],['check_cyclic' => true],['checked_Under'=>true],['checked_cancel' => true]);
             //return view('customers.ListCustomers');
         }])->name("ContractList.get");
         
-        Route::get('/customers/ShowContractContentsAllList/{UserSerial}', [AdminController::class,'ShowContractContentsAllList',function($UserSerial){}])->name("ContractList.get");
+        Route::get('/customers/ShowContractContentsAllList/{UserSerial}', [AdminController::class,'ShowContractContentsAllList',function($UserSerial){}])->name("ContractAllList.get");
         Route::get('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
         Route::post('/customers/ShowSyuseiCustomer', [AdminController::class,'ShowSyuseiCustomer',function(Request $request){}])->name("ShowSyuseiCustomer");
 	    
@@ -265,7 +265,10 @@ Route::middleware('auth:admin')->group(function () {
 	    Route::post('/customers/MedicalRecord', [AdminController::class,'ShowMedicalRecord',function(Request $request){}])->name("ShowMedicalRecord");
         Route::post('/customers/recordVisitPaymentHistory/', [AdminController::class,'recordVisitPaymentHistory',function(Request $request){}])->name("recordVisitPaymentHistory");
         Route::get('/customers/ShowInpRecordVisitPayment/{SerialKeiyaku}/{SerialUser}', [AdminController::class,'ShowInpRecordVisitPayment',function($SerialKeiyaku,$SerialUser){}])->name('ShowInpRecordVisitPayment.get');
-	    Route::post('/customers/ShowInpRecordVisitPayment', [AdminController::class,'ShowInpRecordVisitPayment']);
+        
+        Route::get('/customers/ShowInpRecordVisitPayment', [AdminController::class,'ShowInpRecordVisitPayment']);
+        Route::post('/customers/ShowInpRecordVisitPayment', [AdminController::class,'ShowInpRecordVisitPayment']);
+
         Route::get('/customers/insertContract', [AdminController::class,'insertContract'])->name('insertContract');
         Route::post('/customers/insertContract', [AdminController::class,'insertContract'])->name('insertContract');
         Route::get('/customers/ShowInpContract/{serial_user}', [AdminController::class,'ShowInpKeiyaku'],function($serial_user){})->name('ShowInpKeiyaku');
@@ -287,7 +290,12 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/customers/ajax_get_Medical_records_file_name',[AdminController::class,'ajax_get_Medical_records_file_name'])->name('get.ajax_get_Medical_records_file_name');
     Route::post('/customers/save_payment_history_ajax', [OtherFunc::class,'save_payment_history_ajax'])->name('save_payment_history_ajax');
     Route::post('/customers/del_payment_history_ajax', [OtherFunc::class,'del_payment_history_ajax'])->name('del_payment_history_ajax');
+    
     Route::post('/customers/make_htm_get_payment_method_slct_ajax', [OtherFunc::class,'make_htm_get_payment_method_slct_ajax'])->name('make_htm_get_payment_method_slct_ajax');
+    
+    Route::post('/customers/make_htm_get_payment_method_slct_ajax_CC', [OtherFunc::class,'make_htm_get_payment_method_slct_ajax_CC'])->name('make_htm_get_payment_method_slct_ajax_CC');
+    //Route::get('/customers/make_htm_get_payment_method_slct_ajax', [OtherFunc::class,'make_htm_get_payment_method_slct_ajax'])->name('make_htm_get_payment_method_slct_ajax');
+
     Route::post('/customers/save_visit_data_ajax', [OtherFunc::class,'save_visit_data_ajax'])->name('save_visit_data_ajax');
     Route::post('/customers/del_visit_data_ajax', [OtherFunc::class,'del_visit_data_ajax'])->name('del_visit_data_ajax');
     Route::post('/customers/make_htm_get_treatment_slct_ajax', [OtherFunc::class,'make_htm_get_treatment_slct_ajax'])->name('make_htm_get_treatment_slct_ajax');
