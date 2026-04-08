@@ -83,10 +83,11 @@ $(function(){
   });
 
 function getPaymentMethodSlct(target){
-	console.log("target3="+target);
+	//console.log("target14="+target);
 	$.ajax({
-		url: "{{ route('make_htm_get_payment_method_slct.ajax') }}",
-		  //url: '{{route("make_htm_get_treatment_slct_ajax")}}',
+		url: 'customers/make_htm_get_payment_method_slct_ajax',
+		//url: "{{ route('make_htm_get_payment_method_slct.ajax') }}",
+		//url: '{{route("make_htm_get_payment_method_slct_ajax")}}',
 		//url: 'customers/make_htm_get_payment_method_slct_ajax_CC',
 		//url: 'make_htm_get_payment_method_slct_ajax_CC',
 		type: 'post', // getかpostを指定(デフォルトは前者)

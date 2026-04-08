@@ -392,7 +392,7 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_htm_get_payment_method_slct_ajax_CC(Request $request){
-		//Log::alert("make_htm_get_payment_method_slct_ajax");		
+		Log::alert("make_htm_get_payment_method_slct_ajax");		
 		//log::info($request);
 		$PaymentMethod=initConsts::PaymentMethod();
 		$PaymentMethodArray=explode(",", $PaymentMethod);
