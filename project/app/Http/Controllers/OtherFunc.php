@@ -391,6 +391,30 @@ class OtherFunc extends Controller
 		return $htm_PaymentMethod_slct;
 	}
 
+	public static function make_htm_get_payment_method_slct_ajax_CC(Request $request){
+		//Log::alert("make_htm_get_payment_method_slct_ajax");		
+		//log::info($request);
+		$PaymentMethod=initConsts::PaymentMethod();
+		$PaymentMethodArray=explode(",", $PaymentMethod);
+		$htm_PaymentMethod_slct="";
+		$htm_PaymentMethod_slct='<select name="month_slct" id="method_slct" class="form-select">';
+		$sct='';
+		if($request->target==''){
+			$sct='Selected';
+		}
+		$htm_PaymentMethod_slct.='<option value=0 '.$sct.'>-- 選択してください。 --</option>';
+		foreach($PaymentMethodArray as $value){
+			$value_array=explode("_", $value);
+			$sct='';
+			if(str_contains($value, $request->target) && $request->target!=''){
+				$sct='Selected';
+			}
+			$htm_PaymentMethod_slct.='<option value="'.$value_array[0].'" '.$sct.' >'.$value_array[1].'</option>';
+			$sct='';
+		}
+		$htm_PaymentMethod_slct.='</select>';
+		return $htm_PaymentMethod_slct;
+	}
 
 	public static function make_htm_get_payment_method_slct_ajax(Request $request){
 		//Log::alert("make_htm_get_payment_method_slct_ajax");		

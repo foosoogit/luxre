@@ -294,6 +294,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/customers/make_htm_get_payment_method_slct_ajax', [OtherFunc::class,'make_htm_get_payment_method_slct_ajax'])->name('make_htm_get_payment_method_slct_ajax');
     
     Route::post('/customers/make_htm_get_payment_method_slct_ajax_CC', [OtherFunc::class,'make_htm_get_payment_method_slct_ajax_CC'])->name('make_htm_get_payment_method_slct_ajax_CC');
+    Route::post('make_htm_get_payment_method_slct_ajax_CC', [OtherFunc::class,'make_htm_get_payment_method_slct_ajax_CC'])->name('make_htm_get_payment_method_slct.ajax');
     //Route::get('/customers/make_htm_get_payment_method_slct_ajax', [OtherFunc::class,'make_htm_get_payment_method_slct_ajax'])->name('make_htm_get_payment_method_slct_ajax');
 
     Route::post('/customers/save_visit_data_ajax', [OtherFunc::class,'save_visit_data_ajax'])->name('save_visit_data_ajax');

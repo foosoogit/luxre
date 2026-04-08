@@ -83,10 +83,12 @@ $(function(){
   });
 
 function getPaymentMethodSlct(target){
-	//console.log("target="+target);
+	console.log("target3="+target);
 	$.ajax({
+		url: "{{ route('make_htm_get_payment_method_slct.ajax') }}",
 		  //url: '{{route("make_htm_get_treatment_slct_ajax")}}',
-		url: '/make_htm_get_payment_method_slct_ajax_CC',
+		//url: 'customers/make_htm_get_payment_method_slct_ajax_CC',
+		//url: 'make_htm_get_payment_method_slct_ajax_CC',
 		type: 'post', // getかpostを指定(デフォルトは前者)
 		dataType: 'text', // 「json」を指定するとresponseがJSONとしてパースされたオブジェクトになる
 		scriptCharset: 'utf-8',
@@ -133,6 +135,7 @@ $(function(){
 	  });
 
 	$('#ModifyModal').on('show.bs.modal', function (event) {
+	console.log('ModifyModal');
 	  //モーダルを開いたボタンを取得
 	  let button = $(event.relatedTarget);
 	  //モーダルを取得
