@@ -167,14 +167,17 @@ class AdminController extends Controller
 	}
 
 	public function ajax_upsert_CashBook(Request $request){
+		log::alert("request->payment=".$request->payment);
+		log::alert("request->deposit=".$request->deposit);
+		log::alert("id=".$request->id);
         $rec = [
             [
-				'id' => $request->id,
+				//'id' => $request->id,
 				'target_date' => $request->target_date,
 				'in_out' => $request->in_out,
 				'summary' => $request->summary,
-				'payment'=> $request->payment ?? '',
-				'deposit'=> $request->deposit ?? '',
+				'payment'=> mb_convert_kana($request->payment, "a") ?? '',
+				'deposit'=> mb_convert_kana($request->deposit, "a") ?? '',
 				'inputter'=> Auth::id(),
 				'branch'=>session('target_branch_serial'),
 				'remarks'=>$request->remarks 
@@ -186,6 +189,7 @@ class AdminController extends Controller
 		}else{
 			$Tid=$request->id;
 		}
+		log::alert("Tid=".$Tid);
 		OtherFunc::set_target_balance_to_CashBookDb($Tid);
 	}
 

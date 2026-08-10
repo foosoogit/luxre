@@ -8,6 +8,7 @@ use App\Models\Configration;
 use App\Models\Staff;
 use App\Models\TreatmentContent;
 use App\Models\Admin;
+use App\Models\AccountSubject;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -43,8 +44,127 @@ class DatabaseSeeder extends Seeder
 				'password' => Hash::make('0123'),
 			],
 		];
+		/*
 		foreach($admins as $admin){
             Admin::create($admin);
+        }
+		*/
+		$account_subjects = [
+			[
+				'subject'=> "現金売上",
+				'category' => '売上',
+			],
+			[
+				'subject'=> "クレジット売上",
+				'category' => '売上',
+			],
+			[
+				'subject'=> "paypay売上",
+				'category' => '売上',
+			],
+			[
+				'subject'=> "スマート支払",
+				'category' => '売上',
+			],
+			[
+				'subject'=> "商材他仕入れ",
+				'category' => '原価',
+			],
+			[
+				'subject'=> "その他仕入れ",
+				'category' => '原価',
+			],
+			[
+				'subject'=> "役員報酬",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "給料手当",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "法定福利費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "福利厚生費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "賞与",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "旅費交通費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "備品消耗品費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "広告宣伝費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "水道光熟費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "通信費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "支払地代家賃",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "顧問料（士業）",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "修繕費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "支払手数料",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "外注費（カード手数料）",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "租税公課",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "交際費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "管理諸費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "減価價却費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "他諸経費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "減価價却費",
+				'category' => '販売管理費',
+			],
+			[
+				'subject'=> "減価價却費",
+				'category' => '販売管理費',
+			],
+		];
+		foreach($account_subjects as $account_subject){
+            AccountSubject::create($account_subject);
         }
 		/*
 		$treatmentcontents = [

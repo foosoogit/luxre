@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     
     Route::name('admin.')->group(function() {
+        Route::get('admin/html_make_select_kubun_ajax', [OtherFunc::class,'html_make_select_summary_ajax'])->name('html_make_select_kubun_ajax');    
+        Route::post('admin/html_make_select_kubun_ajax', [OtherFunc::class,'html_make_select_kubun_ajax'])->name('html_make_select_kubun_ajax');
         Route::post('admin/ajax_get_customer_slct_option_for_HandOver',[AdminController::class,'ajax_get_customer_slct_option_for_HandOver'])->name('ajax_get_customer_slct_option_for_HandOver');
         Route::post('admin/ajax_make_customer_list_for_HandOver',[AdminController::class,'ajax_make_customer_list_for_HandOver'])->name('ajax_make_customer_list_for_HandOver');
         Route::post('admin/ajax_upsert_HandOver',[AdminController::class,'ajax_upsert_HandOver'])->name('ajax_upsert_HandOver');
@@ -66,6 +68,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('admin/html_make_select_summary_ajax', [OtherFunc::class,'html_make_select_summary_ajax'])->name('html_make_select_summary_ajax');
         Route::get('/set_balance_to_CashBookDb', [OtherFunc::class,'set_balance_to_CashBookDb'])->name('set_balance_to_CashBookDb.get');
         Route::get('/select_branch', [AdminController::class,'ShowSelectBranch'])->name('select_branch');
+        Route::GET('admin/ajax_upsert_CashBook',[AdminController::class,'ajax_upsert_CashBook'])->name('ajax_upsert_CashBook.GET');
         Route::post('admin/ajax_upsert_CashBook',[AdminController::class,'ajax_upsert_CashBook'])->name('ajax_upsert_CashBook');
 
         Route::post('admin/CashBookList', function () {

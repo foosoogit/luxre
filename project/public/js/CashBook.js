@@ -33,6 +33,12 @@ $(function(){
   });
 });
 
+/*
+function set_kubun(obj){
+  document.getElementById("kubun").value=obj.value;
+}
+*/
+
 function set_summmary(obj){
   document.getElementById("summary").value=obj.value;
 }
@@ -40,7 +46,7 @@ function set_summmary(obj){
 function make_html_select_summary(){
   //console.log('summary-1');
   $.ajax({
-    url: "html_make_select_summary_ajax",
+    url: "admin/html_make_select_summary_ajax",
     type: 'post', // getかpostを指定(デフォルトは前者)
     dataType: 'html', 
     scriptCharset: 'utf-8',
@@ -55,6 +61,32 @@ function make_html_select_summary(){
     }
   }).done(function (data) {
     $("#summary_span").append(data);
+  }) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+    alert(XMLHttpRequest.status);
+    alert(textStatus);
+    alert(errorThrown);	
+    alert('摘要を取得できませんでした。');
+  });
+}
+
+function make_html_select_kubun(){
+  //console.log('summary-1');
+  $.ajax({
+    url: "admin/html_make_select_kubun_ajax",
+    type: 'post', // getかpostを指定(デフォルトは前者)
+    dataType: 'html', 
+    scriptCharset: 'utf-8',
+    frequency: 10,
+    cache: false,
+    async : false,
+    data: {
+      'cash_book_type': ''
+    },
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  }).done(function (data) {
+    $("#kubun_select_span").append(data);
   }) .fail(function (XMLHttpRequest, textStatus, errorThrown) {
     alert(XMLHttpRequest.status);
     alert(textStatus);
@@ -197,7 +229,10 @@ $(function(){
       }
       if(target_date!='' && summary!='' && amount!='' && typeof payment_deposit !== 'undefined'){
         document.getElementById("CreateModal").close;
+        console.log('id_txt='+id_txt);
+        //id_txt="379";
         $.ajax({
+            //url: "{{ route('admin.ajax_upsert_CashBook') }}",
             url: "admin/ajax_upsert_CashBook",
             type: 'post', // getかpostを指定(デフォルトは前者)
             dataType: 'text', 

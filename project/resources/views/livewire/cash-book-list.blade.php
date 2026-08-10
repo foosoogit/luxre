@@ -205,6 +205,7 @@
                                         <p>{{ $message }}</p>
                                     @enderror
                                 </div>
+                                <span id="kubun_select_span"></span>
                                 <div class="row p-2">
                                     <div class="col-auto">
                                         <label>日付：<input type="date" name="target_date" id="target_date" wire:model="target_date"></label>
@@ -295,7 +296,17 @@
                         </div>
                         <div class="modal-footer">
                             <input type="hidden" id="delTargetCashbookSerial_hdn">
+
+                            <button type="button" id="del_btn" wire:click="del_cash_book_rec('')" class="btn btn-danger"
+                                x-data
+                                @click="$wire.set(
+                                    'del_target_sirial',
+                                    document.getElementById('delTargetCashbookSerial_hdn').value
+                                )"
+                        >削除</button>
+                            {{-- 
                             <button type="button" id="del_btn" wire:click="del_cash_book_rec(document.getElementById('delTargetCashbookSerial_hdn').value)" class="btn btn-danger">削除</button>
+                             --}}
                             <button type="button" class="btn btn-info" data-bs-dismiss="modal">キャンセル</button>
                         </div>
                     </div>

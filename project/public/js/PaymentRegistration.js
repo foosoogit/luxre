@@ -136,7 +136,7 @@ $(function(){
 	  });
 
 	$('#ModifyModal').on('show.bs.modal', function (event) {
-	console.log('ModifyModal');
+	//console.log('ModifyModal');
 	  //モーダルを開いたボタンを取得
 	  let button = $(event.relatedTarget);
 	  //モーダルを取得

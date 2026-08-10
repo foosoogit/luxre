@@ -29,10 +29,28 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
 use App\Models\Branch;
 use App\Models\CashBook;
+use App\Models\AccountSubject;
 if(!isset($_SESSION)){session_start();}
 
 class OtherFunc extends Controller
 {
+	public static function html_make_select_kubun_ajax(Request $request){
+		if($request->payment_deposit_rdo=="deposit"){
+			$kubun_array=AccountSubject::where('branch',session('target_branch_serial'))->where('category','売上')->get();
+		}else{
+			$kubun_array=AccountSubject::where('branch',session('target_branch_serial'))->where('kubun','!=','売上')->get();
+		}
+		$htm_kubun_slct="";
+		$htm_kubun_slct='<select name="kubun_slct" id="kubun_slct" class="form-select" onchange="set_kubun(this);">';
+		$sct='';
+		$htm_kubun_slct.='<option value=0 '.$sct.'>-- 選択してください。 --</option>';
+		foreach($kubun_array as $value){
+			$htm_kubun_slct.='<option value="'.$value->subject.'">'.$value->subject.'</option>';
+		}
+		$htm_kubun_slct.='</select>';
+		return $htm_kubun_slct;
+	}
+
 	public static function ConversionHowToPayForDisplay($targethowtopay){
 		$PaymentMethod=initConsts::PaymentMethod();
 		$PaymentMethodArray=explode(",", $PaymentMethod);
@@ -392,7 +410,7 @@ class OtherFunc extends Controller
 	}
 
 	public static function make_htm_get_payment_method_slct_ajax_CC(Request $request){
-		Log::alert("make_htm_get_payment_method_slct_ajax");		
+		//Log::alert("make_htm_get_payment_method_slct_ajax");		
 		//log::info($request);
 		$PaymentMethod=initConsts::PaymentMethod();
 		$PaymentMethodArray=explode(",", $PaymentMethod);

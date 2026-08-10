@@ -19,9 +19,9 @@ class CashBookList extends Component
     use WithPagination;
 
     public $test,$kensakukey,$target_date,$payment,$deposit,$summary,$amount,$remarks,$id_txt,$serch_key_month,$serch_key_date,$serch_key_all,$serch_key_payment,$serch_key_deposit,$asc_desc_p;
-
-    public function del_cash_book_rec($target_sirial){
-		CashBook::where('id',$target_sirial)->delete();
+    public $del_target_sirial;
+    public function del_cash_book_rec(){
+		CashBook::where('id',$this->del_target_sirial)->delete();
 	}
 
     public function sort($sort_key){
