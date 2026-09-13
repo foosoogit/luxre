@@ -28,11 +28,21 @@
                         <p class="lh-lg">
                             <div class="col-auto">
                                 <label>日付検索：</label>
+                                {{--
                                 <input name="target_day" id="target_day" type="date" wire:change="search_date(document.getElementById('target_day').value)" value="{{$serch_date_key_point}}"/>
+                                --}}
+                                <input type="date"
+                                    wire:model.live="serch_date_key_point"
+                                >
                             </div>
                             <div class="col-auto">
                                 <label>検索：</label>
+                                {{-- 
                                 <input name="search_key" id="search_key" type="text" wire:change="search(document.getElementById('search_key').value)" value="{{$serch_key_point}}" wire:model.defer="serch_key_point"/>
+                                 --}}
+                                <input type="text"
+                                    wire:model.live="serch_key_point"
+                                >
                             </div>
                             <div class="col-auto">
                                 {{-- <button onclick="document.getElementById('search_key').value='';)" wire:click="searchClear()" class='btn btn-primary btn-sm rounded'>検索解除</button>     --}}
@@ -58,7 +68,7 @@
                                         <button type="button" class="btn-orderby-border" wire:click="sort('visit_date-Desc')"><img src="{{ asset('storage/images/sort_Z_A.png') }}" width="15px" /></button></th>
                                     {{--<th>紹介した人</th>--}}
                                     <th>取得ポイント(タップで修正)</th>
-                                    <th>消化</th>
+                                    <th><button type="button" wire:click="RedeemingMultiplePoints" class="btn btn-warning btn-sm">選択した値を消化</th>
                                     {{--<th>ポイント消滅日</th>--}}
                                 </tr>
                                 @foreach ($points_histories as $history)
@@ -85,6 +95,7 @@
                                             @if($history->digestion_flg=='true')
                                                 <input type="button" class="btn btn-outline-warning btn-sm" onclick="point_digestion('{{ $history->points_id }}')" name="point_digestion_btn_{{ $history->points_id }}" id="point_digestion_btn_{{ $history->ipoints_id }}" value="復元"/></button>
                                             @else
+                                                <input type="checkbox" id="{{ $history->points_id }}" wire:model="RedeemingMultiplePointsCbox" value="{{ $history->points_id }}">     
                                                 <input type="button" class="btn btn-warning btn-sm" onclick="point_digestion('{{ $history->points_id }}')" name="point_digestion_btn_{{ $history->points_id }}" id="point_digestion_btn_{{ $history->points_id }}" value="消化"/></button>
                                             @endif
                                         </td>

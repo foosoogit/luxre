@@ -17,12 +17,14 @@ class PointsList extends Component
 	public $target_page=null;
     public $state_validity_checked="true";
     public $state_used_checked="false";
+    public array $RedeemingMultiplePointsCbox = [];
 
     public function searchClear(){
 		$this->serch_key_point="";
         $this->sort_key="";
         $this->serch_date_key="";
         $this->asc_desc="";
+        $this->serch_date_key_point="";
 		session(['serch_key_point' => null]);
         session(['serch_date_key_point' =>null]);
 	}
@@ -66,6 +68,17 @@ class PointsList extends Component
             'updated_at'=> date('Y-m-d H:i:s'),
         ]);
     }
+
+    public function RedeemingMultiplePoints(){
+        log::info($this->RedeemingMultiplePointsCbox);
+        foreach($this->RedeemingMultiplePointsCbox as $point_id)
+        {
+            Point::where('id','=',$point_id)->update([
+                'digestion_flg' => "true"
+            ]);
+        }
+        //$this->RedeemingMultiplePointsCbox = []; // Clear the array after processing
+    }    
 
     public function render()
     {
