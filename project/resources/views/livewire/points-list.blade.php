@@ -12,14 +12,26 @@
                             {{--  
                             <input type="checkbox" name="state_cbx" id="state_cbx_validity" wire:click="state_validity('{{$state_validity_flg}}')" class="form-check-input" {{session('state_validity')}} >
                             <input type="checkbox" name="state_cbx_validity" id="state_cbx_validity" wire:click="state_validity('checked')" class="form-check-input" value="true"{!!session('state_validity_checked')!!} {!!$state_validity_checked!!}>
-                            --}}
+                            
                             <input type="checkbox" name="state_cbx_validity" id="state_cbx_validity" wire:click="state_validity(document.getElementById('state_cbx_validity').checked)" class="form-check-input" value="true" {!!session('state_validity_checked')!!}>
-                            <label class="form-check-label" for="state_cbx_validity">&nbsp;有効</label>
+                            --}}
+                            <input type="checkbox" 
+           wire:model.live="selected_state_validity" 
+           value="Valid" 
+           class="form-check-input" 
+           id="state_cbx_validity">
+    <label class="form-check-label" for="state_cbx_validity">&nbsp;有効</label>
                         </div>
                         <div class="col-auto form-check form-check-inline">
-                            {{--<input type="checkbox" name="state_cbx_used" id="state_cbx_used" wire:click="state_used('checked')" class="form-check-input"  value="true"{!!session('state_used_checked')!!} {!!$state_used_checked!!}>--}}
+                            {{--<input type="checkbox" name="state_cbx_used" id="state_cbx_used" wire:click="state_used('checked')" class="form-check-input"  value="true"{!!session('state_used_checked')!!} {!!$state_used_checked!!}>
                             <input type="checkbox" name="state_cbx_used" id="state_cbx_used" wire:click="state_used(document.getElementById('state_cbx_used').checked)" class="form-check-input"  value="true" {!!session('state_used_checked')!!}>
-                            <label class="form-check-label" for="state_cbx_used">&nbsp;消化済み</label>
+                            --}}
+                            <input type="checkbox" 
+           wire:model.live="selected_state_validity" 
+           value="Digestion" 
+           class="form-check-input" 
+           id="state_cbx_used">          <!-- IDを変える -->
+    <label class="form-check-label" for="state_cbx_used">&nbsp;消化済み</label>
                         </div>
                     </div>
                 </div>
@@ -31,18 +43,14 @@
                                 {{--
                                 <input name="target_day" id="target_day" type="date" wire:change="search_date(document.getElementById('target_day').value)" value="{{$serch_date_key_point}}"/>
                                 --}}
-                                <input type="date"
-                                    wire:model.live="serch_date_key_point"
-                                >
+                                <input type="date" wire:model.live="serch_date_key_point">
                             </div>
                             <div class="col-auto">
                                 <label>検索：</label>
                                 {{-- 
                                 <input name="search_key" id="search_key" type="text" wire:change="search(document.getElementById('search_key').value)" value="{{$serch_key_point}}" wire:model.defer="serch_key_point"/>
                                  --}}
-                                <input type="text"
-                                    wire:model.live="serch_key_point"
-                                >
+                                <input type="text" wire:model.live="serch_key_point">
                             </div>
                             <div class="col-auto">
                                 {{-- <button onclick="document.getElementById('search_key').value='';)" wire:click="searchClear()" class='btn btn-primary btn-sm rounded'>検索解除</button>     --}}
@@ -104,7 +112,10 @@
                             </table>
                         </div>
                     </div>
+                    {{ $points_histories->links() }}
+                    {{-- 
                     {{$points_histories->appends(request()->query())->links('pagination::bootstrap-4')}}
+                     --}}
                 </div>
             </div>
         </div>

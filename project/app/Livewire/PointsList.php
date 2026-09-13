@@ -16,9 +16,16 @@ class PointsList extends Component
     public $sort_key = '',$asc_desc="",$serch_key_point="",$serch_date_key_point="";
 	public $target_page=null;
     public $state_validity_checked="true";
-    public $state_used_checked="false";
+    public $state_used_checked="true";
     public array $RedeemingMultiplePointsCbox = [];
+    public array $selected_state_validity = [];
 
+    public function mount()
+    {
+        // 初期でチェックを入れたい場合
+        $this->selected_state_validity = ['Valid', 'Digestion'];   // ここに入れる
+        //$this->selected_state_validity = ['Digestion'];
+    }
     public function searchClear(){
 		$this->serch_key_point="";
         $this->sort_key="";
@@ -47,19 +54,23 @@ class PointsList extends Component
     }
 
     public function state_validity($value){
+        /*
         if(empty($value)){
             session(['state_validity_checked' => null]);
         }else{
             session(['state_validity_checked' => "checked"]);
         }
+        */
     }
 
     public function state_used($value){
+        /*    
         if(empty($value)){
             session(['state_used_checked' => null]);
         }else{
             session(['state_used_checked' => "checked"]);
         }
+        */
    }
 
     public function change_point($point_id){
@@ -70,7 +81,7 @@ class PointsList extends Component
     }
 
     public function RedeemingMultiplePoints(){
-        log::info($this->RedeemingMultiplePointsCbox);
+        //log::info($this->RedeemingMultiplePointsCbox);
         foreach($this->RedeemingMultiplePointsCbox as $point_id)
         {
             Point::where('id','=',$point_id)->update([
@@ -82,26 +93,27 @@ class PointsList extends Component
 
     public function render()
     {
-        //Log::alert("serch_key=".$this->serch_key);
-        //Log::alert("serch_key_point=".session('serch_key_point'));
+        $points_histories = Point::query();
         /*
-        OtherFunc::set_access_history($_SERVER['HTTP_REFERER']);
-        $target_historyBack_inf_array=initConsts::TargetPageInf($_SESSION['access_history'][0]);
-		if(!isset($sort_key_p) and session('sort_key_point')==null){
-			session(['sort_key_point' =>'']);
-		}
+        foreach($this->selected_state_validity as $state){
+            //session(['state_validity_checked' => "checked"]);
+            //session(['state_used_checked' => "checked"]);
+            if($state=="Valid"){
+                session(['state_used_checked' => ""]);
+            }else if($state=="Digestion"){
+                session(['state_validity_checked' => ""]);
+            }
+        }
         */
-        //$target_day = date("Y-m-d");
-
         $target_day = null;
         if(session('serch_key_point')<>""){
 			$this->serch_key_point=session('serch_key_point');
 		}
-        $points_histories = Point::query();
+       
        // $points_histories = $points_histories->select("points.id AS points_id")->select("*")->join('users', 'points.serial_user', '=', 'users.serial_user');
         $points_histories = $points_histories->select('*', 'points.id as points_id')->join('users', 'points.serial_user', '=', 'users.serial_user');
-        
-        
+
+        /*
         if(session('state_validity_checked')!==null && session('state_used_checked')==null){
             $points_histories = $points_histories->where('digestion_flg','=','false');
         }else if(session('state_validity_checked')==null && session('state_used_checked')!==null){
@@ -109,6 +121,16 @@ class PointsList extends Component
         }else if(session('state_validity_checked')==null && session('state_used_checked')==null){
             $points_histories = $points_histories->where('digestion_flg','=','none');
         }
+        */
+        /*
+        if(session('state_validity_checked')!==null && session('state_used_checked')==null){
+            $points_histories = $points_histories->where('digestion_flg','=','false');
+        }else if(session('state_validity_checked')==null && session('state_used_checked')!==null){
+            $points_histories = $points_histories->where('digestion_flg','=','true');
+        }else if(session('state_validity_checked')==null && session('state_used_checked')==null){
+            $points_histories = $points_histories->where('digestion_flg','=','none');
+        }
+        */
         /*
         if(session('state_validity_checked')!==null && session('state_used_checked')==null){
             $points_histories = $points_histories->where('digestion_flg','=','false');
@@ -123,6 +145,50 @@ class PointsList extends Component
 			session(['serch_key_point' => $this->serch_key_point]);
 		}
         */
+
+
+        $points_histories = Point::query()
+    ->select('points.*', 'points.id as points_id')
+    ->join('users', 'points.serial_user', '=', 'users.serial_user')
+    ->whereNull('points.deleted_at');
+
+// キーワード検索
+if ($this->serch_key_point !== "") {
+    $key = '%' . $this->serch_key_point . '%';
+
+    $points_histories->where(function ($query) use ($key) {
+        $query->where('points.serial_user', 'like', $key)
+              ->orWhere('users.name_sei', 'like', $key)
+              ->orWhere('users.name_mei', 'like', $key)
+              ->orWhere('users.name_sei_kana', 'like', $key)
+              ->orWhere('users.name_mei_kana', 'like', $key)
+              ->orWhere('points.date_get', 'like', $key)
+              ->orWhere('points.visit_date', 'like', $key);
+    });
+}
+
+// 日付検索
+if ($this->serch_date_key_point !== "") {
+    $key_d = '%' . $this->serch_date_key_point . '%';
+
+    $points_histories->where(function ($query) use ($key_d) {
+        $query->where('points.date_get', 'like', $key_d)
+              ->orWhere('points.visit_date', 'like', $key_d);
+    });
+}
+
+// 有効・消化済み
+if (count($this->selected_state_validity) === 1) {
+    if (in_array('Valid', $this->selected_state_validity)) {
+        $points_histories->where('digestion_flg', 'false');
+    }
+    if (in_array('Digestion', $this->selected_state_validity)) {
+        $points_histories->where('digestion_flg', 'true');
+    }
+}
+
+
+        /*
         if($this->serch_key_point<>"" && $this->serch_date_key_point==""){
 			$key="%".$this->serch_key_point."%";
 			$points_histories =$points_histories->where('points.serial_user','like',$key)
@@ -139,110 +205,31 @@ class PointsList extends Component
         }else if($this->serch_date_key_point<>"" && $this->serch_key_point<>""){
             $key_d="%".$this->serch_date_key_point."%";
             $key="%".$this->serch_key_point."%";
-            /*
-            $points_histories =$points_histories->where('points.serial_user','like',$key)
-            ->orwhere('users.name_sei','like',$key)
-            ->orwhere('users.name_mei','like',$key)
-            ->orwhere('users.name_sei_kana','like',$key)
-            ->orwhere('users.name_mei_kana','like',$key)
-            ->orwhere('points.date_get','like',$key)
-            ->orwhere('points.visit_date','like',$key)
-            ->where('points.date_get','like',$key_d)
-            ->orwhere('points.visit_date','like',$key_d);
-            */ 
-            
-            /*$points_histories =$points_histories
-            ->Where(function (Builder $query1) {
-                $query1->where('points.serial_user','like',$key)
+            //Log::alert("message");
+            $points_histories =$points_histories
+                ->where(function ($query) use ($key) {
+                    $query
+                    ->where('points.serial_user','like',$key)
                     ->orwhere('users.name_sei','like',$key)
                     ->orwhere('users.name_mei','like',$key)
                     ->orwhere('users.name_sei_kana','like',$key)
                     ->orwhere('users.name_mei_kana','like',$key)
                     ->orwhere('points.date_get','like',$key)
                     ->orwhere('points.visit_date','like',$key);
-            })->Where(function (Builder $query2) {
-                $query2->where('points.date_get','like',$key_d)
-                    ->orwhere('points.visit_date','like',$key_d);
-            });
-            */
-            //Log::alert("message");
-            $points_histories =$points_histories
-            /*    
-            ->where('points.serial_user','like',$key)
-                
-                ->orwhere('users.name_sei','like',$key)
-                ->orwhere('users.name_mei','like',$key)
-                ->orwhere('users.name_sei_kana','like',$key)
-                ->orwhere('users.name_mei_kana','like',$key)
-                ->orwhere('points.date_get','like',$key)
-                ->orwhere('points.visit_date','like',$key)
-                */
-
-                ->where(function ($query) use ($key) {
-                    $query
-                    ->where('points.serial_user','like',$key)
-                ->orwhere('users.name_sei','like',$key)
-                ->orwhere('users.name_mei','like',$key)
-                ->orwhere('users.name_sei_kana','like',$key)
-                ->orwhere('users.name_mei_kana','like',$key)
-                ->orwhere('points.date_get','like',$key)
-                ->orwhere('points.visit_date','like',$key);
                 })
-
-                /*
-                ->Where(function (Builder $query) {
-                    $query->where('points.date_get','like',$key_d)
-                    ->orwhere('points.visit_date','like',$key_d);
-                });
-                */
                 ->where(function ($query) use ($key_d) {
                     $query
                     ->where('points.date_get','like',$key_d)
                     ->orwhere('points.visit_date','like',$key_d);
                 });
-
-                /*
-                ->Where(function (Builder $query) {
-                    $query->where('points.date_get','like',$key_d)
-                    ->orwhere('points.visit_date','like',$key_d);
-                });
-                */
-            /*
-            ->Where(function (Builder $query1) {
-                    $query1->where('points.serial_user','like',$key)
-                        ->orwhere('users.name_sei','like',$key)
-                        ->orwhere('users.name_mei','like',$key)
-                        ->orwhere('users.name_sei_kana','like',$key)
-                        ->orwhere('users.name_mei_kana','like',$key)
-                        ->orwhere('points.date_get','like',$key)
-                        ->orwhere('points.visit_date','like',$key);
-                });
-                */
-                /*
-                $points_histories =$points_histories
-                    ->Where(function (Builder $query2) {
-                        $query2->where('points.date_get','like',$key_d)
-                        ->orwhere('points.visit_date','like',$key_d);
-                });
-                */
         }
-        /*
-		if((isset($_POST['target_day']) and $_POST['target_day']<>"") or $backdayly==true){
-			$from_place="dayly_rep";
-			if(isset($_POST['target_day'])){
-			$target_day= $_POST['target_day'];
-			}else{
-				$target_day=$_SESSION['backmonthday'];
-			}
-		}
-        */
-        /*
-        $targetSortKey="";
-		if(empty(session('sort_key_point'))){
-            $targetSortKey=$this->sort_key;
-		}else{
-			$targetSortKey=session('sort_key_point');
-		}
+         if (in_array('Digestion', $this->selected_state_validity) and in_array('Valid', $this->selected_state_validity)) {
+        }else if (in_array('Valid', $this->selected_state_validity)) {
+                $points_histories = $points_histories->where('digestion_flg','=','false');
+        }else if(in_array('Digestion', $this->selected_state_validity)) {
+                $points_histories = $points_histories->where('digestion_flg','=','true');
+        }
+
         */
         if($this->sort_key<>''){
 			if($this->sort_key=="name_user"){
