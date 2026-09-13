@@ -9,10 +9,12 @@ use App\Consts\initConsts;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-if(!isset($_SESSION)){session_start();}
+//if(!isset($_SESSION)){session_start();}
 
 class PointsList extends Component
 {
+    use WithPagination; 
+
     public $sort_key = '',$asc_desc="",$serch_key_point="",$serch_date_key_point="";
 	public $target_page=null;
     public $state_validity_checked="true";
@@ -26,6 +28,20 @@ class PointsList extends Component
         $this->selected_state_validity = ['Valid', 'Digestion'];   // ここに入れる
         //$this->selected_state_validity = ['Digestion'];
     }
+    public function updatingSerchKeyPoint()
+{
+    $this->resetPage();
+}
+
+public function updatingSerchDateKeyPoint()
+{
+    $this->resetPage();
+}
+
+public function updatingSelectedStateValidity()
+{
+    $this->resetPage();
+}
     public function searchClear(){
 		$this->serch_key_point="";
         $this->sort_key="";
@@ -145,12 +161,13 @@ class PointsList extends Component
 			session(['serch_key_point' => $this->serch_key_point]);
 		}
         */
-
-
-        $points_histories = Point::query()
-    ->select('points.*', 'points.id as points_id')
-    ->join('users', 'points.serial_user', '=', 'users.serial_user')
-    ->whereNull('points.deleted_at');
+        /*
+        $points_histories =$points_histories
+        //$points_histories = Point::query()
+            ->select('points.*', 'points.id as points_id')
+            ->join('users', 'points.serial_user', '=', 'users.serial_user')
+            ->whereNull('points.deleted_at');
+            */
 
 // キーワード検索
 if ($this->serch_key_point !== "") {
@@ -238,12 +255,15 @@ if (count($this->selected_state_validity) === 1) {
 				$points_histories =$points_histories->orderBy($this->sort_key,  session('asc_desc_point'));
             }
 		}
+        $points_histories=$points_histories->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
+        /*
         if(empty($this->target_page)){
 			$points_histories=$points_histories->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
 		}else{
 			$points_histories=$points_histories->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*'], 'page',$this->target_page);
 			$this->target_page=null;
 		}
+        */
         //$points_histories=$points_histories->paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
         //$points_histories=Point::paginate($perPage = initConsts::DdisplayLineNumCustomerList(),['*']);
         return view('livewire.points-list',compact('points_histories','target_day'));

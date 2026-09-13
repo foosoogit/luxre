@@ -16,22 +16,23 @@
                             <input type="checkbox" name="state_cbx_validity" id="state_cbx_validity" wire:click="state_validity(document.getElementById('state_cbx_validity').checked)" class="form-check-input" value="true" {!!session('state_validity_checked')!!}>
                             --}}
                             <input type="checkbox" 
-           wire:model.live="selected_state_validity" 
-           value="Valid" 
-           class="form-check-input" 
-           id="state_cbx_validity">
-    <label class="form-check-label" for="state_cbx_validity">&nbsp;有効</label>
+                                wire:model.live="selected_state_validity" 
+                                value="Valid" 
+                                class="form-check-input" 
+                                id="state_cbx_validity"
+                            >
+                            <label class="form-check-label" for="state_cbx_validity">&nbsp;有効</label>
                         </div>
                         <div class="col-auto form-check form-check-inline">
                             {{--<input type="checkbox" name="state_cbx_used" id="state_cbx_used" wire:click="state_used('checked')" class="form-check-input"  value="true"{!!session('state_used_checked')!!} {!!$state_used_checked!!}>
                             <input type="checkbox" name="state_cbx_used" id="state_cbx_used" wire:click="state_used(document.getElementById('state_cbx_used').checked)" class="form-check-input"  value="true" {!!session('state_used_checked')!!}>
                             --}}
                             <input type="checkbox" 
-           wire:model.live="selected_state_validity" 
-           value="Digestion" 
-           class="form-check-input" 
-           id="state_cbx_used">          <!-- IDを変える -->
-    <label class="form-check-label" for="state_cbx_used">&nbsp;消化済み</label>
+                                wire:model.live="selected_state_validity" 
+                                value="Digestion" 
+                                class="form-check-input" 
+                                id="state_cbx_used">          <!-- IDを変える -->
+                            <label class="form-check-label" for="state_cbx_used">&nbsp;消化済み</label>
                         </div>
                     </div>
                 </div>
@@ -112,9 +113,11 @@
                             </table>
                         </div>
                     </div>
+                    
                     {{ $points_histories->links() }}
-                    {{-- 
-                    {{$points_histories->appends(request()->query())->links('pagination::bootstrap-4')}}
+                     
+                     {{--
+                    {{$points_histories->appends(request()->query())->links('pagination::bootstrap-5')}}
                      --}}
                 </div>
             </div>
